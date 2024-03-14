@@ -1,3 +1,10 @@
+/*
+    IMPORTANTE
+    
+    Para cuando hagamos la web de verdad, hay que pensar bien el sistema de números, porque si hablasemos de dinero real
+    con el sistema actual de redondear y dividir sin importar el resto y demás se pierde dinero y hay problemas de exactitud.
+*/
+
 let price = null;
 let lastPrice = null;
 
@@ -58,9 +65,9 @@ function buyBitcoin() {
         if (!isNaN(amount)) {
             amount = amount.toFixed(2);
             if (amount > 0) {
-                if (amount <= usd) {
+                if (amount <= parseFloat(usd.toFixed(2))) {
                     usd -= amount;
-                    btc += amount / price;
+                    btc += parseFloat((amount / price).toFixed(8));
 
                     displayMoney();
                 } else {
@@ -84,9 +91,9 @@ function sellBitcoin() {
         if (!isNaN(amount)) {
             amount = amount.toFixed(8);
             if (amount > 0) {
-                if (amount <= btc) {
+                if (amount <= parseFloat(btc.toFixed(8))) {
                     btc -= amount;
-                    usd += amount * price;
+                    usd += parseFloat((amount * price).toFixed(2));
 
                     displayMoney();
                 } else {
