@@ -4,7 +4,7 @@ const BitcoinContext = createContext();
 
 export const BitcoinProvider = ({ children }) => {
     const [bitcoinPrice, setBitcoinPrice] = useState(0);
-    const [dollarBalance, setDollarBalance] = useState(0);
+    const [dollarBalance, setDollarBalance] = useState(1000);
     const [bitcoinBalance, setBitcoinBalance] = useState(1);
 
     const getBitcoinPrice = () => bitcoinPrice.toFixed(2);
@@ -12,17 +12,17 @@ export const BitcoinProvider = ({ children }) => {
     const getDollarBalance = () => dollarBalance.toFixed(2);
 
     const buyBitcoin = (amountInDollars) => {
-        const bitcoinAmount = (amountInDollars / getBitcoinPrice()).toFixed(8);
+        const bitcoinAmount = parseFloat((amountInDollars / getBitcoinPrice()).toFixed(8));
 
-        setBitcoinBalance(getBitcoinBalance() + bitcoinAmount);
-        setDollarBalance(getDollarBalance() - amountInDollars);
+        setBitcoinBalance(parseFloat(getBitcoinBalance()) + bitcoinAmount);
+        setDollarBalance(parseFloat(getDollarBalance()) - amountInDollars);
     }
 
     const sellBitcoin = (bitcoinAmount) => {
-        const amountInDollars = (bitcoinAmount * getBitcoinPrice()).toFixed(2);
+        const amountInDollars = parseFloat((bitcoinAmount * getBitcoinPrice()).toFixed(2));
 
-        setBitcoinBalance(getBitcoinBalance() - bitcoinAmount);
-        setDollarBalance(getDollarBalance() + amountInDollars);
+        setBitcoinBalance(parseFloat(getBitcoinBalance()) - bitcoinAmount);
+        setDollarBalance(parseFloat(getDollarBalance()) + amountInDollars);
     };
 
     useEffect(() => {
