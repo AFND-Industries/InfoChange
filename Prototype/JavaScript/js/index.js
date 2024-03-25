@@ -55,8 +55,8 @@ function displayPrice() {
     !lastPrice || lastPrice === price
       ? "black"
       : price > lastPrice
-      ? " green"
-      : "red";
+        ? " green"
+        : "red";
   priceText.textContent = "Bitcoin: " + getPrice() + " $";
   title.textContent = "BTCUSD " + getPrice();
   lastPrice = price;
