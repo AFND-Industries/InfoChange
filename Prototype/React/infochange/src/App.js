@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Price from './components/Price';
 import AssetBalance from './components/AssetBalance';
 import Footer from './components/Footer';
+import BitcoinChart from './components/BitcoinChart';
 
 import { useBitcoin } from './contexts/BitcoinContext';
 
@@ -44,6 +45,7 @@ function App() {
       <div>
         <Header />
         <Price />
+        <BitcoinChart />
         <div className="container">
           <div className="row">
             <AssetBalance
