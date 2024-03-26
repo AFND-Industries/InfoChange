@@ -3,10 +3,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const BitcoinContext = createContext();
 
 export const BitcoinProvider = ({ children }) => {
+    const [bitcoinCandle, setBitcoinCandle] = useState(null);
     const [bitcoinPrice, setBitcoinPrice] = useState(0);
     const [dollarBalance, setDollarBalance] = useState(1000);
     const [bitcoinBalance, setBitcoinBalance] = useState(1);
 
+    const getBitcoinCandle = () => {
+        if (bitcoinCandle != null && parseFloat(bitcoinPrice) > 0)
+            bitcoinCandle.close = bitcoinPrice;
+
+        return bitcoinCandle;
+    };
     const getBitcoinPrice = () => bitcoinPrice.toFixed(2);
     const getBitcoinBalance = () => bitcoinBalance.toFixed(8);
     const getDollarBalance = () => dollarBalance.toFixed(2);
@@ -29,7 +36,33 @@ export const BitcoinProvider = ({ children }) => {
         let ws;
 
         const connectToWebSocket = () => {
-            console.log("Trying to make connection to Binance...");
+            console.log("Trying to make connection to Binance (Candles)...");
+            ws = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1m");
+
+            ws.onmessage = (event) => {
+                const d = JSON.parse(event.data);
+                const pl = { time: d.k.t.toFixed(0) / 1000, open: parseFloat(d.k.o), high: parseFloat(d.k.h), low: parseFloat(d.k.l), close: parseFloat(d.k.c) }
+                setBitcoinCandle(pl);
+            };
+
+            ws.onclose = function () {
+                console.log("Connection to Binance lost (Candles)...");
+                setTimeout(connectToWebSocket, 5000);
+            };
+        };
+
+        connectToWebSocket();
+
+        return () => {
+            ws.close();
+        };
+    }, []);
+
+    useEffect(() => {
+        let ws;
+
+        const connectToWebSocket = () => {
+            console.log("Trying to make connection to Binance (Price)...");
             ws = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
 
             ws.onmessage = (event) => {
@@ -39,7 +72,7 @@ export const BitcoinProvider = ({ children }) => {
             };
 
             ws.onclose = function () {
-                console.log("Connection to Binance lost...");
+                console.log("Connection to Binance lost (Price)...");
                 setTimeout(connectToWebSocket, 5000);
             };
         };
@@ -54,6 +87,7 @@ export const BitcoinProvider = ({ children }) => {
     return (
         <BitcoinContext.Provider
             value={{
+                getBitcoinCandle,
                 getBitcoinPrice,
                 getDollarBalance,
                 getBitcoinBalance,
