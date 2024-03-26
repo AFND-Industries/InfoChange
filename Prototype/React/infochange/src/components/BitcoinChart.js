@@ -7,33 +7,43 @@ function BitcoinChart() {
     const { getBitcoinCandle, getBitcoinPriceHistory } = useBitcoin();
 
     const chartContainerRef = useRef();
-
+    const chartRef = useRef(null);
+    const [priceHistory, setPriceHistory] = useState(null);
     const [styleIndex, setStyleIndex] = useState(0);
-    const [newSeries, setnewSeries] = useState(null);
 
     const changeStyle = () => {
         setStyleIndex(prevStyle => (prevStyle + 1) % 2);
     }
 
-    async function loadPriceHistory(series, chart, chartOptions, handleResize) {
+    async function loadPriceHistory() {
         const priceHistory = await getBitcoinPriceHistory();
-
-        series.setData(priceHistory);
-        chart.applyOptions(chartOptions);
-        //chart.timeScale().fitContent();
-        handleResize();
+        setPriceHistory(priceHistory);
     }
+
+    useEffect(() => {
+        loadPriceHistory();
+    }, [])
+
+    useEffect(() => {
+        if (chartRef.current != null && priceHistory != null)
+            chartRef.current.setData(priceHistory);
+    }, [priceHistory])
 
     useEffect(() => {
         const { chartOptions, candleOptions } = getChartStyle(styleIndex);
 
+        const chart = createChart(chartContainerRef.current, chartOptions);
         const handleResize = () => chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+        //chart.timeScale().fitContent();
+        handleResize();
 
-        const chart = createChart(chartContainerRef.current, {});
         const series = chart.addCandlestickSeries(candleOptions);
-        setnewSeries(series);
 
-        loadPriceHistory(series, chart, chartOptions, handleResize);
+        if (priceHistory != null)
+            series.setData(priceHistory);
+
+        chartRef.current = series;
+
         window.addEventListener('resize', handleResize);
 
         return () => {
@@ -44,18 +54,16 @@ function BitcoinChart() {
 
     useEffect(() => {
         const newCandle = getBitcoinCandle();
-        if (newSeries != null && newCandle != null) {
-            newSeries.update(newCandle);
+        if (chartRef.current && newCandle != null && priceHistory != null) {
+            chartRef.current.update(newCandle);
         }
-    }, [getBitcoinCandle, newSeries])
-    // Si ponemos getBitcoinCandle en vez de getBitcoinCandle() se actualiza cada vez que lo mas rapido
-    // que es price, y aunque de momento no es correcto, es la forma de hacerlo tiempo real
+    }, [getBitcoinCandle, priceHistory])
 
     return (
-        <div className="container">
-            <button className="btn btn-primary mb-2" type="button" onClick={changeStyle}>Cambiar estilo</button>
+        <div className="container position-relative">
             <div className="row justify-content-md-center mb-5">
-                <div className="col-12">
+                <div style={{ position: 'relative' }}>
+                    <button className="btn btn-primary mb-2 position-absolute" style={{ zIndex: 100, left: 23, top: 10 }} type="button" onClick={changeStyle}>Cambiar estilo</button>
                     <div
                         ref={chartContainerRef}
                     />

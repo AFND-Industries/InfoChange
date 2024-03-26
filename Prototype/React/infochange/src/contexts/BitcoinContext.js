@@ -6,7 +6,7 @@ const BitcoinContext = createContext();
 export const BitcoinProvider = ({ children, p }) => {
     const [bitcoinCandle, setBitcoinCandle] = useState(null);
 
-    const pair = p || "btcusdt";
+    const pair = p || "btcusdt"; // en vez de recargar la pagina con la barra de busqueda setear el pair distinto y cambiar con route
     const [timeScale, setTimeScale] = useState("1h");
     const [bitcoinPrice, setBitcoinPrice] = useState(-1);
     const [dollarBalance, setDollarBalance] = useState(1000);

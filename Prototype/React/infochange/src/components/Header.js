@@ -11,6 +11,12 @@ function Header() {
         setSearchInput(event.target.value);
     }
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            searchHandler();
+        }
+    }
+
     return (
         <header className="header bg-primary text-white py-3">
             <div className="container">
@@ -25,13 +31,14 @@ function Header() {
                                 type="search"
                                 placeholder="Buscar par..."
                                 style={{ backgroundColor: "#ffffff", color: "#000000" }}
-                                value={searchInput} // Asigna el valor del input al estado
-                                onChange={handleInputChange} // Maneja el cambio en el input
+                                value={searchInput}
+                                onChange={handleInputChange}
+                                onKeyPress={handleKeyPress}
                             />
                             <button
                                 onClick={searchHandler}
                                 className="btn btn-outline-light"
-                                type="button" // Cambia el tipo a "button" para evitar enviar el formulario
+                                type="button"
                             >
                                 Buscar
                             </button>
