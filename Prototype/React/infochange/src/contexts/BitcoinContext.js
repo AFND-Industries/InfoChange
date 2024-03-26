@@ -1,10 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const BitcoinContext = createContext();
 
-export const BitcoinProvider = ({ children }) => {
+export const BitcoinProvider = ({ children, p }) => {
     const [bitcoinCandle, setBitcoinCandle] = useState(null);
-    const [bitcoinPrice, setBitcoinPrice] = useState(0);
+
+    const pair = p || "btcusdt";
+    const [timeScale, setTimeScale] = useState("1h");
+    const [bitcoinPrice, setBitcoinPrice] = useState(-1);
     const [dollarBalance, setDollarBalance] = useState(1000);
     const [bitcoinBalance, setBitcoinBalance] = useState(1);
 
@@ -14,6 +18,9 @@ export const BitcoinProvider = ({ children }) => {
 
         return bitcoinCandle;
     };
+
+    const getPair = () => pair;
+    const getTimeScale = () => timeScale;
     const getBitcoinPrice = () => bitcoinPrice.toFixed(2);
     const getBitcoinBalance = () => bitcoinBalance.toFixed(8);
     const getDollarBalance = () => dollarBalance.toFixed(2);
@@ -32,12 +39,50 @@ export const BitcoinProvider = ({ children }) => {
         setDollarBalance(parseFloat(getDollarBalance()) + amountInDollars);
     };
 
+    /*async function getSymbols() {
+        try {
+            const response = await axios.get(' https://api.binance.com/api/v1/exchangeInfo');
+            // mapping needed
+            const data = response.data;
+            console.log(data);
+        } catch (error) {
+            console.error('Hubo un error al obtener el historial de precios de Bitcoin:', error);
+        }
+
+    }
+    getSymbols();*/ // WORKING ON
+
+    async function getBitcoinPriceHistory() {
+        try {
+            const response = await axios.get('https://api.binance.com/api/v3/klines', {
+                params: {
+                    symbol: pair.toUpperCase(),
+                    interval: timeScale,
+                    limit: 1000,
+                }
+            });
+            console.log("Candles:", response.data.length);
+
+            const data = response.data;
+            const cdata = data.map(d => {
+                return { time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) }
+            });
+
+            if (parseFloat(getBitcoinPrice()) < 0)
+                setBitcoinPrice(cdata[data.length - 1].close);
+
+            return cdata;
+        } catch (error) {
+            console.error('Hubo un error al obtener el historial de precios de Bitcoin:', error);
+        }
+    }
+
     useEffect(() => {
         let ws;
 
         const connectToWebSocket = () => {
             console.log("Trying to make connection to Binance (Candles)...");
-            ws = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1m");
+            ws = new WebSocket("wss://stream.binance.com:9443/ws/" + pair + "@kline_" + timeScale);
 
             ws.onmessage = (event) => {
                 const d = JSON.parse(event.data);
@@ -63,7 +108,7 @@ export const BitcoinProvider = ({ children }) => {
 
         const connectToWebSocket = () => {
             console.log("Trying to make connection to Binance (Price)...");
-            ws = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
+            ws = new WebSocket("wss://stream.binance.com:9443/ws/" + pair + "@trade");
 
             ws.onmessage = (event) => {
                 const stockObject = JSON.parse(event.data);
@@ -87,6 +132,9 @@ export const BitcoinProvider = ({ children }) => {
     return (
         <BitcoinContext.Provider
             value={{
+                getPair,
+                getTimeScale,
+                getBitcoinPriceHistory,
                 getBitcoinCandle,
                 getBitcoinPrice,
                 getDollarBalance,

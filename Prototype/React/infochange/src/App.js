@@ -46,10 +46,7 @@ function App() {
     <div className="d-flex flex-column min-vh-100">
       <div>
         <Header />
-        <Price
-          asset="Bitcoin"
-          price={getBitcoinPrice()}
-        />
+        <Price />
         <BitcoinChart />
         <div className="container">
           <div className="row">

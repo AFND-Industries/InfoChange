@@ -4,7 +4,7 @@ import getChartStyle from '../models/ChartStyles';
 import { useBitcoin } from '../contexts/BitcoinContext';
 
 function BitcoinChart() {
-    const { getBitcoinCandle } = useBitcoin();
+    const { getBitcoinCandle, getBitcoinPriceHistory } = useBitcoin();
 
     const chartContainerRef = useRef();
 
@@ -15,31 +15,25 @@ function BitcoinChart() {
         setStyleIndex(prevStyle => (prevStyle + 1) % 2);
     }
 
+    async function loadPriceHistory(series, chart, chartOptions, handleResize) {
+        const priceHistory = await getBitcoinPriceHistory();
+
+        series.setData(priceHistory);
+        chart.applyOptions(chartOptions);
+        //chart.timeScale().fitContent();
+        handleResize();
+    }
+
     useEffect(() => {
         const { chartOptions, candleOptions } = getChartStyle(styleIndex);
 
-        const handleResize = () => {
-            chart.applyOptions({ width: chartContainerRef.current.clientWidth });
-        };
+        const handleResize = () => chart.applyOptions({ width: chartContainerRef.current.clientWidth });
 
         const chart = createChart(chartContainerRef.current, {});
-        chart.timeScale().fitContent();
-
         const series = chart.addCandlestickSeries(candleOptions);
         setnewSeries(series);
 
-        fetch(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000`)
-            .then(res => res.json())
-            .then(data => {
-                const cdata = data.map(d => {
-                    return { time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) }
-                });
-
-                series.setData(cdata);
-                chart.applyOptions(chartOptions);
-                handleResize();
-            })
-
+        loadPriceHistory(series, chart, chartOptions, handleResize);
         window.addEventListener('resize', handleResize);
 
         return () => {
@@ -54,6 +48,8 @@ function BitcoinChart() {
             newSeries.update(newCandle);
         }
     }, [getBitcoinCandle, newSeries])
+    // Si ponemos getBitcoinCandle en vez de getBitcoinCandle() se actualiza cada vez que lo mas rapido
+    // que es price, y aunque de momento no es correcto, es la forma de hacerlo tiempo real
 
     return (
         <div className="container">
