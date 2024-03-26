@@ -1,74 +1,67 @@
-import React, { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
-import axios from "axios";
+import React, { useEffect, useRef } from "react";
+import { createChart } from "lightweight-charts";
+import getChartStyle from "../models/ChartStyles";
 
 function BitcoinChart() {
-    const [bitcoinPriceHistory, setBitcoinPriceHistory] = useState([]);
-    const chartRef = useRef(null);
+    //const [styleIndex, setStyle] = useState(0);
+
+    const chartContainerRef = useRef();
+    const chart = useRef();
+    const resizeObserver = useRef();
+
+    // const onChangeStyle = () => {
+    //setStyle(prevStyle => (prevStyle + 1) % 2)
+    //}
 
     useEffect(() => {
-        async function getBitcoinPriceHistory() {
-            try {
-                const response = await axios.get('https://api.binance.com/api/v3/klines', {
-                    params: {
-                        symbol: 'BTCUSDT',
-                        interval: '1w',
-                        limit: 500
-                    }
+        const { chartOptions, candleOptions } = getChartStyle(0);
+
+        chart.current = createChart(chartContainerRef.current, chartOptions);
+        const candleSeries = chart.current.addCandlestickSeries(candleOptions);
+
+        fetch(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1w&limit=1000`)
+            .then(res => res.json())
+            .then(data => {
+                const cdata = data.map(d => {
+                    return { time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) }
                 });
+                candleSeries.setData(cdata);
+            })
+            .catch(err => console.log(err))
 
-                const prices = response.data.map(data => parseFloat(data[4]));
-                setBitcoinPriceHistory(prices);
-            } catch (error) {
-                console.error('Hubo un error al obtener el historial de precios de Bitcoin:', error);
-            }
-        }
-
-        getBitcoinPriceHistory();
+        const ws = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1w");
+        ws.onmessage = (event) => {
+            const d = JSON.parse(event.data);
+            const pl = { time: d.k.t.toFixed(0) / 1000, open: parseFloat(d.k.o), high: parseFloat(d.k.h), low: parseFloat(d.k.l), close: parseFloat(d.k.c) }
+            candleSeries.update(pl);
+        };
     }, []);
 
+    // Resize chart on container resizes.
     useEffect(() => {
-        const ctx = document.getElementById('bitcoinChart');
+        resizeObserver.current = new ResizeObserver((entries) => {
+            const { width, height } = entries[0].contentRect;
+            chart.current.applyOptions({ width, height });
+            setTimeout(() => {
+                chart.current.timeScale().fitContent();
+            }, 0);
+        });
 
-        if (bitcoinPriceHistory.length > 0) {
-            if (chartRef.current !== null) {
-                chartRef.current.destroy();
-            }
+        resizeObserver.current.observe(chartContainerRef.current);
 
-            chartRef.current = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({ length: bitcoinPriceHistory.length }, (_, i) => i + 1),
-                    datasets: [{
-                        label: 'Precio de Bitcoin (USD)',
-                        data: bitcoinPriceHistory,
-                        borderColor: 'blue',
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Hora'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Precio (USD)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }, [bitcoinPriceHistory]);
+        return () => resizeObserver.current.disconnect();
+    }, []);
 
     return (
         <div className="container">
-            <canvas id="bitcoinChart" width="800" height="400"></canvas>
+            <div className="row justify-content-md-center mb-5">
+                <div className="col-12">
+                    <div
+                        ref={chartContainerRef}
+                        className="chart-container"
+                    />
+                </div>
+            </div>
         </div>
     );
 }

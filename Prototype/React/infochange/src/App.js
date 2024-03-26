@@ -13,7 +13,9 @@ function App() {
 
   const handleTransaction = (value, assetType, balance, transactionFunc, precision) => {
     const price = parseFloat(getBitcoinPrice());
-    const amount = parseFloat(value); // Actualmente hay bugs por no poner monto minimo.
+    const amount = parseFloat(value);
+
+    // Actualmente hay bugs por no poner monto minimo.
     // Deberiamos poner unos 5$ minimo y el equivalente en la moneda. Si no hay minimo
     // Puedes vender 0.0000001 btc y luego comprar 0.01 usd y estas creando dinero infinito por culpa del redondeo
 
@@ -44,19 +46,22 @@ function App() {
     <div className="d-flex flex-column min-vh-100">
       <div>
         <Header />
-        <Price />
+        <Price
+          asset="Bitcoin"
+          price={getBitcoinPrice()}
+        />
         <BitcoinChart />
         <div className="container">
           <div className="row">
             <AssetBalance
-              asset="Dólares"
+              name="Dólares"
               balance={getDollarBalance() + " USD"}
               inputPlaceholder="Ingrese el monto a comprar"
               buttonText="Comprar"
               onButtonClick={handleBuyBitcoin}
             />
             <AssetBalance
-              asset="Bitcoin"
+              name="Bitcoin"
               balance={getBitcoinBalance() + " BTC"}
               inputPlaceholder="Ingrese el monto a vender"
               buttonText="Vender"
