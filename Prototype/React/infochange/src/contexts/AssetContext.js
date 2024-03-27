@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BitcoinContext = createContext();
+const AssetContext = createContext();
 
-export const BitcoinProvider = ({ children, p }) => {
+export const AssetProvider = ({ children, p }) => {
     const [bitcoinCandle, setBitcoinCandle] = useState(null);
 
     const pair = p || "btcusdt"; // en vez de recargar la pagina con la barra de busqueda setear el pair distinto y cambiar con route
-    const [timeScale, setTimeScale] = useState("1h");
+    const [timeScale, setTimeScale] = useState("1m");
     const [bitcoinPrice, setBitcoinPrice] = useState(-1);
     const [dollarBalance, setDollarBalance] = useState(1000);
     const [bitcoinBalance, setBitcoinBalance] = useState(1);
@@ -39,18 +39,36 @@ export const BitcoinProvider = ({ children, p }) => {
         setDollarBalance(parseFloat(getDollarBalance()) + amountInDollars);
     };
 
-    /*async function getSymbols() {
+    async function getSymbols() {
         try {
-            const response = await axios.get(' https://api.binance.com/api/v1/exchangeInfo');
-            // mapping needed
+            const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
             const data = response.data;
+            const symbols = data.symbols.reduce((acc, e) => {
+                acc[e.symbol] = {
+                    symbol: e.symbol,
+                    baseAsset: e.baseAsset,
+                    baseAssetPrecision: e.baseAssetPrecision,
+                    quoteAsset: e.quoteAsset,
+                    quoteAssetPrecision: e.quoteAssetPrecision,
+                };
+                return acc;
+            }, {});
             console.log(data);
+            const symbolsStartingWithET = Object.keys(symbols).filter(symbol => symbol.startsWith("ET"));
+
+            // Imprimir los símbolos que comienzan por "ET"
+            console.log("Símbolos que comienzan por 'ET':", symbolsStartingWithET.map(symbol => symbols[symbol]));
+
         } catch (error) {
             console.error('Hubo un error al obtener el historial de precios de Bitcoin:', error);
         }
-
     }
-    getSymbols();*/ // WORKING ON
+
+
+
+    useEffect(() => {
+        getSymbols();
+    }, [])
 
     async function getBitcoinPriceHistory() {
         try {
@@ -130,7 +148,7 @@ export const BitcoinProvider = ({ children, p }) => {
     }, []);
 
     return (
-        <BitcoinContext.Provider
+        <AssetContext.Provider
             value={{
                 getPair,
                 getTimeScale,
@@ -144,8 +162,8 @@ export const BitcoinProvider = ({ children, p }) => {
             }}
         >
             {children}
-        </BitcoinContext.Provider>
+        </AssetContext.Provider>
     );
 };
 
-export const useBitcoin = () => useContext(BitcoinContext);
+export const useAsset = () => useContext(AssetContext);

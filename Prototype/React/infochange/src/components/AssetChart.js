@@ -1,10 +1,10 @@
 import { createChart } from 'lightweight-charts';
 import React, { useEffect, useRef, useState } from 'react';
 import getChartStyle from '../models/ChartStyles';
-import { useBitcoin } from '../contexts/BitcoinContext';
+import { useAsset } from '../contexts/AssetContext';
 
-function BitcoinChart() {
-    const { getBitcoinCandle, getBitcoinPriceHistory } = useBitcoin();
+function AssetChart() {
+    const { getBitcoinCandle, getBitcoinPriceHistory } = useAsset();
 
     const chartContainerRef = useRef();
     const chartRef = useRef(null);
@@ -21,7 +21,7 @@ function BitcoinChart() {
     }
 
     useEffect(() => {
-        loadPriceHistory();
+        loadPriceHistory(); // poner que las velas que se vayan agregando con el addCandle se metan dentro de este priceHistory
     }, [])
 
     useEffect(() => {
@@ -47,6 +47,7 @@ function BitcoinChart() {
         window.addEventListener('resize', handleResize);
 
         return () => {
+            setPriceHistory(series.data());
             window.removeEventListener('resize', handleResize);
             chart.remove();
         };
@@ -55,7 +56,7 @@ function BitcoinChart() {
     useEffect(() => {
         const newCandle = getBitcoinCandle();
         if (chartRef.current && newCandle != null && priceHistory != null) {
-            chartRef.current.update(newCandle);
+            chartRef.current.update(newCandle); // añadir la vela tambien a priceHistory
         }
     }, [getBitcoinCandle, priceHistory])
 
@@ -73,4 +74,4 @@ function BitcoinChart() {
     );
 };
 
-export default BitcoinChart;
+export default AssetChart;

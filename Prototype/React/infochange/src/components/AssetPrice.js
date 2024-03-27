@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { useBitcoin } from "../contexts/BitcoinContext";
+import { useAsset } from "../contexts/AssetContext";
 
-function Price() {
-    const { getPair, getBitcoinPrice } = useBitcoin();
+function AssetPrice() {
+    const { getPair, getBitcoinPrice } = useAsset();
     const price = getBitcoinPrice();
 
     useEffect(() => {
@@ -32,4 +32,4 @@ function Price() {
     );
 }
 
-export default Price;
+export default AssetPrice;

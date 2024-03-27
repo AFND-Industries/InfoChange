@@ -1,15 +1,15 @@
 import React from 'react';
 import Header from './components/Header';
-import Price from './components/Price';
+import AssetPrice from './components/AssetPrice';
 import AssetBalance from './components/AssetBalance';
 import Footer from './components/Footer';
-import BitcoinChart from './components/BitcoinChart';
+import AssetChart from './components/AssetChart';
 
-import { useBitcoin } from './contexts/BitcoinContext';
+import { useAsset } from './contexts/AssetContext';
 
 function App() {
 
-  const { getBitcoinPrice, getDollarBalance, getBitcoinBalance, buyBitcoin, sellBitcoin } = useBitcoin();
+  const { getBitcoinPrice, getDollarBalance, getBitcoinBalance, buyBitcoin, sellBitcoin } = useAsset();
 
   const handleTransaction = (value, assetType, balance, transactionFunc, precision) => {
     const price = parseFloat(getBitcoinPrice());
@@ -46,8 +46,8 @@ function App() {
     <div className="d-flex flex-column min-vh-100">
       <div>
         <Header />
-        <Price />
-        <BitcoinChart />
+        <AssetPrice />
+        <AssetChart />
         <div className="container">
           <div className="row">
             <AssetBalance
