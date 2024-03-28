@@ -1,13 +1,19 @@
 import React, { useState } from "react";
+import { useAsset } from "../contexts/AssetContext";
 
 function Header() {
     const [searchInput, setSearchInput] = useState("");
+    const [pairs, setPairs] = useState([]);
+    const { filterPairs } = useAsset();
 
     const searchHandler = () => {
         window.location.href = "./" + searchInput;
     }
 
     const handleInputChange = (event) => {
+        if (event.target.value.length == 0) setPairs([]);
+        else setPairs(filterPairs(event.target.value));
+
         setSearchInput(event.target.value);
     }
 
@@ -16,6 +22,13 @@ function Header() {
             searchHandler();
         }
     }
+
+    // console.log("reloading");
+    let pairsObject = pairs.map(pair => (
+        <li key={pair.symbol}>
+            <a className="dropdown-item" href={`./${pair.symbol}`}>{pair.symbol}</a>
+        </li>
+    ));
 
     return (
         <header className="header bg-primary text-white py-3">
@@ -26,15 +39,20 @@ function Header() {
                     </div>
                     <div className="col-md-4">
                         <div className="d-flex">
-                            <input
-                                className="form-control me-2"
-                                type="search"
-                                placeholder="Buscar par..."
-                                style={{ backgroundColor: "#ffffff", color: "#000000" }}
-                                value={searchInput}
-                                onChange={handleInputChange}
-                                onKeyPress={handleKeyPress}
-                            />
+                            <div className="dropdown w-100 me-2">
+                                <input
+                                    className="form-control"
+                                    type="search"
+                                    placeholder="Buscar par..."
+                                    style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                                    value={searchInput}
+                                    onChange={handleInputChange}
+                                    onKeyPress={handleKeyPress}
+                                />
+                                {pairsObject.length > 0 && <div className="dropdown-menu show" aria-labelledby="dropdownMenuButton">
+                                    {pairsObject}
+                                </div>}
+                            </div>
                             <button
                                 onClick={searchHandler}
                                 className="btn btn-outline-light"

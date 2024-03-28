@@ -4,7 +4,7 @@ import getChartStyle from '../models/ChartStyles';
 import { useAsset } from '../contexts/AssetContext';
 
 function AssetChart() {
-    const { getBitcoinCandle, getBitcoinPriceHistory } = useAsset();
+    const { getBitcoinCandle, getBitcoinPriceHistory, getDecimalPlaces, getTickSize } = useAsset();
 
     const chartContainerRef = useRef();
     const chartRef = useRef(null);
@@ -19,6 +19,19 @@ function AssetChart() {
         const priceHistory = await getBitcoinPriceHistory();
         setPriceHistory(priceHistory);
     }
+
+    useEffect(() => {
+        const tickSize = getTickSize();
+        if (chartRef.current != null && tickSize.decimalPlaces >= 0) {
+            chartRef.current.applyOptions({
+                priceFormat: {
+                    type: 'price',
+                    precision: tickSize.decimalPlaces,
+                    minMove: tickSize.step,
+                },
+            });
+        }
+    }, [getTickSize()])
 
     useEffect(() => {
         loadPriceHistory(); // poner que las velas que se vayan agregando con el addCandle se metan dentro de este priceHistory

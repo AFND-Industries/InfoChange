@@ -8,9 +8,15 @@ export const AssetProvider = ({ children, p }) => {
 
     const pair = p || "btcusdt"; // en vez de recargar la pagina con la barra de busqueda setear el pair distinto y cambiar con route
     const [timeScale, setTimeScale] = useState("1m");
+    const [bitcoinBalance, setBitcoinBalance] = useState(1);
+    const [tickSize, setTickSize] = useState({
+        decimalPlaces: null,
+        step: null,
+    });
+    const [symbols, setSymbols] = useState(null);
+
     const [bitcoinPrice, setBitcoinPrice] = useState(-1);
     const [dollarBalance, setDollarBalance] = useState(1000);
-    const [bitcoinBalance, setBitcoinBalance] = useState(1);
 
     const getBitcoinCandle = () => {
         if (bitcoinCandle != null && parseFloat(bitcoinPrice) > 0)
@@ -19,9 +25,10 @@ export const AssetProvider = ({ children, p }) => {
         return bitcoinCandle;
     };
 
+    const getTickSize = () => tickSize;
     const getPair = () => pair;
     const getTimeScale = () => timeScale;
-    const getBitcoinPrice = () => bitcoinPrice.toFixed(2);
+    const getBitcoinPrice = () => tickSize.decimalPlaces == null ? bitcoinPrice.toString() : bitcoinPrice.toFixed(tickSize.decimalPlaces);
     const getBitcoinBalance = () => bitcoinBalance.toFixed(8);
     const getDollarBalance = () => dollarBalance.toFixed(2);
 
@@ -39,32 +46,57 @@ export const AssetProvider = ({ children, p }) => {
         setDollarBalance(parseFloat(getDollarBalance()) + amountInDollars);
     };
 
+    function filterPairs(regex = "", limit = 10) {
+        if (symbols == null)
+            return [];
+
+        return Object.values(symbols).filter(s => s.symbol.startsWith(regex.toUpperCase())).slice(0, limit);
+    }
+
+    function getDecimals(tickSize) {
+        tickSize = tickSize.replace(",", ".");
+
+        if (tickSize[0] != '0')
+            return 0;
+
+        const point = tickSize.indexOf('.');
+
+        let d = 0;
+        for (let i = point + 1; i < tickSize.length; i++) {
+            if (tickSize[i] == '0') d++;
+            else break;
+        }
+
+        return d + 1;
+    }
+
     async function getSymbols() {
         try {
             const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
             const data = response.data;
-            const symbols = data.symbols.reduce((acc, e) => {
-                acc[e.symbol] = {
-                    symbol: e.symbol,
-                    baseAsset: e.baseAsset,
-                    baseAssetPrecision: e.baseAssetPrecision,
-                    quoteAsset: e.quoteAsset,
-                    quoteAssetPrecision: e.quoteAssetPrecision,
-                };
-                return acc;
-            }, {});
-            console.log(data);
-            const symbolsStartingWithET = Object.keys(symbols).filter(symbol => symbol.startsWith("ET"));
+            const pairs = data.symbols.map(s => ({
+                symbol: s.symbol,
+                baseAsset: s.baseAsset,
+                quoteAsset: s.quoteAsset,
+                tickSize: s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize,
+            }));
 
-            // Imprimir los símbolos que comienzan por "ET"
-            console.log("Símbolos que comienzan por 'ET':", symbolsStartingWithET.map(symbol => symbols[symbol]));
-
+            setSymbols(pairs);
         } catch (error) {
             console.error('Hubo un error al obtener el historial de precios de Bitcoin:', error);
         }
     }
 
+    useEffect(() => {
+        if (symbols != null) {
+            const tickSize = Object.values(symbols).find(s => s.symbol === pair.toUpperCase()).tickSize;
 
+            setTickSize({
+                decimalPlaces: getDecimals(tickSize),
+                step: tickSize
+            });
+        }
+    }, [symbols])
 
     useEffect(() => {
         getSymbols();
@@ -131,6 +163,7 @@ export const AssetProvider = ({ children, p }) => {
             ws.onmessage = (event) => {
                 const stockObject = JSON.parse(event.data);
                 const actualPrice = parseFloat(stockObject.p);
+
                 setBitcoinPrice(actualPrice);
             };
 
@@ -150,6 +183,8 @@ export const AssetProvider = ({ children, p }) => {
     return (
         <AssetContext.Provider
             value={{
+                filterPairs,
+                getTickSize,
                 getPair,
                 getTimeScale,
                 getBitcoinPriceHistory,
