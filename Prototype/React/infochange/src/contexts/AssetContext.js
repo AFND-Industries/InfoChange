@@ -10,7 +10,7 @@ export const AssetProvider = ({ children, p }) => {
     const pair = p || "btcusdt"; // en vez de recargar la pagina con la barra de busqueda setear el pair distinto y cambiar con route
     // METER EL GETSYMBOLS EN UN FICHERO Y QUE CADA CIERTO TIEMPO SE RE-RECARGUE Y ASI ELIMINAR ESTA VARIABLE
     // PAIR METIENDOLA DIRECTAMENTE EN SYMBOL Y USANDO GETACTUALSYMBOL
-    const [timeScale, setTimeScale] = useState("1m");
+    const [timeScale, setTimeScale] = useState("1d");
     const [bitcoinBalance, setBitcoinBalance] = useState(1);
     const [symbols, setSymbols] = useState(null);
 
@@ -82,7 +82,7 @@ export const AssetProvider = ({ children, p }) => {
     }
 
     async function getSymbols() {
-        try { // HAY PARES QUE NO SON DE SPOT, COMO BTCUP, QUITAR ESO
+        try { // GUARDAR EN SYMBOLS.JSON
             const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
             const data = response.data;
             const pairs = data.symbols.map(s => ({

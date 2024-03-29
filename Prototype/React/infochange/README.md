@@ -1,6 +1,6 @@
 # Introducción
 
-Este documento describe cómo obtenemos y manipulamos los datos en nuestro proyecto, utilizando las API de CoinMarketCap y Binance. CoinMarketCap proporciona información sobre diversas criptomonedas, mientras que Binance ofrece datos de mercado para los diferentes pares de criptomonedas. No todas las monedas listadas en CoinMarketCap tienen un par correspondiente en Binance, pero la gran mayoría de los pares en Binance tienen sus respectivas criptomonedas en CoinMarketCap.
+Este documento describe cómo obtenemos y manipulamos los datos en nuestro proyecto, utilizando las API de CoinMarketCap y Binance. CoinMarketCap proporciona información sobre diversas criptomonedas, mientras que Binance ofrece datos de mercado para los diferentes pares de criptomonedas. No todas las monedas listadas en CoinMarketCap tienen un par correspondiente en Binance, pero todos los pares de Binance tienen sus respectivas criptomonedas en CoinMarketCap.
 
 ## 1. API de CoinMarketCap
 

@@ -8,7 +8,7 @@ function AssetPrice() {
     const [baseAssetInfo, setBaseAssetInfo] = useState(null);
 
     useEffect(() => {
-        document.title = getPair().toUpperCase() + ": " + price;
+        document.title = getPair().toUpperCase() + ": " + (price < 0 ? "-" : price);
     }, [getBitcoinPrice, getPair, price])
 
     useEffect(() => {
@@ -24,10 +24,9 @@ function AssetPrice() {
                     document.getElementsByTagName('head')[0].appendChild(link);
                 }
                 link.href = tokenInfo.logo;
-
-
-                setBaseAssetInfo(tokenInfo);
             }
+
+            setBaseAssetInfo(tokenInfo);
         }
     }, [getActualSymbol()])
 
