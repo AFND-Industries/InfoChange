@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import CoinMarketCapData from "../data/CoinMarketCapData.json";
 
 const AssetContext = createContext();
 
@@ -7,16 +8,22 @@ export const AssetProvider = ({ children, p }) => {
     const [bitcoinCandle, setBitcoinCandle] = useState(null);
 
     const pair = p || "btcusdt"; // en vez de recargar la pagina con la barra de busqueda setear el pair distinto y cambiar con route
+    // METER EL GETSYMBOLS EN UN FICHERO Y QUE CADA CIERTO TIEMPO SE RE-RECARGUE Y ASI ELIMINAR ESTA VARIABLE
+    // PAIR METIENDOLA DIRECTAMENTE EN SYMBOL Y USANDO GETACTUALSYMBOL
     const [timeScale, setTimeScale] = useState("1m");
     const [bitcoinBalance, setBitcoinBalance] = useState(1);
-    const [tickSize, setTickSize] = useState({
-        decimalPlaces: null,
-        step: null,
-    });
     const [symbols, setSymbols] = useState(null);
 
     const [bitcoinPrice, setBitcoinPrice] = useState(-1);
     const [dollarBalance, setDollarBalance] = useState(1000);
+
+    const [actualSymbol, setActualSymbol] = useState({
+        symbol: null,
+        baseAsset: null,
+        quoteAsset: null,
+        decimalPlaces: null,
+        step: null,
+    });
 
     const getBitcoinCandle = () => {
         if (bitcoinCandle != null && parseFloat(bitcoinPrice) > 0)
@@ -25,10 +32,10 @@ export const AssetProvider = ({ children, p }) => {
         return bitcoinCandle;
     };
 
-    const getTickSize = () => tickSize;
-    const getPair = () => pair;
+    const getActualSymbol = () => actualSymbol;
+    const getPair = () => actualSymbol.symbol == null ? pair : actualSymbol.symbol;
     const getTimeScale = () => timeScale;
-    const getBitcoinPrice = () => tickSize.decimalPlaces == null ? bitcoinPrice.toString() : bitcoinPrice.toFixed(tickSize.decimalPlaces);
+    const getBitcoinPrice = () => actualSymbol.decimalPlaces == null ? bitcoinPrice.toString() : bitcoinPrice.toFixed(actualSymbol.decimalPlaces);
     const getBitcoinBalance = () => bitcoinBalance.toFixed(8);
     const getDollarBalance = () => dollarBalance.toFixed(2);
 
@@ -46,6 +53,10 @@ export const AssetProvider = ({ children, p }) => {
         setDollarBalance(parseFloat(getDollarBalance()) + amountInDollars);
     };
 
+    function getTokenInfo(token) {
+        return CoinMarketCapData.data[token.toUpperCase()][0];
+    }
+
     function filterPairs(regex = "", limit = 10) {
         if (symbols == null)
             return [];
@@ -56,14 +67,14 @@ export const AssetProvider = ({ children, p }) => {
     function getDecimals(tickSize) {
         tickSize = tickSize.replace(",", ".");
 
-        if (tickSize[0] != '0')
+        if (tickSize[0] !== '0')
             return 0;
 
         const point = tickSize.indexOf('.');
 
         let d = 0;
         for (let i = point + 1; i < tickSize.length; i++) {
-            if (tickSize[i] == '0') d++;
+            if (tickSize[i] === '0') d++;
             else break;
         }
 
@@ -71,35 +82,34 @@ export const AssetProvider = ({ children, p }) => {
     }
 
     async function getSymbols() {
-        try {
+        try { // HAY PARES QUE NO SON DE SPOT, COMO BTCUP, QUITAR ESO
             const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
             const data = response.data;
             const pairs = data.symbols.map(s => ({
                 symbol: s.symbol,
                 baseAsset: s.baseAsset,
                 quoteAsset: s.quoteAsset,
-                tickSize: s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize,
+                decimalPlaces: getDecimals(s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize),
+                step: s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize,
             }));
 
             setSymbols(pairs);
         } catch (error) {
-            console.error('Hubo un error al obtener el historial de precios de Bitcoin:', error);
+            console.error('Error getSymbols:', error);
         }
     }
 
     useEffect(() => {
         if (symbols != null) {
-            const tickSize = Object.values(symbols).find(s => s.symbol === pair.toUpperCase()).tickSize;
+            const symbol = Object.values(symbols).find(s => s.symbol === pair.toUpperCase());
 
-            setTickSize({
-                decimalPlaces: getDecimals(tickSize),
-                step: tickSize
-            });
+            setActualSymbol(symbol);
         }
     }, [symbols])
 
     useEffect(() => {
         getSymbols();
+        console.log(CoinMarketCapData.data);
     }, [])
 
     async function getBitcoinPriceHistory() {
@@ -108,7 +118,7 @@ export const AssetProvider = ({ children, p }) => {
                 params: {
                     symbol: pair.toUpperCase(),
                     interval: timeScale,
-                    limit: 1000,
+                    limit: 10000,
                 }
             });
             console.log("Candles:", response.data.length);
@@ -184,7 +194,8 @@ export const AssetProvider = ({ children, p }) => {
         <AssetContext.Provider
             value={{
                 filterPairs,
-                getTickSize,
+                getTokenInfo,
+                getActualSymbol,
                 getPair,
                 getTimeScale,
                 getBitcoinPriceHistory,

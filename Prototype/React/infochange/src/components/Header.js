@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAsset } from "../contexts/AssetContext";
+import SymbolItem from "./SymbolItem";
 
 function Header() {
     const [searchInput, setSearchInput] = useState("");
@@ -11,7 +12,7 @@ function Header() {
     }
 
     const handleInputChange = (event) => {
-        if (event.target.value.length == 0) setPairs([]);
+        if (event.target.value.length === 0) setPairs([]);
         else setPairs(filterPairs(event.target.value));
 
         setSearchInput(event.target.value);
@@ -24,10 +25,8 @@ function Header() {
     }
 
     // console.log("reloading");
-    let pairsObject = pairs.map(pair => (
-        <li key={pair.symbol}>
-            <a className="dropdown-item" href={`./${pair.symbol}`}>{pair.symbol}</a>
-        </li>
+    let pairsObject = pairs.map(p => (
+        <SymbolItem pair={p} regex={searchInput} />
     ));
 
     return (

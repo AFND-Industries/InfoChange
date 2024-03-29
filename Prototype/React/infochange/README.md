@@ -1,70 +1,70 @@
-# Getting Started with Create React App
+# Introducción
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este documento describe cómo obtenemos y manipulamos los datos en nuestro proyecto, utilizando las API de CoinMarketCap y Binance. CoinMarketCap proporciona información sobre diversas criptomonedas, mientras que Binance ofrece datos de mercado para los diferentes pares de criptomonedas. No todas las monedas listadas en CoinMarketCap tienen un par correspondiente en Binance, pero la gran mayoría de los pares en Binance tienen sus respectivas criptomonedas en CoinMarketCap.
 
-## Available Scripts
+## 1. API de CoinMarketCap
 
-In the project directory, you can run:
+Las claves de la API son gratuitas pero tienen un límite de uso. Si se agota una clave, otro miembro puede utilizar una gratuita.
 
-### `npm start`
+- API de Eulogio: `3a94b334-3f31-4a37-81b4-bf8abdd62f3e`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1.1. Endpoint cryptocurrency
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Endpoint: `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info`
+- Parámetros: `CMC_PRO_API_KEY` (obligatorio) y `symbol` (obligatorio)
+- Descripción: Proporciona información detallada sobre una criptomoneda específica. Por ejemplo, al solicitar información sobre BTC, obtenemos su nombre completo, enlace al logo, descripción y otra información relevante.
 
-### `npm test`
+## 2. API de Binance
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+La API de Binance ofrece información de mercado sobre los pares que maneja.
 
-### `npm run build`
+### 2.1. API REST
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Esta API no requiere una clave, pero tiene limitaciones de uso por minuto.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### 2.1.1. Endpoint exchangeInfo
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Endpoint: `https://api.binance.com/api/v1/exchangeInfo`
+- Descripción: Proporciona información general sobre el exchange, incluyendo todos los pares de activos, precisión en el precio y otros detalles.
 
-### `npm run eject`
+#### 2.1.2. Endpoint klines
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Endpoint: `https://api.binance.com/api/v3/klines`
+- Parámetros: `symbol` (obligatorio), `interval` (obligatorio) y `limit`
+- Descripción: Obtiene el gráfico histórico de una moneda para un intervalo dado, mostrado como velas.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 2.2. WebSockets
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Estos endpoints transmiten información en tiempo real a través de un socket.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### 2.2.1. Endpoint kline
 
-## Learn More
+- Endpoint: `wss://stream.binance.com:9443/ws/SYMBOL@kline_TIMESCALE`
+- Descripción: Transmite nuevas velas del gráfico para el símbolo dado a intervalos regulares.
+- Frecuencia: `1000ms`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### 2.2.2. Endpoint trade
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Endpoint: `wss://stream.binance.com:9443/ws/SYMBOL@trade`
+- Descripción: Transmite el precio del símbolo indicado a intervalos regulares.
+- Frecuencia: `50ms`.
 
-### Code Splitting
+## Procedimiento
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Utilizamos 2.2.1 para obtener el precio de una moneda en tiempo real.
+- Para mostrar un gráfico en tiempo real, obtenemos el histórico de 2.1.2 y lo actualizamos con 2.2.1. Además, para obtener una frecuencia mayor (ya que 2.2.1 envía cada `1000ms`) usamos 2.2.1 para actualizar las nuevas velas, de forma que obtenemos nuestro gráfico en tiempo real con una frecuencia de `50ms`.
+- `TO-DO` Con 2.1.1 obtenemos información estática que guardamos en `data/Symbols.json`, actualizándola periódicamente (automáticamente).
+- Utilizamos 1.1 para obtener información detallada sobre una moneda, combinándola con 2.1.1 para mostrar información adicional sobre la moneda base en el proyecto. El problema es que esta llamada tiene mucha información y la mayoría estática. Esto junto con el problema de que el parámetro `symbols` es obligatorio y para pedir información de todas las monedas es costoso, nos ha llevado al camino de guardar la información en `data/CoinMarketCapData.json` y solo leerla desde ahí. 
 
-### Analyzing the Bundle Size
+## Función para Obtener Información de CoinMarketCap
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Por si llega a ser necesario, la función que hemos utilizado para crear el enlace que nos devuelve la información de todas las monedas que queremos es:
 
-### Making a Progressive Web App
+```javascript
+async function getCoinMarketCapAPIRequestLink() {
+    const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
+    const symbols = [...new Set(response.data.symbols.map(s => s.baseAsset))];
+    const coins = symbols.join(",");
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    return `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?CMC_PRO_API_KEY=3a94b334-3f31-4a37-81b4-bf8abdd62f3e&skip_invalid=true&symbol=${coins}`;
+}
