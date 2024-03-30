@@ -60,7 +60,7 @@ function AssetPrice() {
                         alt="Imagen" />
                     <h2 className="text-center mb-0">{baseAssetInfo != null ? baseAssetInfo.name :
                         (actualSymbol.current != null ? actualSymbol.current.baseAsset : "")}</h2>
-                    <span className={"mb-0 ms-1 h6 " + (change > 0 ? "text-success" : (change < 0 ? "text-danger" : "text-dark"))}>
+                    <span className={"mb-0 ms-2 h6 " + (change > 0 ? "text-success" : (change < 0 ? "text-danger" : "text-dark"))}>
                         {change >= 0 ? "+" : ""}{change.toFixed(2)}%
                     </span>
                 </div>

@@ -34,6 +34,7 @@ function connectBinance() {
   ws = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
   ws.onmessage = (event) => {
     let stockObject = JSON.parse(event.data);
+
     price = parseFloat(stockObject.p);
     displayPrice();
   };

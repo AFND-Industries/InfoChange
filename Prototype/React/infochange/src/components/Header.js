@@ -8,7 +8,7 @@ function Header() {
     const { filterPairs, getTokenInfo } = useAsset();
 
     const searchHandler = () => {
-        window.location.href = "./" + pairs[0] == null ? searchInput : pairs[0].symbol;
+        window.location.href = "./" + ((pairs[0] == null) ? (searchInput) : pairs[0].symbol);
     }
 
     const handleInputChange = (event) => {
@@ -34,7 +34,9 @@ function Header() {
             <div className="container">
                 <div className="row align-items-center">
                     <div className="col-md-8">
-                        <h1 className="m-0">InfoChange</h1>
+                        <a href="/" style={{ color: 'inherit', textDecoration: 'none' }} className="text-nowrap">
+                            <span className="h1 m-0">InfoChange</span>
+                        </a>
                     </div>
                     <div className="col-md-4">
                         <div className="d-flex">
