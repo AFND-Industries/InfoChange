@@ -4,7 +4,7 @@ import getChartStyle from '../models/ChartStyles';
 import { useAsset } from '../contexts/AssetContext';
 
 function AssetChart() {
-    const { getBitcoinCandle, getBitcoinPriceHistory, getActualSymbol, getTimeScale, setTimeScale } = useAsset();
+    const { getBitcoinCandle, getBitcoinPrice, getBitcoinPriceHistory, getActualSymbol, getTimeScale, setTimeScale } = useAsset();
 
     const chartContainerRef = useRef();
     const chartRef = useRef(null);
@@ -75,7 +75,7 @@ function AssetChart() {
         if (chartRef.current && newCandle != null && priceHistory != null) {
             chartRef.current.update(newCandle); // añadir la vela tambien a priceHistory
         }
-    }, [getBitcoinCandle()])
+    }, [getBitcoinCandle(), getBitcoinPrice()])
 
     const timeScales = [
         "1m",

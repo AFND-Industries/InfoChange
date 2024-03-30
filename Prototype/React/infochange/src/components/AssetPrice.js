@@ -7,6 +7,7 @@ function AssetPrice() {
     const price = getBitcoinPrice();
 
     const [baseAssetInfo, setBaseAssetInfo] = useState(null);
+    const [date, setDate] = useState(new Date());
 
     useEffect(() => {
         document.title = getPair().toUpperCase() + ": " + (price < 0 ? "-" : price);
@@ -32,7 +33,16 @@ function AssetPrice() {
         }
     }, [getActualSymbol()])
 
-    const fecha = new Date().toLocaleString('es-ES', {
+    useEffect(() => {
+        function updateDate() {
+            setDate(new Date());
+            setTimeout(updateDate, 1000);
+        }
+
+        updateDate();
+    }, [])
+
+    const fecha = date.toLocaleString('es-ES', {
         timeZone: 'Europe/Madrid',
         weekday: 'long',
         year: 'numeric',

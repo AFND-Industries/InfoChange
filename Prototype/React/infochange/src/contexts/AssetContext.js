@@ -175,7 +175,7 @@ export const AssetProvider = ({ children, p }) => {
 
         const connectToWebSocket = () => {
             console.log("Trying to make connection to Binance (Candles)...");
-            ws = new WebSocket("wss://stream.binance.com:9443/ws/" + pair + "@kline_" + timeScale);
+            ws = new WebSocket("wss://stream.binance.com:9443/ws/" + pair.toLowerCase() + "@kline_" + timeScale);
 
             ws.onmessage = (event) => {
                 const d = JSON.parse(event.data);
@@ -204,7 +204,7 @@ export const AssetProvider = ({ children, p }) => {
 
         const connectToWebSocket = () => {
             console.log("Trying to make connection to Binance (Price)...");
-            ws = new WebSocket("wss://stream.binance.com:9443/ws/" + pair + "@trade");
+            ws = new WebSocket("wss://stream.binance.com:9443/ws/" + pair.toLowerCase() + "@trade");
 
             ws.onmessage = (event) => {
                 const stockObject = JSON.parse(event.data);
