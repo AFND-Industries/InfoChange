@@ -150,15 +150,15 @@ export const AssetProvider = ({ children, p }) => {
                     limit: 10000,
                 }
             });
-            console.log("Candles:", response.data.length);
 
             const data = response.data;
             const cdata = data.map(d => {
                 return { time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) }
             });
 
-            if (parseFloat(getBitcoinPrice()) < 0)
-                setBitcoinPrice(cdata[data.length - 1].close);
+            // Normally API is done before WebSocket connection. We can get an initial data from this
+            setBitcoinCandle(cdata[cdata.length - 1]);
+            setBitcoinPrice(cdata[data.length - 1].close);
 
             return cdata;
         } catch (error) {
@@ -167,7 +167,11 @@ export const AssetProvider = ({ children, p }) => {
     }
 
     useEffect(() => {
+        if (timeScale == null)
+            return;
+
         let ws;
+        let manuallyClosed = false;
 
         const connectToWebSocket = () => {
             console.log("Trying to make connection to Binance (Candles)...");
@@ -176,21 +180,24 @@ export const AssetProvider = ({ children, p }) => {
             ws.onmessage = (event) => {
                 const d = JSON.parse(event.data);
                 const pl = { time: d.k.t.toFixed(0) / 1000, open: parseFloat(d.k.o), high: parseFloat(d.k.h), low: parseFloat(d.k.l), close: parseFloat(d.k.c) }
+
                 setBitcoinCandle(pl);
             };
 
             ws.onclose = function () {
                 console.log("Connection to Binance lost (Candles)...");
-                setTimeout(connectToWebSocket, 5000);
+                if (!manuallyClosed)
+                    setTimeout(connectToWebSocket, 5000);
             };
         };
 
         connectToWebSocket();
 
         return () => {
+            manuallyClosed = true;
             ws.close();
         };
-    }, []);
+    }, [timeScale]);
 
     useEffect(() => {
         let ws;
@@ -222,6 +229,7 @@ export const AssetProvider = ({ children, p }) => {
     return (
         <AssetContext.Provider
             value={{
+                setTimeScale,
                 filterPairs,
                 getTokenInfo,
                 getActualSymbol,

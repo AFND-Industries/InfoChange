@@ -4,7 +4,7 @@ import getChartStyle from '../models/ChartStyles';
 import { useAsset } from '../contexts/AssetContext';
 
 function AssetChart() {
-    const { getBitcoinCandle, getBitcoinPriceHistory, getActualSymbol } = useAsset();
+    const { getBitcoinCandle, getBitcoinPriceHistory, getActualSymbol, getTimeScale, setTimeScale } = useAsset();
 
     const chartContainerRef = useRef();
     const chartRef = useRef(null);
@@ -17,6 +17,7 @@ function AssetChart() {
 
     async function loadPriceHistory() {
         const priceHistory = await getBitcoinPriceHistory();
+
         setPriceHistory(priceHistory);
     }
 
@@ -34,12 +35,14 @@ function AssetChart() {
     }, [getActualSymbol()])
 
     useEffect(() => {
-        loadPriceHistory(); // poner que las velas que se vayan agregando con el addCandle se metan dentro de este priceHistory
-    }, [])
+        loadPriceHistory();
+    }, [getTimeScale()])
 
     useEffect(() => {
-        if (chartRef.current != null && priceHistory != null)
+        if (chartRef.current != null && priceHistory != null) {
             chartRef.current.setData(priceHistory);
+        }
+
     }, [priceHistory])
 
     useEffect(() => {
@@ -68,16 +71,55 @@ function AssetChart() {
 
     useEffect(() => {
         const newCandle = getBitcoinCandle();
+
         if (chartRef.current && newCandle != null && priceHistory != null) {
             chartRef.current.update(newCandle); // añadir la vela tambien a priceHistory
         }
-    }, [getBitcoinCandle, priceHistory])
+    }, [getBitcoinCandle()])
+
+    const timeScales = [
+        "1m",
+        "1h",
+        "4h",
+        "1d",
+        "1w",
+        "1M",
+    ]
+
+    let i = 0;
+    const timeScaleButtons = timeScales.map(t => {
+        i++;
+        const isActive = getTimeScale() === t;
+        const buttonStyle = {
+            zIndex: 100,
+            left: `${100 + i * 53}px`,
+            top: '10px',
+            width: '50px'
+        };
+        const buttonClass = `btn btn-primary mb-2 position-absolute${isActive ? ' bg-dark' : ''}`;
+
+        return (
+            <button
+                className={buttonClass}
+                style={buttonStyle}
+                type="button"
+                onClick={() => setTimeScale(t)}
+                key={t}
+            >
+                {t}
+            </button>
+        );
+    });
+
+
+
 
     return (
         <div className="container position-relative">
             <div className="row justify-content-md-center mb-5">
                 <div style={{ position: 'relative' }}>
                     <button className="btn btn-primary mb-2 position-absolute" style={{ zIndex: 100, left: 23, top: 10 }} type="button" onClick={changeStyle}>Cambiar estilo</button>
+                    {timeScaleButtons}
                     <div
                         ref={chartContainerRef}
                     />
