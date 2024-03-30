@@ -5,10 +5,10 @@ import SymbolItem from "./SymbolItem";
 function Header() {
     const [searchInput, setSearchInput] = useState("");
     const [pairs, setPairs] = useState([]);
-    const { filterPairs } = useAsset();
+    const { filterPairs, getTokenInfo } = useAsset();
 
     const searchHandler = () => {
-        window.location.href = "./" + searchInput;
+        window.location.href = "./" + pairs[0] == null ? searchInput : pairs[0].symbol;
     }
 
     const handleInputChange = (event) => {
@@ -26,7 +26,7 @@ function Header() {
 
     // console.log("reloading");
     let pairsObject = pairs.map(p => (
-        <SymbolItem pair={p} regex={searchInput} />
+        <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput} />
     ));
 
     return (

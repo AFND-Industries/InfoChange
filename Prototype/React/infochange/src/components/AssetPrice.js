@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAsset } from "../contexts/AssetContext";
 
 function AssetPrice() {
     const { getPair, getBitcoinPrice, getActualSymbol, getTokenInfo } = useAsset();
+    const actualSymbol = useRef(null);
     const price = getBitcoinPrice();
 
     const [baseAssetInfo, setBaseAssetInfo] = useState(null);
@@ -12,9 +13,9 @@ function AssetPrice() {
     }, [getBitcoinPrice, getPair, price])
 
     useEffect(() => {
-        const actualSymbol = getActualSymbol();
-        if (actualSymbol.symbol != null) {
-            const tokenInfo = getTokenInfo(actualSymbol.baseAsset);
+        const aSymbol = getActualSymbol();
+        if (aSymbol.symbol != null) {
+            const tokenInfo = getTokenInfo(aSymbol.baseAsset);
 
             if (tokenInfo != null) {
                 let link = document.querySelector("link[rel~='icon']");
@@ -26,6 +27,7 @@ function AssetPrice() {
                 link.href = tokenInfo.logo;
             }
 
+            actualSymbol.current = aSymbol;
             setBaseAssetInfo(tokenInfo);
         }
     }, [getActualSymbol()])
@@ -41,12 +43,17 @@ function AssetPrice() {
         second: 'numeric'
     });
 
-    const baseAssetInfoObject = baseAssetInfo != null &&
+    const baseAssetInfoObject =
         <div className="container">
             <div className="row">
                 <div className="col d-flex align-items-center justify-content-center m-2">
-                    <img src={baseAssetInfo.logo != null && baseAssetInfo.logo} alt="Imagen" className="me-3" />
-                    <h2 className="text-center mb-0">{baseAssetInfo.name}</h2>
+                    <img
+                        src={baseAssetInfo != null ? baseAssetInfo.logo : process.env.PUBLIC_URL + '/favicon.ico'}
+                        style={{ width: '75px', height: '75px' }}
+                        className="img-fluid me-3"
+                        alt="Imagen" />
+                    <h2 className="text-center mb-0">{baseAssetInfo != null ? baseAssetInfo.name :
+                        (actualSymbol.current != null ? actualSymbol.current.baseAsset : "")}</h2>
                 </div>
             </div>
         </div>;

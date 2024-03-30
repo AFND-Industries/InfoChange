@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import CoinMarketCapData from "../data/CoinMarketCapData.json";
+import Symbols from "../data/Symbols.json";
 
 const AssetContext = createContext();
 
@@ -82,20 +83,49 @@ export const AssetProvider = ({ children, p }) => {
     }
 
     async function getSymbols() {
-        try { // GUARDAR EN SYMBOLS.JSON
-            const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
-            const data = response.data;
-            const pairs = data.symbols.map(s => ({
-                symbol: s.symbol,
-                baseAsset: s.baseAsset,
-                quoteAsset: s.quoteAsset,
-                decimalPlaces: getDecimals(s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize),
-                step: s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize,
-            }));
+        const time = Math.floor(Date.now() / 1000);
 
-            setSymbols(pairs);
-        } catch (error) {
-            console.error('Error getSymbols:', error);
+        const responsePrices = await axios.get('https://api.binance.com/api/v1/ticker/price');
+        const dataPrices = responsePrices.data;
+
+        if (true && time - Symbols.timer < 86400000) {
+            console.log("Loading symbols info from local cache");
+
+            const symbolsWithPrice = Symbols.symbols.map(s => {
+                const priceData = dataPrices.find(price => price.symbol === s.symbol);
+                const price = priceData ? parseFloat(priceData.price).toFixed(s.decimalPlaces) : "-";
+
+                return {
+                    ...s,
+                    price: price
+                };
+            });
+
+            setSymbols(symbolsWithPrice);
+        } else {
+            try {
+                console.log("Loading symbols info from API");
+                const response = await axios.get('https://api.binance.com/api/v1/exchangeInfo');
+                const data = response.data;
+                const pairs = data.symbols.map(s => ({
+                    symbol: s.symbol,
+                    baseAsset: s.baseAsset,
+                    quoteAsset: s.quoteAsset,
+                    decimalPlaces: getDecimals(s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize),
+                    step: s.filters.find(filter => filter.filterType === 'PRICE_FILTER').tickSize,
+                }));
+
+                setSymbols(pairs);
+                console.log({
+                    timer: Math.floor(Date.now() / 1000),
+                    symbols: pairs
+                });
+                /* GUARDAR EN SYMBOLS.JSON */
+                // El navegador no tiene acceso al sistema de ficheros, hay que hacerlo con backend, cosa que no sé aún
+                // por eso, de momento seguir usando la peticion
+            } catch (error) {
+                console.error('Error getSymbols:', error);
+            }
         }
     }
 
@@ -109,7 +139,6 @@ export const AssetProvider = ({ children, p }) => {
 
     useEffect(() => {
         getSymbols();
-        console.log(CoinMarketCapData.data);
     }, [])
 
     async function getBitcoinPriceHistory() {
