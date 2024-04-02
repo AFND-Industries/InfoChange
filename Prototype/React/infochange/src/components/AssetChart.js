@@ -10,6 +10,7 @@ function AssetChart() {
     const chartRef = useRef(null);
     const [priceHistory, setPriceHistory] = useState(null);
     const [styleIndex, setStyleIndex] = useState(0);
+    const [actualSymbol, setActualSymbol] = useState(null);
 
     const changeStyle = () => {
         setStyleIndex(prevStyle => (prevStyle + 1) % 2);
@@ -22,15 +23,22 @@ function AssetChart() {
     }
 
     useEffect(() => {
-        const actualSymbol = getActualSymbol();
-        if (chartRef.current != null && actualSymbol.decimalPlaces >= 0) {
-            chartRef.current.applyOptions({
-                priceFormat: {
-                    type: 'price',
-                    precision: actualSymbol.decimalPlaces,
-                    minMove: actualSymbol.step,
-                },
-            });
+        if (actualSymbol == null)
+            return;
+
+        chartRef.current.applyOptions({
+            priceFormat: {
+                type: 'price',
+                precision: actualSymbol.decimalPlaces,
+                minMove: actualSymbol.step,
+            },
+        });
+    }, [actualSymbol])
+
+    useEffect(() => {
+        const symbol = getActualSymbol();
+        if (chartRef.current != null && symbol.decimalPlaces >= 0) {
+            setActualSymbol(symbol);
         }
     }, [getActualSymbol()])
 
@@ -57,6 +65,16 @@ function AssetChart() {
 
         if (priceHistory != null)
             series.setData(priceHistory);
+
+        if (actualSymbol != null) {
+            series.applyOptions({
+                priceFormat: {
+                    type: 'price',
+                    precision: actualSymbol.decimalPlaces,
+                    minMove: actualSymbol.step,
+                },
+            });
+        }
 
         chartRef.current = series;
 
