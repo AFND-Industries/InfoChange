@@ -1,11 +1,12 @@
 import React from "react";
 import { useCoins } from "./contexts/CoinContext";
+import Coins from "./data/Coins.json";
 
 function CoinsPage() {
-    const { getTokenInfo, getSymbolInfo } = useCoins();
+    const { getTokenInfo, getSymbols } = useCoins();
     const faviconUrl = process.env.PUBLIC_URL + '/favicon.ico';
 
-    const topCoins = [
+    /*const topCoins = [
         "BTC",
         "ETH",
         "BNB",
@@ -25,10 +26,10 @@ function CoinsPage() {
             <div className="d-flex align-items-center">
                 <a href={"./price/" + coin.toUpperCase() + "USDT"} className="text-decoration-none">
                     <div className="container mt-2">
-                        <img src={coinInfo.logo} className="img-fluid me-2 img-thumbnail"
+                        <img src={coinInfo == null ? "" : coinInfo.logo} className="img-fluid me-2 img-thumbnail"
                             style={{ width: '50px', height: '50px' }} onError={(e) => { e.target.src = faviconUrl; }} alt="Logo" />
                         <span className="text-dark h5 m-0">
-                            {coinInfo.name}
+                            {coinInfo == null ? coin : coinInfo.name}
                         </span>
                         <span className="text-secondary h6 m-0 ms-2">
                             {coin}
@@ -36,7 +37,60 @@ function CoinsPage() {
                     </div>
                 </a>
             </div>);
-    });
+    });*/
+
+    const allSymbols = getSymbols();
+
+    let coinsObject = "";
+    if (allSymbols != null) {
+        const uniqueBaseAssets = {};
+        const allSymbolsUSDT = Object.values(allSymbols)
+            .filter(s => s.symbol.includes("USDT"))
+            .reduce((uniqueSymbols, symbol) => {
+                if (!uniqueBaseAssets[symbol.baseAsset]) {
+                    uniqueBaseAssets[symbol.baseAsset] = true;
+                    uniqueSymbols.push(symbol);
+                }
+                return uniqueSymbols;
+            }, [])
+            .sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+
+        coinsObject = allSymbolsUSDT.map(symbol => {
+            const coin = symbol.baseAsset;
+            const coinInfo = getTokenInfo(coin);
+
+            if (symbol != null) {
+                return (
+                    <div className="d-flex align-items-center" key={coin}>
+                        <a href={"./price/" + coin.toUpperCase() + "USDT"} className="text-decoration-none">
+                            <div className="container mt-2">
+                                <img
+                                    src={coinInfo ? coinInfo.logo : ""}
+                                    className="img-fluid me-2 img-thumbnail"
+                                    style={{ width: '50px', height: '50px' }}
+                                    onError={(e) => { e.target.src = faviconUrl; }}
+                                    alt="Logo"
+                                />
+                                <span className="text-dark h5 m-0">
+                                    {coinInfo ? coinInfo.name : coin}
+                                </span>
+                                <span className="text-secondary h6 m-0 ms-2">
+                                    {coin}
+                                </span>
+                                <span className="text-success h5 m-0 ms-2">
+                                    ${parseFloat(symbol.price).toFixed(2)}
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                );
+            } else {
+                return null;
+            }
+        });
+    }
+
+
 
 
     return (
