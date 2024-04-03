@@ -55,15 +55,22 @@ function CoinsPage() {
             }, [])
             .sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
 
+        let i = 0;
         coinsObject = allSymbolsUSDT.map(symbol => {
+            i++;
+
             const coin = symbol.baseAsset;
             const coinInfo = getTokenInfo(coin);
+            const is = i < 10 ? ("00" + i) : (i < 100 ? "0" + i : i)
 
             if (symbol != null) {
                 return (
                     <div className="d-flex align-items-center" key={coin}>
                         <a href={"./price/" + coin.toUpperCase() + "USDT"} className="text-decoration-none">
                             <div className="container mt-2">
+                                <span className="text-dark h4 me-2">
+                                    {is}.
+                                </span>
                                 <img
                                     src={coinInfo ? coinInfo.logo : ""}
                                     className="img-fluid me-2 img-thumbnail"
@@ -78,7 +85,7 @@ function CoinsPage() {
                                     {coin}
                                 </span>
                                 <span className="text-success h5 m-0 ms-2">
-                                    ${parseFloat(symbol.price).toFixed(2)}
+                                    ${parseFloat(symbol.price).toFixed(symbol.decimalPlaces)}
                                 </span>
                             </div>
                         </a>
