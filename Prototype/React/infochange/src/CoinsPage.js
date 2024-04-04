@@ -45,7 +45,7 @@ function CoinsPage() {
     if (allSymbols != null) {
         const uniqueBaseAssets = {};
         const allSymbolsUSDT = Object.values(allSymbols)
-            .filter(s => s.symbol.includes("USDT"))
+            .filter(s => s.quoteAsset.includes("USD"))
             .reduce((uniqueSymbols, symbol) => {
                 if (!uniqueBaseAssets[symbol.baseAsset]) {
                     uniqueBaseAssets[symbol.baseAsset] = true;
@@ -66,7 +66,7 @@ function CoinsPage() {
             if (symbol != null) {
                 return (
                     <div className="d-flex align-items-center" key={coin}>
-                        <a href={"./price/" + coin.toUpperCase() + "USDT"} className="text-decoration-none">
+                        <a href={"./price/" + symbol.symbol} className="text-decoration-none">
                             <div className="container mt-2">
                                 <span className="text-dark h4 me-2">
                                     {is}.
