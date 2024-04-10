@@ -1,3 +1,6 @@
 export default function Trading() {
-  return <h1>Trading!</h1>;
+  return <div className="container">
+    <span className="h1">Página de trading</span><br />
+    <span>Bitcoin: 99999$</span>
+  </div>;
 }
