@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Payment from "./pages/payment/Payment";
@@ -10,6 +10,8 @@ import Register from "./pages/Register";
 import Trading from "./pages/Trading";
 import Unknown from "./pages/Unknown";
 import Welcome from "./pages/Welcome";
+
+import "./assets/bootstrap.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
