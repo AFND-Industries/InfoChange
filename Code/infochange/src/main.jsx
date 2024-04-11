@@ -15,23 +15,29 @@ import "./assets/bootstrap.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
+const wrap = (v) => (
+  <>
+    <Header />
+    {v}
+    <Footer />
+  </>
+);
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <div className="d-flex flex-column min-vh-100">
-      <Header />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/coins" element={<Coins />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={wrap(<Welcome />)} />
+          <Route path="/coins" element={wrap(<Coins />)} />
+          <Route path="/dashboard" element={wrap(<Dashboard />)} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/trading" element={<Trading />} />
-          <Route path="/payment" element={<Payment />} />
+          <Route path="/trading" element={wrap(<Trading />)} />
+          <Route path="/payment" element={wrap(<Payment />)} />
           <Route path="*" element={<Unknown />} />
         </Routes>
       </BrowserRouter>
-      <Footer />
     </div>
   </React.StrictMode>
 );

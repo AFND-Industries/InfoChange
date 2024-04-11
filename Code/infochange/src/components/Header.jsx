@@ -1,9 +1,12 @@
+import banner from "../assets/banner.png";
+import { Link } from "react-router-dom";
+
 export default function Header() {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
-          Infochange
+          <img src={banner} alt="InfoChange" width="200" height="50" />
         </a>
         <button
           className="navbar-toggler"
@@ -66,10 +69,14 @@ export default function Header() {
             </li>
           </ul>
           <div className="d-flex justify-content-between">
-            <button className="btn btn-outline-primary me-2">
-              Iniciar Sesión
-            </button>
-            <button className="btn btn-primary">Registrarse</button>
+            <Link to="/login">
+              <button className="btn btn-outline-primary me-2">
+                Iniciar Sesión
+              </button>
+            </Link>
+            <Link to="/register">
+              <button className="btn btn-primary">Registrarse</button>
+            </Link>
           </div>
         </div>
       </div>
