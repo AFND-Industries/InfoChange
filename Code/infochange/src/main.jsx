@@ -12,6 +12,8 @@ import Unknown from "./pages/Unknown";
 import Welcome from "./pages/Welcome";
 
 import "./assets/bootstrap.css";
+import "./assets/datatables.css";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 

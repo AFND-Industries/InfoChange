@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Unknown() {
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center mt-5">
+    <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
       <div className="card border-danger text-center p-4">
         <h3 className="text-danger">Ups! Parece que esta página no existe</h3>
         <Link to={"/"}>

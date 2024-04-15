@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 export default function Login() {
   return (
     <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
-      <div className="card border-primary text-center p-1">
+      <div className="card border-secondary text-center p-4">
         <div className="card-body">
-          <h4 className="text-primary card-title">Iniciar sesión</h4>
+          <h2 className="text-secondary card-title mb-4">Iniciar sesión</h2>
           <div className="row mb-2 text-start">
             <div className="col-4">
               <label>Usuario</label>
@@ -24,7 +24,7 @@ export default function Login() {
           </div>
           <div className="d-flex justify-content-around">
             <Link to={"/"}>
-              <button className="btn btn-outline-primary">Volver</button>
+              <button className="btn btn-outline-secondary">Volver</button>
             </Link>
             <Link to={"/"}>
               <button className="btn btn-primary">Entrar</button>
