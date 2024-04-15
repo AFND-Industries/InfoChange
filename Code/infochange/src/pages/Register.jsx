@@ -26,12 +26,12 @@ export default function Register() {
                 <input id="nameInput" type="text" className="form-control" />
               </div>
               <div className="col-lg-8 mb-3">
-                <label for="passInput" class="form-label">
+                <label for="surnameInput" class="form-label">
                   Apellidos
                 </label>
                 <input
-                  id="passInput"
-                  type="password"
+                  id="surnameInput"
+                  type="text"
                   className="form-control"
                 />
               </div>

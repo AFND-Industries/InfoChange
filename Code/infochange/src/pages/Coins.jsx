@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import CoinsCap from '../data/CoinMarketCapData.json';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Image } from 'primereact/image';
 
 export default function Coins() {
   const data = getData();
@@ -20,8 +21,8 @@ function getData(){
         id: item.id,
         name: item.name,
         logo: item.logo,
-
-
+        symbol: item.symbol,
+        date: item.date_added
       };
     });
     
@@ -31,9 +32,16 @@ function getData(){
   return array;
 }
 function getCoinDataTable(data){
+  const imageBodyTemplate = (rowData) => {
+    return (<div className="col align-items-center">
+
+      <img src={rowData.logo} alt={rowData.name} className="img-fluid pe-2" style={{ maxWidth: '50px' }} />
+      <span className='p-2'><strong>{rowData.name}</strong></span>
+      <span className='text-secondary'>{rowData.symbol}</span>
+  </div>);
+  }
   return (
     <DataTable value={data} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
-      <Column field="id" header="ID" style={{ width: '25%' }}></Column>
-      <Column field="name" header="Nombre" style={{ width: '25%' }}></Column>
+      <Column body={imageBodyTemplate} sortable header="Nombre" style={{ width: '25%' }}></Column>
     </DataTable>);
 }
