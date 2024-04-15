@@ -4,6 +4,8 @@ import TradingViewWidget, { Themes, IntervalTypes } from 'react-tradingview-widg
 // https://github.com/rafaelklaessen/react-tradingview-widget/blob/master/src/index.js
 
 import { AdvancedRealTimeChart, MiniChart, SymbolOverview, Timeline } from "react-ts-tradingview-widgets";
+
+import "./trading.css";
 //
 
 //import { TradingViewEmbed, widgetType } from "react-tradingview-embed";
@@ -68,7 +70,15 @@ function Trading() {
       allow_symbol_change={false}
     />
   useEffect(() => {
+    try {
+      setTimeout(() => {
+        console.log(document.getElementsByTagName("iframe")[0].contentWindow)
+      }, 3000);
 
+      document.querySelector("label__link-viu2QKQw").remove();
+    } catch (e) {
+
+    }
   }, [mode]);
 
   return (
