@@ -1,7 +1,15 @@
+import { useState } from "react";
 import banner from "../assets/banner.png";
 import { Link } from "react-router-dom";
 
 export default function Header() {
+  const items = [
+    { link: "", name: "Inicio" },
+    { link: "coins", name: "Monedas" },
+    { link: "trading", name: "Trading" },
+    { link: "contact", name: "404 Example" },
+  ];
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -21,16 +29,7 @@ export default function Header() {
         </button>
         <div className="collapse navbar-collapse" id="navbarScroll">
           <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
-            <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
-                Home
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Link
-              </a>
-            </li>
+            {items.map((v) => item(v.link, v.name))}
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
@@ -83,3 +82,13 @@ export default function Header() {
     </nav>
   );
 }
+
+const item = (link, name) => {
+  return (
+    <li key={link} className="nav-item">
+      <Link className={"nav-link"} to={"/" + link}>
+        {name}
+      </Link>
+    </li>
+  );
+};

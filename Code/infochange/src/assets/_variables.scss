@@ -1,8 +1,0 @@
-@import "variables";
-
-// merge with existing $theme-colors map
-$theme-colors: map-merge($theme-colors, (
-  "primary": "#52dee5"
-));
-
-@import "bootstrap";

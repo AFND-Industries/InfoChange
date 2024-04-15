@@ -12,12 +12,10 @@ import Unknown from "./pages/Unknown";
 import Welcome from "./pages/Welcome";
 
 import "./assets/bootstrap.css";
-import "./assets/theme.css";
 
+/* Coins page dependencies */
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-//core
 import "primereact/resources/primereact.min.css";
-
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
