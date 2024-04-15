@@ -7,7 +7,7 @@
         "credit_count": 6,
         "notice": null
     },
-    "data": {
+    "data": [{
         "1000SATS": [
             {
                 "id": 28683,
@@ -95170,5 +95170,5 @@
                 "infinite_supply": false
             }
         ]
-    }
+    }]
 }
