@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import TradingViewWidget, { Themes, IntervalTypes } from 'react-tradingview-widget';
+// import TradingViewWidget, { Themes, IntervalTypes } from 'react-tradingview-widget';
 
 // https://github.com/rafaelklaessen/react-tradingview-widget/blob/master/src/index.js
 
