@@ -1,56 +1,74 @@
 import React, { useEffect, useRef, useState } from 'react';
+import TradingViewWidget, { Themes, IntervalTypes } from 'react-tradingview-widget';
 
-const proChartConf = `
-{
-  "autosize": true,
-  "symbol": "BINANCE:BTCUSDT",
-  "interval": "D",
-  "timezone": "Etc/UTC",
-  "theme": "light",
-  "style": "1",
-  "locale": "es",
-  "enable_publishing": false,
-  "allow_symbol_change": false,
-  "calendar": false,
-  "support_host": "https://www.tradingview.com"
-}`;
+// https://github.com/rafaelklaessen/react-tradingview-widget/blob/master/src/index.js
 
-const newbieChartConf = `
-{
-  "autosize": true,
-  "symbol": "BINANCE:BTCUSDT",
-  "interval": "D",
-  "timezone": "Etc/UTC",
-  "theme": "light",
-  "style": "3",
-  "locale": "es",
-  "enable_publishing": false,
-  "allow_symbol_change": false,
-  "calendar": false,
-  "support_host": "https://www.tradingview.com"
-}`;
+import { AdvancedRealTimeChart, MiniChart, SymbolOverview, Timeline } from "react-ts-tradingview-widgets";
+//
 
-function getConfiguration(mode) {
-  return mode == 0 ? newbieChartConf : proChartConf;
-}
+//import { TradingViewEmbed, widgetType } from "react-tradingview-embed";
+// https://github.com/k-128/react-tradingview-embed
 
 function Trading() {
   const container = useRef();
   const [mode, setMode] = useState(0);
 
-  const updateMode = () => setMode((mode + 1) % 2);
+  const updateMode = () => setMode(mode => (mode + 1) % 2);
+  /*const chart = mode == 0 ?
+    <TradingViewWidget
+      theme={Themes.LIGHT}
+      locale="es"
+      autosize
+      symbol="BINANCE:BTCUSDT"
+      interval={IntervalTypes.D}
+      timezone="Etc/UTC"
+      style={3}
+      hide_top_toolbar={true}
+      hide_side_toolbar={true}
+      studies={{}}
+    />
+    :
+    <TradingViewWidget
+      theme={Themes.LIGHT}
+      locale="es"
+      autosize
+      symbol="BINANCE:BTCUSDT"
+      interval={IntervalTypes.D}
+      timezone="Etc/UTC"
+      style={1}
+      hide_top_toolbar={false}
+      hide_side_toolbar={false}
+      allow_symbol_change={false}
+    />*/
 
+  const chart = mode == 0 ?
+    <SymbolOverview
+      theme={Themes.LIGHT}
+      locale="es"
+      autosize
+      symbols={["BINANCE:BTCUSDT"]}
+      interval={IntervalTypes.D}
+      timezone="Etc/UTC"
+      style={3}
+      hide_top_toolbar={true}
+      hide_side_toolbar={true}
+      studies={{}}
+    />
+    :
+    <AdvancedRealTimeChart
+      theme={Themes.LIGHT}
+      locale="es"
+      autosize
+      symbol="BINANCE:BTCUSDT"
+      interval={IntervalTypes.D}
+      timezone="Etc/UTC"
+      style={1}
+      hide_top_toolbar={false}
+      hide_side_toolbar={false}
+      allow_symbol_change={false}
+    />
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-    script.type = "text/javascript";
-    script.async = true;
-    script.innerHTML = getConfiguration(mode);
-    container.current.appendChild(script);
-    console.log(mode);
-    return () => {
-      container.current.innerHTML = '';
-    };
+
   }, [mode]);
 
   return (
@@ -62,8 +80,7 @@ function Trading() {
       </div>
 
       <div className="tradingview-widget-container" ref={container} style={{ height: "100%", width: "100%" }}>
-        <div className="tradingview-widget-container__widget" style={{ height: "calc(100% - 32px)", width: "100%" }}></div>
-        <div className="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span className="blue-text">Track all markets on TradingView</span></a></div>
+        {chart}
       </div>
     </div>
   );
