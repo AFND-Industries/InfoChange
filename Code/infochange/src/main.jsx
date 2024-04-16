@@ -7,7 +7,7 @@ import Coins from "./pages/Coins";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Trading from "./pages/Trading";
+import Trading from "./pages/trading/Trading";
 import Unknown from "./pages/Unknown";
 import Welcome from "./pages/Welcome";
 
@@ -38,7 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/dashboard" element={wrap(<Dashboard />)} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/trading" element={wrap(<Trading />)} />
+          <Route path="/trading/*" element={wrap(<Trading />)} />
           <Route path="/payment" element={wrap(<Payment />)} />
           <Route path="*" element={<Unknown />} />
         </Routes>
