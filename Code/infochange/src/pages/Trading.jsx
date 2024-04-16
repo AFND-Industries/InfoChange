@@ -45,11 +45,10 @@ function Trading() {
 
   const chart = mode == 0 ?
     <SymbolOverview
-      theme={Themes.LIGHT}
       locale="es"
       autosize
       symbols={["BINANCE:BTCUSDT"]}
-      interval={IntervalTypes.D}
+      interval="1D"
       timezone="Etc/UTC"
       style={3}
       hide_top_toolbar={true}
@@ -58,11 +57,10 @@ function Trading() {
     />
     :
     <AdvancedRealTimeChart
-      theme={Themes.LIGHT}
       locale="es"
       autosize
       symbol="BINANCE:BTCUSDT"
-      interval={IntervalTypes.D}
+      interval="1D"
       timezone="Etc/UTC"
       style={1}
       hide_top_toolbar={false}
