@@ -1,0 +1,14 @@
+#card_image {
+    height: 100px;
+    object-fit: cover;
+
+}
+
+.App {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.App.loaded {
+    opacity: 1;
+}
