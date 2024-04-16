@@ -12,3 +12,10 @@
 .App.loaded {
     opacity: 1;
 }
+.parallax-section {
+    height: 500px; /* Altura de la sección */
+    background-image: url('https://dummyimage.com/600x400/000/fff'); /* URL de la imagen de fondo */
+    background-attachment: fixed; /* Fija el fondo para que no se mueva con el scroll */
+    background-size: cover; /* Ajusta el tamaño del fondo */
+    background-position: center; /* Centra el fondo */
+  }

@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import "./welcome.css";
 import * as Icons from "react-bootstrap-icons";
+import TradingViewWidget from "./components/TradingViewWidget.jsx";
+import { Parallax } from "react-parallax";
 
 export default function Welcome() {
   const [loaded, setLoaded] = useState(false);
@@ -30,11 +32,7 @@ export default function Welcome() {
             <i className="bi bi-rocket-takeoff-fill"></i>
           </div>
           <div className="col col-md-4">
-            <span className="placeholder col-6"></span>
-            <span className="placeholder w-75"></span>
-            <span className="placeholder w-75"></span>
-            <span className="placeholder w-75"></span>
-            <span className="placeholder w-75"></span>
+            <TradingViewWidget />
           </div>
         </div>
       </div>
@@ -104,6 +102,16 @@ export default function Welcome() {
         </div>
       </div>
       <p />
+
+      <Parallax
+        blur={{ min: -15, max: 15 }}
+        bgImage={"images/bg-cripto.jpg"}
+        bgImageAlt="the dog"
+        strength={-200}
+      >
+        <div style={{ height: "500px" }}></div>
+      </Parallax>
+
       <div className="d-flex justify-content-center align-items-center">
         <div className="col-md-10 text-center">
           <h1 className="row-md-4">Preguntas Frecuentes</h1>
