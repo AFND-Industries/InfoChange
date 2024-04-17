@@ -24,7 +24,7 @@ function Trading() {
     if (Symbols.symbols == null)
       return [];
 
-    return Object.values(Symbols.symbols).filter(s => s.symbol.startsWith(regex.toUpperCase())).slice(0, limit);
+    return Object.values(Symbols.symbols).filter(s => s.symbol.startsWith(regex.toUpperCase()));
   }
 
   const searchHandler = () => {
@@ -98,12 +98,20 @@ function Trading() {
     });
   }, [coinName])
 
-  let searchPairsObject = searchPairs.map(p => (
-    <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput} setCoinName={setCoinName} />
-  ));
+
+  let searchPairsObject = searchPairs.map(p => {
+    const onSymbolClick = () => {
+      setCoinName(p.symbol);
+      setSearchInput("");
+      setSearchPairs([]);
+    }
+    return (
+      <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput} clickHandler={onSymbolClick} />
+    );
+  });
 
   return (
-    <div className="container mt-2 mb-5 d-flex flex-column" style={{ height: "75vh", display: "flex" }}>
+    <div className="container mt-2 mb-5 d-flex flex-column" style={{ height: "75vh" }}>
       <div className="row">
         <div className="col">
           <button className="btn btn-primary mt-2 mb-2" onClick={updateMode}>Cambiar modo</button>
@@ -122,8 +130,8 @@ function Trading() {
             {proChart}
           </div>
         </div>
-        <div className="col-md-3 border" style={{ height: "75vh" }}>
-          <div className="d-flex flex-column mt-3">
+        <div className="col-md-3" style={{ height: "75vh" }}>
+          <div className="row">
             <input
               className="form-control"
               type="search"
@@ -133,10 +141,16 @@ function Trading() {
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
             />
-            <ul className="list-group">
-              {searchPairsObject}
-            </ul>
           </div>
+          <div className="row border overflow-y-scroll mt-2" style={{ height: "70vh" }}>
+            <div className="d-flex flex-column">
+              <ul className="list-group list-group-flush">
+                {searchPairsObject}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div >
         </div>
       </div>
     </div >
