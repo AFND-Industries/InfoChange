@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import Banner from "./../../assets/payment_banner.png";
 import CheckIcon from "bootstrap-icons/icons/check-lg.svg";
@@ -13,7 +13,26 @@ import SelectPayMethod from "./steps/SelectPayMethod";
 export default function Payment(props) {
   const [step, setStep] = useState({ step: 1, data: {} });
 
-  const { cart } = props;
+  const cart = useLocation().state;
+
+  if (cart === null)
+    return (
+      <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
+        <div className="card p-2">
+          <div className="card-body text-center">
+            <h3>Ups... ha ocurrido un error con tu compra</h3>
+            <h4 className="text-body-secondary">
+              Vuelva a intentarlo más tarde :(
+            </h4>
+            <Link to={"/dashboard"}>
+              <button className="btn btn-outline-danger">
+                Volver al panel de control
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div

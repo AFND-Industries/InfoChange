@@ -56,10 +56,12 @@ function buyProduct(cart, data) {
       <div className="container">
         <table className="table">
           <thead>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Subtotal</th>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Subtotal</th>
+            </tr>
           </thead>
           <tbody>
             <tr>

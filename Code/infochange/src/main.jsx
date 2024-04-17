@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Payment from "./pages/payment/Payment";
 import Coins from "./pages/Coins";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Trading from "./pages/trading/Trading";
@@ -41,12 +41,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/trading/*" element={wrap(<Trading />)} />
-          <Route
-            path="/payment"
-            element={
-              <Payment cart={{ type: "USD", price: 0.05, quantity: 200 }} />
-            }
-          />
+          <Route path="/payment" element={<Payment />} />
           <Route path="*" element={<Unknown />} />
         </Routes>
       </BrowserRouter>
