@@ -12,6 +12,8 @@ import Unknown from "./pages/Unknown";
 import Welcome from "./pages/Welcome";
 
 import "./assets/bootstrap.css";
+import "bootstrap-icons/font/fonts/bootstrap-icons.woff";
+import "bootstrap-icons/font/bootstrap-icons.min.css";
 
 /* Coins page dependencies */
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -39,7 +41,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/trading/*" element={wrap(<Trading />)} />
-          <Route path="/payment" element={wrap(<Payment />)} />
+          <Route
+            path="/payment"
+            element={
+              <Payment cart={{ type: "VITE", price: 0.05, quantity: 200 }} />
+            }
+          />
           <Route path="*" element={<Unknown />} />
         </Routes>
       </BrowserRouter>
