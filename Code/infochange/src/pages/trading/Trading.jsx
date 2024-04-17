@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AdvancedRealTimeChart, SymbolOverview } from "react-ts-tradingview-widgets";
+import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 import SymbolItem from './SymbolItem';
 
 import Symbols from "../../data/Symbols.json";
@@ -7,6 +7,9 @@ import CoinMarketCapData from "../../data/CoinMarketCapData.json";
 
 import "./trading.css";
 
+// arreglar lod el 75vh
+// cuando le des click a una moneda que se cambie el enlace de arriba sin recargar la pagina
+// poner la moneda seleccionada
 function Trading() {
   const coinPath = window.location.pathname.substring(9);
 
