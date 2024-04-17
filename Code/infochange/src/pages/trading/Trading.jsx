@@ -10,6 +10,8 @@ import "./trading.css";
 // arreglar lod el 75vh
 // cuando le des click a una moneda que se cambie el enlace de arriba sin recargar la pagina
 // poner la moneda seleccionada
+// onmouseover
+// copiarse de binance
 function Trading() {
   const coinPath = window.location.pathname.substring(9);
 
@@ -50,6 +52,7 @@ function Trading() {
   }
 
   useEffect(() => {
+    window.history.replaceState(null, null, "/trading/" + coinName);
     const pair = "BINANCE:" + coinName;
     //this.props.history.replace({ pathname: `/trading/${coinName}` })
 
@@ -114,7 +117,7 @@ function Trading() {
   });
 
   return (
-    <div className="container mt-2 mb-5 d-flex flex-column" style={{ height: "75vh" }}>
+    <div className="container mt-2 mb-5 d-flex flex-column">
       <div className="row">
         <div className="col">
           <button className="btn btn-primary mt-2 mb-2" onClick={updateMode}>Cambiar modo</button>
@@ -122,7 +125,7 @@ function Trading() {
       </div>
 
       <div className="row">
-        <div className="col-md-9" style={{ height: "75vh" }}>
+        <div className="col-md-9" style={{ height: "70vh" }}>
           <div className="tradingview-widget-container" ref={container}
             style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
             <div className="tradingview-widget-container__widget"></div>
@@ -133,7 +136,7 @@ function Trading() {
             {proChart}
           </div>
         </div>
-        <div className="col-md-3" style={{ height: "75vh" }}>
+        <div className="col-md-3" style={{ height: "70vh" }}>
           <div className="row">
             <input
               className="form-control"
@@ -145,7 +148,7 @@ function Trading() {
               onKeyPress={handleKeyPress}
             />
           </div>
-          <div className="row border overflow-y-scroll mt-2" style={{ height: "70vh" }}>
+          <div className="row border overflow-y-scroll mt-2" style={{ height: "64vh" }}>
             <div className="d-flex flex-column">
               <ul className="list-group list-group-flush">
                 {searchPairsObject}
