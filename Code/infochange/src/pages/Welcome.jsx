@@ -20,80 +20,137 @@ export default function Welcome() {
     <div className={`App ${loaded ? "loaded" : ""}`}>
       <div className="d-flex justify-content-center align-items-center mt-4 mb-5 py-2 mx-5">
         <div className="row">
-          <div className="col col-md-8">
-            <h2 className="text-cent">
+          <div className="col-md-8 d-flex flex-column  align-items-center justify-content-center">
+            <h1>
               ¡Bienvenido a Infochage!
-              <Icons.RocketTakeoffFill />
-            </h2>
-            <h2>
-              Tu plataforma de trading de criptomonedas inteligente y accesible.
-              ¡Empieza a operar con confianza hoy mismo! 📈💰
-            </h2>
-            <i className="bi bi-rocket-takeoff-fill"></i>
+              <Icons.RocketTakeoffFill className="mx-2" />
+            </h1>
+            <h2>El exchange para todos</h2>
           </div>
-          <div className="col col-md-4">
-            <TradingViewWidget />
+          <div className="col-md-4 d-flex flex-column  align-items-center justify-content-center">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero sequi,
+            quaerat saepe voluptatibus illo officia qui id, incidunt nisi magnam
+            veniam assumenda, corporis dolore accusantium sed eveniet aliquam
+            dicta ipsum.
           </div>
         </div>
       </div>
+      <div className="my-5">
+        <Parallax
+          blur={{ min: -15, max: 15 }}
+          bgImage={"images/bg-cripto.jpg"}
+          bgImageAlt="the dog"
+          strength={-200}
+        >
+          <div className="my-5">
+            <div>
+              <div className="container">
+                <div className="row">
+                  <div
+                    className="col-md-6 align-content-center"
+                    style={{
+                      backgroundColor: "rgba(200, 200, 200, 0.5)",
+                      padding: "20px",
+                    }}
+                  >
+                    <h1>
+                      Tu plataforma de trading de criptomonedas inteligente y
+                      accesible. ¡Empieza a operar con confianza hoy mismo con
+                      tu cuenta de InfoChange!
+                    </h1>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="card text-center">
+                      <img
+                        src="https://via.placeholder.com/50"
+                        className="card-img-top"
+                        alt="Usuario Anónimo"
+                      />
+                      <div className="card-body">
+                        <h5 class="card-title">Inicia sesion</h5>
 
+                        <p class="card-text">
+                          Estas a un paso de empezar en el mundo de las
+                          criptomonedas!
+                        </p>
+                        <div className="form-group">
+                          <input
+                            type="email"
+                            className="form-control mb-3"
+                            id="exampleInputEmail1"
+                            aria-describedby="emailHelp"
+                            placeholder="Correo Electrónico"
+                          />
+                        </div>
+                        <a href="#" class="btn btn-primary">
+                          Iniciar Sesión
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Parallax>
+      </div>
       <div className="d-flex justify-content-center align-items-center">
         <div className="row row-md-12 g-4 mx-4">
           <div className="col">
-            <div class="card">
+            <div className="card">
               <img
                 src="https://www.santander.com/content/dam/santander-com/es/stories/contenido-stories/2021/educacionfinanciera/im-storie-guia-para-saber-que-son-las-criptomonedas-3.jpg"
-                class="card-img-top"
+                className="card-img-top"
                 alt="..."
                 id="card_image"
               />
-              <div class="card-body">
-                <h5 class="card-title">Invierte hoy mismo</h5>
-                <p class="card-text">
+              <div className="card-body">
+                <h5 className="card-title">Invierte hoy mismo</h5>
+                <p className="card-text">
                   Some quick example text to build on the card title and make up
                   the bulk of the card's content.
                 </p>
-                <a href="#" class="btn btn-primary">
+                <a href="#" className="btn btn-primary">
                   Go somewhere
                 </a>
               </div>
             </div>
           </div>
           <div className="col">
-            <div class="card">
+            <div className="card">
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3HtfCAMxulYVH25gpMMP6OZynyciD1yWvpO0oUKaedg&s"
-                class="card-img-top"
+                className="card-img-top"
                 alt="..."
                 id="card_image"
               />
-              <div class="card-body">
-                <h5 class="card-title">Perderas todo tu dinero</h5>
-                <p class="card-text">
+              <div className="card-body">
+                <h5 className="card-title">Perderas todo tu dinero</h5>
+                <p className="card-text">
                   Some quick example text to build on the card title and make up
                   the bulk of the card's content.
                 </p>
-                <a href="#" class="btn btn-primary">
+                <a href="#" className="btn btn-primary">
                   Go somewhere
                 </a>
               </div>
             </div>
           </div>
           <div className="col">
-            <div class="card">
+            <div className="card">
               <img
                 src="https://t4.ftcdn.net/jpg/00/58/54/07/360_F_58540776_2hIhJKUCrghGKszJhfeuul7hRpurV9RN.jpg"
-                class="card-img-top"
+                className="card-img-top"
                 alt="..."
                 id="card_image"
               />
-              <div class="card-body">
-                <h5 class="card-title">Para todos/as</h5>
-                <p class="card-text">
+              <div className="card-body">
+                <h5 className="card-title">Para todos/as</h5>
+                <p className="card-text">
                   Some quick example text to build on the card title and make up
                   the bulk of the card's content.
                 </p>
-                <a href="#" class="btn btn-primary">
+                <a href="#" className="btn btn-primary">
                   Go somewhere
                 </a>
               </div>
@@ -102,16 +159,6 @@ export default function Welcome() {
         </div>
       </div>
       <p />
-
-      <Parallax
-        blur={{ min: -15, max: 15 }}
-        bgImage={"images/bg-cripto.jpg"}
-        bgImageAlt="the dog"
-        strength={-200}
-      >
-        <div style={{ height: "500px" }}></div>
-      </Parallax>
-
       <div className="d-flex justify-content-center align-items-center">
         <div className="col-md-10 text-center">
           <h1 className="row-md-4">Preguntas Frecuentes</h1>
