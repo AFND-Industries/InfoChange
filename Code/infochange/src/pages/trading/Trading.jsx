@@ -8,7 +8,8 @@ function Trading() {
   const [proChart, setProChart] = useState(null);
 
   const [mode, setMode] = useState(0);
-  const coinName = window.location.pathname.substring(9);
+  let coinName = window.location.pathname.substring(9);
+  coinName = coinName.length == 0 ? "BTCUSDT" : coinName;
 
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
@@ -73,14 +74,30 @@ function Trading() {
         </div>
       </div>
 
-      <div className="tradingview-widget-container" ref={container}
-        style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
-        <div className="tradingview-widget-container__widget"></div>
-      </div>
+      <div className="row">
+        <div className="col-md-9" style={{ height: "75vh" }}>
+          <div className="tradingview-widget-container" ref={container}
+            style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
+            <div className="tradingview-widget-container__widget"></div>
+          </div>
 
-      <div className="tradingview-widget-container"
-        style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
-        {proChart}
+          <div className="tradingview-widget-container"
+            style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
+            {proChart}
+          </div>
+        </div>
+        <div className="col-md-3 border" style={{ height: "75vh" }}>
+          <div className="d-flex mt-3">
+            <div className="dropdown w-100">
+              <input
+                className="form-control"
+                type="search"
+                placeholder="Buscar par..."
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div >
 
