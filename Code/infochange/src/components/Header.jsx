@@ -7,6 +7,7 @@ export default function Header() {
     { link: "", name: "Inicio" },
     { link: "coins", name: "Monedas" },
     { link: "trading", name: "Trading" },
+    { link: "dashboard", name: "Panel de control" },
     { link: "contact", name: "404 Example" },
   ];
 

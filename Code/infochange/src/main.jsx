@@ -37,14 +37,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Routes>
           <Route path="/" element={wrap(<Welcome />)} />
           <Route path="/coins" element={wrap(<Coins />)} />
-          <Route path="/dashboard" element={wrap(<Dashboard />)} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/trading/*" element={wrap(<Trading />)} />
           <Route
             path="/payment"
             element={
-              <Payment cart={{ type: "VITE", price: 0.05, quantity: 200 }} />
+              <Payment cart={{ type: "USD", price: 0.05, quantity: 200 }} />
             }
           />
           <Route path="*" element={<Unknown />} />

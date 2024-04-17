@@ -11,23 +11,9 @@ import { CreditForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
 
 export default function Payment(props) {
-  const [step, setStep] = useState({ step: 3, data: { type: "paypal" } });
+  const [step, setStep] = useState({ step: 1, data: {} });
 
   const { cart } = props;
-
-  const nextBtn = {
-    name: ["Siguiente", "Siguiente", "Pagar", "Volver al menú"][step.step - 1],
-    disabled: step.step == 1,
-    handler: () => setStep({ step: step.step + 1, data: step.data }),
-  };
-
-  const backBtn = {
-    name: "Volver",
-    disabled: step.step <= 1 || step.step >= 4,
-    handler: () => {
-      setStep({ step: step.step - 1, data: step.data });
-    },
-  };
 
   return (
     <div
@@ -94,40 +80,37 @@ export default function Payment(props) {
                 <div className="mb-3">
                   {step.step === 1 ? (
                     <SelectPayMethod
-                      creditHandler={() => {
-                        console.log("works");
-                        setStep({ step: 2, data: { type: "credit" } });
-                      }}
+                      creditHandler={() =>
+                        setStep({ step: 2, data: { type: "credit" } })
+                      }
                       paypalHandler={() =>
                         setStep({ step: 2, data: { type: "paypal" } })
                       }
                     />
                   ) : step.step === 2 ? (
-                    dataForm(step.data)
+                    dataForm(
+                      step.data,
+                      (d) => {
+                        const newStep = step.data;
+                        newStep.info = d;
+                        setStep({ step: 3, data: newStep });
+                      },
+                      () => {
+                        const newStep = step.data;
+                        newStep.info = null;
+                        setStep({ step: 1, data: newStep });
+                      }
+                    )
                   ) : step.step === 3 ? (
-                    <ConfirmPayment cart={cart} />
+                    <ConfirmPayment
+                      cart={cart}
+                      data={step.data}
+                      nextHandler={() => setStep({ step: 4, data: step.data })}
+                      backHandler={() => setStep({ step: 2, data: step.data })}
+                    />
                   ) : (
                     <PaymentCompleted cart={cart} />
                   )}
-                </div>
-                <div className="container d-flex justify-content-around">
-                  <button
-                    className={
-                      "btn btn-outline-secondary" +
-                      (step.step === 4 ? " d-none" : "")
-                    }
-                    disabled={backBtn.disabled}
-                    onClick={backBtn.handler}
-                  >
-                    {backBtn.name}
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    disabled={nextBtn.disabled}
-                    onClick={nextBtn.handler}
-                  >
-                    {nextBtn.name}
-                  </button>
                 </div>
               </div>
             </div>
@@ -155,8 +138,22 @@ function doneCheck(step, actualStep) {
   }
 }
 
-function dataForm(data) {
-  if (data.type === "credit") return <CreditForm />;
-  else if (data.type === "paypal") return <PaypalForm />;
+function dataForm(data, dataHandler, backHandler) {
+  if (data.type === "credit")
+    return (
+      <CreditForm
+        data={data}
+        dataHandler={dataHandler}
+        backHandler={backHandler}
+      />
+    );
+  else if (data.type === "paypal")
+    return (
+      <PaypalForm
+        data={data}
+        dataHandler={dataHandler}
+        backHandler={backHandler}
+      />
+    );
   return undefined;
 }
