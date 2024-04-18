@@ -36,7 +36,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={wrap(<Welcome />)} />
-          <Route path="/coins" element={wrap(<Coins />)} />
+          <Route path="/coins/*" element={wrap(<Coins />)} />
+          <Route path="/dashboard/:username" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

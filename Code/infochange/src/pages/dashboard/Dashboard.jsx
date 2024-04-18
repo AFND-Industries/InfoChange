@@ -1,33 +1,38 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+  redirect,
+  useNavigate,
+  useParams,
+  Navigate,
+} from "react-router-dom";
 import { PersonFill, Wallet2 } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
-import { useState } from "react";
+import Users from "./../../data/users.json";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [page, setPage] = useState(0);
 
-  const mockData = {
-    profile: {
-      username: "tb18003",
-      name: "Tomas",
-      surname: "Bustamante",
-      email: "tb18ms@gmail.com",
-      phone: "+34 123456789",
-      document: "11111111A",
-      address: "Calle Falsa 123",
-    },
-    wallet: {
-      balance: 1342.23,
-      coins: [
-        { name: "Bitcoin", quantity: 0.0005 },
-        { name: "Ethereum", quantity: 0.005 },
-        { name: "Dogecoin", quantity: 100 },
-        { name: "Litecoin", quantity: 0.05 },
-        { name: "Ripple", quantity: 1000 },
-      ],
-    },
-  };
+  const navigate = useNavigate();
+
+  const params = useParams();
+
+  if (params.username === undefined) return <Navigate to="/login" />;
+
+  const mockData =
+    Users.find((user) => user.profile.username === params.username) ?? [];
+
+  console.log(mockData.length);
+  console.log(Users);
+
+  if (mockData.length === 0) {
+    const state = {
+      error: "No se ha encontrado su cuenta",
+    };
+    console.log(state);
+    return <Navigate to="/login" state={state} />;
+  }
 
   const pages = [
     <Profile profile={mockData.profile} />,
@@ -38,7 +43,9 @@ export default function Dashboard() {
 
   return (
     <div className="container mt-2">
-      <h1 className="text-center">Panel de control</h1>
+      <div className="card py-2 my-4">
+        <h1 className="text-center"> Panel de control</h1>
+      </div>
       <div className="row align-items-start">
         <div className="col-3 mb-4">
           <div className="list-group">
@@ -70,7 +77,7 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-        <div className="col-9">
+        <div className="col-9 mb-3">
           <div className="card">
             <div className="card-header text-center">{labels[page]}</div>
             {pages[page]}

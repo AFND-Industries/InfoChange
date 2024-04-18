@@ -13,7 +13,7 @@ import SelectPayMethod from "./steps/SelectPayMethod";
 export default function Payment(props) {
   const [step, setStep] = useState({ step: 1, data: {} });
 
-  const cart = useLocation().state;
+  const cart = props.cart === undefined ? useLocation().state : props.cart;
 
   if (cart === null)
     return (

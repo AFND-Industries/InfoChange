@@ -1,11 +1,21 @@
 import { useRef } from "react";
 import { PlusCircle, PlusLg } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import CoinsDataset from "./../../../data/CoinMarketCapData.json";
 
 export default function Wallet(props) {
   const { wallet } = props;
   const navigate = useNavigate();
   const balance = useRef(null);
+
+  const coins =
+    wallet.coins !== undefined
+      ? wallet.coins.map((coin) => {
+          const data = CoinsDataset.data[coin.name][0];
+          data.quantity = coin.quantity;
+          return data;
+        })
+      : [];
 
   return (
     <>
@@ -15,7 +25,7 @@ export default function Wallet(props) {
           className="rounded-pill p-5 text-white mb-4"
           style={{ backgroundColor: "#20c997", width: "fit-content" }}
         >
-          <h1>{wallet.balance} $</h1>
+          <h1>{wallet.balance ?? 0} $</h1>
         </div>
         <div className="row">
           <div className="col-md-7 mb-3">
@@ -33,6 +43,34 @@ export default function Wallet(props) {
             </button>
           </div>
         </div>
+      </div>
+      <hr className="mx-4 my-2" />
+      <div className="mx-4">
+        <h4 className="text-center text-body-secondary">Monedas adquiridas</h4>
+        {wallet.coins === undefined || wallet.coins.length === 0 ? (
+          <h5 className="text-center text-body-secondary">No tienes monedas</h5>
+        ) : (
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {coins.map((coin, index) => (
+              <div key={index} className="col">
+                <div className="card h-100">
+                  <div className="card-body">
+                    <img
+                      src={coin.logo}
+                      className="card-img-top placeholder-glow"
+                      style={{ width: "32px", height: "32px" }}
+                      alt={coin.name}
+                    />
+                    <p className="card-text">{coin.name}</p>
+                    <h5 className="card-title mt-0">
+                      {coin.quantity} {coin.symbol}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

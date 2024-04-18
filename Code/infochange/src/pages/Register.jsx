@@ -1,9 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import Countries from "./../assets/countries.json";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+import Users from "./../data/users.json";
 
 export default function Register() {
   const [country, setCountry] = useState(Countries[0]);
+
+  const navigate = useNavigate();
+
+  const name = useRef(null);
+  const surname = useRef(null);
+  const user = useRef(null);
+  const email = useRef(null);
+  const phone = useRef(null);
+  const _document = useRef(null);
+  const address = useRef(null);
+  const postalCode = useRef(null);
+  const password = useRef(null);
 
   return (
     <div
@@ -20,17 +34,23 @@ export default function Register() {
             <h5 className="text-center mb-4">Datos personales</h5>
             <div className="row">
               <div className="col-lg-4 mb-3">
-                <label for="nameInput" class="form-label">
+                <label htmlFor="nameInput" className="form-label">
                   Nombre
                 </label>
-                <input id="nameInput" type="text" className="form-control" />
+                <input
+                  id="nameInput"
+                  ref={name}
+                  type="text"
+                  className="form-control"
+                />
               </div>
               <div className="col-lg-8 mb-3">
-                <label for="surnameInput" class="form-label">
+                <label htmlFor="surnameInput" className="form-label">
                   Apellidos
                 </label>
                 <input
                   id="surnameInput"
+                  ref={surname}
                   type="text"
                   className="form-control"
                 />
@@ -38,17 +58,23 @@ export default function Register() {
             </div>
             <div className="row">
               <div className="col-lg-6 mb-5">
-                <label for="userInput" class="form-label">
+                <label htmlFor="userInput" className="form-label">
                   Usuario
                 </label>
-                <input id="userInput" type="text" className="form-control" />
+                <input
+                  id="userInput"
+                  ref={user}
+                  type="text"
+                  className="form-control"
+                />
               </div>
               <div className="col-lg-6 mb-5">
-                <label for="emailInput" class="form-label">
+                <label htmlFor="emailInput" className="form-label">
                   Correo electrónico
                 </label>
                 <input
                   id="emailInput"
+                  ref={email}
                   type="email"
                   className="form-control"
                   placeholder="example@infochange.org"
@@ -56,18 +82,19 @@ export default function Register() {
               </div>
             </div>
             <h5 className="text-center mb-1">Datos fiscales</h5>
-            <label for="directionInput" class="form-label">
+            <label htmlFor="directionInput" className="form-label">
               Dirección
             </label>
             <input
               id="directionInput"
               type="text"
+              ref={address}
               className="form-control mb-3"
               placeholder='Ex: Calle Diego "El Cigala", 34 '
             />
             <div className="row">
               <div className="col-lg-7 mb-3">
-                <label for="countryInput" class="form-label">
+                <label htmlFor="countryInput" className="form-label">
                   País
                 </label>
                 <select
@@ -78,40 +105,49 @@ export default function Register() {
                   className="form-select"
                 >
                   {Countries.map((v) => (
-                    <option value={v.iso3}>{v.nombre}</option>
+                    <option key={v.iso3} value={v.iso3}>
+                      {v.nombre}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="col-lg-5 mb-3">
-                <label for="postalInput" class="form-label">
+                <label htmlFor="postalInput" className="form-label">
                   Código Postal
                 </label>
                 <input
                   id="postalInput"
                   type="number"
+                  ref={postalCode}
                   className="form-control"
                 />
               </div>
             </div>
             <div className="row">
               <div className="col-lg-6 mb-3">
-                <label for="userInput" class="form-label">
+                <label htmlFor="userInput" className="form-label">
                   Teléfono móvil
                 </label>
                 <div className="input-group">
-                  <span class="input-group-text">
+                  <span className="input-group-text">
                     {country === undefined ? "?" : "+" + country.phone_code}
                   </span>
-                  <input id="phoneInput" type="text" className="form-control" />
+                  <input
+                    id="phoneInput"
+                    ref={phone}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="col-lg-6 mb-3">
-                <label for="docInput" class="form-label">
+                <label htmlFor="docInput" className="form-label">
                   Documento de identificación
                 </label>
                 <input
                   id="docInput"
                   type="text"
+                  ref={_document}
                   className="form-control"
                   placeholder="Ex: 12345678X"
                 />
@@ -119,17 +155,18 @@ export default function Register() {
             </div>
             <div className="row mb-5">
               <div className="col-lg-6 mb-4">
-                <label for="passInput" class="form-label">
+                <label htmlFor="passInput" className="form-label">
                   Contraseña
                 </label>
                 <input
                   id="passInput"
+                  ref={password}
                   type="password"
                   className="form-control"
                 />
               </div>
               <div className="col-lg-6 mb-4">
-                <label for="rePassInput" class="form-label">
+                <label htmlFor="rePassInput" className="form-label">
                   Repetir contraseña
                 </label>
                 <input
@@ -148,9 +185,28 @@ export default function Register() {
                 </Link>
               </div>
               <div className="col-sm-6 mb-3">
-                <Link to={"/"}>
-                  <button className="btn btn-primary w-100">Registrarse</button>
-                </Link>
+                <button
+                  className="btn btn-primary w-100"
+                  onClick={() => {
+                    addUser({
+                      profile: {
+                        username: user.current.value,
+                        name: name.current.value,
+                        surname: surname.current.value,
+                        email: email.current.value,
+                        phone: `+${country.phone_code} ${phone.current.value}`,
+                        document: _document.current.value,
+                        address: address.current.value,
+                        postalCode: postalCode.current.value,
+                        country: country.nombre,
+                      },
+                      wallet: {},
+                    });
+                    navigate("/dashboard");
+                  }}
+                >
+                  Registrarse
+                </button>
               </div>
             </div>
             <p className="mb-0 fs-6 text-center">
@@ -165,4 +221,8 @@ export default function Register() {
       </div>
     </div>
   );
+}
+
+function addUser(user) {
+  console.log(user);
 }

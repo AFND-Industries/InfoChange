@@ -1,6 +1,11 @@
-import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-export default function Login() {
+export default function Login(props) {
+  const [user, setUser] = useState("");
+
+  const error = useLocation().state?.error;
+
   return (
     <div
       style={{
@@ -16,7 +21,11 @@ export default function Login() {
                 <label>Usuario</label>
               </div>
               <div className="col-8">
-                <input type="text" className="form-control" />
+                <input
+                  type="text"
+                  onChange={(e) => setUser(e.target.value)}
+                  className="form-control"
+                />
               </div>
             </div>
             <div className="row mb-4 text-start">
@@ -33,10 +42,24 @@ export default function Login() {
                   Volver a inicio
                 </button>
               </Link>
-              <Link to={"/"}>
+              <Link to={`/dashboard/${user}`}>
                 <button className="btn btn-primary">Entrar</button>
               </Link>
             </div>
+            {error !== undefined ? (
+              <div
+                className="alert alert-danger alert-dismissible fade show"
+                role="alert"
+              >
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+                {error}
+              </div>
+            ) : undefined}
             <p className="mb-0 fs-6">
               ¿Aún no tienes una cuenta?
               <br />
