@@ -17,12 +17,82 @@ function Trading() {
   const params = useParams();
   const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
 
+  const baseAssetAmount = useRef(0);
+  const quoteAssetAmount = useRef(1000);
+
   const [newbieChart, setNewbieChart] = useState(null);
   const [proChart, setProChart] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchPairs, setSearchPairs] = useState([]);
   const [mode, setMode] = useState(0);
   const [actualPair, setPair] = useState(getPair(pairPath));
+
+  const [buyQuoteAssetInput, setBuyQuoteAssetInput] = useState("");
+  const updateBuyQuoteAsset = (value) => {
+    const newValue = parseFloat(value);
+
+    if (!isNaN(newValue)) {
+      setBuyQuoteAssetInput(newValue);
+      setBuyBaseAssetInput((newValue / 65467).toFixed(9));
+    } else {
+      setBuyQuoteAssetInput("");
+      setBuyBaseAssetInput("");
+    }
+  }
+  const handleBuyQuoteAsset = (event) => { updateBuyQuoteAsset(event.target.value); }
+
+  const [buyBaseAssetInput, setBuyBaseAssetInput] = useState("");
+  const handleBuyBaseAsset = (event) => {
+    const newValue = parseFloat(event.target.value);
+
+    if (!isNaN(newValue)) {
+      setBuyBaseAssetInput(newValue);
+      setBuyQuoteAssetInput((newValue * 65467).toFixed(2));
+    } else {
+      setBuyQuoteAssetInput("");
+      setBuyBaseAssetInput("");
+    }
+  }
+
+  const [sellBaseAssetInput, setSellBaseAssetInput] = useState("");
+  const handleSellBaseAsset = (event) => {
+    const newValue = parseFloat(event.target.value);
+
+    if (!isNaN(newValue)) {
+      setSellBaseAssetInput(newValue);
+      setSellQuoteAssetInput((newValue * 65467).toFixed(2));
+    } else {
+      setSellQuoteAssetInput("");
+      setSellBaseAssetInput("");
+    }
+  }
+
+  const [sellQuoteAssetInput, setSellQuoteAssetInput] = useState("");
+  const handleSellQuoteAsset = (event) => {
+    const newValue = parseFloat(event.target.value);
+
+    if (!isNaN(newValue)) {
+      setSellQuoteAssetInput(newValue);
+      setSellBaseAssetInput((newValue / 65467).toFixed(9));
+    } else {
+      setSellQuoteAssetInput("");
+      setSellBaseAssetInput("");
+    }
+  }
+
+  const [buyRangeValue, setBuyRangeValue] = useState(0);
+  const handleBuyRangeChange = (event) => {
+    const rangeValue = parseInt(event.target.value);
+
+    const newValue = (rangeValue / 100) * quoteAssetAmount.current;
+    updateBuyQuoteAsset(newValue == 0 ? "" : newValue);
+    setBuyRangeValue(rangeValue);
+  }
+
+  const [sellRangeValue, setSellRangeValue] = useState(0);
+  const handleSellRangeChange = (event) => {
+    setSellRangeValue(event.target.value);
+  }
 
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
@@ -134,14 +204,14 @@ function Trading() {
   return (
     <div className="container mt-2 mb-5 d-flex flex-column">
       <div className="row">
-        <div className="col">
+        <div className="col ps-0">
           <button className="btn btn-primary mt-2 mb-2" onClick={updateMode}>Cambiar modo</button>
         </div>
       </div>
 
       <div className="row">
         {actualPair !== undefined ? // Si la moneda existe
-          <div className="col-md-9" style={{ height: "70vh" }}>
+          <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
             <div className="border border-4 tradingview-widget-container" ref={container}
               style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
               <div className="tradingview-widget-container__widget"></div>
@@ -153,7 +223,7 @@ function Trading() {
             </div>
           </div>
           : // Si la moneda no existe
-          <div className="col-md-9" style={{ height: "70vh" }}>
+          <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
             <div className="border d-flex align-items-center justify-content-center" ref={container}
               style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
               <div className="alert alert-danger">
@@ -186,24 +256,49 @@ function Trading() {
         </div>
       </div>
       <div className="row mt-3">
-        <div className="col-md-6">
+        <div className="col-md-6 border">
           <div>
+            <div className="mt-1 mb-1">
+              Disp: {quoteAssetAmount.current} {getQuoteAsset()}
+            </div>
             <div class="input-group input-group-sm">
-              <input type="text" class="form-control" placeholder="Total" />
+              <input type="text" class="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput}
+                onChange={handleBuyQuoteAsset} />
+              <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+            </div>
+            <input type="range" class="form-range" value={buyRangeValue} onChange={handleBuyRangeChange} />
+            <div class="input-group input-group-sm">
+              <input type="text" class="form-control" placeholder="Vas a recibir" value={buyBaseAssetInput}
+                onChange={handleBuyBaseAsset} />
               <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
             </div>
-            Comisión estimada: 0 {getQuoteAsset()}
-            <button className="btn btn-success w-100">Comprar {getBaseAsset()}</button>
+            <div className="mt-1 mb-1">
+              Comisión estimada: 0 {getQuoteAsset()}
+            </div>
+            <button className="btn btn-success w-100 mb-2">Comprar {getBaseAsset()}</button>
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-6 border">
+          <div className="mt-1 mb-1">
+            Disp: {baseAssetAmount.current} {getBaseAsset()}
+          </div>
           <div>
             <div class="input-group input-group-sm">
-              <input type="text" class="form-control" placeholder="Total" />
+              <input type="text" class="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput}
+                onChange={handleSellBaseAsset} />
               <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
             </div>
-            Comisión estimada: 0 {getBaseAsset()}
-            <button className="btn btn-danger w-100">Vender {getBaseAsset()}</button>
+            <input type="range" class="form-range" id="customRange2" value={sellRangeValue}
+              onChange={handleSellRangeChange} />
+            <div class="input-group input-group-sm">
+              <input type="text" class="form-control" placeholder="Vas a recibir" value={sellQuoteAssetInput}
+                onChange={handleSellQuoteAsset} />
+              <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+            </div>
+            <div className="mt-1 mb-1">
+              Comisión estimada: 0 {getBaseAsset()}
+            </div>
+            <button className="btn btn-danger w-100 mb-2">Vender {getBaseAsset()}</button>
           </div>
         </div>
       </div>
