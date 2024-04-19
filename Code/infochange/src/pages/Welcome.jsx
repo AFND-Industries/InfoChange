@@ -17,62 +17,59 @@ export default function Welcome() {
   }, []);
 
   return (
-    <div className={`App ${loaded ? "loaded" : ""}`}>
-      <div style={{ height: "100vh", width: "100vw" }}>
+    <div className={`container-fluid px-0 App ${loaded ? "loaded" : ""}`}>
+      <div style={{ height: "100vh", width: "100%" }}>
         <div
-          className="d-flex justify-content-center align-items-center mt-4 mb-5 py-2 mx-5"
+          className="container d-flex justify-content-center align-items-center"
           style={{ height: "70%" }}
         >
           <div className="row">
-            <div className="col-md-8 d-flex flex-column  align-items-center justify-content-center">
+            <div className="col-lg-8 col-12 d-flex flex-column text-center  align-items-center justify-content-center">
               <h1>
                 ¡Bienvenido a Infochage!
-                <Icons.RocketTakeoffFill className="mx-2" />
+                <Icons.RocketTakeoffFill className="ml-2" />
               </h1>
               <h2>El exchange para todos</h2>
             </div>
-            <div className="col-md-4 d-flex flex-column  align-items-center justify-content-center">
+            <div className="col-lg-4  col-12 d-flex flex-column  align-items-center justify-content-center ">
               <TradingViewWidget />
             </div>
           </div>
         </div>
         <div
-          className="my-6 text-primary text-center"
+          className="mt-6 text-primary text-center"
           style={{ height: "10%" }}
         >
           <p> Desliza para conocer mas </p>
-          <Icons.ChevronDoubleDown className="mx-2" />
+          <Icons.ChevronDoubleDown className="" />
         </div>
       </div>
-      <div className="my-5">
+      <div className="mb-5">
         <Parallax
           blur={{ min: -5, max: 20 }}
           bgImage={"images/bg-cripto.jpg"}
           bgImageAlt="the dog"
           strength={-200}
         >
-          <div
-            className="my-5  align-content-center "
-            style={{ height: "500px" }}
-          >
+          <div className="my-5  align-content-center custom-div">
             <div>
-              <div className="container ">
+              <div className="container">
                 <div className="row d-flex justify-content-center g-5">
                   <div
-                    className="col-md-6 flex-column align-content-center text-center col-10"
+                    className="col-lg-6 col-md-8 flex-column align-content-center text-center col-11"
                     style={{
                       backgroundColor: "rgba(200, 200, 200, 0.5)",
                       padding: "20px",
                       borderRadius: "20px",
                     }}
                   >
-                    <h1 className="text-black">
+                    <p className="fs-1 text-black">
                       Tu plataforma de trading de criptomonedas inteligente y
                       accesible. ¡Empieza a operar con confianza hoy mismo con
                       tu cuenta de InfoChange!
-                    </h1>
+                    </p>
                   </div>
-                  <div className="col-md-3 flex-column  align-content-center col-7">
+                  <div className="col-lg-3 col-md-4 flex-column  align-content-center col-7">
                     <div className="card text-center d-flex justify-content-center align-items-center">
                       <img
                         src="https://muellestock.com/images/usuario-anonimo.png"
@@ -116,7 +113,7 @@ export default function Welcome() {
           </div>
         </Parallax>
       </div>
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="container d-flex justify-content-center align-items-center">
         <div className="row row-md-12 g-4 mx-4">
           <div className="col">
             <div className="card">
@@ -181,7 +178,7 @@ export default function Welcome() {
         </div>
       </div>
       <p />
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="container d-flex justify-content-center align-items-center">
         <div className="col-md-10 text-center">
           <h1 className="row-md-4">Preguntas Frecuentes</h1>
           <div className="row-xs-12">
