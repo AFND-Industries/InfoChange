@@ -27,6 +27,14 @@ function Trading() {
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
 
+  function getBaseAsset() {
+    return actualPair === undefined ? "" : actualPair.baseAsset;
+  }
+
+  function getQuoteAsset() {
+    return actualPair === undefined ? "" : actualPair.quoteAsset;
+  }
+
   function getPair(symbol) {
     return Object.values(Symbols.symbols).filter(s => s.symbol == symbol)[0];
   }
@@ -179,13 +187,25 @@ function Trading() {
       </div>
       <div className="row mt-3">
         <div className="col-md-6">
-          <div className="border">
-            <button className="btn btn-primary">Comprar {actualPair === undefined ? "" : actualPair.baseAsset}</button>
+          <div>
+            <div class="input-group input-group-sm mb-3">
+              <input type="text" class="form-control" placeholder="Total" />
+              <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+            </div>
+            Comisión estimada: 0 {getQuoteAsset()}
+            <button className="btn btn-success w-100">Comprar {getBaseAsset()}</button>
           </div>
         </div>
         <div className="col-md-6">
-          <div className="border">
-            <button className="btn btn-primary">Vender {actualPair === undefined ? "" : actualPair.baseAsset}</button>
+          <div>
+            <div class="input-group input-group-sm mb-3">
+              <input type="text" class="form-control" placeholder="Total" />
+              <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+            </div>
+            <div>
+              Comisión estimada: 0 {getBaseAsset()}
+            </div>
+            <button className="btn btn-danger w-100">Vender {getBaseAsset()}</button>
           </div>
         </div>
       </div>
