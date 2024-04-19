@@ -9,25 +9,21 @@ const TradingViewWidget = () => {
 
     const script = document.createElement("script");
     script.id = "tradingview-widget-script";
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
-    script.type = "text/javascript";
+    script.src =
+      "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
     script.async = true;
     script.innerHTML = JSON.stringify({
-      symbols: "BTCUSD|12M",
-      width: "550",
-      height: "320",
+      symbol: "BITSTAMP:BTCUSD",
+      width: "350",
+      height: "220",
       locale: "es",
-      hideMarketStatus: true,
+      dateRange: "3M",
       colorTheme: "light",
       isTransparent: false,
       autosize: false,
       largeChartUrl: "",
       chartOnly: false,
       noTimeScale: false,
-      scalePosition: "no",
-      dateRanges: [
-        "12m|1D",
-      ]
     });
 
     containerRef.current.appendChild(script);
