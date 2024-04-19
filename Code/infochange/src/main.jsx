@@ -3,13 +3,14 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Payment from "./pages/payment/Payment";
-import Coins from "./pages/Coins";
+import Coins from "./pages/coins/Coins";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Trading from "./pages/trading/Trading";
 import Unknown from "./pages/Unknown";
 import Welcome from "./pages/Welcome";
+import CoinInfo from "./pages/coins/CoinInfo";
 
 import "./assets/bootstrap.css";
 import "bootstrap-icons/font/fonts/bootstrap-icons.woff";

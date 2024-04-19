@@ -1,18 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
-import CoinsCap from '../data/CoinMarketCapData.json';
-import Symbols from '../data/Coins.json';
-import Data from '../data/Data.json';
+import CoinsCap from '../../data/CoinMarketCapData.json';
+import Symbols from '../../data/Coins.json';
+import Data from '../../data/Data.json';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Button } from 'primereact/button';
 import 'primeicons/primeicons.css';
+import './row.css'
+import { Timeline } from "react-ts-tradingview-widgets";
+import CoinInfo from './CoinInfo';
+import { useLocation } from 'react-router-dom';
+
+
 
 export default function Coins() {
-  const [prices, setPrices] = useState([]);
+  const params = window.location.pathname.split('/').slice(2);
+
   const [filters1, setFilters1] = useState(null);
   const [globalFilterValue1, setGlobalFilterValue1] = useState('');
+  const [coinInfo, setCoinInfo] = useState([]);
+
+
 
   /*useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +52,7 @@ export default function Coins() {
     fetchData();
   }, []);*/ // Empty dependency array ensures this runs once on mount
 
+
   useEffect(() => {
     initFilters1();
   }, []);
@@ -56,6 +67,11 @@ export default function Coins() {
     });
     setGlobalFilterValue1('');
   }
+
+  const onRowClick = (event) => {
+    window.history.replaceState(null, null, "/coins/" + event.data.symbol);
+    setCoinInfo(event.data);  
+  };
 
   const filteredSymbols = Data.filter(symbol => {
     // Check if symbol ends with 'USDT'
@@ -96,18 +112,16 @@ export default function Coins() {
 
   const data = getData(filteredSymbols);
   const header1 = renderHeader1();
-  
-  
-  
+  const location = useLocation();
   
 
-
-
-  return getCoinDataTable(data, filters1, header1);
+  return params.length === 0 ? getCoinDataTable(data, filters1, header1, onRowClick) : <CoinInfo coin={coinInfo} key={location.key}/>;
 }
 
 
-
+function getCoinInfo(coin){
+  return (<h1>{coin}</h1>)
+}
 
 
 function getData(symbols){;
@@ -125,7 +139,8 @@ function getData(symbols){;
           symbol: item.symbol,
           change_porcent: symbol === undefined ? null : symbol.priceChangePercent + "%",
           volume: symbol === undefined ? null : symbol.volume,
-          price: symbol === undefined ? null : symbol.lastPrice
+          price: symbol === undefined ? null : symbol.lastPrice,
+          description: item.description,
         };
       });
     
@@ -135,7 +150,7 @@ function getData(symbols){;
   return array;
 }
 
-function getCoinDataTable(data, filters1, header1){
+function getCoinDataTable(data, filters1, header1, onRowClick){
   const imageBodyTemplate = (rowData) => {
     const onImageLoad = (event) => {
       const loadingImage = event.target.parentElement.querySelector('img[name="charge"]');
@@ -156,12 +171,24 @@ function getCoinDataTable(data, filters1, header1){
   };
 
 
+
   return (
-    <DataTable value={data} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }} 
-    filters={filters1} filterDisplay="menu" globalFilterFields={['name', 'symbol']} header={header1}>
-      <Column body={imageBodyTemplate} filter filterField='name' sortable header="Nombre" style={{ width: '25%' }}></Column>
-      <Column field="change_porcent" sortable header="Porcentaje de cambio" style={{ width: '25%' }}></Column>
-      <Column field="volume" sortable header="Volumen" style={{ width: '25%' }}></Column>
-      <Column field="price" sortable header="Precio" style={{ width: '25%' }}></Column>
-    </DataTable>);
+    <div>
+      <DataTable value={data} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }} 
+      filters={filters1} filterDisplay="menu" globalFilterFields={['name', 'symbol']} header={header1} onRowClick={onRowClick}
+      rowClassName={"row-data-tables"}>
+        <Column body={imageBodyTemplate} filter filterField='name' sortable header="Nombre" style={{ width: '25%' }}></Column>
+        <Column field="change_porcent" sortable header="Porcentaje de cambio" style={{ width: '25%' }}></Column>
+        <Column field="volume" sortable header="Volumen" style={{ width: '25%' }}></Column>
+        <Column field="price" sortable header="Precio" style={{ width: '25%' }}></Column>
+      </DataTable>
+
+      <div className='m-5'>
+        <Timeline colorTheme="light" feedMode="market" market="crypto" locale="es" height={400} width="100%"></Timeline>
+      </div>
+    </div>
+
+    );
+
+
 }
