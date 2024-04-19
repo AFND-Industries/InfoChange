@@ -18,12 +18,12 @@ export default function Welcome() {
 
   return (
     <div className={`App ${loaded ? "loaded" : ""}`}>
-      <div style={{ height: "100vh", width: "100vw" }}>
+      <div style={{ height: "100vh", width: "100%" }}>
         <div
           className="d-flex justify-content-center align-items-center mt-4 mb-5 py-2 mx-5"
           style={{ height: "70%" }}
         >
-          <div className="row">
+          <div className="row g-5">
             <div className="col-md-8 d-flex flex-column  align-items-center justify-content-center">
               <h1>
                 ¡Bienvenido a Infochage!
@@ -37,14 +37,14 @@ export default function Welcome() {
           </div>
         </div>
         <div
-          className="my-6 text-primary text-center"
+          className="mt-6 text-primary text-center"
           style={{ height: "10%" }}
         >
           <p> Desliza para conocer mas </p>
-          <Icons.ChevronDoubleDown className="mx-2" />
+          <Icons.ChevronDoubleDown className="" />
         </div>
       </div>
-      <div className="my-5">
+      <div className="mb-5">
         <Parallax
           blur={{ min: -5, max: 20 }}
           bgImage={"images/bg-cripto.jpg"}
