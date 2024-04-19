@@ -18,53 +18,71 @@ export default function Welcome() {
 
   return (
     <div className={`App ${loaded ? "loaded" : ""}`}>
-      <div className="d-flex justify-content-center align-items-center mt-4 mb-5 py-2 mx-5">
-        <div className="row">
-          <div className="col-md-8 d-flex flex-column  align-items-center justify-content-center">
-            <h1>
-              ¡Bienvenido a Infochage!
-              <Icons.RocketTakeoffFill className="mx-2" />
-            </h1>
-            <h2>El exchange para todos</h2>
+      <div style={{ height: "100vh", width: "100vw" }}>
+        <div
+          className="d-flex justify-content-center align-items-center mt-4 mb-5 py-2 mx-5"
+          style={{ height: "70%" }}
+        >
+          <div className="row">
+            <div className="col-md-8 d-flex flex-column  align-items-center justify-content-center">
+              <h1>
+                ¡Bienvenido a Infochage!
+                <Icons.RocketTakeoffFill className="mx-2" />
+              </h1>
+              <h2>El exchange para todos</h2>
+            </div>
+            <div className="col-md-4 d-flex flex-column  align-items-center justify-content-center">
+              <TradingViewWidget />
+            </div>
           </div>
-          <div className="col-md-4 d-flex flex-column  align-items-center justify-content-center">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero sequi,
-            quaerat saepe voluptatibus illo officia qui id, incidunt nisi magnam
-            veniam assumenda, corporis dolore accusantium sed eveniet aliquam
-            dicta ipsum.
-          </div>
+        </div>
+        <div
+          className="my-6 text-primary text-center"
+          style={{ height: "10%" }}
+        >
+          <p> Desliza para conocer mas </p>
+          <Icons.ChevronDoubleDown className="mx-2" />
         </div>
       </div>
       <div className="my-5">
         <Parallax
-          blur={{ min: -15, max: 15 }}
+          blur={{ min: -5, max: 20 }}
           bgImage={"images/bg-cripto.jpg"}
           bgImageAlt="the dog"
           strength={-200}
         >
-          <div className="my-5">
+          <div
+            className="my-5  align-content-center "
+            style={{ height: "500px" }}
+          >
             <div>
-              <div className="container">
-                <div className="row">
+              <div className="container ">
+                <div className="row d-flex justify-content-center g-5">
                   <div
-                    className="col-md-6 align-content-center"
+                    className="col-md-6 flex-column align-content-center text-center col-10"
                     style={{
                       backgroundColor: "rgba(200, 200, 200, 0.5)",
                       padding: "20px",
+                      borderRadius: "20px",
                     }}
                   >
-                    <h1>
+                    <h1 className="text-black">
                       Tu plataforma de trading de criptomonedas inteligente y
                       accesible. ¡Empieza a operar con confianza hoy mismo con
                       tu cuenta de InfoChange!
                     </h1>
                   </div>
-                  <div className="col-md-3">
-                    <div className="card text-center">
+                  <div className="col-md-3 flex-column  align-content-center col-7">
+                    <div className="card text-center d-flex justify-content-center align-items-center">
                       <img
-                        src="https://via.placeholder.com/50"
-                        className="card-img-top"
+                        src="https://muellestock.com/images/usuario-anonimo.png"
+                        className="card-img-top mt-2"
                         alt="Usuario Anónimo"
+                        style={{
+                          width: "30%",
+                          height: "30%",
+                          borderRadius: "100%",
+                        }}
                       />
                       <div className="card-body">
                         <h5 class="card-title">Inicia sesion</h5>
