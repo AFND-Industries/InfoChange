@@ -1,9 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const TradingViewWidget = () => {
-  useEffect(() => {
-    const script = document.createElement("script");
+  const containerRef = useRef();
 
+  useEffect(() => {
+    // Comprueba si el script ya existe
+    if (document.querySelector("#tradingview-widget-script")) return;
+
+    const script = document.createElement("script");
+    script.id = "tradingview-widget-script";
     script.src =
       "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
     script.async = true;
@@ -21,21 +26,11 @@ const TradingViewWidget = () => {
       noTimeScale: false,
     });
 
-    document
-      .getElementsByClassName("tradingview-widget-container__widget")[0]
-      .appendChild(script);
-
-    return () => {
-      document
-        .getElementsByClassName("tradingview-widget-container__widget")[0]
-        .removeChild(script);
-    };
+    containerRef.current.appendChild(script);
   }, []);
 
   return (
-    <div className="tradingview-widget-container">
-      <div className="tradingview-widget-container__widget"></div>
-    </div>
+    <div className="tradingview-widget-container__widget" ref={containerRef} />
   );
 };
 

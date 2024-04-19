@@ -3,7 +3,7 @@ import "./welcome.css";
 import * as Icons from "react-bootstrap-icons";
 import TradingViewWidget from "../components/TradingViewWidget";
 import { Parallax } from "react-parallax";
-
+import { Link } from "react-router-dom";
 export default function Welcome() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
@@ -100,9 +100,13 @@ export default function Welcome() {
                             placeholder="Correo Electrónico"
                           />
                         </div>
-                        <a href="#" class="btn btn-primary">
-                          Iniciar Sesión
-                        </a>
+                        <div>
+                          <Link to="/login">
+                            <button className="btn btn-primary me-2">
+                              Iniciar Sesión
+                            </button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
