@@ -10,7 +10,7 @@ const TradingViewWidget = () => {
     const script = document.createElement("script");
     script.id = "tradingview-widget-script";
     script.src =
-      "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
+      "https://s3.tradingview.com/external-embedding/widget-mini-symbol-overview.js";
     script.async = true;
     script.innerHTML = JSON.stringify({
       symbol: "BITSTAMP:BTCUSD",
