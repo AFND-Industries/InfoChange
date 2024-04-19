@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Component } from "react";
 import "./welcome.css";
 import * as Icons from "react-bootstrap-icons";
-import TradingViewWidget from "./components/TradingViewWidget.jsx";
+import TradingViewWidget from "../components/TradingViewWidget";
 import { Parallax } from "react-parallax";
 
 export default function Welcome() {

@@ -53,7 +53,7 @@ function Trading() {
 
   useEffect(() => {
     window.history.replaceState(null, null, "/trading/" + coinName);
-    const pair = "BINANCE:" + coinName;
+    const pair = coinName;
     //this.props.history.replace({ pathname: `/trading/${coinName}` })
 
     const script = document.createElement("script");
@@ -100,7 +100,8 @@ function Trading() {
     />)
 
     return (() => {
-      container.current.innerHTML = "";
+      if (container.current != null)
+        container.current.innerHTML = "";
     });
   }, [coinName])
 
