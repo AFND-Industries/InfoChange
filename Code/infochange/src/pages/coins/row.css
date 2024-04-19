@@ -1,4 +1,32 @@
 .row-data-tables:hover {
-  background-color: #f5f5f5;
+  background-color: #f5f5f5 !important;
   cursor: pointer;
+}
+
+.row-data-tables {
+  background-color: #fff;
+}
+
+.hover-row:hover .hover-column {
+  background-color: #f5f5f5 !important; /* Cambia esto al color que prefieras */
+}
+
+.sticky-column {
+  background-color: #fff;
+}
+
+@media (max-width: 600px) {
+  .clear-button .p-button-label {
+    display: none;
+  }
+
+  .search-input input {
+    width: 100px; /* Cambia esto al ancho que prefieras */
+  }
+
+
+  .clear-button,
+  .search-input {
+    justify-content: center;
+  }
 }
