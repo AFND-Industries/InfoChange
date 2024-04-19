@@ -65,31 +65,31 @@ function Trading() {
       script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
       script.type = "text/javascript";
       script.async = true;
-      script.innerHTML = `
-          {
-            "symbols": "` + actualPair.symbol + `|7D",
-            "width": "100%",
-            "height": "100%",
-            "locale": "es",
-            "autosize": true,
-            "hideMarketStatus": true,
-            "scalePosition": "right",
-            "scaleMode": "Normal",
-            "fontFamily": "Arial, sans-serif",
-            "fontSize": "10",
-            "noTimeScale": false,
-            "valuesTracking": "1",
-            "changeMode": "price-and-percent",
-            "dateRanges": [
-              "1d|3",
-              "1w|30",
-              "1m|1H",
-              "3m|4H",
-              "6m|1D",
-              "12m|1D",
-              "all|1W"
-            ]
-          }`;
+      script.innerHTML = JSON.stringify(
+        {
+          symbols: actualPair.symbol + "|7D",
+          width: "100%",
+          height: "100%",
+          locale: "es",
+          autosize: true,
+          hideMarketStatus: true,
+          scalePosition: "right",
+          scaleMode: "Normal",
+          fontFamily: "Arial, sans-serif",
+          fontSize: "10",
+          noTimeScale: false,
+          valuesTracking: "1",
+          changeMode: "price-and-percent",
+          dateRanges: [
+            "1d|3",
+            "1w|30",
+            "1m|1H",
+            "3m|4H",
+            "6m|1D",
+            "12m|1D",
+            "all|1W"
+          ]
+        });
       container.current.appendChild(script);
 
       setProChart(<AdvancedRealTimeChart
@@ -132,19 +132,19 @@ function Trading() {
       </div>
 
       <div className="row">
-        {actualPair !== undefined ?
+        {actualPair !== undefined ? // Si la moneda existe
           <div className="col-md-9" style={{ height: "70vh" }}>
-            <div className="border tradingview-widget-container" ref={container}
+            <div className="border border-4 tradingview-widget-container" ref={container}
               style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
               <div className="tradingview-widget-container__widget"></div>
             </div>
 
-            <div className="border tradingview-widget-container"
+            <div className="border border-4 tradingview-widget-container"
               style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
               {proChart}
             </div>
           </div>
-          :
+          : // Si la moneda no existe
           <div className="col-md-9" style={{ height: "70vh" }}>
             <div className="border d-flex align-items-center justify-content-center" ref={container}
               style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
@@ -175,6 +175,18 @@ function Trading() {
           </div>
         </div>
         <div >
+        </div>
+      </div>
+      <div className="row mt-3">
+        <div className="col-md-6">
+          <div className="border">
+            <button className="btn btn-primary">Comprar {actualPair === undefined ? "" : actualPair.baseAsset}</button>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="border">
+            <button className="btn btn-primary">Vender {actualPair === undefined ? "" : actualPair.baseAsset}</button>
+          </div>
         </div>
       </div>
     </div >
