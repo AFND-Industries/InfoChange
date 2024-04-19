@@ -17,8 +17,13 @@ function Trading() {
   const params = useParams();
   const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
 
-  const baseAssetAmount = useRef(0);
-  const quoteAssetAmount = useRef(1000);
+  const updateMode = () => setMode(mode => (mode + 1) % 2);
+  const container = useRef();
+
+  const tradingComision = 0.0065;
+  const pairPrice = 65330;
+  const baseAssetAmount = useRef(1);
+  const quoteAssetAmount = useRef(100000);
 
   const [newbieChart, setNewbieChart] = useState(null);
   const [proChart, setProChart] = useState(null);
@@ -27,59 +32,65 @@ function Trading() {
   const [mode, setMode] = useState(0);
   const [actualPair, setPair] = useState(getPair(pairPath));
 
+  // BUY QUOTE
   const [buyQuoteAssetInput, setBuyQuoteAssetInput] = useState("");
   const updateBuyQuoteAsset = (value) => {
     const newValue = parseFloat(value);
 
     if (!isNaN(newValue)) {
       setBuyQuoteAssetInput(newValue);
-      setBuyBaseAssetInput((newValue / 65467).toFixed(9));
+      setBuyBaseAssetInput((newValue / pairPrice).toFixed(9));
     } else {
       setBuyQuoteAssetInput("");
       setBuyBaseAssetInput("");
     }
   }
-  const handleBuyQuoteAsset = (event) => { updateBuyQuoteAsset(event.target.value); }
+  const handleBuyQuoteAsset = (event) => updateBuyQuoteAsset(event.target.value);
 
+  // BUY BASE
   const [buyBaseAssetInput, setBuyBaseAssetInput] = useState("");
   const handleBuyBaseAsset = (event) => {
     const newValue = parseFloat(event.target.value);
 
     if (!isNaN(newValue)) {
       setBuyBaseAssetInput(newValue);
-      setBuyQuoteAssetInput((newValue * 65467).toFixed(2));
+      setBuyQuoteAssetInput((newValue * pairPrice).toFixed(2));
     } else {
       setBuyQuoteAssetInput("");
       setBuyBaseAssetInput("");
     }
   }
 
+  // SELL BASE
   const [sellBaseAssetInput, setSellBaseAssetInput] = useState("");
-  const handleSellBaseAsset = (event) => {
-    const newValue = parseFloat(event.target.value);
+  const updateSellBaseAsset = (value) => {
+    const newValue = parseFloat(value);
 
     if (!isNaN(newValue)) {
       setSellBaseAssetInput(newValue);
-      setSellQuoteAssetInput((newValue * 65467).toFixed(2));
+      setSellQuoteAssetInput((newValue * pairPrice).toFixed(2));
     } else {
       setSellQuoteAssetInput("");
       setSellBaseAssetInput("");
     }
   }
+  const handleSellBaseAsset = (event) => updateSellBaseAsset(event.target.value);
 
+  // SELL QUOTE
   const [sellQuoteAssetInput, setSellQuoteAssetInput] = useState("");
   const handleSellQuoteAsset = (event) => {
     const newValue = parseFloat(event.target.value);
 
     if (!isNaN(newValue)) {
       setSellQuoteAssetInput(newValue);
-      setSellBaseAssetInput((newValue / 65467).toFixed(9));
+      setSellBaseAssetInput((newValue / pairPrice).toFixed(9));
     } else {
       setSellQuoteAssetInput("");
       setSellBaseAssetInput("");
     }
   }
 
+  // BUY RANGE
   const [buyRangeValue, setBuyRangeValue] = useState(0);
   const handleBuyRangeChange = (event) => {
     const rangeValue = parseInt(event.target.value);
@@ -89,13 +100,15 @@ function Trading() {
     setBuyRangeValue(rangeValue);
   }
 
+  // SELL RANGE
   const [sellRangeValue, setSellRangeValue] = useState(0);
   const handleSellRangeChange = (event) => {
-    setSellRangeValue(event.target.value);
-  }
+    const rangeValue = parseInt(event.target.value);
 
-  const updateMode = () => setMode(mode => (mode + 1) % 2);
-  const container = useRef();
+    const newValue = (rangeValue / 100) * baseAssetAmount.current;
+    updateSellBaseAsset(newValue == 0 ? "" : newValue);
+    setSellRangeValue(rangeValue);
+  }
 
   function getBaseAsset() {
     return actualPair === undefined ? "" : actualPair.baseAsset;
@@ -273,7 +286,7 @@ function Trading() {
               <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
             </div>
             <div className="mt-1 mb-1">
-              Comisión estimada: 0 {getQuoteAsset()}
+              Comisión estimada: {buyQuoteAssetInput * tradingComision}  {getQuoteAsset()}
             </div>
             <button className="btn btn-success w-100 mb-2">Comprar {getBaseAsset()}</button>
           </div>
@@ -296,7 +309,7 @@ function Trading() {
               <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
             </div>
             <div className="mt-1 mb-1">
-              Comisión estimada: 0 {getBaseAsset()}
+              Comisión estimada: {sellBaseAssetInput * tradingComision} {getBaseAsset()}
             </div>
             <button className="btn btn-danger w-100 mb-2">Vender {getBaseAsset()}</button>
           </div>
