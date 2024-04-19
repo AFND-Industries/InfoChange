@@ -24,14 +24,14 @@ export default function Welcome() {
           style={{ height: "70%" }}
         >
           <div className="row g-5">
-            <div className="col-md-8 d-flex flex-column  align-items-center justify-content-center">
+            <div className="col-lg-8  col-12 d-flex flex-column  align-items-center justify-content-center">
               <h1>
                 ¡Bienvenido a Infochage!
                 <Icons.RocketTakeoffFill className="mx-2" />
               </h1>
               <h2>El exchange para todos</h2>
             </div>
-            <div className="col-md-4 d-flex flex-column  align-items-center justify-content-center">
+            <div className="col-lg-4 col-12 d-flex flex-column  align-items-center justify-content-center ">
               <TradingViewWidget />
             </div>
           </div>
