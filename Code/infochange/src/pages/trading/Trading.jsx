@@ -6,6 +6,7 @@ import Symbols from "../../data/Symbols.json";
 import CoinMarketCapData from "../../data/CoinMarketCapData.json";
 
 import "./trading.css";
+import { useParams } from 'react-router-dom';
 
 // arreglar lod el 75vh
 // cuando le des click a una moneda que se cambie el enlace de arriba sin recargar la pagina
@@ -13,19 +14,24 @@ import "./trading.css";
 // onmouseover
 // copiarse de binance
 function Trading() {
-  const coinPath = window.location.pathname.substring(9);
+  const params = useParams();
+  const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
 
   const [newbieChart, setNewbieChart] = useState(null);
   const [proChart, setProChart] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchPairs, setSearchPairs] = useState([]);
   const [mode, setMode] = useState(0);
-  const [coinName, setCoinName] = useState(coinPath.length == 0 ? "BTCUSDT" : coinPath.toUpperCase());
+  const [actualPair, setPair] = useState(getPair(pairPath));
 
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
 
-  function filterPairs(regex = "", limit = 10) {
+  function getPair(symbol) {
+    return Object.values(Symbols.symbols).filter(s => s.symbol == symbol)[0];
+  }
+
+  function filterPairs(regex = "") {
     if (Symbols.symbols == null)
       return [];
 
@@ -52,63 +58,63 @@ function Trading() {
   }
 
   useEffect(() => {
-    window.history.replaceState(null, null, "/trading/" + coinName);
-    const pair = coinName;
-    //this.props.history.replace({ pathname: `/trading/${coinName}` })
+    if (actualPair !== undefined) {
+      window.history.replaceState(null, null, "/trading/" + actualPair.symbol);
 
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
-    script.type = "text/javascript";
-    script.async = true;
-    script.innerHTML = `
-        {
-          "symbols": "` + pair + `|7D",
-          "width": "100%",
-          "height": "100%",
-          "locale": "es",
-          "autosize": true,
-          "hideMarketStatus": true,
-          "scalePosition": "right",
-          "scaleMode": "Normal",
-          "fontFamily": "Arial, sans-serif",
-          "fontSize": "10",
-          "noTimeScale": false,
-          "valuesTracking": "1",
-          "changeMode": "price-and-percent",
-          "dateRanges": [
-            "1d|3",
-            "1w|30",
-            "1m|1H",
-            "3m|4H",
-            "6m|1D",
-            "12m|1D",
-            "all|1W"
-          ]
-        }`;
-    container.current.appendChild(script);
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+      script.type = "text/javascript";
+      script.async = true;
+      script.innerHTML = `
+          {
+            "symbols": "` + actualPair.symbol + `|7D",
+            "width": "100%",
+            "height": "100%",
+            "locale": "es",
+            "autosize": true,
+            "hideMarketStatus": true,
+            "scalePosition": "right",
+            "scaleMode": "Normal",
+            "fontFamily": "Arial, sans-serif",
+            "fontSize": "10",
+            "noTimeScale": false,
+            "valuesTracking": "1",
+            "changeMode": "price-and-percent",
+            "dateRanges": [
+              "1d|3",
+              "1w|30",
+              "1m|1H",
+              "3m|4H",
+              "6m|1D",
+              "12m|1D",
+              "all|1W"
+            ]
+          }`;
+      container.current.appendChild(script);
 
-    setProChart(<AdvancedRealTimeChart
-      locale="es"
-      autosize
-      symbol={pair}
-      interval="1D"
-      timezone="Etc/UTC"
-      style={1}
-      hide_top_toolbar={false}
-      hide_side_toolbar={false}
-      allow_symbol_change={false}
-    />)
+      setProChart(<AdvancedRealTimeChart
+        locale="es"
+        autosize
+        symbol={actualPair.symbol}
+        interval="1D"
+        timezone="Etc/UTC"
+        style={1}
+        hide_top_toolbar={false}
+        hide_side_toolbar={false}
+        allow_symbol_change={false}
+      />)
 
-    return (() => {
-      if (container.current != null)
-        container.current.innerHTML = "";
-    });
-  }, [coinName])
+      return (() => {
+        if (container.current != null)
+          container.current.innerHTML = "";
+      });
+    }
+  }, [actualPair])
 
 
   let searchPairsObject = searchPairs.map(p => {
     const onSymbolClick = () => {
-      setCoinName(p.symbol);
+      setPair(p);
       setSearchInput("");
       setSearchPairs([]);
     }
@@ -126,17 +132,28 @@ function Trading() {
       </div>
 
       <div className="row">
-        <div className="col-md-9" style={{ height: "70vh" }}>
-          <div className="tradingview-widget-container" ref={container}
-            style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
-            <div className="tradingview-widget-container__widget"></div>
-          </div>
+        {actualPair !== undefined ?
+          <div className="col-md-9" style={{ height: "70vh" }}>
+            <div className="border tradingview-widget-container" ref={container}
+              style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
+              <div className="tradingview-widget-container__widget"></div>
+            </div>
 
-          <div className="tradingview-widget-container"
-            style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
-            {proChart}
+            <div className="border tradingview-widget-container"
+              style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
+              {proChart}
+            </div>
           </div>
-        </div>
+          :
+          <div className="col-md-9" style={{ height: "70vh" }}>
+            <div className="border d-flex align-items-center justify-content-center" ref={container}
+              style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
+              <div className="alert alert-danger">
+                <span className="h3">El par {pairPath} no existe</span>
+              </div>
+            </div>
+          </div>}
+
         <div className="col-md-3" style={{ height: "70vh" }}>
           <div className="row">
             <input
