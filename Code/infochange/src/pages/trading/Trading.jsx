@@ -188,7 +188,7 @@ function Trading() {
       <div className="row mt-3">
         <div className="col-md-6">
           <div>
-            <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group-sm">
               <input type="text" class="form-control" placeholder="Total" />
               <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
             </div>
@@ -198,13 +198,11 @@ function Trading() {
         </div>
         <div className="col-md-6">
           <div>
-            <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group-sm">
               <input type="text" class="form-control" placeholder="Total" />
               <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
             </div>
-            <div>
-              Comisión estimada: 0 {getBaseAsset()}
-            </div>
+            Comisión estimada: 0 {getBaseAsset()}
             <button className="btn btn-danger w-100">Vender {getBaseAsset()}</button>
           </div>
         </div>
