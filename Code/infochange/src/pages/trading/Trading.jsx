@@ -13,6 +13,15 @@ import { useParams } from 'react-router-dom';
 // poner la moneda seleccionada
 // onmouseover
 // copiarse de binance
+
+// poner que cuando pasas por encima de un par se vea el selccionado
+// poner mejor los bordes
+// poner lo de abajo mas boinito
+// websocket precio
+// refactor el de eso
+// poner lo de las comas y punto
+// 
+
 function Trading() {
   const params = useParams();
   const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
@@ -214,109 +223,152 @@ function Trading() {
     );
   });
 
+
+  // METER LOS ROTATING MARQUEE PARA QUE SEA CICLICO Y NO TODO EL ELEMENTO
   return (
-    <div className="container mt-2 mb-5 d-flex flex-column">
-      <div className="row">
-        <div className="col ps-0">
-          <button className="btn btn-primary mt-2 mb-2" onClick={updateMode}>Cambiar modo</button>
+    <>
+      <div className="bg-primary">
+        <div className="row rotating-marquee w-100">
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
+          <div className="col-1">
+            <span className="text-white">{actualPair.symbol}: 0</span>
+          </div>
         </div>
       </div>
-
-      <div className="row">
-        {actualPair !== undefined ? // Si la moneda existe
-          <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
-            <div className="border border-4 tradingview-widget-container" ref={container}
-              style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
-              <div className="tradingview-widget-container__widget"></div>
-            </div>
-
-            <div className="border border-4 tradingview-widget-container"
-              style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
-              {proChart}
-            </div>
+      <div className="container mt-2 mb-5 d-flex flex-column">
+        <div className="row">
+          <div className="col ps-0">
+            <button className="btn btn-primary mt-2 mb-2" onClick={updateMode}>Cambiar modo</button>
           </div>
-          : // Si la moneda no existe
-          <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
-            <div className="border d-flex align-items-center justify-content-center" ref={container}
-              style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
-              <div className="alert alert-danger">
-                <span className="h3">El par {pairPath} no existe</span>
+        </div>
+
+        <div className="row">
+          {actualPair !== undefined ? // Si la moneda existe
+            <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
+              <div className="border border-4 tradingview-widget-container" ref={container}
+                style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
+                <div className="tradingview-widget-container__widget"></div>
+              </div>
+
+              <div className="border border-4 tradingview-widget-container"
+                style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
+                {proChart}
               </div>
             </div>
-          </div>}
+            : // Si la moneda no existe
+            <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
+              <div className="border d-flex align-items-center justify-content-center" ref={container}
+                style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
+                <div className="alert alert-danger">
+                  <span className="h3">El par {pairPath} no existe</span>
+                </div>
+              </div>
+            </div>}
 
-        <div className="col-md-3" style={{ height: "70vh" }}>
-          <div className="row">
-            <input
-              className="form-control"
-              type="search"
-              placeholder="Buscar par..."
-              style={{ backgroundColor: "#ffffff", color: "#000000" }}
-              value={searchInput}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-            />
-          </div>
-          <div className="row border overflow-y-scroll mt-2" style={{ height: "64vh" }}>
-            <div className="d-flex flex-column">
-              <ul className="list-group list-group-flush">
-                {searchPairsObject}
-              </ul>
+          <div className="col-md-3" style={{ height: "70vh" }}>
+            <div className="row">
+              <input
+                className="form-control"
+                type="search"
+                placeholder="Buscar par..."
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                value={searchInput}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+              />
+            </div>
+            <div className="row border overflow-y-scroll mt-2" style={{ height: "64vh" }}>
+              <div className="d-flex flex-column">
+                <ul className="list-group list-group-flush">
+                  {searchPairsObject}
+                </ul>
+              </div>
             </div>
           </div>
+          <div >
+          </div>
         </div>
-        <div >
-        </div>
-      </div>
-      <div className="row mt-3">
-        <div className="col-md-6 border">
-          <div>
+        <div className="row mt-3">
+          <div className="col-md-6 border">
+            <div>
+              <div className="mt-1 mb-1">
+                Disp: {quoteAssetAmount.current} {getQuoteAsset()}
+              </div>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput}
+                  onChange={handleBuyQuoteAsset} />
+                <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+              </div>
+              <input type="range" class="form-range" value={buyRangeValue} onChange={handleBuyRangeChange} />
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Vas a recibir" value={buyBaseAssetInput}
+                  onChange={handleBuyBaseAsset} />
+                <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+              </div>
+              <div className="mt-1 mb-1">
+                Comisión estimada: {buyQuoteAssetInput * tradingComision}  {getQuoteAsset()}
+              </div>
+              <button className="btn btn-success w-100 mb-2">Comprar {getBaseAsset()}</button>
+            </div>
+          </div>
+          <div className="col-md-6 border">
             <div className="mt-1 mb-1">
-              Disp: {quoteAssetAmount.current} {getQuoteAsset()}
+              Disp: {baseAssetAmount.current} {getBaseAsset()}
             </div>
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput}
-                onChange={handleBuyQuoteAsset} />
-              <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+            <div>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput}
+                  onChange={handleSellBaseAsset} />
+                <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+              </div>
+              <input type="range" class="form-range" id="customRange2" value={sellRangeValue}
+                onChange={handleSellRangeChange} />
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Vas a recibir" value={sellQuoteAssetInput}
+                  onChange={handleSellQuoteAsset} />
+                <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+              </div>
+              <div className="mt-1 mb-1">
+                Comisión estimada: {sellBaseAssetInput * tradingComision} {getBaseAsset()}
+              </div>
+              <button className="btn btn-danger w-100 mb-2">Vender {getBaseAsset()}</button>
             </div>
-            <input type="range" class="form-range" value={buyRangeValue} onChange={handleBuyRangeChange} />
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control" placeholder="Vas a recibir" value={buyBaseAssetInput}
-                onChange={handleBuyBaseAsset} />
-              <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
-            </div>
-            <div className="mt-1 mb-1">
-              Comisión estimada: {buyQuoteAssetInput * tradingComision}  {getQuoteAsset()}
-            </div>
-            <button className="btn btn-success w-100 mb-2">Comprar {getBaseAsset()}</button>
           </div>
         </div>
-        <div className="col-md-6 border">
-          <div className="mt-1 mb-1">
-            Disp: {baseAssetAmount.current} {getBaseAsset()}
-          </div>
-          <div>
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput}
-                onChange={handleSellBaseAsset} />
-              <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
-            </div>
-            <input type="range" class="form-range" id="customRange2" value={sellRangeValue}
-              onChange={handleSellRangeChange} />
-            <div class="input-group input-group-sm">
-              <input type="text" class="form-control" placeholder="Vas a recibir" value={sellQuoteAssetInput}
-                onChange={handleSellQuoteAsset} />
-              <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
-            </div>
-            <div className="mt-1 mb-1">
-              Comisión estimada: {sellBaseAssetInput * tradingComision} {getBaseAsset()}
-            </div>
-            <button className="btn btn-danger w-100 mb-2">Vender {getBaseAsset()}</button>
-          </div>
-        </div>
-      </div>
-    </div >
-
+      </div >
+    </>
   );
 }
 

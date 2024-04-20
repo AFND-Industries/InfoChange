@@ -1,3 +1,18 @@
 .tradingview-widget-copyright {
     display: none;
 }
+
+.rotating-marquee {
+    display: inline-block;
+    animation: desplazamiento 25s linear infinite;
+}
+
+@keyframes desplazamiento {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(calc(-100% - 10px));
+    }
+}
