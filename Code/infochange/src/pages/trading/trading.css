@@ -3,6 +3,11 @@
 }
 
 .rotating-marquee {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.rotating-marquee-element {
     display: inline-block;
     animation: desplazamiento 25s linear infinite;
 }

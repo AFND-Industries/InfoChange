@@ -227,8 +227,8 @@ function Trading() {
   // METER LOS ROTATING MARQUEE PARA QUE SEA CICLICO Y NO TODO EL ELEMENTO
   return (
     <>
-      <div className="bg-primary">
-        <div className="row rotating-marquee w-100">
+      <div className="rotating-marquee bg-primary">
+        <div className="row rotating-marquee-element w-100">
           <div className="col-1">
             <span className="text-white">{actualPair.symbol}: 0</span>
           </div>
