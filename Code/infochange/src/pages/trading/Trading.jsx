@@ -228,14 +228,23 @@ function Trading() {
   return (
     <>
       <div className="rotating-marquee bg-primary">
-        <div className="col-4 rotating-marquee-element rme-1 bg-primary">
+        <div className="col-2 rotating-marquee-element rme-1 bg-primary">
           <span className="text-white">BTCUSDT: 65540,23$</span>
         </div >
-        <div className="col-4 rotating-marquee-element rme-2 bg-primary">
-          <span className="text-white">BNBBTC: 650,23$</span>
+        <div className="col-2 rotating-marquee-element rme-2 bg-primary">
+          <span className="text-white">BNBBTC: 650,36$</span>
         </div>
-        <div className="col-4 rotating-marquee-element rme-3 bg-primary">
+        <div className="col-2 rotating-marquee-element rme-3 bg-primary">
           <span className="text-white">ETHUSDT: 3110,43$</span>
+        </div>
+        <div className="col-2 rotating-marquee-element rme-4 bg-primary">
+          <span className="text-white">LTCUSDT: 84,11$</span>
+        </div >
+        <div className="col-2 rotating-marquee-element rme-5 bg-primary">
+          <span className="text-white">YFIUSDT: 4650,88$</span>
+        </div>
+        <div className="col-2 rotating-marquee-element rme-6 bg-primary">
+          <span className="text-white">DOTUSDT: 10,14$</span>
         </div>
       </div >
 

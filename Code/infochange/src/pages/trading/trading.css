@@ -27,11 +27,23 @@ html {
 }
 
 .rme-2 {
-    animation-delay: 10s;
+    animation-delay: 5s;
 }
 
 .rme-3 {
+    animation-delay: 10s;
+}
+
+.rme-4 {
+    animation-delay: 15s;
+}
+
+.rme-5 {
     animation-delay: 20s;
+}
+
+.rme-6 {
+    animation-delay: 25s;
 }
 
 @keyframes desplazamiento {
@@ -40,7 +52,7 @@ html {
     }
 
     100% {
-        transform: translateX(calc(-100vw/3));
+        transform: translateX(calc(-100vw/6));
 
     }
 }

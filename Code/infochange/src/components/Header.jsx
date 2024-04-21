@@ -8,7 +8,6 @@ export default function Header() {
     { link: "coins", name: "Monedas" },
     { link: "trading", name: "Trading" },
     { link: "dashboard", name: "Panel de control" },
-    { link: "contact", name: "404 Example" },
   ];
 
   return (
@@ -32,42 +31,6 @@ export default function Header() {
           <div className="collapse navbar-collapse" id="navbarScroll">
             <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
               {items.map((v) => item(v.link, v.name))}
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Link
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link disabled" aria-disabled="true">
-                  Link
-                </a>
-              </li>
             </ul>
             <div className="d-flex justify-content-between">
               <Link to="/login">
