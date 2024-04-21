@@ -5,19 +5,42 @@
 .rotating-marquee {
     overflow: hidden;
     white-space: nowrap;
+    display: flex;
+    height: 24px;
+}
+
+body,
+html {
+    overflow-x: hidden;
 }
 
 .rotating-marquee-element {
-    display: inline-block;
-    animation: desplazamiento 25s linear infinite;
+    flex: 1;
+    animation: desplazamiento 30s linear infinite;
+    transform: translateX(100vw);
+    position: absolute;
+    text-align: center;
+}
+
+.rme-1 {
+    animation-delay: 0s;
+}
+
+.rme-2 {
+    animation-delay: 10s;
+}
+
+.rme-3 {
+    animation-delay: 20s;
 }
 
 @keyframes desplazamiento {
     0% {
-        transform: translateX(100%);
+        transform: translateX(100vw);
     }
 
     100% {
-        transform: translateX(calc(-100% - 10px));
+        transform: translateX(calc(-100vw/3));
+
     }
 }

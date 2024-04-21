@@ -228,52 +228,23 @@ function Trading() {
   return (
     <>
       <div className="rotating-marquee bg-primary">
-        <div className="row rotating-marquee-element w-100">
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
-          <div className="col-1">
-            <span className="text-white">{actualPair.symbol}: 0</span>
-          </div>
+        <div className="col-4 rotating-marquee-element rme-1 bg-primary">
+          <span className="text-white">BTCUSDT: 65540,23$</span>
+        </div >
+        <div className="col-4 rotating-marquee-element rme-2 bg-primary">
+          <span className="text-white">BNBBTC: 650,23$</span>
         </div>
-      </div>
+        <div className="col-4 rotating-marquee-element rme-3 bg-primary">
+          <span className="text-white">ETHUSDT: 3110,43$</span>
+        </div>
+      </div >
+
       <div className="container mt-2 mb-5 d-flex flex-column">
         <div className="row">
           <div className="col ps-0">
             <button className="btn btn-primary mt-2 mb-2" onClick={updateMode}>Cambiar modo</button>
           </div>
         </div>
-
         <div className="row">
           {actualPair !== undefined ? // Si la moneda existe
             <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
