@@ -3,6 +3,7 @@ import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 import SymbolItem from './SymbolItem';
 
 // METER EN SYMBOLS EL BASEASSETPRECISION Y EL QUOTEASSETPRECISION
+// METER EN SYMBOLS EL NOMBRE COMPLETO DE LA MONEDA
 import Symbols from "../../data/Symbols.json";
 import CoinMarketCapData from "../../data/CoinMarketCapData.json";
 
@@ -14,6 +15,27 @@ import { useParams } from 'react-router-dom';
 // poner la moneda seleccionada
 // onmouseover
 // copiarse de binance
+/*
+*
+*  const getFullName = (symbol) => {
+    const info = CoinMarketCapData.data[symbol][0];
+    return info == null ? symbol : info.name;
+  }
+
+  useEffect(() => {
+    const a = Symbols.symbols.map((s) => {
+      return ({
+        symbol: s.symbol,
+        step: s.step,
+        quoteAsset: s.quoteAsset,
+        decimalPlaces: s.decimalPlaces,
+        baseAsset: s.baseAsset,
+        quoteAssetName: getFullName(s.quoteAsset),
+        baseAssetName: getFullName(s.baseAsset),
+      });
+    })
+    console.log(a);
+  }, [])*/
 
 // poner que cuando pasas por encima de un par se vea el selccionado
 // poner mejor los bordes
@@ -22,6 +44,9 @@ import { useParams } from 'react-router-dom';
 // refactor el de eso
 // poner lo de las comas y punto
 // 
+
+// IMPORTANTE
+// WEBSOCKET Y API CALL PARA LOS PRECIOS DEL MARQUEE
 
 function Trading() {
   const params = useParams();
@@ -188,7 +213,9 @@ function Trading() {
     if (Symbols.symbols == null)
       return [];
 
-    return Object.values(Symbols.symbols).filter(s => s.symbol.startsWith(regex.toUpperCase()));
+    return Object.values(Symbols.symbols).filter(s =>
+      s.baseAssetName.toUpperCase().startsWith(regex.toUpperCase()) ||
+      s.symbol.startsWith(regex.toUpperCase()));
   }
 
   const searchHandler = () => {
