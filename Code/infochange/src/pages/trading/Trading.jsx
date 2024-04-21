@@ -61,7 +61,7 @@ function Trading() {
     "LTCUSDT",
     "LINKUSDT",
     "DOTUSDT",
-    "EURUSDT"] // Must be 12 items
+    "EURUSDT"] // Must be 6 items
 
   const [symbols, setSymbols] = useState(Symbols.symbols);
   const [newbieChart, setNewbieChart] = useState(null);
@@ -168,10 +168,16 @@ function Trading() {
 
   // BUY ACTION
   const onBuy = () => {
-    const receivedBaseAssetAmount = parseFloat(buyBaseAssetInput);
     const paidQuoteAssetAmount = parseFloat(buyQuoteAssetInput);
+    const quoteComision = paidQuoteAssetAmount * tradingComision;
+
+    const receivedBaseAssetAmount = (paidQuoteAssetAmount - quoteComision) / pairPrice;
 
     clearAmountInputs();
+
+    if (pairPrice <= 0) {
+      return;
+    }
 
     if (isNaN(receivedBaseAssetAmount) || isNaN(paidQuoteAssetAmount)) {
       alert("El monto de compra introducido no es válido"); // reemplazar por que se ponga rojito algo
@@ -180,10 +186,6 @@ function Trading() {
 
     if (getWalletAmount(actualPair.quoteAsset) < paidQuoteAssetAmount) {
       alert("No tienes " + actualPair.quoteAsset + " suficientes");
-      return;
-    }
-
-    if (actualPair.price === undefined) {
       return;
     }
 
@@ -198,16 +200,23 @@ function Trading() {
     modalTitle.innerHTML = `Compra realizada con éxito`;
     const modalBody = document.getElementById('just-close-modal-body');
     modalBody.innerHTML = `Has comprado <b>` + receivedBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
-      paidQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b>";
+      paidQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b> y has pagado <b>" +
+      quoteComision.toFixed(8) + " " + actualPair.quoteAsset + "</b> de comisión.";
     modal.show();
   }
 
   // SELL ACTION
   const onSell = () => {
-    const receivedQuoteAssetAmount = parseFloat(sellQuoteAssetInput);
     const paidBaseAssetAmount = parseFloat(sellBaseAssetInput);
+    const baseComision = paidBaseAssetAmount * tradingComision;
+
+    const receivedQuoteAssetAmount = (paidBaseAssetAmount - baseComision) * pairPrice;
 
     clearAmountInputs();
+
+    if (pairPrice <= 0) {
+      return;
+    }
 
     if (isNaN(receivedQuoteAssetAmount) || isNaN(paidBaseAssetAmount)) {
       alert("El monto de compra introducido no es válido");
@@ -216,10 +225,6 @@ function Trading() {
 
     if (getWalletAmount(actualPair.baseAsset) < paidBaseAssetAmount) {
       alert("No tienes " + actualPair.baseAsset + " suficientes");
-      return;
-    }
-
-    if (actualPair.price === undefined) {
       return;
     }
 
@@ -234,7 +239,8 @@ function Trading() {
     modalTitle.innerHTML = `Venta realizada con éxito`;
     const modalBody = document.getElementById('just-close-modal-body');
     modalBody.innerHTML = `Has vendido <b>` + paidBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
-      receivedQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b>";
+      receivedQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b> y has pagado <b>" +
+      baseComision.toFixed(8) + " " + actualPair.baseAsset + "</b> de comisión.";
     modal.show();
   }
 
@@ -296,8 +302,11 @@ function Trading() {
         });
 
         setSymbols(symbolsWithPrice);
-        if (actualPair !== undefined)
-          setPair(Object.values(symbolsWithPrice).filter(s => s.symbol == actualPair.symbol)[0]);
+        if (actualPair !== undefined) { // de esta forma para evitar el rerenderizado
+          actualPair.price = Object.values(symbolsWithPrice).filter(s => s.symbol == actualPair.symbol)[0].price;
+          setPair(actualPair);
+        }
+
       } catch (error) {
         console.error('Error fetching prices:', error);
       }
@@ -376,7 +385,7 @@ function Trading() {
       <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput} clickHandler={onSymbolClick} />
     );
   });
-  console.log(window.innerHeight);
+
   const marquee = <div className="rotating-marquee bg-secondary" >
     {marqueePairs.map((elem, i) => {
       return (
@@ -475,7 +484,7 @@ function Trading() {
               </div>
               <input type="range" className="form-range" value={buyRangeValue} onChange={handleBuyRangeChange} />
               <div className="input-group input-group-sm">
-                <input type="text" className="form-control" placeholder="Vas a recibir" value={buyBaseAssetInput}
+                <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={buyBaseAssetInput}
                   onChange={handleBuyBaseAsset} />
                 <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
               </div>
@@ -498,7 +507,7 @@ function Trading() {
               <input type="range" className="form-range" id="customRange2" value={sellRangeValue}
                 onChange={handleSellRangeChange} />
               <div className="input-group input-group-sm">
-                <input type="text" className="form-control" placeholder="Vas a recibir" value={sellQuoteAssetInput}
+                <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={sellQuoteAssetInput}
                   onChange={handleSellQuoteAsset} />
                 <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
               </div>
