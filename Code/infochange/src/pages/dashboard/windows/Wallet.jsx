@@ -46,19 +46,37 @@ export default function Wallet(props) {
       </div>
       <hr className="mx-4 my-2" />
       <div className="mx-4">
-        <h4 className="text-center text-body-secondary">Monedas adquiridas</h4>
+        <h4 className="text-center text-body-secondary mb-3">
+          Monedas adquiridas
+        </h4>
         {wallet.coins === undefined || wallet.coins.length === 0 ? (
-          <h5 className="text-center text-body-secondary">No tienes monedas</h5>
+          <h5 className="text-center text-body-secondary mb-3">
+            No tienes monedas
+          </h5>
         ) : (
-          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div className="row g-3 mb-3">
             {coins.map((coin, index) => (
-              <div key={index} className="col">
+              <div key={index} className="col-lg-4 col-md-6 col">
                 <div className="card h-100">
                   <div className="card-body">
+                    <img
+                      src={"/favicon.ico"}
+                      name="ph"
+                      width={"32px"}
+                      height={"32px"}
+                    />
                     <img
                       src={coin.logo}
                       className="card-img-top placeholder-glow"
                       style={{ width: "32px", height: "32px" }}
+                      onLoad={(e) => {
+                        const loadingImage =
+                          e.target.parentElement.querySelector(
+                            'img[name="ph"]'
+                          );
+                        loadingImage.style.display = "none";
+                        e.target.style.display = "block";
+                      }}
                       alt={coin.name}
                     />
                     <p className="card-text">{coin.name}</p>

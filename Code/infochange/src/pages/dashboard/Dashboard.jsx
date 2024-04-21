@@ -5,7 +5,7 @@ import {
   useParams,
   Navigate,
 } from "react-router-dom";
-import { PersonFill, Wallet2 } from "react-bootstrap-icons";
+import { ChevronLeft, PersonFill, Wallet2 } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
 import Users from "./../../data/users.json";
@@ -42,8 +42,8 @@ export default function Dashboard() {
   const labels = ["Perfil", "Cartera"];
 
   return (
-    <div className="container mt-2">
-      <div className="card py-2 my-4">
+    <div className="container">
+      <div className="card my-4">
         <h1 className="text-center"> Panel de control</h1>
       </div>
       <div className="row align-items-start">
@@ -68,13 +68,18 @@ export default function Dashboard() {
               <Wallet2 className="me-3" />
               Cartera
             </button>
-            <button
-              type="button"
-              className="list-group-item list-group-item-action disabled"
-              disabled
-            >
-              Disabled item
-            </button>
+
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <button
+                type="button"
+                className={
+                  "list-group-item list-group-item-action d-flex align-items-center"
+                }
+              >
+                <ChevronLeft className="me-3" />
+                Volver al menú
+              </button>
+            </Link>
           </div>
         </div>
         <div className="col-9 mb-3">
