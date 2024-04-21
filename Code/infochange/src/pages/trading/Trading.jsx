@@ -3,9 +3,9 @@ import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 import SymbolItem from './SymbolItem';
 
 // METER EN SYMBOLS EL BASEASSETPRECISION Y EL QUOTEASSETPRECISION
-// METER EN SYMBOLS EL NOMBRE COMPLETO DE LA MONEDA
 import Symbols from "../../data/Symbols.json";
 import CoinMarketCapData from "../../data/CoinMarketCapData.json";
+import axios from 'axios';
 
 import "./trading.css";
 import { useParams } from 'react-router-dom';
@@ -55,17 +55,21 @@ function Trading() {
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
 
-  const tradingComision = 0.0065;
-  const pairPrice = 65330;
-  const baseAssetAmount = useRef(0);
-  const quoteAssetAmount = useRef(100000);
+  const marqueePairs = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "LINKUSDT", "DOTUSDT", "VITEBTC"] // Max 12 items
 
+  const [symbols, setSymbols] = useState(Symbols.symbols);
   const [newbieChart, setNewbieChart] = useState(null);
   const [proChart, setProChart] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchPairs, setSearchPairs] = useState([]);
   const [mode, setMode] = useState(0);
   const [actualPair, setPair] = useState(getPair(pairPath));
+
+  const [myWallet, setMyWallet] = useState({ "USDT": 100000 });
+  const getWalletAmount = (symbol) => myWallet[symbol] === undefined ? 0 : myWallet[symbol];
+
+  const tradingComision = 0.0065;
+  const pairPrice = actualPair === undefined || actualPair.price === undefined ? -1 : actualPair.price;
 
   // BUY QUOTE
   const [buyQuoteAssetInput, setBuyQuoteAssetInput] = useState("");
@@ -130,7 +134,7 @@ function Trading() {
   const handleBuyRangeChange = (event) => {
     const rangeValue = parseInt(event.target.value);
 
-    const newValue = (rangeValue / 100) * quoteAssetAmount.current;
+    const newValue = (rangeValue / 100) * getWalletAmount(actualPair.quoteAsset);
     updateBuyQuoteAsset(newValue == 0 ? "" : newValue);
     setBuyRangeValue(rangeValue);
   }
@@ -140,35 +144,52 @@ function Trading() {
   const handleSellRangeChange = (event) => {
     const rangeValue = parseInt(event.target.value);
 
-    const newValue = (rangeValue / 100) * baseAssetAmount.current;
+    const newValue = (rangeValue / 100) * getWalletAmount(actualPair.baseAsset);
     updateSellBaseAsset(newValue == 0 ? "" : newValue);
     setSellRangeValue(rangeValue);
   }
+
+  const clearAmountInputs = () => {
+    setBuyRangeValue(0);
+    setSellRangeValue(0);
+    updateSellBaseAsset("");
+    updateBuyQuoteAsset("");
+  }
+
+  useEffect(() => {
+    clearAmountInputs();
+  }, [actualPair, myWallet]);
 
   // BUY ACTION
   const onBuy = () => {
     const receivedBaseAssetAmount = parseFloat(buyBaseAssetInput);
     const paidQuoteAssetAmount = parseFloat(buyQuoteAssetInput);
 
-    if (!isNaN(receivedBaseAssetAmount) && !isNaN(paidQuoteAssetAmount)) {
-      baseAssetAmount.current += receivedBaseAssetAmount;
-      quoteAssetAmount.current -= paidQuoteAssetAmount;
+    clearAmountInputs();
 
-      const modal = new bootstrap.Modal(document.getElementById('just-close-modal'));
-      const modalTitle = document.getElementById('just-close-modal-title');
-      modalTitle.innerHTML = `Compra realizada con éxito`;
-      const modalBody = document.getElementById('just-close-modal-body');
-      modalBody.innerHTML = `Has comprado <b>` + receivedBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
-        paidQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b>";
-      modal.show();
-    } else {
+    if (isNaN(receivedBaseAssetAmount) || isNaN(paidQuoteAssetAmount)) {
       alert("El monto de compra introducido no es válido"); // reemplazar por que se ponga rojito algo
+      return;
     }
 
-    setBuyRangeValue(0);
-    setSellRangeValue(0);
-    updateSellBaseAsset("");
-    updateBuyQuoteAsset("");
+    if (getWalletAmount(actualPair.quoteAsset) < paidQuoteAssetAmount) {
+      alert("No tienes " + actualPair.quoteAsset + " suficientes");
+      return;
+    }
+
+    myWallet[actualPair.baseAsset] = getWalletAmount(actualPair.baseAsset) + receivedBaseAssetAmount;
+    myWallet[actualPair.quoteAsset] = getWalletAmount(actualPair.quoteAsset) - paidQuoteAssetAmount;
+
+    const newWallet = { ...myWallet };
+    setMyWallet(newWallet);
+
+    const modal = new bootstrap.Modal(document.getElementById('just-close-modal'));
+    const modalTitle = document.getElementById('just-close-modal-title');
+    modalTitle.innerHTML = `Compra realizada con éxito`;
+    const modalBody = document.getElementById('just-close-modal-body');
+    modalBody.innerHTML = `Has comprado <b>` + receivedBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
+      paidQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b>";
+    modal.show();
   }
 
   // SELL ACTION
@@ -176,25 +197,30 @@ function Trading() {
     const receivedQuoteAssetAmount = parseFloat(sellQuoteAssetInput);
     const paidBaseAssetAmount = parseFloat(sellBaseAssetInput);
 
-    if (!isNaN(receivedQuoteAssetAmount) && !isNaN(paidBaseAssetAmount)) {
-      quoteAssetAmount.current += receivedQuoteAssetAmount;
-      baseAssetAmount.current -= paidBaseAssetAmount;
+    clearAmountInputs();
 
-      const modal = new bootstrap.Modal(document.getElementById('just-close-modal'));
-      const modalTitle = document.getElementById('just-close-modal-title');
-      modalTitle.innerHTML = `Venta realizada con éxito`;
-      const modalBody = document.getElementById('just-close-modal-body');
-      modalBody.innerHTML = `Has vendido <b>` + paidBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
-        receivedQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b>";
-      modal.show();
-    } else {
-      alert("El monto de compra introducido no es válido"); // reemplazar por que se ponga rojito algo
+    if (isNaN(receivedQuoteAssetAmount) || isNaN(paidBaseAssetAmount)) {
+      alert("El monto de compra introducido no es válido");
+      return;
     }
 
-    setBuyRangeValue(0);
-    setSellRangeValue(0);
-    updateSellBaseAsset("");
-    updateBuyQuoteAsset("");
+    if (getWalletAmount(actualPair.baseAsset) < paidBaseAssetAmount) {
+      alert("No tienes " + actualPair.baseAsset + " suficientes");
+      return;
+    }
+    myWallet[actualPair.quoteAsset] = getWalletAmount(actualPair.quoteAsset) + receivedQuoteAssetAmount;
+    myWallet[actualPair.baseAsset] = getWalletAmount(actualPair.baseAsset) - paidBaseAssetAmount;
+
+    const newWallet = { ...myWallet };
+    setMyWallet(newWallet);
+
+    const modal = new bootstrap.Modal(document.getElementById('just-close-modal'));
+    const modalTitle = document.getElementById('just-close-modal-title');
+    modalTitle.innerHTML = `Venta realizada con éxito`;
+    const modalBody = document.getElementById('just-close-modal-body');
+    modalBody.innerHTML = `Has vendido <b>` + paidBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
+      receivedQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b>";
+    modal.show();
   }
 
   function getBaseAsset() {
@@ -206,14 +232,14 @@ function Trading() {
   }
 
   function getPair(symbol) {
-    return Object.values(Symbols.symbols).filter(s => s.symbol == symbol)[0];
+    return Object.values(symbols).filter(s => s.symbol == symbol)[0];
   }
 
   function filterPairs(regex = "") {
-    if (Symbols.symbols == null)
+    if (symbols == null)
       return [];
 
-    return Object.values(Symbols.symbols).filter(s =>
+    return Object.values(symbols).filter(s =>
       s.baseAssetName.toUpperCase().startsWith(regex.toUpperCase()) ||
       s.symbol.startsWith(regex.toUpperCase()));
   }
@@ -236,6 +262,40 @@ function Trading() {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') searchHandler();
   }
+
+  useEffect(() => {
+    const loadPrices = async () => {
+      try {
+        const responsePrices = await axios.get('https://api.binance.com/api/v1/ticker/price');
+        const dataPrices = responsePrices.data;
+
+        console.log("Loading symbols from local cache");
+        const symbolsWithPrice = Symbols.symbols.map(s => {
+          const priceData = dataPrices.find(price => price.symbol === s.symbol);
+          const price = priceData ? parseFloat(priceData.price).toFixed(s.decimalPlaces) : "-";
+
+          return {
+            ...s,
+            price: price
+          };
+        });
+
+        setSymbols(symbolsWithPrice);
+        if (actualPair !== undefined)
+          setPair(Object.values(symbolsWithPrice).filter(s => s.symbol == actualPair.symbol)[0]);
+      } catch (error) {
+        console.error('Error fetching prices:', error);
+      }
+    };
+
+    loadPrices();
+
+    const intervalId = setInterval(() => {
+      loadPrices();
+    }, 30000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     if (actualPair !== undefined) {
@@ -291,8 +351,7 @@ function Trading() {
     }
   }, [actualPair])
 
-
-  let searchPairsObject = searchPairs.map(p => {
+  const searchPairsObject = searchPairs.map(p => {
     const onSymbolClick = () => {
       setPair(p);
       setSearchInput("");
@@ -303,43 +362,34 @@ function Trading() {
     );
   });
 
+  const marqueeElements = marqueePairs.map((elem, i) => {
+
+    return (
+      <div key={i} className={`col-2 rotating-marquee-element rme-${i + 1} bg-primary`}>
+        <span className="text-white">{elem}: {getPair(elem).price}</span>
+      </div >
+    );
+  });
 
   // METER LOS ROTATING MARQUEE PARA QUE SEA CICLICO Y NO TODO EL ELEMENTO
   return (
     <>
       <div className="rotating-marquee bg-primary">
-        <div className="col-2 rotating-marquee-element rme-1 bg-primary">
-          <span className="text-white">BTCUSDT: 65540,23$</span>
-        </div >
-        <div className="col-2 rotating-marquee-element rme-2 bg-primary">
-          <span className="text-white">BNBBTC: 650,36$</span>
-        </div>
-        <div className="col-2 rotating-marquee-element rme-3 bg-primary">
-          <span className="text-white">ETHUSDT: 3110,43$</span>
-        </div>
-        <div className="col-2 rotating-marquee-element rme-4 bg-primary">
-          <span className="text-white">LTCUSDT: 84,11$</span>
-        </div >
-        <div className="col-2 rotating-marquee-element rme-5 bg-primary">
-          <span className="text-white">YFIUSDT: 4650,88$</span>
-        </div>
-        <div className="col-2 rotating-marquee-element rme-6 bg-primary">
-          <span className="text-white">DOTUSDT: 10,14$</span>
-        </div>
+        {marqueeElements}
       </div >
 
-      <div class="modal fade" id="just-close-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 id="just-close-modal-title" class="modal-title fs-5">Titulo</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="just-close-modal">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 id="just-close-modal-title" className="modal-title fs-5">Titulo</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="just-close-modal-body" class="modal-body">
+            <div id="just-close-modal-body" className="modal-body">
               Cuerpo
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
             </div>
           </div>
         </div>
@@ -401,18 +451,18 @@ function Trading() {
           <div className="col-md-6 border">
             <div>
               <div className="mt-1 mb-1">
-                Disp: {quoteAssetAmount.current.toFixed(8)} {getQuoteAsset()}
+                Disp: {actualPair === undefined ? 0 : getWalletAmount(actualPair.quoteAsset).toFixed(8)} {getQuoteAsset()}
               </div>
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput}
+              <div className="input-group input-group-sm">
+                <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput}
                   onChange={handleBuyQuoteAsset} />
-                <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+                <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
               </div>
-              <input type="range" class="form-range" value={buyRangeValue} onChange={handleBuyRangeChange} />
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Vas a recibir" value={buyBaseAssetInput}
+              <input type="range" className="form-range" value={buyRangeValue} onChange={handleBuyRangeChange} />
+              <div className="input-group input-group-sm">
+                <input type="text" className="form-control" placeholder="Vas a recibir" value={buyBaseAssetInput}
                   onChange={handleBuyBaseAsset} />
-                <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+                <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
               </div>
               <div className="mt-1 mb-1">
                 Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(8)}  {getQuoteAsset()}
@@ -422,20 +472,20 @@ function Trading() {
           </div>
           <div className="col-md-6 border">
             <div className="mt-1 mb-1">
-              Disp: {baseAssetAmount.current.toFixed(8)} {getBaseAsset()}
+              Disp: {actualPair === undefined ? 0 : getWalletAmount(actualPair.baseAsset).toFixed(8)} {getBaseAsset()}
             </div>
             <div>
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput}
+              <div className="input-group input-group-sm">
+                <input type="text" className="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput}
                   onChange={handleSellBaseAsset} />
-                <span class="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+                <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
               </div>
-              <input type="range" class="form-range" id="customRange2" value={sellRangeValue}
+              <input type="range" className="form-range" id="customRange2" value={sellRangeValue}
                 onChange={handleSellRangeChange} />
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Vas a recibir" value={sellQuoteAssetInput}
+              <div className="input-group input-group-sm">
+                <input type="text" className="form-control" placeholder="Vas a recibir" value={sellQuoteAssetInput}
                   onChange={handleSellQuoteAsset} />
-                <span class="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+                <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
               </div>
               <div className="mt-1 mb-1">
                 Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {getBaseAsset()}
