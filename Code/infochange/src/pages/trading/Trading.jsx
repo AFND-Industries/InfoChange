@@ -61,13 +61,7 @@ function Trading() {
     "LTCUSDT",
     "LINKUSDT",
     "DOTUSDT",
-    "VITEUSDT",
-    "SOLUSDT",
-    "EURUSDT",
-    "ADAUSDT",
-    "DOGEUSDT",
-    "XRPUSDT",
-    "AVAXUSDT"] // Must be 12 items
+    "EURUSDT"] // Must be 12 items
 
   const [symbols, setSymbols] = useState(Symbols.symbols);
   const [newbieChart, setNewbieChart] = useState(null);
@@ -290,7 +284,7 @@ function Trading() {
         const responsePrices = await axios.get('https://api.binance.com/api/v1/ticker/price');
         const dataPrices = responsePrices.data;
 
-        console.log("Loading symbols from local cache");
+        console.log("Updating prices");
         const symbolsWithPrice = Symbols.symbols.map(s => {
           const priceData = dataPrices.find(price => price.symbol === s.symbol);
           const price = priceData ? parseFloat(priceData.price).toFixed(s.decimalPlaces) : "-";
@@ -386,8 +380,8 @@ function Trading() {
   const marqueeElements = marqueePairs.map((elem, i) => {
 
     return (
-      <div key={i} className={`col-1 bg-secondary rotating-marquee-element rme-${i + 1}`}>
-        <span className="text-white"><b>{elem} <span className="text-warning">{getPair(elem).price}</span></b></span>
+      <div key={i} className={`col-2 bg-secondary rotating-marquee-element rme-${2 * i + 1}`}>
+        <span className="text-white"><b>{elem} <div className="text-warning">{getPair(elem).price}</div></b></span>
       </div >
     );
   });

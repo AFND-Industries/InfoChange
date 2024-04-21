@@ -6,7 +6,7 @@
     overflow: hidden;
     white-space: nowrap;
     display: flex;
-    height: 24px;
+    height: 48px;
 }
 
 body,
@@ -70,9 +70,7 @@ body.modal-open {
     animation-delay: 25s;
 }
 
-.rme-12 {
-    animation-delay: 27.5s;
-}
+
 
 @keyframes desplazamiento {
     0% {
@@ -80,7 +78,7 @@ body.modal-open {
     }
 
     100% {
-        transform: translateX(calc(-100vw/12));
+        transform: translateX(calc(-100vw/6));
 
     }
 }
