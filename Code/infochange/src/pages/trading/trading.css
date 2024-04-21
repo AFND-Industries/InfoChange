@@ -6,7 +6,28 @@
     overflow: hidden;
     white-space: nowrap;
     display: flex;
-    height: 48px;
+}
+
+@media screen and (max-width: 767px) {
+
+    .rotating-marquee,
+    .rotating-marquee-element {
+        height: 48px;
+        display: block;
+    }
+}
+
+@media screen and (min-width: 768px) {
+
+    .rotating-marquee,
+    .rotating-marquee-element {
+        height: 24px;
+        display: flex;
+    }
+
+    .marquee-pair {
+        margin-right: 10px;
+    }
 }
 
 body,

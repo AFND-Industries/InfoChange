@@ -376,22 +376,22 @@ function Trading() {
       <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput} clickHandler={onSymbolClick} />
     );
   });
-
-  const marqueeElements = marqueePairs.map((elem, i) => {
-
-    return (
-      <div key={i} className={`col-2 bg-secondary rotating-marquee-element rme-${2 * i + 1}`}>
-        <span className="text-white"><b>{elem} <div className="text-warning">{getPair(elem).price}</div></b></span>
-      </div >
-    );
-  });
+  console.log(window.innerHeight);
+  const marquee = <div className="rotating-marquee bg-secondary" >
+    {marqueePairs.map((elem, i) => {
+      return (
+        <div key={i} className={`align-items-center col-2 bg-secondary rotating-marquee-element rme-${2 * i + 1}`}>
+          <div className="text-white marquee-pair"><b>{elem}</b></div>
+          <div className="text-warning"><b>{getPair(elem).price}</b></div>
+        </div >
+      );
+    })}
+  </div >
 
   // METER LOS ROTATING MARQUEE PARA QUE SEA CICLICO Y NO TODO EL ELEMENTO
   return (
     <>
-      <div className="rotating-marquee bg-secondary">
-        {marqueeElements}
-      </div >
+      {marquee}
 
       <div className="modal fade" id="just-close-modal">
         <div className="modal-dialog">
