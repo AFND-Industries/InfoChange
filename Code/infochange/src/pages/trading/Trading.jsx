@@ -55,7 +55,19 @@ function Trading() {
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
 
-  const marqueePairs = ["BTCUSDT", "ETHUSDT", "LTCUSDT", "LINKUSDT", "DOTUSDT", "VITEBTC"] // Max 12 items
+  const marqueePairs = [
+    "BTCUSDT",
+    "ETHUSDT",
+    "LTCUSDT",
+    "LINKUSDT",
+    "DOTUSDT",
+    "VITEUSDT",
+    "SOLUSDT",
+    "EURUSDT",
+    "ADAUSDT",
+    "DOGEUSDT",
+    "XRPUSDT",
+    "AVAXUSDT"] // Must be 12 items
 
   const [symbols, setSymbols] = useState(Symbols.symbols);
   const [newbieChart, setNewbieChart] = useState(null);
@@ -177,6 +189,10 @@ function Trading() {
       return;
     }
 
+    if (actualPair.price === undefined) {
+      return;
+    }
+
     myWallet[actualPair.baseAsset] = getWalletAmount(actualPair.baseAsset) + receivedBaseAssetAmount;
     myWallet[actualPair.quoteAsset] = getWalletAmount(actualPair.quoteAsset) - paidQuoteAssetAmount;
 
@@ -208,6 +224,11 @@ function Trading() {
       alert("No tienes " + actualPair.baseAsset + " suficientes");
       return;
     }
+
+    if (actualPair.price === undefined) {
+      return;
+    }
+
     myWallet[actualPair.quoteAsset] = getWalletAmount(actualPair.quoteAsset) + receivedQuoteAssetAmount;
     myWallet[actualPair.baseAsset] = getWalletAmount(actualPair.baseAsset) - paidBaseAssetAmount;
 
@@ -365,8 +386,8 @@ function Trading() {
   const marqueeElements = marqueePairs.map((elem, i) => {
 
     return (
-      <div key={i} className={`col-2 rotating-marquee-element rme-${i + 1} bg-primary`}>
-        <span className="text-white">{elem}: {getPair(elem).price}</span>
+      <div key={i} className={`col-1 bg-secondary rotating-marquee-element rme-${i + 1}`}>
+        <span className="text-white"><b>{elem} <span className="text-warning">{getPair(elem).price}</span></b></span>
       </div >
     );
   });
@@ -374,7 +395,7 @@ function Trading() {
   // METER LOS ROTATING MARQUEE PARA QUE SEA CICLICO Y NO TODO EL ELEMENTO
   return (
     <>
-      <div className="rotating-marquee bg-primary">
+      <div className="rotating-marquee bg-secondary">
         {marqueeElements}
       </div >
 

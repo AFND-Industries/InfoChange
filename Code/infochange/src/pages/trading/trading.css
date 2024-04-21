@@ -31,23 +31,47 @@ body.modal-open {
 }
 
 .rme-2 {
-    animation-delay: 5s;
+    animation-delay: 2.5s;
 }
 
 .rme-3 {
-    animation-delay: 10s;
+    animation-delay: 5s;
 }
 
 .rme-4 {
-    animation-delay: 15s;
+    animation-delay: 7.5s;
 }
 
 .rme-5 {
-    animation-delay: 20s;
+    animation-delay: 10s;
 }
 
 .rme-6 {
+    animation-delay: 12.5s;
+}
+
+.rme-7 {
+    animation-delay: 15s;
+}
+
+.rme-8 {
+    animation-delay: 17.5s;
+}
+
+.rme-9 {
+    animation-delay: 20s;
+}
+
+.rme-10 {
+    animation-delay: 22.5s;
+}
+
+.rme-11 {
     animation-delay: 25s;
+}
+
+.rme-12 {
+    animation-delay: 27.5s;
 }
 
 @keyframes desplazamiento {
@@ -56,7 +80,7 @@ body.modal-open {
     }
 
     100% {
-        transform: translateX(calc(-100vw/6));
+        transform: translateX(calc(-100vw/12));
 
     }
 }
