@@ -38,8 +38,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Routes>
           <Route path="/" element={wrap(<Welcome />)} />
           <Route path="/coins/*" element={wrap(<Coins />)} />
-          <Route path="/dashboard/:username" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:username" element={wrap(<Dashboard />)} />
+          <Route path="/dashboard" element={wrap(<Dashboard />)} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/trading/:pair" element={wrap(<Trading />)} />
