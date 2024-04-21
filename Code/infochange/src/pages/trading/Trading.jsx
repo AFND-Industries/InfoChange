@@ -48,6 +48,10 @@ import { useParams } from 'react-router-dom';
 // IMPORTANTE
 // WEBSOCKET Y API CALL PARA LOS PRECIOS DEL MARQUEE
 
+// refactor de to
+// poner bonito los bordes iguales y demas
+// hacer que la barra se actualice tmb si cambias el precio manualmente
+
 function Trading() {
   const params = useParams();
   const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
@@ -75,7 +79,8 @@ function Trading() {
   const getWalletAmount = (symbol) => myWallet[symbol] === undefined ? 0 : myWallet[symbol];
 
   const tradingComision = 0.0065;
-  const pairPrice = actualPair === undefined || actualPair.price === undefined ? -1 : actualPair.price;
+
+  const pairPrice = actualPair === undefined || symbols[0].price === undefined ? -1 : getPair(actualPair.symbol).price;
 
   // BUY QUOTE
   const [buyQuoteAssetInput, setBuyQuoteAssetInput] = useState("");
@@ -302,11 +307,6 @@ function Trading() {
         });
 
         setSymbols(symbolsWithPrice);
-        if (actualPair !== undefined) { // de esta forma para evitar el rerenderizado
-          actualPair.price = Object.values(symbolsWithPrice).filter(s => s.symbol == actualPair.symbol)[0].price;
-          setPair(actualPair);
-        }
-
       } catch (error) {
         console.error('Error fetching prices:', error);
       }

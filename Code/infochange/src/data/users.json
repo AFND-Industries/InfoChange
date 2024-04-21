@@ -14,11 +14,26 @@
     "wallet": {
       "balance": 1342.23,
       "coins": [
-        { "name": "BTC", "quantity": 0.0005 },
-        { "name": "ETH", "quantity": 0.005 },
-        { "name": "DOGE", "quantity": 100 },
-        { "name": "LTC", "quantity": 0.05 },
-        { "name": "XRP", "quantity": 1000 }
+        {
+          "name": "BTC",
+          "quantity": 0.0005
+        },
+        {
+          "name": "ETH",
+          "quantity": 0.005
+        },
+        {
+          "name": "DOGE",
+          "quantity": 100
+        },
+        {
+          "name": "LTC",
+          "quantity": 0.05
+        },
+        {
+          "name": "XRP",
+          "quantity": 1000
+        }
       ]
     }
   },
@@ -28,6 +43,20 @@
       "name": "Eulogio",
       "surname": "Quemada",
       "email": "eulogio@infochange.es",
+      "phone": "+34 642233927",
+      "document": "12345678X",
+      "address": "Calle Mahalanobis, 5",
+      "postalCode": "29010",
+      "country": "España"
+    },
+    "wallet": {}
+  },
+  {
+    "profile": {
+      "username": "user",
+      "name": "Anónimo",
+      "surname": "Unknown",
+      "email": "user@infochange.es",
       "phone": "+34 642233927",
       "document": "12345678X",
       "address": "Calle Mahalanobis, 5",
