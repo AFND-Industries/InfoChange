@@ -155,7 +155,7 @@ function getData(symbols) {
           logo: item.logo,
           symbol: item.symbol,
           change_porcent:
-            symbol === undefined ? null : symbol.priceChangePercent + "%",
+            symbol === undefined ? null : symbol.priceChangePercent,
           volume: symbol === undefined ? null : symbol.volume,
           price: symbol === undefined ? null : symbol.lastPrice,
           description: item.description,
@@ -203,6 +203,18 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
     );
   };
 
+  const changePorcentTemplate = (rowData) => {
+    return rowData.change_porcent < 0 ? (
+      <span style={{ fontWeight: "bold", color: "red" }}>
+        {rowData.change_porcent} %
+      </span>
+    ) : (
+      <span style={{ fontWeight: "bold", color: "green" }}>
+        {rowData.change_porcent} %
+      </span>
+    );
+  };
+
   return (
     <div>
       <div className="border rounded m-3">
@@ -225,7 +237,6 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
             body={imageBodyTemplate}
             filter
             filterField="name"
-            sortable
             header="Nombre"
             headerStyle={{ position: "sticky", left: 0 }}
             bodyStyle={{
@@ -238,8 +249,9 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
             style={{ width: "25%" }}
           ></Column>
           <Column
-            field="change_porcent"
+            body={changePorcentTemplate}
             sortable
+            sortField="change_porcent"
             header="Porcentaje de cambio"
             style={{ width: "25%" }}
           ></Column>

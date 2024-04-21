@@ -68,18 +68,6 @@ export default function Dashboard() {
               <Wallet2 className="me-3" />
               Cartera
             </button>
-
-            <Link to="/" style={{ textDecoration: "none" }}>
-              <button
-                type="button"
-                className={
-                  "list-group-item list-group-item-action d-flex align-items-center"
-                }
-              >
-                <ChevronLeft className="me-3" />
-                Volver al menú
-              </button>
-            </Link>
           </div>
         </div>
         <div className="col-9 mb-3">

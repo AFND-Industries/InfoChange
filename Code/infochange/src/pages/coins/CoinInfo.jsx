@@ -52,9 +52,9 @@ export default function CoinInfo(props) {
 
       <div className="m-3">
         <SymbolOverview
-          colorTheme="dark"
+          colorTheme="light"
           symbols={[coin.symbol + "USDT"]}
-          chartType="candlesticks"
+          chartType="area"
           downColor="#800080"
           borderDownColor="#800080"
           wickDownColor="#800080"
