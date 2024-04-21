@@ -82,9 +82,9 @@ export default function Welcome() {
                         }}
                       />
                       <div className="card-body">
-                        <h5 class="card-title">Inicia sesion</h5>
+                        <h5 className="card-title">Inicia sesion</h5>
 
-                        <p class="card-text">
+                        <p className="card-text">
                           Estas a un paso de empezar en el mundo de las
                           criptomonedas!
                         </p>
@@ -113,30 +113,33 @@ export default function Welcome() {
           </div>
         </Parallax>
       </div>
-      <div className="container d-flex justify-content-center align-items-center">
-        <div className="row row-md-12 g-4 mx-4">
-          <div className="col">
-            <div className="card">
+      <div className="container-fluid">
+        <div className="row flex-row g-3 my-5 mx-2 justify-content-evenly align-content-center justify-items-center">
+          <div className="col-10 col-md ">
+            <div className="card card-link" style={{ height: "100%" }}>
               <img
                 src="https://www.santander.com/content/dam/santander-com/es/stories/contenido-stories/2021/educacionfinanciera/im-storie-guia-para-saber-que-son-las-criptomonedas-3.jpg"
                 className="card-img-top"
-                alt="..."
+                alt="texto alternativo"
                 id="card_image"
               />
               <div className="card-body">
-                <h5 className="card-title">Invierte hoy mismo</h5>
+                <h5 className="card-title">
+                  Explora el Mundo de las Criptomonedas
+                </h5>
                 <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  Embárcate en un viaje a través de las monedas digitales en
+                  nuestro exchange. Encuentra precios actualizados y datos
+                  esenciales para cada criptomoneda.
                 </p>
-                <a href="#" className="btn btn-primary">
-                  Go somewhere
-                </a>
+                <Link to="/coins">
+                  <button className="btn btn-primary me-2">Monedas</button>
+                </Link>
               </div>
             </div>
           </div>
-          <div className="col">
-            <div className="card">
+          <div className="col-10 col-md">
+            <div className="card card-link" style={{ height: "100%" }}>
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3HtfCAMxulYVH25gpMMP6OZynyciD1yWvpO0oUKaedg&s"
                 className="card-img-top"
@@ -144,19 +147,22 @@ export default function Welcome() {
                 id="card_image"
               />
               <div className="card-body">
-                <h5 className="card-title">Perderas todo tu dinero</h5>
+                <h5 className="card-title">
+                  Explora el Mercado Cripto en Profundidad
+                </h5>
                 <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  Accede a nuestro exchange para explorar gráficos interactivos
+                  y opciones de compra/venta de criptomonedas. ¡Empieza a operar
+                  con confianza!
                 </p>
-                <a href="#" className="btn btn-primary">
-                  Go somewhere
-                </a>
+                <Link to="/trading">
+                  <button className="btn btn-primary me-2">Trading</button>
+                </Link>
               </div>
             </div>
           </div>
-          <div className="col">
-            <div className="card">
+          <div className="col-10 col-md">
+            <div className="card card-link" style={{ height: "100%" }}>
               <img
                 src="https://t4.ftcdn.net/jpg/00/58/54/07/360_F_58540776_2hIhJKUCrghGKszJhfeuul7hRpurV9RN.jpg"
                 className="card-img-top"
@@ -164,14 +170,18 @@ export default function Welcome() {
                 id="card_image"
               />
               <div className="card-body">
-                <h5 className="card-title">Para todos/as</h5>
+                <h5 className="card-title">Tu Wallet Cripto Personalizado</h5>
                 <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  Descubre tu dashboard exclusivo, centrado en tu wallet de
+                  criptomonedas. Gestiona y supervisa tus activos digitales con
+                  facilidad y seguridad. ¡Tu tesoro digital, bajo tu control
+                  absoluto!
                 </p>
-                <a href="#" className="btn btn-primary">
-                  Go somewhere
-                </a>
+                <Link to="/dashboard">
+                  <button className="btn btn-primary me-2">
+                    Panel de Control
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -193,24 +203,17 @@ export default function Welcome() {
                     aria-expanded="true"
                     aria-controls="collapseOne"
                   >
-                    Accordion Item #1
+                    ¿Qué es una criptomoneda y cómo funciona en InfoChange?
                   </button>
                 </h2>
-                <div
-                  id="collapseOne"
-                  class="accordion-collapse collapse show"
-                  data-bs-parent="#accordionExample"
-                >
+                <div id="collapseOne" class="accordion-collapse collapse show">
                   <div class="accordion-body">
-                    <strong>This is the first item's accordion body.</strong> It
-                    is shown by default, until the collapse plugin adds the
-                    appropriate classes that we use to style each element. These
-                    classes control the overall appearance, as well as the
-                    showing and hiding via CSS transitions. You can modify any
-                    of this with custom CSS or overriding our default variables.
-                    It's also worth noting that just about any HTML can go
-                    within the <code>.accordion-body</code>, though the
-                    transition does limit overflow.
+                    Una <strong>criptomoneda </strong>
+                    es una forma de moneda digital que utiliza la criptografía
+                    para garantizar transacciones seguras y para controlar la
+                    creación de nuevas unidades. En InfoChange, nos aseguramos
+                    de que comprendas este concepto fundamental mientras
+                    facilitamos su uso y comprensión en nuestra plataforma.
                   </div>
                 </div>
               </div>
@@ -224,24 +227,17 @@ export default function Welcome() {
                     aria-expanded="false"
                     aria-controls="collapseTwo"
                   >
-                    Accordion Item #2
+                    ¿Cómo funciona un exchange de criptomonedas y qué ofrece
+                    InfoChange?
                   </button>
                 </h2>
-                <div
-                  id="collapseTwo"
-                  class="accordion-collapse collapse"
-                  data-bs-parent="#accordionExample"
-                >
+                <div id="collapseTwo" class="accordion-collapse collapse">
                   <div class="accordion-body">
-                    <strong>This is the second item's accordion body.</strong>{" "}
-                    It is hidden by default, until the collapse plugin adds the
-                    appropriate classes that we use to style each element. These
-                    classes control the overall appearance, as well as the
-                    showing and hiding via CSS transitions. You can modify any
-                    of this with custom CSS or overriding our default variables.
-                    It's also worth noting that just about any HTML can go
-                    within the <code>.accordion-body</code>, though the
-                    transition does limit overflow.
+                    Un <strong>exchange de criptomonedas </strong> es una
+                    plataforma en línea que permite a los usuarios comprar,
+                    vender e intercambiar criptomonedas. En InfoChange, te
+                    ofrecemos una plataforma segura y eficiente donde puedes
+                    realizar todas estas operaciones de forma rápida y sencilla.
                   </div>
                 </div>
               </div>
@@ -255,24 +251,65 @@ export default function Welcome() {
                     aria-expanded="false"
                     aria-controls="collapseThree"
                   >
-                    Accordion Item #3
+                    ¿Qué es un wallet de criptomonedas y por qué es importante
+                    en InfoChange?
                   </button>
                 </h2>
-                <div
-                  id="collapseThree"
-                  class="accordion-collapse collapse"
-                  data-bs-parent="#accordionExample"
-                >
+                <div id="collapseThree" class="accordion-collapse collapse">
                   <div class="accordion-body">
-                    <strong>This is the third item's accordion body.</strong> It
-                    is hidden by default, until the collapse plugin adds the
-                    appropriate classes that we use to style each element. These
-                    classes control the overall appearance, as well as the
-                    showing and hiding via CSS transitions. You can modify any
-                    of this with custom CSS or overriding our default variables.
-                    It's also worth noting that just about any HTML can go
-                    within the <code>.accordion-body</code>, though the
-                    transition does limit overflow.
+                    Un <strong>wallet</strong> de criptomonedas es un programa o
+                    servicio que almacena las claves públicas y privadas que se
+                    utilizan para enviar y recibir criptomonedas. En InfoChange,
+                    entendemos la importancia de proteger tus activos digitales,
+                    por eso ofrecemos wallets seguros y confiables.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseFour"
+                    aria-expanded="false"
+                    aria-controls="collapseFour"
+                  >
+                    ¿Cómo puedo empezar a operar con criptomonedas en
+                    InfoChange?
+                  </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    En InfoChange, te proporcionamos una guía paso a paso para
+                    comenzar a operar con criptomonedas. Desde la creación de
+                    una cuenta hasta la verificación de identidad y la
+                    realización de tu primera transacción, te acompañamos en
+                    todo el proceso para que puedas empezar con confianza.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseFive"
+                    aria-expanded="false"
+                    aria-controls="collapseFive"
+                  >
+                    ¿Qué tipos de criptomonedas puedo encontrar en InfoChange y
+                    cómo puedo explorarlas?
+                  </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    InfoChange ofrece una amplia variedad de criptomonedas para
+                    explorar y operar. Desde Bitcoin y Ethereum hasta altcoins
+                    menos conocidas, nuestra plataforma te proporciona
+                    información detallada sobre cada una de ellas, incluyendo
+                    precios en tiempo real, gráficos y análisis.
                   </div>
                 </div>
               </div>
