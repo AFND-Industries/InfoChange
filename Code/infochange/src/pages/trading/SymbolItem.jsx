@@ -1,4 +1,5 @@
 import React from "react";
+import "./SymbolItem.css";
 
 function SymbolItem({ pair, regex, tokenInfo, clickHandler }) {
     let reg = regex.toUpperCase();
@@ -13,7 +14,7 @@ function SymbolItem({ pair, regex, tokenInfo, clickHandler }) {
     }
 
     return (
-        <li className="list-group-item align-items-center d-flex" key={pair.symbol} onClick={clickHandler}>
+        <li className="clickable-item list-group-item align-items-center d-flex" key={pair.symbol} onClick={clickHandler}>
             <img src={logoUrl} className="me-2"
                 style={{ width: '25px', height: '25px' }} onError={(e) => { e.target.src = faviconUrl; }} alt="Logo" />
             <span className="text-dark h5 m-0">

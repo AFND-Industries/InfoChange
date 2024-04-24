@@ -1,0 +1,9 @@
+.clickable-item {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.clickable-item:hover {
+    transform: scale(1.05);
+    background-color: #e0e0e0;
+}
