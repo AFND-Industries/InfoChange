@@ -65,7 +65,7 @@ function Trading() {
     "LTCUSDT",
     "LINKUSDT",
     "DOTUSDT",
-    "EURUSDT"] // Must be 6 items
+    "VITEUSDT"] // Must be 6 items
 
   const [symbols, setSymbols] = useState(Symbols.symbols);
   const [newbieChart, setNewbieChart] = useState(null);
@@ -388,10 +388,17 @@ function Trading() {
 
   const marquee = <div className="rotating-marquee bg-secondary" >
     {marqueePairs.map((elem, i) => {
+      const pair = getPair(elem);
+      const tokenInfo = getTokenInfo(pair.baseAsset);
+
       return (
         <div key={i} className={`align-items-center col-2 bg-secondary rotating-marquee-element rme-${2 * i + 1}`}>
-          <div className="text-white marquee-pair"><b>{elem}</b></div>
-          <div className="text-warning"><b>{getPair(elem).price}</b></div>
+          <div className="d-flex flex-row align-items-center">
+            <img src={tokenInfo.logo} className="me-2"
+              style={{ width: '15px', height: '15px' }} onError={(e) => { e.target.src = '/favicon.ico'; }} alt="Logo" />
+            <div className="text-white marquee-pair"><b>{elem}</b></div>
+          </div>
+          <div className="text-warning"><b>{pair.price}</b></div>
         </div >
       );
     })}

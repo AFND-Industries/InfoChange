@@ -1,6 +1,7 @@
 .clickable-item {
     cursor: pointer;
     transition: 0.2s;
+    overflow-x: hidden;
 }
 
 .clickable-item:hover {
