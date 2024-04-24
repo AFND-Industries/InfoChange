@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 import SymbolItem from './SymbolItem';
 
-// METER EN SYMBOLS EL BASEASSETPRECISION Y EL QUOTEASSETPRECISION
 import Symbols from "../../data/Symbols.json";
 import CoinMarketCapData from "../../data/CoinMarketCapData.json";
 import axios from 'axios';
@@ -11,46 +10,13 @@ import "./trading.css";
 import { useParams } from 'react-router-dom';
 
 // arreglar lod el 75vh
-// cuando le des click a una moneda que se cambie el enlace de arriba sin recargar la pagina
-// poner la moneda seleccionada
-// onmouseover
-// copiarse de binance
-/*
-*
-*  const getFullName = (symbol) => {
-    const info = CoinMarketCapData.data[symbol][0];
-    return info == null ? symbol : info.name;
-  }
-
-  useEffect(() => {
-    const a = Symbols.symbols.map((s) => {
-      return ({
-        symbol: s.symbol,
-        step: s.step,
-        quoteAsset: s.quoteAsset,
-        decimalPlaces: s.decimalPlaces,
-        baseAsset: s.baseAsset,
-        quoteAssetName: getFullName(s.quoteAsset),
-        baseAssetName: getFullName(s.baseAsset),
-      });
-    })
-    console.log(a);
-  }, [])*/
-
-// poner que cuando pasas por encima de un par se vea el selccionado
 // poner mejor los bordes
 // poner lo de abajo mas boinito
-// websocket precio
-// refactor el de eso
+
+// meter a parte de TOP (que es como lo que esta puesto, que son los marqueePairs pero mejor poner el top 10) un favoritos
 // poner lo de las comas y punto
-// 
-
-// IMPORTANTE
-// WEBSOCKET Y API CALL PARA LOS PRECIOS DEL MARQUEE
-
-// refactor de to
-// poner bonito los bordes iguales y demas
-// hacer que la barra se actualice tmb si cambias el precio manualmente
+// hacer que la barra se actualice tmb si cambias el precio manualmente y poner la barra a 5 tramos nama
+// que se cambie lo que te van a dar si se actualiza el precio
 
 function Trading() {
   const params = useParams();
@@ -375,16 +341,33 @@ function Trading() {
     }
   }, [actualPair])
 
-  const searchPairsObject = searchPairs.map(p => {
-    const onSymbolClick = () => {
-      setPair(p);
-      setSearchInput("");
-      setSearchPairs([]);
-    }
-    return (
-      <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput} clickHandler={onSymbolClick} />
-    );
-  });
+  let searchPairsObject = [];
+  if (searchPairs.length == 0) {
+    searchPairsObject = marqueePairs.map(pair => {
+      const p = getPair(pair);
+      const onSymbolClick = () => {
+        setPair(p);
+        setSearchInput("");
+        setSearchPairs([]);
+      }
+      return (
+        <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput}
+          clickHandler={onSymbolClick} actualPair={p.symbol == actualPair.symbol} />
+      );
+    });
+  } else {
+    searchPairsObject = searchPairs.map(p => {
+      const onSymbolClick = () => {
+        setPair(p);
+        setSearchInput("");
+        setSearchPairs([]);
+      }
+      return (
+        <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput}
+          clickHandler={onSymbolClick} actualPair={p.symbol == actualPair.symbol} />
+      );
+    });
+  }
 
   const marquee = <div className="rotating-marquee bg-secondary" >
     {marqueePairs.map((elem, i) => {
