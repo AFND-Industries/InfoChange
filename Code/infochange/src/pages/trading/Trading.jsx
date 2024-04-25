@@ -6,11 +6,11 @@ import Symbols from "../../data/Symbols.json";
 import CoinMarketCapData from "../../data/CoinMarketCapData.json";
 import axios from 'axios';
 
-import "./trading.css";
+import "./Trading.css";
 import { useParams } from 'react-router-dom';
 
-// arreglar lod el 75vh
 // poner mejor los bordes
+// arreglar lod el 75vh
 // poner lo de abajo mas boinito
 
 // meter a parte de TOP (que es como lo que esta puesto, que son los marqueePairs pero mejor poner el top 10) un favoritos
@@ -261,7 +261,7 @@ function Trading() {
         const responsePrices = await axios.get('https://api.binance.com/api/v1/ticker/price');
         const dataPrices = responsePrices.data;
 
-        console.log("Updating prices");
+        console.log("Updating prices " + new Date().toLocaleString());
         const symbolsWithPrice = Symbols.symbols.map(s => {
           const priceData = dataPrices.find(price => price.symbol === s.symbol);
           const price = priceData ? parseFloat(priceData.price).toFixed(s.decimalPlaces) : "-";
@@ -352,7 +352,7 @@ function Trading() {
       }
       return (
         <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput}
-          clickHandler={onSymbolClick} actualPair={p.symbol == actualPair.symbol} />
+          clickHandler={onSymbolClick} actualPair={actualPair != null && p.symbol == actualPair.symbol} />
       );
     });
   } else {
@@ -418,19 +418,19 @@ function Trading() {
         <div className="row">
           {actualPair !== undefined ? // Si la moneda existe
             <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
-              <div className="border border-4 tradingview-widget-container" ref={container}
+              <div className="border border-4 rounded-end tradingview-widget-container" ref={container}
                 style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
                 <div className="tradingview-widget-container__widget"></div>
               </div>
 
-              <div className="border border-4 tradingview-widget-container"
+              <div className="border border-4 rounded-end tradingview-widget-container"
                 style={{ height: "100%", width: "100%", display: (mode == 1 ? "block" : "none") }}>
                 {proChart}
               </div>
             </div>
             : // Si la moneda no existe
             <div className="col-md-9 ps-0" style={{ height: "70vh" }}>
-              <div className="border d-flex align-items-center justify-content-center" ref={container}
+              <div className="border border-4 rounded-end d-flex align-items-center justify-content-center" ref={container}
                 style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
                 <div className="alert alert-danger">
                   <span className="h3">El par {pairPath} no existe</span>
@@ -438,10 +438,10 @@ function Trading() {
               </div>
             </div>}
 
-          <div className="col-md-3" style={{ height: "70vh" }}>
+          <div className="col-md-3">
             <div className="row">
               <input
-                className="form-control"
+                className="form-control border border-4 rounded-end"
                 type="search"
                 placeholder="Buscar par..."
                 style={{ backgroundColor: "#ffffff", color: "#000000" }}
@@ -450,15 +450,13 @@ function Trading() {
                 onKeyPress={handleKeyPress}
               />
             </div>
-            <div className="row border overflow-y-scroll mt-2" style={{ height: "64vh" }}>
+            <div className="row border overflow-y-scroll mt-2 border border-4 rounded-end" style={{ height: "64vh" }}>
               <div className="d-flex flex-column">
                 <ul className="list-group list-group-flush">
                   {searchPairsObject}
                 </ul>
               </div>
             </div>
-          </div>
-          <div >
           </div>
         </div>
         <div className="row mt-3">
