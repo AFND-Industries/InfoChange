@@ -2,6 +2,7 @@
   {
     "profile": {
       "username": "tb18003",
+      "password": "1234",
       "name": "Tomas",
       "surname": "Bustamante",
       "email": "tb18ms@gmail.com",
@@ -40,6 +41,7 @@
   {
     "profile": {
       "username": "eulogioqt",
+      "password": "1234",
       "name": "Eulogio",
       "surname": "Quemada",
       "email": "eulogio@infochange.es",
@@ -54,6 +56,7 @@
   {
     "profile": {
       "username": "user",
+      "password": "1234",
       "name": "Anónimo",
       "surname": "Unknown",
       "email": "user@infochange.es",

@@ -1,10 +1,14 @@
 import { useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Users from "../data/users.json";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Login(props) {
-  const [user, setUser] = useState("");
+  const user = useRef("");
+  const pass = useRef("");
 
-  const error = useLocation().state?.error;
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   return (
     <div
@@ -21,11 +25,7 @@ export default function Login(props) {
                 <label>Usuario</label>
               </div>
               <div className="col-8">
-                <input
-                  type="text"
-                  onChange={(e) => setUser(e.target.value)}
-                  className="form-control"
-                />
+                <input type="text" ref={user} className="form-control" />
               </div>
             </div>
             <div className="row mb-4 text-start">
@@ -33,7 +33,7 @@ export default function Login(props) {
                 <label>Contraseña</label>
               </div>
               <div className="col-8">
-                <input type="password" className="form-control" />
+                <input type="password" ref={pass} className="form-control" />
               </div>
             </div>
             <div className="d-flex justify-content-around mb-3">
@@ -42,11 +42,26 @@ export default function Login(props) {
                   Volver a inicio
                 </button>
               </Link>
-              <Link to={`/dashboard/${user}`}>
-                <button className="btn btn-primary">Entrar</button>
-              </Link>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  const findUser = Users.find(
+                    (u) =>
+                      u.profile.username === user.current.value &&
+                      u.profile.password === pass.current.value
+                  );
+                  if (findUser !== undefined) {
+                    sessionStorage.setItem("user", JSON.stringify(findUser));
+                    navigate("/dashboard");
+                  } else {
+                    setError("El usuario o la contraseña son incorrectos");
+                  }
+                }}
+              >
+                Entrar
+              </button>
             </div>
-            {error !== undefined ? (
+            {error.length !== 0 ? (
               <div
                 className="alert alert-danger alert-dismissible fade show"
                 role="alert"

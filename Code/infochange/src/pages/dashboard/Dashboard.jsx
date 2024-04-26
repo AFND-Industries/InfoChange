@@ -14,25 +14,10 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
   const [page, setPage] = useState(0);
 
-  const navigate = useNavigate();
+  if (sessionStorage.getItem("user") === null) return <Navigate to="/login" />;
 
-  const params = useParams();
-
-  if (params.username === undefined) return <Navigate to="/login" />;
-
-  const mockData =
-    Users.find((user) => user.profile.username === params.username) ?? [];
-
-  console.log(mockData.length);
-  console.log(Users);
-
-  if (mockData.length === 0) {
-    const state = {
-      error: "No se ha encontrado su cuenta",
-    };
-    console.log(state);
-    return <Navigate to="/login" state={state} />;
-  }
+  const mockData = JSON.parse(sessionStorage.getItem("user"));
+  console.warn(mockData);
 
   const pages = [
     <Profile profile={mockData.profile} />,

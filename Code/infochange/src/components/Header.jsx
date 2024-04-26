@@ -1,6 +1,7 @@
 import { useState } from "react";
 import banner from "../assets/banner.png";
 import { Link } from "react-router-dom";
+import { Person } from "react-bootstrap-icons";
 
 export default function Header() {
   const items = [
@@ -9,6 +10,11 @@ export default function Header() {
     { link: "trading", name: "Trading" },
     { link: "dashboard", name: "Panel de control" },
   ];
+
+  // Dropdown show?
+  const [show, setShow] = useState(false);
+
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   return (
     <header>
@@ -32,16 +38,48 @@ export default function Header() {
             <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
               {items.map((v) => item(v.link, v.name))}
             </ul>
-            <div className="d-flex justify-content-between">
-              <Link to="/login">
-                <button className="btn btn-outline-primary me-2">
-                  Iniciar Sesión
+            {user === null ? (
+              <div className="d-flex justify-content-between">
+                <Link to="/login">
+                  <button className="btn btn-outline-primary me-2">
+                    Iniciar Sesión
+                  </button>
+                </Link>
+                <Link to="/register">
+                  <button className="btn btn-primary">Registrarse</button>
+                </Link>
+              </div>
+            ) : (
+              <div className="dropdown">
+                <button
+                  className="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  onClick={() => setShow(!show)}
+                >
+                  <Person className="me-2 fs-4" /> {user.profile.username}
                 </button>
-              </Link>
-              <Link to="/register">
-                <button className="btn btn-primary">Registrarse</button>
-              </Link>
-            </div>
+
+                <ul className="dropdown-menu">
+                  <li>
+                    <a className="dropdown-item" href="#">
+                      Panel de control
+                    </a>
+                  </li>
+                  <li>
+                    <a className="dropdown-item" href="#">
+                      Another action
+                    </a>
+                  </li>
+                  <li>
+                    <a className="dropdown-item" href="#">
+                      Something else here
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </nav>
