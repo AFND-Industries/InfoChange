@@ -14,6 +14,8 @@ import BuyAndSell from './components/BuyAndSell';
 // hacer que la barra se actualice tmb si cambias el precio manualmente y poner la barra a 5 tramos nama
 // que se cambie lo que te van a dar si se actualiza el precio
 
+// Componente CHART es lo mas importante que falta, luego refactor al context
+
 function TradingPage() {
   const { getActualPair } = useTrading();
 
