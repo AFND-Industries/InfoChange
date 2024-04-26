@@ -32,22 +32,20 @@ const wrap = (v) => (
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <div className="d-flex flex-column min-vh-100">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={wrap(<Welcome />)} />
-          <Route path="/coins/*" element={wrap(<Coins />)} />
-          <Route path="/dashboard/:username" element={wrap(<Dashboard />)} />
-          <Route path="/dashboard" element={wrap(<Dashboard />)} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/trading/:pair" element={wrap(<Trading />)} />
-          <Route path="/trading" element={wrap(<Trading />)} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="*" element={<Unknown />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
-  </React.StrictMode>
+  <div className="d-flex flex-column min-vh-100">
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={wrap(<Welcome />)} />
+        <Route path="/coins/*" element={wrap(<Coins />)} />
+        <Route path="/dashboard/:username" element={wrap(<Dashboard />)} />
+        <Route path="/dashboard" element={wrap(<Dashboard />)} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/trading/:pair" element={wrap(<Trading />)} />
+        <Route path="/trading" element={wrap(<Trading />)} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="*" element={<Unknown />} />
+      </Routes>
+    </BrowserRouter>
+  </div>
 );
