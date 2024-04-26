@@ -1,7 +1,3 @@
-.tradingview-widget-copyright {
-    display: none;
-}
-
 .rotating-marquee {
     overflow: hidden;
     white-space: nowrap;
@@ -28,15 +24,6 @@
     .marquee-pair {
         margin-right: 10px;
     }
-}
-
-body,
-html {
-    overflow-x: hidden;
-}
-
-body.modal-open {
-    padding-right: 0 !important;
 }
 
 .rotating-marquee-element {
