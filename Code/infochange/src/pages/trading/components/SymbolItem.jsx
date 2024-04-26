@@ -1,7 +1,7 @@
 import React from "react";
 import "./SymbolItem.css";
 
-function SymbolItem({ pair, regex, tokenInfo, clickHandler, actualPair }) {
+function SymbolItem({ pair, regex, tokenInfo, clickHandler, active }) {
     let reg = regex.toUpperCase();
     let baseAsset = pair.baseAsset.replace(reg, "");
 
@@ -15,7 +15,7 @@ function SymbolItem({ pair, regex, tokenInfo, clickHandler, actualPair }) {
 
     return (
         <li className="clickable-item list-group-item align-items-center d-flex" key={pair.symbol} onClick={clickHandler}
-            style={actualPair ? { backgroundColor: "#fff3cd" } : {}}>
+            style={active ? { backgroundColor: "#fff3cd" } : {}}>
             <img src={logoUrl} className="me-2"
                 style={{ width: '25px', height: '25px' }} onError={(e) => { e.target.src = faviconUrl; }} alt="Logo" />
             <span className="text-dark h5 m-0">

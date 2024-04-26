@@ -1,18 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 
-import SymbolItem from './components/SymbolItem';
+import SymbolSearch from './components/SymbolSearch';
 import RotatingMarquee from './components/RotatingMarquee';
 import { useTrading } from './context/TradingContext';
 
-import Symbols from "../../data/Symbols.json";
-import CoinMarketCapData from "../../data/CoinMarketCapData.json";
-import axios from 'axios';
-
 import "./TradingPage.css";
-
 
 // meter a parte de TOP (que es como lo que esta puesto, que son los marqueePairs pero mejor poner el top 10) un favoritos
 // poner lo de las comas y punto
@@ -20,49 +14,25 @@ import "./TradingPage.css";
 // que se cambie lo que te van a dar si se actualiza el precio
 
 function TradingPage() {
-  const { getPair, getTokenInfo, filterPairs } = useTrading();
-  const params = useParams();
-
-  const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
+  const { getActualPair, getActualPairPrice } = useTrading();
 
   const updateMode = () => setMode(mode => (mode + 1) % 2);
   const container = useRef();
 
-  const marqueePairs = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "LTCUSDT",
-    "LINKUSDT",
-    "DOTUSDT",
-    "VITEUSDT"] // Must be 6 items
+  // Must be 6 items
 
-  const topPairs = [
-    "BTCUSDT",
-    "ETHUSDT",
-    "BNBUSDT",
-    "SOLUSDT",
-    "XRPUSDT",
-    "DOGEUSDT",
-    "ADAUSDT",
-    "SHIBUSDT",
-    "AVAXUSDT",
-    "TRXUSDT"
-  ]
 
-  const [symbols, setSymbols] = useState(Symbols.symbols);
   const [newbieChart, setNewbieChart] = useState(null);
   const [proChart, setProChart] = useState(null);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchPairs, setSearchPairs] = useState([]);
+
   const [mode, setMode] = useState(0);
-  const [actualPair, setPair] = useState(getPair(pairPath));
 
   const [myWallet, setMyWallet] = useState({ "USDT": 100000 });
   const getWalletAmount = (symbol) => myWallet[symbol] === undefined ? 0 : myWallet[symbol];
 
   const tradingComision = 0.0065;
 
-  const pairPrice = actualPair === undefined || symbols[0].price === undefined ? -1 : getPair(actualPair.symbol).price;
+
 
   // BUY QUOTE
   const [buyQuoteAssetInput, setBuyQuoteAssetInput] = useState("");
@@ -71,7 +41,7 @@ function TradingPage() {
 
     if (!isNaN(newValue)) {
       setBuyQuoteAssetInput(newValue);
-      setBuyBaseAssetInput((newValue / pairPrice).toFixed(8));
+      setBuyBaseAssetInput((newValue / getActualPairPrice()).toFixed(8));
     } else {
       setBuyQuoteAssetInput("");
       setBuyBaseAssetInput("");
@@ -86,7 +56,7 @@ function TradingPage() {
 
     if (!isNaN(newValue)) {
       setBuyBaseAssetInput(newValue);
-      setBuyQuoteAssetInput((newValue * pairPrice).toFixed(8));
+      setBuyQuoteAssetInput((newValue * getActualPairPrice()).toFixed(8));
     } else {
       setBuyQuoteAssetInput("");
       setBuyBaseAssetInput("");
@@ -100,7 +70,7 @@ function TradingPage() {
 
     if (!isNaN(newValue)) {
       setSellBaseAssetInput(newValue);
-      setSellQuoteAssetInput((newValue * pairPrice).toFixed(8));
+      setSellQuoteAssetInput((newValue * getActualPairPrice()).toFixed(8));
     } else {
       setSellQuoteAssetInput("");
       setSellBaseAssetInput("");
@@ -115,7 +85,7 @@ function TradingPage() {
 
     if (!isNaN(newValue)) {
       setSellQuoteAssetInput(newValue);
-      setSellBaseAssetInput((newValue / pairPrice).toFixed(8));
+      setSellBaseAssetInput((newValue / getActualPairPrice()).toFixed(8));
     } else {
       setSellQuoteAssetInput("");
       setSellBaseAssetInput("");
@@ -127,7 +97,7 @@ function TradingPage() {
   const handleBuyRangeChange = (event) => {
     const rangeValue = parseInt(event.target.value);
 
-    const newValue = (rangeValue / 100) * getWalletAmount(actualPair.quoteAsset);
+    const newValue = (rangeValue / 100) * getWalletAmount(getActualPair().quoteAsset);
     updateBuyQuoteAsset(newValue == 0 ? "" : newValue);
     setBuyRangeValue(rangeValue);
   }
@@ -137,7 +107,7 @@ function TradingPage() {
   const handleSellRangeChange = (event) => {
     const rangeValue = parseInt(event.target.value);
 
-    const newValue = (rangeValue / 100) * getWalletAmount(actualPair.baseAsset);
+    const newValue = (rangeValue / 100) * getWalletAmount(getActualPair().baseAsset);
     updateSellBaseAsset(newValue == 0 ? "" : newValue);
     setSellRangeValue(rangeValue);
   }
@@ -151,18 +121,18 @@ function TradingPage() {
 
   useEffect(() => {
     clearAmountInputs();
-  }, [actualPair, myWallet]);
+  }, [getActualPair(), myWallet]);
 
   // BUY ACTION
   const onBuy = () => {
     const paidQuoteAssetAmount = parseFloat(buyQuoteAssetInput);
     const quoteComision = paidQuoteAssetAmount * tradingComision;
 
-    const receivedBaseAssetAmount = (paidQuoteAssetAmount - quoteComision) / pairPrice;
+    const receivedBaseAssetAmount = (paidQuoteAssetAmount - quoteComision) / getActualPairPrice();
 
     clearAmountInputs();
 
-    if (pairPrice <= 0) {
+    if (getActualPairPrice() <= 0) {
       return;
     }
 
@@ -171,13 +141,13 @@ function TradingPage() {
       return;
     }
 
-    if (getWalletAmount(actualPair.quoteAsset) < paidQuoteAssetAmount) {
-      alert("No tienes " + actualPair.quoteAsset + " suficientes");
+    if (getWalletAmount(getActualPair().quoteAsset) < paidQuoteAssetAmount) {
+      alert("No tienes " + getActualPair().quoteAsset + " suficientes");
       return;
     }
 
-    myWallet[actualPair.baseAsset] = getWalletAmount(actualPair.baseAsset) + receivedBaseAssetAmount;
-    myWallet[actualPair.quoteAsset] = getWalletAmount(actualPair.quoteAsset) - paidQuoteAssetAmount;
+    myWallet[getActualPair().baseAsset] = getWalletAmount(getActualPair().baseAsset) + receivedBaseAssetAmount;
+    myWallet[getActualPair().quoteAsset] = getWalletAmount(getActualPair().quoteAsset) - paidQuoteAssetAmount;
 
     const newWallet = { ...myWallet };
     setMyWallet(newWallet);
@@ -186,9 +156,9 @@ function TradingPage() {
     const modalTitle = document.getElementById('just-close-modal-title');
     modalTitle.innerHTML = `Compra realizada con éxito`;
     const modalBody = document.getElementById('just-close-modal-body');
-    modalBody.innerHTML = `Has comprado <b>` + receivedBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
-      paidQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b> y has pagado <b>" +
-      quoteComision.toFixed(8) + " " + actualPair.quoteAsset + "</b> de comisión.";
+    modalBody.innerHTML = `Has comprado <b>` + receivedBaseAssetAmount.toFixed(8) + " " + getActualPair().baseAsset + "</b> por <b>" +
+      paidQuoteAssetAmount.toFixed(8) + " " + getActualPair().quoteAsset + "</b> y has pagado <b>" +
+      quoteComision.toFixed(8) + " " + getActualPair().quoteAsset + "</b> de comisión.";
     modal.show();
   }
 
@@ -197,11 +167,11 @@ function TradingPage() {
     const paidBaseAssetAmount = parseFloat(sellBaseAssetInput);
     const baseComision = paidBaseAssetAmount * tradingComision;
 
-    const receivedQuoteAssetAmount = (paidBaseAssetAmount - baseComision) * pairPrice;
+    const receivedQuoteAssetAmount = (paidBaseAssetAmount - baseComision) * getActualPairPrice();
 
     clearAmountInputs();
 
-    if (pairPrice <= 0) {
+    if (getActualPairPrice() <= 0) {
       return;
     }
 
@@ -210,13 +180,13 @@ function TradingPage() {
       return;
     }
 
-    if (getWalletAmount(actualPair.baseAsset) < paidBaseAssetAmount) {
-      alert("No tienes " + actualPair.baseAsset + " suficientes");
+    if (getWalletAmount(getActualPair().baseAsset) < paidBaseAssetAmount) {
+      alert("No tienes " + getActualPair().baseAsset + " suficientes");
       return;
     }
 
-    myWallet[actualPair.quoteAsset] = getWalletAmount(actualPair.quoteAsset) + receivedQuoteAssetAmount;
-    myWallet[actualPair.baseAsset] = getWalletAmount(actualPair.baseAsset) - paidBaseAssetAmount;
+    myWallet[getActualPair().quoteAsset] = getWalletAmount(getActualPair().quoteAsset) + receivedQuoteAssetAmount;
+    myWallet[getActualPair().baseAsset] = getWalletAmount(getActualPair().baseAsset) - paidBaseAssetAmount;
 
     const newWallet = { ...myWallet };
     setMyWallet(newWallet);
@@ -225,40 +195,23 @@ function TradingPage() {
     const modalTitle = document.getElementById('just-close-modal-title');
     modalTitle.innerHTML = `Venta realizada con éxito`;
     const modalBody = document.getElementById('just-close-modal-body');
-    modalBody.innerHTML = `Has vendido <b>` + paidBaseAssetAmount.toFixed(8) + " " + actualPair.baseAsset + "</b> por <b>" +
-      receivedQuoteAssetAmount.toFixed(8) + " " + actualPair.quoteAsset + "</b> y has pagado <b>" +
-      baseComision.toFixed(8) + " " + actualPair.baseAsset + "</b> de comisión.";
+    modalBody.innerHTML = `Has vendido <b>` + paidBaseAssetAmount.toFixed(8) + " " + getActualPair().baseAsset + "</b> por <b>" +
+      receivedQuoteAssetAmount.toFixed(8) + " " + getActualPair().quoteAsset + "</b> y has pagado <b>" +
+      baseComision.toFixed(8) + " " + getActualPair().baseAsset + "</b> de comisión.";
     modal.show();
   }
 
   function getBaseAsset() {
-    return actualPair === undefined ? "" : actualPair.baseAsset;
+    return getActualPair() === undefined ? "" : getActualPair().baseAsset;
   }
 
   function getQuoteAsset() {
-    return actualPair === undefined ? "" : actualPair.quoteAsset;
-  }
-
-
-
-  const searchHandler = () => {
-    console.log(searchInput);
-  }
-
-  const handleInputChange = (event) => {
-    if (event.target.value.length === 0) setSearchPairs([]);
-    else setSearchPairs(filterPairs(event.target.value));
-
-    setSearchInput(event.target.value);
-  }
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') searchHandler();
+    return getActualPair() === undefined ? "" : getActualPair().quoteAsset;
   }
 
   useEffect(() => {
-    if (actualPair !== undefined) {
-      window.history.replaceState(null, null, "/trading/" + actualPair.symbol);
+    if (getActualPair() !== undefined) {
+      window.history.replaceState(null, null, "/trading/" + getActualPair().symbol);
 
       const script = document.createElement("script");
       script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
@@ -266,7 +219,7 @@ function TradingPage() {
       script.async = true;
       script.innerHTML = JSON.stringify(
         {
-          symbols: actualPair.symbol + "|7D",
+          symbols: getActualPair().symbol + "|7D",
           width: "100%",
           height: "100%",
           locale: "es",
@@ -294,7 +247,7 @@ function TradingPage() {
       setProChart(<AdvancedRealTimeChart
         locale="es"
         autosize
-        symbol={actualPair.symbol}
+        symbol={getActualPair().symbol}
         interval="1D"
         timezone="Etc/UTC"
         style={1}
@@ -308,40 +261,12 @@ function TradingPage() {
           container.current.innerHTML = "";
       });
     }
-  }, [actualPair])
-
-  let searchPairsObject = [];
-  if (searchInput.length == 0) {
-    searchPairsObject = topPairs.map(pair => {
-      const p = getPair(pair);
-      const onSymbolClick = () => {
-        setPair(p);
-        setSearchInput("");
-        setSearchPairs([]);
-      }
-      return (
-        <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput}
-          clickHandler={onSymbolClick} actualPair={actualPair != null && p.symbol == actualPair.symbol} />
-      );
-    });
-  } else {
-    searchPairsObject = searchPairs.map(p => {
-      const onSymbolClick = () => {
-        setPair(p);
-        setSearchInput("");
-        setSearchPairs([]);
-      }
-      return (
-        <SymbolItem key={p.symbol} tokenInfo={getTokenInfo(p.baseAsset)} pair={p} regex={searchInput}
-          clickHandler={onSymbolClick} actualPair={p.symbol == actualPair.symbol} />
-      );
-    });
-  }
+  }, [getActualPair()])
 
   // METER LOS ROTATING MARQUEE PARA QUE SEA CICLICO Y NO TODO EL ELEMENTO
   return (
     <>
-      <RotatingMarquee pairs={marqueePairs} />
+      <RotatingMarquee />
 
       <div className="modal fade" id="just-close-modal">
         <div className="modal-dialog">
@@ -367,7 +292,7 @@ function TradingPage() {
           </div>
         </div>
         <div className="row">
-          {actualPair !== undefined ? // Si la moneda existe
+          {getActualPair() !== undefined ? // Si la moneda existe
             <div className="col-md-9 ps-0">
               <div className="border border-4 rounded tradingview-widget-container" ref={container}
                 style={{ height: "100%", width: "100%", display: (mode == 0 ? "block" : "none") }}>
@@ -390,31 +315,14 @@ function TradingPage() {
             </div>}
 
           <div className="col-md-3">
-            <div className="row">
-              <input
-                className="form-control border border-4 rounded"
-                type="search"
-                placeholder="Buscar par..."
-                style={{ backgroundColor: "#ffffff", color: "#000000" }}
-                value={searchInput}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-              />
-            </div>
-            <div className="row border overflow-y-scroll mt-2 border border-4 rounded" style={{ height: "64vh" }}>
-              <div className="d-flex flex-column">
-                <ul className="list-group list-group-flush">
-                  {searchPairsObject}
-                </ul>
-              </div>
-            </div>
+            <SymbolSearch />
           </div>
         </div>
         <div className="row mt-3">
           <div className="col-md-6 border border-4 rounded">
             <div>
               <div className="mt-1 mb-1">
-                Disp: {actualPair === undefined ? 0 : getWalletAmount(actualPair.quoteAsset).toFixed(8)} {getQuoteAsset()}
+                Disp: {getActualPair() === undefined ? 0 : getWalletAmount(getActualPair().quoteAsset).toFixed(8)} {getQuoteAsset()}
               </div>
               <div className="input-group input-group-sm">
                 <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput}
@@ -435,7 +343,7 @@ function TradingPage() {
           </div>
           <div className="col-md-6 border border-4 rounded">
             <div className="mt-1 mb-1">
-              Disp: {actualPair === undefined ? 0 : getWalletAmount(actualPair.baseAsset).toFixed(8)} {getBaseAsset()}
+              Disp: {getActualPair() === undefined ? 0 : getWalletAmount(getActualPair().baseAsset).toFixed(8)} {getBaseAsset()}
             </div>
             <div>
               <div className="input-group input-group-sm">

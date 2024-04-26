@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 
 import Symbols from "../../../data/Symbols.json";
 import CoinMarketCapData from "../../../data/CoinMarketCapData.json";
@@ -7,8 +8,15 @@ import axios from 'axios';
 const TradingContext = createContext();
 
 export const TradingProvider = ({ children }) => {
+    const params = useParams();
+    const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
+
     const [symbols, setSymbols] = useState(Symbols.symbols);
     const reloadPricesTime = 15000;
+
+    const [actualPair, setActualPair] = useState(getPair(pairPath));
+    const getActualPair = () => actualPair;
+    const getActualPairPrice = () => getActualPair() === undefined || symbols[0].price === undefined ? -1 : getPair(getActualPair().symbol).price;
 
     function getPair(symbol) {
         return Object.values(symbols).filter(s => s.symbol == symbol)[0];
@@ -67,6 +75,9 @@ export const TradingProvider = ({ children }) => {
                 getPair,
                 getTokenInfo,
                 filterPairs,
+                getActualPair,
+                setActualPair,
+                getActualPairPrice,
             }}
         >
             {children}

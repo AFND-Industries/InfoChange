@@ -3,10 +3,19 @@ import { useTrading } from "../context/TradingContext";
 
 import "./RotatingMarquee.css";
 
-function RotatingMarquee({ pairs }) {
-    const { getPair, getTokenInfo } = useTrading();
+const defaultPairs = [
+    "BTCUSDT",
+    "ETHUSDT",
+    "LTCUSDT",
+    "LINKUSDT",
+    "DOTUSDT",
+    "VITEUSDT"]
 
-    const marquee = pairs.map((elem, i) => {
+function RotatingMarquee({ pairs = [] }) {
+    const { getPair, getTokenInfo } = useTrading();
+    const actualPairs = pairs.length == 0 ? defaultPairs : pairs;
+
+    const marquee = actualPairs.map((elem, i) => {
         const pair = getPair(elem);
         const tokenInfo = getTokenInfo(pair.baseAsset);
 
