@@ -19,7 +19,7 @@ function SymbolList({ pairs, regex = "", onClick }) {
 
         return (
             <SymbolItem
-                key={symbol}
+                key={actualPair.symbol}
                 tokenInfo={getTokenInfo(actualPair.baseAsset)}
                 pair={actualPair}
                 regex={regex}
