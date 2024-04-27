@@ -16,8 +16,10 @@ const topPairs = [
     "TRXUSDT"
 ]
 
+// meter a parte de TOP (que es como lo que esta puesto, que son los marqueePairs pero mejor poner el top 10) un favoritos
+
 function SymbolSearch() {
-    const { filterPairs, setActualPair } = useTrading();
+    const { filterPairs, setActualPair, getActualPair } = useTrading();
     const [searchInput, setSearchInput] = useState("");
     const [searchPairs, setSearchPairs] = useState([]);
 
@@ -56,9 +58,11 @@ function SymbolSearch() {
                             pairs={searchInput.length == 0 ? topPairs : searchPairs}
                             regex={searchInput}
                             onClick={(newPair) => {
-                                setActualPair(newPair);
-                                setSearchInput("");
-                                setSearchPairs([]);
+                                if (newPair.symbol !== getActualPair().symbol) {
+                                    setActualPair(newPair);
+                                    setSearchInput("");
+                                    setSearchPairs([]);
+                                }
                             }} />
                     </ul>
                 </div>

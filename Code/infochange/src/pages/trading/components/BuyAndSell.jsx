@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
+
 import { useTrading } from "../context/TradingContext";
+
+// poner lo de las comas y punto
 
 function BuyAndSell() {
     const { getActualPair, getActualPairPrice } = useTrading();

@@ -6,10 +6,16 @@ import CoinMarketCapData from "../../../data/CoinMarketCapData.json";
 import axios from 'axios';
 
 const TradingContext = createContext();
+
 // Pensar en una posible forma de usar clases con metodos para los simbolos asi el getPrice seria mas sencillo
+
+// Cuando haya backend siempre activo, hacer que se pidan los precios cada X tiempo y se guarde con su time actual asi se puede
+// conseguir que haya siempre el % cambio, el mini grafico de las monedas con puntos random y cosas asi jeje
+
 export const TradingProvider = ({ children }) => {
     const params = useParams();
     const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
+    const getPairPath = () => pairPath;
 
     const [symbols, setSymbols] = useState(Symbols.symbols);
     const reloadPricesTime = 15000;
@@ -17,6 +23,10 @@ export const TradingProvider = ({ children }) => {
     const [actualPair, setActualPair] = useState(getPair(pairPath));
     const getActualPair = () => actualPair;
     const getActualPairPrice = () => getActualPair() === undefined || symbols[0].price === undefined ? -1 : getPair(getActualPair().symbol).price;
+
+    const [mode, setMode] = useState(0);
+    const getChartMode = () => mode;
+    const changeChartMode = () => setMode(mode => (mode + 1) % 2);
 
     function getPair(symbol) {
         return Object.values(symbols).filter(s => s.symbol == symbol)[0];
@@ -34,6 +44,11 @@ export const TradingProvider = ({ children }) => {
             s.baseAssetName.toUpperCase().startsWith(regex.toUpperCase()) ||
             s.symbol.startsWith(regex.toUpperCase()));
     }
+
+    useEffect(() => {
+        if (getActualPair() !== undefined)
+            window.history.replaceState(null, null, "/trading/" + getActualPair().symbol);
+    }, [getActualPair()]);
 
     useEffect(() => {
         const loadPrices = async () => {
@@ -67,8 +82,6 @@ export const TradingProvider = ({ children }) => {
         return () => clearInterval(intervalId);
     }, []);
 
-
-
     return (
         <TradingContext.Provider
             value={{
@@ -78,6 +91,9 @@ export const TradingProvider = ({ children }) => {
                 getActualPair,
                 setActualPair,
                 getActualPairPrice,
+                getChartMode,
+                changeChartMode,
+                getPairPath
             }}
         >
             {children}

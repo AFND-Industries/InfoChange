@@ -1,4 +1,5 @@
 import React from "react";
+
 import { useTrading } from "../context/TradingContext";
 import SymbolItem from "./SymbolItem";
 
@@ -7,7 +8,7 @@ function SymbolList({ pairs, regex = "", onClick }) {
 
     const renderNoMatches = (
         <div className="d-flex justify-content-start align-items-center mt-2">
-            <span className="alert alert-secondary">No se han encontrado coincidencias para tu búsqueda</span>
+            <span className="alert alert-secondary mx-3">No se han encontrado coincidencias para tu búsqueda</span>
         </div>
     );
 
