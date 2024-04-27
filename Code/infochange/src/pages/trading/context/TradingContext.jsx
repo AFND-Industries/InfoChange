@@ -6,7 +6,7 @@ import CoinMarketCapData from "../../../data/CoinMarketCapData.json";
 import axios from 'axios';
 
 const TradingContext = createContext();
-
+// Pensar en una posible forma de usar clases con metodos para los simbolos asi el getPrice seria mas sencillo
 export const TradingProvider = ({ children }) => {
     const params = useParams();
     const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();

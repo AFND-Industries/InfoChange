@@ -19,27 +19,65 @@ function BuyAndSell() {
     const getBaseAsset = () => getActualPair()?.baseAsset || "";
     const getQuoteAsset = () => getActualPair()?.quoteAsset || "";
 
-    const updateInputValues = (value, setValueFunc, oppositeSetValueFunc, action) => {
+    const updateInputValues = (value, setValueFunc, oppositeSetValueFunc, action, assetChanged) => {
         const newValue = parseFloat(value);
 
-        if (!isNaN(newValue)) {
+        if (!isNaN(newValue) && newValue > 0) {
             setValueFunc(newValue);
-            const oppositeValue = action === "BUY" ? newValue / getActualPairPrice() : newValue * getActualPairPrice();
+            const oppositeValue = assetChanged === "BASE" ? newValue * getActualPairPrice() : newValue / getActualPairPrice();
             oppositeSetValueFunc(oppositeValue.toFixed(8));
+
+            const amountDisp = getWalletAmount(action === "BUY" ? getQuoteAsset() : getBaseAsset());
+            let rangeValue;
+            if (amountDisp > 0) {
+                if (action === "BUY" && assetChanged === "QUOTE") rangeValue = 100 * newValue / amountDisp;
+                else if (action === "BUY" && assetChanged === "BASE") rangeValue = 100 * newValue * getActualPairPrice() / amountDisp;
+                else if (action === "SELL" && assetChanged === "BASE") rangeValue = 100 * newValue / amountDisp;
+                else if (action === "SELL" && assetChanged === "QUOTE") rangeValue = 100 * (newValue / getActualPairPrice()) / amountDisp;
+
+                rangeValue = Math.round(100 * rangeValue) / 100;
+            } else {
+                rangeValue = 0;
+            }
+
+            if (action === "BUY") setBuyRangeValue(rangeValue);
+            else setSellRangeValue(rangeValue);
         } else {
             setValueFunc("");
             oppositeSetValueFunc("");
+
+            if (action === "BUY") setBuyRangeValue(0);
+            else setSellRangeValue(0);
         }
     };
 
-    const handleAssetChange = (value, setValueFunc, oppositeSetValueFunc, action) => {
-        updateInputValues(value, setValueFunc, oppositeSetValueFunc, action);
-    };
+    const handleBuyQuoteAsset = (event) => updateInputValues(
+        event.target.value,
+        setBuyQuoteAssetInput,
+        setBuyBaseAssetInput,
+        "BUY",
+        "QUOTE");
 
-    const handleBuyQuoteAsset = (event) => handleAssetChange(event.target.value, setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY");
-    const handleBuyBaseAsset = (event) => handleAssetChange(event.target.value, setBuyBaseAssetInput, setBuyQuoteAssetInput, "BUY");
-    const handleSellBaseAsset = (event) => handleAssetChange(event.target.value, setSellBaseAssetInput, setSellQuoteAssetInput, "SELL");
-    const handleSellQuoteAsset = (event) => handleAssetChange(event.target.value, setSellQuoteAssetInput, setSellBaseAssetInput, "SELL");
+    const handleBuyBaseAsset = (event) => updateInputValues(
+        event.target.value,
+        setBuyBaseAssetInput,
+        setBuyQuoteAssetInput,
+        "BUY",
+        "BASE");
+
+    const handleSellBaseAsset = (event) => updateInputValues(
+        event.target.value,
+        setSellBaseAssetInput,
+        setSellQuoteAssetInput,
+        "SELL",
+        "BASE");
+
+    const handleSellQuoteAsset = (event) => updateInputValues(
+        event.target.value,
+        setSellQuoteAssetInput,
+        setSellBaseAssetInput,
+        "SELL",
+        "QUOTE");
 
     const handleRangeChange = (event, setValueFunc, asset, action) => {
         const rangeValue = parseInt(event.target.value);
@@ -48,9 +86,9 @@ function BuyAndSell() {
         setValueFunc(rangeValue);
 
         if (action === "BUY") {
-            updateInputValues(newValue.toFixed(8), setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY");
+            updateInputValues(newValue.toFixed(8), setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY", "QUOTE");
         } else {
-            updateInputValues(newValue.toFixed(8), setSellBaseAssetInput, setSellQuoteAssetInput, "SELL");
+            updateInputValues(newValue.toFixed(8), setSellBaseAssetInput, setSellQuoteAssetInput, "SELL", "BASE");
         }
     };
 
@@ -136,7 +174,7 @@ function BuyAndSell() {
                     <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
                     <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
                 </div>
-                <input type="range" step="25" className="form-range" value={buyRangeValue} onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")} />
+                <input type="range" className="form-range" value={buyRangeValue} onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")} />
                 <div className="input-group input-group-sm">
                     <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={buyBaseAssetInput} onChange={handleBuyBaseAsset} />
                     <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
@@ -155,7 +193,7 @@ function BuyAndSell() {
                         <input type="text" className="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput} onChange={handleSellBaseAsset} />
                         <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
                     </div>
-                    <input type="range" step="25" className="form-range" value={sellRangeValue} onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")} />
+                    <input type="range" className="form-range" value={sellRangeValue} onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")} />
                     <div className="input-group input-group-sm">
                         <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={sellQuoteAssetInput} onChange={handleSellQuoteAsset} />
                         <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
