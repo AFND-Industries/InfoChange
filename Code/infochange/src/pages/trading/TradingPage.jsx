@@ -135,7 +135,7 @@ function TradingPage() {
             <SymbolSearch />
           </div>
         </div>
-        <div className="row mt-3">
+        <div className="row" style={{ marginTop: "10px" }}>
           <BuyAndSell />
         </div>
       </div>

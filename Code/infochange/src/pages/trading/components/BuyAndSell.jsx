@@ -28,6 +28,7 @@ function BuyAndSell() {
             oppositeSetValueFunc(oppositeValue.toFixed(8));
 
             const amountDisp = getWalletAmount(action === "BUY" ? getQuoteAsset() : getBaseAsset());
+
             let rangeValue;
             if (amountDisp > 0) {
                 if (action === "BUY" && assetChanged === "QUOTE") rangeValue = 100 * newValue / amountDisp;
@@ -37,7 +38,7 @@ function BuyAndSell() {
 
                 rangeValue = Math.round(100 * rangeValue) / 100;
             } else {
-                rangeValue = 0;
+                rangeValue = 1000;
             }
 
             if (action === "BUY") setBuyRangeValue(rangeValue);
@@ -51,33 +52,10 @@ function BuyAndSell() {
         }
     };
 
-    const handleBuyQuoteAsset = (event) => updateInputValues(
-        event.target.value,
-        setBuyQuoteAssetInput,
-        setBuyBaseAssetInput,
-        "BUY",
-        "QUOTE");
-
-    const handleBuyBaseAsset = (event) => updateInputValues(
-        event.target.value,
-        setBuyBaseAssetInput,
-        setBuyQuoteAssetInput,
-        "BUY",
-        "BASE");
-
-    const handleSellBaseAsset = (event) => updateInputValues(
-        event.target.value,
-        setSellBaseAssetInput,
-        setSellQuoteAssetInput,
-        "SELL",
-        "BASE");
-
-    const handleSellQuoteAsset = (event) => updateInputValues(
-        event.target.value,
-        setSellQuoteAssetInput,
-        setSellBaseAssetInput,
-        "SELL",
-        "QUOTE");
+    const handleBuyQuoteAsset = (event) => updateInputValues(event.target.value, setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY", "QUOTE");
+    const handleBuyBaseAsset = (event) => updateInputValues(event.target.value, setBuyBaseAssetInput, setBuyQuoteAssetInput, "BUY", "BASE");
+    const handleSellBaseAsset = (event) => updateInputValues(event.target.value, setSellBaseAssetInput, setSellQuoteAssetInput, "SELL", "BASE");
+    const handleSellQuoteAsset = (event) => updateInputValues(event.target.value, setSellQuoteAssetInput, setSellBaseAssetInput, "SELL", "QUOTE");
 
     const handleRangeChange = (event, setValueFunc, asset, action) => {
         const rangeValue = parseInt(event.target.value);
@@ -85,11 +63,8 @@ function BuyAndSell() {
 
         setValueFunc(rangeValue);
 
-        if (action === "BUY") {
-            updateInputValues(newValue.toFixed(8), setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY", "QUOTE");
-        } else {
-            updateInputValues(newValue.toFixed(8), setSellBaseAssetInput, setSellQuoteAssetInput, "SELL", "BASE");
-        }
+        if (action === "BUY") updateInputValues(newValue.toFixed(8), setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY", "QUOTE");
+        else updateInputValues(newValue.toFixed(8), setSellBaseAssetInput, setSellQuoteAssetInput, "SELL", "BASE")
     };
 
     const clearAmountInputs = () => {
@@ -166,7 +141,7 @@ function BuyAndSell() {
 
     return (
         <>
-            <div className="col-md-6 border border-4 rounded">
+            <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
                     Disp: {getWalletAmount(getQuoteAsset()).toFixed(8)} {getQuoteAsset()}
                 </div>
@@ -184,7 +159,7 @@ function BuyAndSell() {
                 </div>
                 <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {getBaseAsset()}</button>
             </div>
-            <div className="col-md-6 border border-4 rounded">
+            <div className="col-md border border-4 rounded ms-2">
                 <div className="mt-1 mb-1">
                     Disp: {getWalletAmount(getBaseAsset()).toFixed(8)} {getBaseAsset()}
                 </div>

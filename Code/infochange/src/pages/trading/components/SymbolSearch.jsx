@@ -49,8 +49,8 @@ function SymbolSearch() {
                     onKeyPress={handleKeyPress}
                 />
             </div>
-            <div className="row border overflow-y-scroll mt-2 border border-4 rounded" style={{ height: "64vh" }}>
-                <div className="d-flex flex-column">
+            <div className="row border overflow-y-scroll mt-2 border border-4 rounded" style={{ height: "64vh", overflowX: "hidden" }}>
+                <div className="d-flex flex-column ps-0 pe-0">
                     <ul className="list-group list-group-flush">
                         <SymbolList
                             pairs={searchInput.length == 0 ? topPairs : searchPairs}

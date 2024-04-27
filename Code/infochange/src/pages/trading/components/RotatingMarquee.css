@@ -78,7 +78,9 @@
     animation-delay: 25s;
 }
 
-
+.rme-12 {
+    animation-delay: 27.5s;
+}
 
 @keyframes desplazamiento {
     0% {
