@@ -58,7 +58,9 @@ function SymbolSearch() {
                             pairs={searchInput.length == 0 ? topPairs : searchPairs}
                             regex={searchInput}
                             onClick={(newPair) => {
-                                if (newPair.symbol !== getActualPair().symbol) {
+                                const actualSymbol = getActualPair();
+
+                                if (actualSymbol === undefined || newPair.symbol !== actualSymbol.symbol) {
                                     setActualPair(newPair);
                                     setSearchInput("");
                                     setSearchPairs([]);
