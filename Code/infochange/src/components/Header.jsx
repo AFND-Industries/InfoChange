@@ -5,10 +5,10 @@ import { Person } from "react-bootstrap-icons";
 
 export default function Header() {
   const items = [
-    { link: "", name: "Inicio" },
-    { link: "coins", name: "Monedas" },
-    { link: "trading", name: "Trading" },
-    { link: "dashboard", name: "Panel de control" },
+    { link: "/", name: "Inicio" },
+    { link: "/coins", name: "Monedas" },
+    { link: "/trading", name: "Trading" },
+    { link: "/dashboard", name: "Panel de control" },
   ];
 
   // Dropdown show?
@@ -92,7 +92,7 @@ const item = (link, name) => {
     <li key={link} className="nav-item">
       <Link
         className={"nav-link" + (document.URL.endsWith(link) ? " active" : "")}
-        to={"/" + link}
+        to={link}
       >
         {name}
       </Link>

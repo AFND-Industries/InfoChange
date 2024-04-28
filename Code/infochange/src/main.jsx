@@ -9,14 +9,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Trading from "./pages/trading/Trading";
 import Unknown from "./pages/Unknown";
-import Welcome from "./pages/Welcome";
-import CoinInfo from "./pages/coins/CoinInfo";
+import Welcome from "./pages/welcome/Welcome";
 
 import "./assets/bootstrap.css";
 import "bootstrap-icons/font/fonts/bootstrap-icons.woff";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 
-/* Coins page dependencies */
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 

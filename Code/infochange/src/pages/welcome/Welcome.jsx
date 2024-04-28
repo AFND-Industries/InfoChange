@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Component } from "react";
-import "./welcome.css";
+import "./Welcome.css";
+import bgcripto from "../../assets/bg-cripto.jpg";
 import * as Icons from "react-bootstrap-icons";
-import TradingViewWidget from "../components/TradingViewWidget";
+import TradingViewWidget from "../../components/TradingViewWidget";
 import { Parallax } from "react-parallax";
 import { Link } from "react-router-dom";
 export default function Welcome() {
@@ -47,7 +48,7 @@ export default function Welcome() {
       <div className="mb-5">
         <Parallax
           blur={{ min: -5, max: 20 }}
-          bgImage={"images/bg-cripto.jpg"}
+          bgImage={bgcripto}
           bgImageAlt="the dog"
           strength={-200}
         >
