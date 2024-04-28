@@ -46,7 +46,10 @@ function ServerNotAvailable() {
       <div className="alert alert-danger">
         <span className="h1">SERVIDOR NO DISPONIBLE</span>
       </div>
-      <span className="alert alert-danger">(Si estás desarrollando, ve a main.jsx y pon un "1" en el setStatus de catch Exception para arreglarlo)</span>
+      <span className="alert alert-danger">
+        (Si estás desarrollando, ve a main.jsx y pon un "1" en el setStatus de
+        catch Exception para arreglarlo)
+      </span>
     </div>
   );
 }
@@ -57,10 +60,13 @@ function NotLogged() {
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 flex-column">
       <div className="alert alert-danger">
-        <span className="h1">Usuario no autenticado</span><br />
+        <span className="h1">Usuario no autenticado</span>
+        <br />
       </div>
-      <span>(Aquí habría que en vez de enseñar esto, redirigir a Welcome o a Login)</span>
-    </div >
+      <span>
+        (Aquí habría que en vez de enseñar esto, redirigir a Welcome o a Login)
+      </span>
+    </div>
   );
 }
 
@@ -70,9 +76,13 @@ function UnknownStatus({ status }) {
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 flex-column">
       <div className="alert alert-danger">
-        <span className="h1">Algo ha salido mal... Estado desconocido: {status}</span>
+        <span className="h1">
+          Algo ha salido mal... Estado desconocido: {status}
+        </span>
       </div>
-      <span>(Contacta con el administrador y envíale una captura de esta pantalla)</span>
+      <span>
+        (Contacta con el administrador y envíale una captura de esta pantalla)
+      </span>
     </div>
   );
 }
@@ -109,7 +119,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
-  )
+  );
 }
 
 function Authenticator() {
@@ -118,11 +128,12 @@ function Authenticator() {
   const statusPages = {
     "-2": <Loading />,
     "-1": <ServerNotAvailable />,
-    "0": <NotLogged />,
-    "1": <App />
-  }
+    0: <NotLogged />,
+    1: <App />,
+  };
 
-  const getPage = (status) => statusPages[status] ?? <UnknownStatus status={status} />;
+  const getPage = (status) =>
+    statusPages[status] ?? <UnknownStatus status={status} />;
 
   useEffect(() => {
     const fetchAuth = async () => {
@@ -134,10 +145,10 @@ function Authenticator() {
         console.log("El servidor no está disponible en estos momentos.");
 
         setStatus("1"); // Pon aqui un 1 si quieres que aunque no vaya el servidor te deje entrar al front-end
-        // normalmente tiene que ser un -1, server not available 
+        // normalmente tiene que ser un -1, server not available
         //(se puede hacer que diferencie entre si tienes internet o no)
       }
-    }
+    };
 
     fetchAuth();
   }, []);
@@ -146,5 +157,7 @@ function Authenticator() {
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Authenticator />
+  <React.StrictMode>
+    <Authenticator />
+  </React.StrictMode>
 );
