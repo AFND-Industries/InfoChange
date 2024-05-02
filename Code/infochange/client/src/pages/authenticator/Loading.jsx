@@ -8,7 +8,6 @@ function Loading() {
             <div className="alert alert-secondary">
                 <span className="h1">Autenticando usuario...</span>
             </div>
-            <span>(Aún no está implementado)</span>
         </div>
     );
 }

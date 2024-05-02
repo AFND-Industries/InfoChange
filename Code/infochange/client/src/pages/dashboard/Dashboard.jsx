@@ -1,23 +1,16 @@
-import {
-  Link,
-  redirect,
-  useNavigate,
-  useParams,
-  Navigate,
-} from "react-router-dom";
-import { ChevronLeft, PersonFill, Wallet2 } from "react-bootstrap-icons";
+import { useState } from "react";
+
+import { PersonFill, Wallet2 } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
 
-import { useState } from "react";
+import { useAuth } from "../authenticator/AuthContext";
 
 function Dashboard() {
+  const { getActualUser } = useAuth();
   const [page, setPage] = useState(0);
 
-  if (sessionStorage.getItem("user") === null) return <Navigate to="/login" />;
-
-  const mockData = JSON.parse(sessionStorage.getItem("user"));
-  console.warn(mockData);
+  const mockData = getActualUser();
 
   const pages = [
     <Profile profile={mockData.profile} />,

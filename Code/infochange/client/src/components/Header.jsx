@@ -1,9 +1,13 @@
 import { useState } from "react";
 import banner from "../assets/banner.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
+import { useAuth } from "../pages/authenticator/AuthContext";
 
 export default function Header() {
+  const { getActualUser, doLogout } = useAuth();
+  const navigate = useNavigate();
+
   const items = [
     { link: "/", name: "Inicio" },
     { link: "/coins", name: "Monedas" },
@@ -14,7 +18,7 @@ export default function Header() {
   // Dropdown show?
   const [show, setShow] = useState(false);
 
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = getActualUser();
 
   return (
     <header>
@@ -50,34 +54,39 @@ export default function Header() {
                 </Link>
               </div>
             ) : (
-              <div className="dropdown">
-                <button
-                  className="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  onClick={() => setShow(!show)}
-                >
-                  <Person className="me-2 fs-4" /> {user.profile.username}
-                </button>
+              <div className="d-flex justify-content-between">
+                <div className="dropdown me-2">
+                  <button
+                    className="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    onClick={() => setShow(!show)}
+                  >
+                    <Person className="me-2 fs-4" /> {user.profile.username}
+                  </button>
 
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Panel de control
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Panel de control
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Another action
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Something else here
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <button className="btn btn-primary" onClick={doLogout}>
+                  Salir
+                </button>
               </div>
             )}
           </div>

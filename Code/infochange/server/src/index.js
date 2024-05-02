@@ -88,7 +88,9 @@ app.get("/login", (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.send("Logout correctamente");
+
+  res.json({ status: "1" });
+
   applog(`Petición "/logout" ejecutada`, "REQUEST");
 });
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Payment from "./pages/payment/Payment";
 import Coins from "./pages/coins/Coins";
@@ -13,7 +13,6 @@ import Welcome from "./pages/welcome/Welcome";
 
 import Loading from "./pages/authenticator/Loading";
 import ServerNotAvailable from "./pages/authenticator/ServerNotAvailable";
-import NotLogged from "./pages/authenticator/NotLogged";
 import UnknownStatus from "./pages/authenticator/UnknownStatus";
 
 import Header from "./components/Header";
@@ -26,29 +25,13 @@ function App() {
     const statusPages = {
         "-2": <Loading />,
         "-1": <ServerNotAvailable />,
-        "0": <NotLogged />,
+        "0": <Navigate to="/login" />,
     };
 
-    const getPage = (status) => statusPages[status] ?? <UnknownStatus status={status} />;
+    const getPage = () => statusPages[getAuthStatus()] ?? <UnknownStatus status={getAuthStatus()} />;
 
-    const wrap = (v) => (
-        <>
-            <Header />
-            {v}
-            <Footer />
-        </>
-    );
-
-    const needAuth = (v) => {
-        const authStatus = getAuthStatus();
-        const renderPage = authStatus === "1" ? v : getPage(authStatus);
-
-        return (
-            <>
-                {renderPage}
-            </>
-        );
-    }
+    const wrap = (v) => (<><Header />{v}<Footer /></>);
+    const needAuth = (v) => (<>{getAuthStatus() === "1" ? v : getPage()}</>);
 
     return (
         <div className="d-flex flex-column min-vh-100">

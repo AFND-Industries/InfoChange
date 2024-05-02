@@ -4,15 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import * as Icons from "react-bootstrap-icons";
 import axios from "axios";
 
+import { useAuth } from "./authenticator/AuthContext";
+
 import "./login.css";
 
 function Login() {
+  const { doLogin } = useAuth();
+  const navigate = useNavigate();
+
   const user = useRef("");
   const pass = useRef("");
 
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState("password");
@@ -23,21 +26,22 @@ function Login() {
   };
 
   const onLogin = async () => {
-    const response = await axios.get("http://localhost:1024/login?user=" + user.current.value + "&pass=" + pass.current.value, {
-      withCredentials: true
-    });
+    const response = await doLogin(user.current.value, pass.current.value);
+    const status = response !== undefined && response.data !== undefined ? response.data.status : "";
 
-    if (response.data.status === "-1") {
+    if (status === "-1") {
       setError(response.data.cause);
-    } else if (response.data.status === "0") {
+    } else if (status === "0") {
       setError("Usuario o contraseña incorrecta");
-    } else if (response.data.status === "1") {
+    } else if (status === "1") {
       navigate("/dashboard");
     } else {
       console.log(response);
-
       setError("Error desconocido (por ahora)");
     }
+
+    user.current.value = null;
+    pass.current.value = null;
   };
 
   return (
