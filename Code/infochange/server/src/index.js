@@ -1,26 +1,26 @@
 const express = require("express");
-const session = require('express-session');
-const { createHash } = require('crypto');
+const session = require("express-session");
+const { createHash } = require("crypto");
 const cors = require("cors");
 const mysql = require("mysql");
 
 require("dotenv").config();
 
 const app = express();
-app.use(session({ secret: 'IEEE754' }));
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
-}));
+app.use(session({ secret: "IEEE754" }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // private function
 const applog = (msg, tag = "SERVER") => {
   console.log(`[${new Date().toLocaleString()}] [${tag || "INFO"}] ${msg}`);
 };
 
-const hash = (string) => {
-  return createHash('sha256').update(string).digest('hex');
-};
+const hash = (string) => createHash("sha256").update(string).digest("hex");
 
 const error = (type, cause) => {
   return ({
@@ -59,10 +59,17 @@ app.get("/login", (req, res) => {
   if (!req.query.user || !req.query.pass) {
     res.json(error("MISSING_PARAMETERS", "Faltan los parámetros user y pass"));
   } else {
-    const query = "SELECT * FROM usuario WHERE NOMBRE LIKE '" + req.query.user + "' AND CLAVE LIKE '" + hash(req.query.pass) + "'";
+    const query =
+      "SELECT * FROM usuario WHERE NOMBRE LIKE '" +
+      req.query.user +
+      "' AND CLAVE LIKE '" +
+      hash(req.query.pass) +
+      "'";
     db.query(query, (err, result) => {
-      if (err)
+      if (err) {
         res.json(error(err.code, err.sqlMessage));
+        applog(`Inicio de sesión fallido : ${req.ip}`, "AUTH");
+      }
       else {
         let st = "0";
         if (result.length > 0) {
@@ -70,14 +77,16 @@ app.get("/login", (req, res) => {
           req.session.user = req.query.user;
         }
         res.json({ status: st });
+        applog(
+          `Inicio de sesión realizado [${req.query.user}] ${req.ip}`,
+          "AUTH"
+        );
       }
     });
   }
-  applog(`Petición "/login" ejecutada`, "REQUEST");
 });
 
-
-app.get('/logout', (req, res) => {
+app.get("/logout", (req, res) => {
   req.session.destroy();
   res.send("Logout correctamente");
   applog(`Petición "/logout" ejecutada`, "REQUEST");
@@ -96,8 +105,10 @@ app.post("/register", (req, res) => {
     }
   );
   */
+  req.session.user = user;
   res.json({
     status: "1",
+    user: user,
   });
 });
 
