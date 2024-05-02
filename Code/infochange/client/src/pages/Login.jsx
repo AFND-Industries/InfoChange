@@ -1,8 +1,12 @@
 import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import Users from "../data/users.json";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import * as Icons from "react-bootstrap-icons";
+
 import "./login.css";
+
 export default function Login(props) {
   const user = useRef("");
   const pass = useRef("");
@@ -22,9 +26,9 @@ export default function Login(props) {
   return (
     <div
       className="anim_gradient"
-      // style={{
-      //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
-      // }}
+    // style={{
+    //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
+    // }}
     >
       <div className="container-fluid vh-100 ">
         <div className="row align-items-center justify-content-center vh-100">
@@ -43,7 +47,7 @@ export default function Login(props) {
                       type="text"
                       ref={user}
                       className="form-control"
-                      placeholder="name@example.com"
+                      placeholder="Tu usuario..."
                     />
                   </div>
                 </div>
@@ -57,7 +61,7 @@ export default function Login(props) {
                         type={inputType}
                         ref={pass}
                         className="form-control"
-                        placeholder="password"
+                        placeholder="Tu contraseña..."
                       />
                       <button
                         type="button"
@@ -72,7 +76,7 @@ export default function Login(props) {
                   </div>
                 </div>
 
-                <div class="mb-3 form-check">
+                {false && <div class="mb-3 form-check">
                   <input
                     type="checkbox"
                     class="form-check-input"
@@ -81,7 +85,7 @@ export default function Login(props) {
                   <label class="form-check-label" for="exampleCheck1">
                     Mantener la sesión iniciada
                   </label>
-                </div>
+                </div>}
                 <div className="d-flex justify-content-around mb-3">
                   <Link to={"/"}>
                     <button className="btn btn-outline-secondary">

@@ -20,9 +20,15 @@ const applog = (msg, tag = "SERVER") => {
 
 const hash = (string) => {
   return createHash('sha256').update(string).digest('hex');
-}
+};
 
-// hacer funcion error
+const error = (type, cause) => {
+  return ({
+    status: "-1",
+    error: type,
+    cause: cause
+  });
+};
 
 const port = 1024;
 
@@ -51,12 +57,12 @@ app.get("/auth", (req, res) => {
 
 app.get("/login", (req, res) => {
   if (!req.query.user || !req.query.pass) {
-    res.send('Faltan los parámetros: {user, pass}');
+    res.json(error("MISSING_PARAMETERS", "Faltan los parámetros user y pass"));
   } else {
     const query = "SELECT * FROM usuario WHERE NOMBRE LIKE '" + req.query.user + "' AND CLAVE LIKE '" + hash(req.query.pass) + "'";
     db.query(query, (err, result) => {
       if (err)
-        res.send(err);
+        res.json(error(err.code, err.sqlMessage));
       else {
         let st = "0";
         if (result.length > 0) {
