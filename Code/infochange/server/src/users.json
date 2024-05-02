@@ -1,0 +1,71 @@
+[
+  {
+    "profile": {
+      "username": "tb18003",
+      "password": "1234",
+      "name": "Tomas",
+      "surname": "Bustamante",
+      "email": "tb18ms@gmail.com",
+      "phone": "+34 123456789",
+      "document": "11111111A",
+      "address": "Calle Falsa 123",
+      "postalCode": "28000",
+      "country": "España"
+    },
+    "wallet": {
+      "balance": 1342.23,
+      "coins": [
+        {
+          "name": "BTC",
+          "quantity": 0.0005
+        },
+        {
+          "name": "ETH",
+          "quantity": 0.005
+        },
+        {
+          "name": "DOGE",
+          "quantity": 100
+        },
+        {
+          "name": "LTC",
+          "quantity": 0.05
+        },
+        {
+          "name": "XRP",
+          "quantity": 1000
+        }
+      ]
+    }
+  },
+  {
+    "profile": {
+      "username": "eulogioqt",
+      "password": "1234",
+      "name": "Eulogio",
+      "surname": "Quemada",
+      "email": "eulogio@infochange.es",
+      "phone": "+34 642233927",
+      "document": "12345678X",
+      "address": "Calle Mahalanobis, 5",
+      "postalCode": "29010",
+      "country": "España"
+    },
+    "wallet": {}
+  },
+  {
+    "profile": {
+      "username": "user",
+      "password": "1234",
+      "name": "Anónimo",
+      "surname": "Unknown",
+      "email": "user@infochange.es",
+      "phone": "+34 642233927",
+      "document": "12345678X",
+      "address": "Calle Mahalanobis, 5",
+      "postalCode": "29010",
+      "country": "España"
+    },
+    "wallet": {}
+  }
+]
