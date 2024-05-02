@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import Users from "../data/users.json";
-
 import * as Icons from "react-bootstrap-icons";
 
 import "./login.css";
@@ -22,6 +20,10 @@ export default function Login(props) {
     setShowPassword(!showPassword);
     setInputType(showPassword ? "password" : "text");
   };
+
+  const onLogin = (event) => {
+    console.log(event.target.value);
+  }
 
   return (
     <div
@@ -94,23 +96,7 @@ export default function Login(props) {
                   </Link>
                   <button
                     className="btn btn-primary"
-                    onClick={() => {
-                      const findUser = Users.find(
-                        (u) =>
-                          u.profile.username === user.current.value &&
-                          u.profile.password === pass.current.value
-                      );
-                      if (findUser !== undefined) {
-                        sessionStorage.setItem(
-                          "user",
-                          JSON.stringify(findUser)
-                        );
-                        navigate("/dashboard");
-                      } else {
-                        setError("El usuario o la contraseña son incorrectos");
-                      }
-                    }}
-                  >
+                    onClick={onLogin}>
                     Entrar
                   </button>
                 </div>
