@@ -5,7 +5,7 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 
-// private function
+// private functions
 const applog = (msg, tag) => {
   console.log(`[${new Date().toLocaleString()}] [${tag || "INFO"}] ${msg}`);
 };
@@ -30,6 +30,24 @@ app.get("/", (req, res) => {
 
 app.get("/auth", cors(), (req, res) => {
   res.json({ status: "1" });
+});
+
+app.post("/register", (req, res) => {
+  const user = req.query;
+  applog(`Usuario ${user.username} registrado`, "REQUEST");
+  /*
+  db.query(
+    `INSERT INTO usuario (username, name, lastname, email, phone, document, address, postalcode, country) VALUES 
+    ('${user.username}', '${user.name}', '${user.lastname}', '${user.email}', '${user.phone}', '${user.document}', '${user.address}', '${user.postalcode}', '${user.country}')`,
+    (err, result) => {
+      if (err) throw err;
+      res.json({ message: "Usuario registrado" });
+    }
+  );
+  */
+  res.json({
+    status: "1",
+  });
 });
 
 app.get("/users", (req, res) => {
