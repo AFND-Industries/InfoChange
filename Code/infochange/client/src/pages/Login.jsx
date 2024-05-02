@@ -2,10 +2,11 @@ import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import * as Icons from "react-bootstrap-icons";
+import axios from "axios";
 
 import "./login.css";
 
-export default function Login(props) {
+function Login() {
   const user = useRef("");
   const pass = useRef("");
 
@@ -21,9 +22,23 @@ export default function Login(props) {
     setInputType(showPassword ? "password" : "text");
   };
 
-  const onLogin = (event) => {
-    console.log(event.target.value);
-  }
+  const onLogin = async () => {
+    const response = await axios.get("http://localhost:1024/login?user=" + user.current.value + "&pass=" + pass.current.value, {
+      withCredentials: true
+    });
+
+    if (response.data.status === "-1") {
+      setError(response.data.cause);
+    } else if (response.data.status === "0") {
+      setError("Usuario o contraseña incorrecta");
+    } else if (response.data.status === "1") {
+      navigate("/dashboard");
+    } else {
+      console.log(response);
+
+      setError("Error desconocido (por ahora)");
+    }
+  };
 
   return (
     <div
@@ -129,3 +144,5 @@ export default function Login(props) {
     </div>
   );
 }
+
+export default Login;

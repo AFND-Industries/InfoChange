@@ -8,10 +8,10 @@ import {
 import { ChevronLeft, PersonFill, Wallet2 } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
-import Users from "./../../data/users.json";
-import { useEffect, useState } from "react";
 
-export default function Dashboard() {
+import { useState } from "react";
+
+function Dashboard() {
   const [page, setPage] = useState(0);
 
   if (sessionStorage.getItem("user") === null) return <Navigate to="/login" />;
@@ -36,18 +36,16 @@ export default function Dashboard() {
           <div className="list-group">
             <button
               type="button"
-              className={`list-group-item list-group-item-action ${
-                page === 0 ? "active" : ""
-              } d-flex align-items-center`}
+              className={`list-group-item list-group-item-action ${page === 0 ? "active" : ""
+                } d-flex align-items-center`}
               onClick={() => setPage(0)}
             >
               <PersonFill className="me-3" /> Perfil
             </button>
             <button
               type="button"
-              className={`list-group-item list-group-item-action ${
-                page === 1 ? "active" : ""
-              } d-flex align-items-center`}
+              className={`list-group-item list-group-item-action ${page === 1 ? "active" : ""
+                } d-flex align-items-center`}
               onClick={() => setPage(1)}
             >
               <Wallet2 className="me-3" />
@@ -65,3 +63,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
