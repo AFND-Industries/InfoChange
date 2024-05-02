@@ -11,7 +11,7 @@ import "primereact/resources/primereact.min.css";
 import Authenticator from "./pages/authenticator/Authenticator";
 
 // ordenar el login y register tambien
-// todas las llamadas backend como auth() meterlas en un js o context o lo que sea pa ordenarlo
+//todas las llamadas backend como auth() meterlas en un js o context o lo que sea pa ordenarlo
 // ponerlo todo a int en los status
 
 ReactDOM.createRoot(document.getElementById("root")).render(

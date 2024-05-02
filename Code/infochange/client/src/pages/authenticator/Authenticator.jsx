@@ -9,7 +9,9 @@ import UnknownStatus from "./UnknownStatus";
 import axios from "axios";
 
 async function auth() {
-    return await axios.get("http://localhost:1024/auth");
+    return await axios.get("http://localhost:1024/auth", {
+        withCredentials: true
+    });
 }
 
 function Authenticator() {

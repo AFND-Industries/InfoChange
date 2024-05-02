@@ -1,7 +1,7 @@
 import React from "react";
 
 function NotLogged() {
-    console.log("¡No has iniciado sesión! Estado: " + status);
+    console.log("¡No has iniciado sesión!");
 
     return (
         <div className="d-flex align-items-center justify-content-center vh-100 flex-column">
