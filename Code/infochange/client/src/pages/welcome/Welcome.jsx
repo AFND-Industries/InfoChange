@@ -7,11 +7,9 @@ import { Link } from "react-router-dom";
 
 import bgcripto from "../../assets/bg-cripto.jpg";
 import "./Welcome.css";
-import { useAuth } from "../authenticator/AuthContext";
 
 export default function Welcome() {
   const [loaded, setLoaded] = useState(false);
-  const { getAuthStatus } = useAuth();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -21,34 +19,8 @@ export default function Welcome() {
     return () => clearTimeout(timeout);
   }, []);
 
-  useEffect(() => {
-    if (getAuthStatus() == "-1")
-      showErrorToast();
-  }, [getAuthStatus()])
-
-  function showErrorToast() {
-    const toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-      autohide: false
-    });
-    toast.show();
-  }
-
   return (
     <>
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div className="toast-header">
-            <div className="rounded me-2" style={{ backgroundColor: 'red', width: '20px', height: '20px' }}></div>
-            <strong className="me-auto">Error</strong>
-            <small>¡IMPORTANTE!</small>
-            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div className="toast-body">
-            El servidor no está disponible en estos momentos.
-          </div>
-        </div>
-      </div>
-
       <div className={`container-fluid px-0 App ${loaded ? "loaded" : ""}`}>
         <div style={{ height: "100vh", width: "100%" }}>
           <div
