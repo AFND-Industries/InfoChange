@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 import * as Icons from "react-bootstrap-icons";
 import TradingViewWidget from "../../components/TradingViewWidget";
 import { Parallax } from "react-parallax";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import bgcripto from "../../assets/bg-cripto.jpg";
 import "./Welcome.css";
 
 export default function Welcome() {
   const [loaded, setLoaded] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoaded(true);
@@ -18,6 +18,16 @@ export default function Welcome() {
 
     return () => clearTimeout(timeout);
   }, []);
+
+  const [email, setEmail] = useState("");
+  const handleChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    // Pasar el valor del correo electrónico a la función handleSubmit
+    navigate("/login", { state: { email: email } });
+  };
 
   return (
     <>
@@ -99,14 +109,17 @@ export default function Welcome() {
                               id="exampleInputEmail1"
                               aria-describedby="emailHelp"
                               placeholder="Correo Electrónico"
+                              value={email}
+                              onChange={handleChange}
                             />
                           </div>
                           <div>
-                            <Link to="/login">
-                              <button className="btn btn-primary me-2">
-                                Iniciar Sesión
-                              </button>
-                            </Link>
+                            <button
+                              className="btn btn-primary me-2"
+                              onClick={handleSubmit}
+                            >
+                              Iniciar Sesión
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -155,9 +168,9 @@ export default function Welcome() {
                     Explora el Mercado Cripto en Profundidad
                   </h5>
                   <p className="card-text">
-                    Accede a nuestro exchange para explorar gráficos interactivos
-                    y opciones de compra/venta de criptomonedas. ¡Empieza a operar
-                    con confianza!
+                    Accede a nuestro exchange para explorar gráficos
+                    interactivos y opciones de compra/venta de criptomonedas.
+                    ¡Empieza a operar con confianza!
                   </p>
                   <Link to="/trading">
                     <button className="btn btn-primary me-2">Trading</button>
@@ -177,9 +190,9 @@ export default function Welcome() {
                   <h5 className="card-title">Tu Wallet Cripto Personalizado</h5>
                   <p className="card-text">
                     Descubre tu dashboard exclusivo, centrado en tu wallet de
-                    criptomonedas. Gestiona y supervisa tus activos digitales con
-                    facilidad y seguridad. ¡Tu tesoro digital, bajo tu control
-                    absoluto!
+                    criptomonedas. Gestiona y supervisa tus activos digitales
+                    con facilidad y seguridad. ¡Tu tesoro digital, bajo tu
+                    control absoluto!
                   </p>
                   <Link to="/dashboard">
                     <button className="btn btn-primary me-2">
@@ -210,7 +223,10 @@ export default function Welcome() {
                       ¿Qué es una criptomoneda y cómo funciona en InfoChange?
                     </button>
                   </h2>
-                  <div id="collapseOne" className="accordion-collapse collapse show">
+                  <div
+                    id="collapseOne"
+                    className="accordion-collapse collapse show"
+                  >
                     <div className="accordion-body">
                       Una <strong>criptomoneda </strong>
                       es una forma de moneda digital que utiliza la criptografía
@@ -241,7 +257,8 @@ export default function Welcome() {
                       plataforma en línea que permite a los usuarios comprar,
                       vender e intercambiar criptomonedas. En InfoChange, te
                       ofrecemos una plataforma segura y eficiente donde puedes
-                      realizar todas estas operaciones de forma rápida y sencilla.
+                      realizar todas estas operaciones de forma rápida y
+                      sencilla.
                     </div>
                   </div>
                 </div>
@@ -259,13 +276,17 @@ export default function Welcome() {
                       en InfoChange?
                     </button>
                   </h2>
-                  <div id="collapseThree" className="accordion-collapse collapse">
+                  <div
+                    id="collapseThree"
+                    className="accordion-collapse collapse"
+                  >
                     <div className="accordion-body">
-                      Un <strong>wallet</strong> de criptomonedas es un programa o
-                      servicio que almacena las claves públicas y privadas que se
-                      utilizan para enviar y recibir criptomonedas. En InfoChange,
-                      entendemos la importancia de proteger tus activos digitales,
-                      por eso ofrecemos wallets seguros y confiables.
+                      Un <strong>wallet</strong> de criptomonedas es un programa
+                      o servicio que almacena las claves públicas y privadas que
+                      se utilizan para enviar y recibir criptomonedas. En
+                      InfoChange, entendemos la importancia de proteger tus
+                      activos digitales, por eso ofrecemos wallets seguros y
+                      confiables.
                     </div>
                   </div>
                 </div>
@@ -283,7 +304,10 @@ export default function Welcome() {
                       InfoChange?
                     </button>
                   </h2>
-                  <div id="collapseFour" className="accordion-collapse collapse">
+                  <div
+                    id="collapseFour"
+                    className="accordion-collapse collapse"
+                  >
                     <div className="accordion-body">
                       En InfoChange, te proporcionamos una guía paso a paso para
                       comenzar a operar con criptomonedas. Desde la creación de
@@ -303,17 +327,20 @@ export default function Welcome() {
                       aria-expanded="false"
                       aria-controls="collapseFive"
                     >
-                      ¿Qué tipos de criptomonedas puedo encontrar en InfoChange y
-                      cómo puedo explorarlas?
+                      ¿Qué tipos de criptomonedas puedo encontrar en InfoChange
+                      y cómo puedo explorarlas?
                     </button>
                   </h2>
-                  <div id="collapseFive" className="accordion-collapse collapse">
+                  <div
+                    id="collapseFive"
+                    className="accordion-collapse collapse"
+                  >
                     <div className="accordion-body">
-                      InfoChange ofrece una amplia variedad de criptomonedas para
-                      explorar y operar. Desde Bitcoin y Ethereum hasta altcoins
-                      menos conocidas, nuestra plataforma te proporciona
-                      información detallada sobre cada una de ellas, incluyendo
-                      precios en tiempo real, gráficos y análisis.
+                      InfoChange ofrece una amplia variedad de criptomonedas
+                      para explorar y operar. Desde Bitcoin y Ethereum hasta
+                      altcoins menos conocidas, nuestra plataforma te
+                      proporciona información detallada sobre cada una de ellas,
+                      incluyendo precios en tiempo real, gráficos y análisis.
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useRef, useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import * as Icons from "react-bootstrap-icons";
 
@@ -8,6 +8,7 @@ import { useAuth } from "./authenticator/AuthContext";
 import "./login.css";
 
 function Login() {
+  const location = useLocation();
   const { doLogin } = useAuth();
   const navigate = useNavigate();
 
@@ -19,6 +20,15 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState("password");
 
+  const [Fuser, setUser] = useState("");
+  const handleUserChange = (value) => {
+    // Actualiza el estado con el nuevo valor
+    setUser(value);
+  };
+  useEffect(() => {
+    let email = location.state !== null ? location.state.email : "";
+    setUser(email);
+  }, []);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
     setInputType(showPassword ? "password" : "text");
@@ -26,7 +36,10 @@ function Login() {
 
   const onLogin = async () => {
     const response = await doLogin(user.current.value, pass.current.value);
-    const status = response !== undefined && response.data !== undefined ? response.data.status : "";
+    const status =
+      response !== undefined && response.data !== undefined
+        ? response.data.status
+        : "";
 
     if (status === "-1") {
       setError(response.data.cause);
@@ -46,13 +59,13 @@ function Login() {
   return (
     <div
       className="anim_gradient"
-    // style={{
-    //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
-    // }}
+      // style={{
+      //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
+      // }}
     >
       <div className="container-fluid vh-100 ">
         <div className="row align-items-center justify-content-center vh-100">
-          <div className="col-12 col-md-4 d-flex flex-column justify-content-center">
+          <div className="col-12 col-md-6 col-xl-4 d-flex flex-column justify-content-center">
             <div className="card text-center p-4">
               <div className="card-body">
                 <h2 className="text-secondary card-title mb-4">
@@ -68,6 +81,8 @@ function Login() {
                       ref={user}
                       className="form-control"
                       placeholder="Tu usuario..."
+                      value={Fuser}
+                      onChange={(e) => handleUserChange(e.target.value)}
                     />
                   </div>
                 </div>
@@ -96,13 +111,13 @@ function Login() {
                   </div>
                 </div>
 
-                <div class="mb-3 form-check">
+                <div className="mb-3 form-check">
                   <input
                     type="checkbox"
-                    class="form-check-input"
+                    className="form-check-input"
                     id="exampleCheck1"
                   />
-                  <label class="form-check-label" for="exampleCheck1">
+                  <label className="form-check-label" for="exampleCheck1">
                     Mantener la sesión iniciada
                   </label>
                 </div>
@@ -112,9 +127,7 @@ function Login() {
                       Volver a inicio
                     </button>
                   </Link>
-                  <button
-                    className="btn btn-primary"
-                    onClick={onLogin}>
+                  <button className="btn btn-primary" onClick={onLogin}>
                     Entrar
                   </button>
                 </div>
