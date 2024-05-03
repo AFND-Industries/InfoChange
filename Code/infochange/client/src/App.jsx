@@ -19,17 +19,13 @@ import Footer from "./components/Footer";
 import { useAuth } from "./pages/authenticator/AuthContext";
 
 function App() {
-    const { getAuthStatus, doAuth } = useAuth();
-
-    useEffect(() => { // Bucle para comprobar que todo vaya bien
-        const interval = setInterval(async () => await doAuth(), 5000);
-        return () => clearInterval(interval);
-    }, [])
+    const { getAuthStatus } = useAuth();
 
     useEffect(() => {
         const toast = new bootstrap.Toast(document.getElementById('liveToast'), {
             autohide: false
         });
+
         if (getAuthStatus() == "-1") toast.show();
         else toast.hide();
     }, [getAuthStatus()])
@@ -53,6 +49,7 @@ function App() {
                         <div className="rounded me-2" style={{ backgroundColor: 'red', width: '20px', height: '20px' }}></div>
                         <strong className="me-auto">Error</strong>
                         <small>¡IMPORTANTE!</small>
+                        {false && <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>}
                     </div>
                     <div className="toast-body">
                         El servidor no está disponible en estos momentos.

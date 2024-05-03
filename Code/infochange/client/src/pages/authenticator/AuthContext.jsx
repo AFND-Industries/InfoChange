@@ -4,6 +4,7 @@ import users from "../../data/users.json"
 import axios from "axios";
 
 const AuthContext = createContext();
+const SERVER_URL = "http://localhost:1024";
 
 export const AuthProvider = ({ children }) => {
     const [authStatus, setAuthStatus] = useState("-2"); // -2: Loading. -1: Server not available. 0 Not logged. 1 Logged
@@ -12,82 +13,57 @@ export const AuthProvider = ({ children }) => {
     const getAuthStatus = () => authStatus;
     const getActualUser = () => actualUser;
 
+    const get = async (url) => await axios.get(SERVER_URL + url, { withCredentials: true });
+
     async function auth() {
-        return await axios.get("http://localhost:1024/auth", {
-            withCredentials: true
-        });
-    }
+        const response = await get("/auth");
 
-    const doAuth = async () => {
-        let response;
-
-        try {
-            response = await auth();
-
-            setAuthStatus(response.data.status);
-            if (response.data.status === "1")
-                setActualUser(Object.values(users).filter(u => u.profile.username == response.data.user)[0]);
-            else
-                setActualUser(null);
-        } catch (Exception) {
-            console.log("El servidor no está disponible en estos momentos.");
-
-            setAuthStatus("-1"); // Pon aqui un 1 si quieres que aunque no vaya el servidor te deje entrar al front-end
-            // normalmente tiene que ser un -1, server not available
-            //(se puede hacer que diferencie entre si tienes internet o no)
-        }
+        setAuthStatus(response.data.status);
+        setActualUser(response.data.status === "1" ? Object.values(users).filter(u => u.profile.username == response.data.user)[0] : null);
 
         return response;
-    };
-
-    async function login(user, pass) {
-        return await axios.get("http://localhost:1024/login?user=" + user + "&pass=" + pass, {
-            withCredentials: true
-        });
     }
 
-    const doLogin = async (user, pass) => {
-        let response;
-
-        try {
-            response = await login(user, pass);
-
-            if (response.data.status === "1")
-                await doAuth();
-        } catch (Exception) {
-            console.log("El servidor no está disponible en estos momentos.");
-
-            setAuthStatus("-1");
-        }
+    async function login(user, pass) {
+        const response = await get("/login?user=" + user + "&pass=" + pass);
+        if (response.data.status === "1")
+            await doAuth();
 
         return response;
     }
 
     async function logout() {
-        return await axios.get("http://localhost:1024/logout", {
-            withCredentials: true
-        });
+        const response = await get("/logout");
+        if (response.data.status === "1")
+            await doAuth();
+
+        return response;
     }
 
-    const doLogout = async () => {
+    const doAction = async (func) => {
         let response;
 
         try {
-            response = await logout();
-
-            if (response.data.status === "1")
-                await doAuth();
+            response = await func();
         } catch (Exception) {
             console.log("El servidor no está disponible en estos momentos.");
 
-            setAuthStatus("-1");
+            setAuthStatus("-1"); // Pon aqui un 1 si quieres que aunque no vaya el servidor te deje entrar al front-end
+            setActualUser(null); // normalmente tiene que ser un -1, server not available
         }
 
         return response;
     }
 
+    const doAuth = async () => await doAction(() => auth());
+    const doLogin = async (user, pass) => await doAction(() => login(user, pass));
+    const doLogout = async () => await doAction(() => logout());
+
     useEffect(() => {
-        doAuth();
+        doAuth(); // Initial auth
+
+        const interval = setInterval(async () => await doAuth(), 5000); // Interval checking auth
+        return () => clearInterval(interval);
     }, []);
 
     return (

@@ -44,8 +44,8 @@ db.connect((err) => {
   applog("Conexión a la base de datos completada", "DATABASE");
 });
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World!" });
+app.get("/", (req, res) => { // Don't remove for checking connectivity
+  res.json({ message: "Hello InfoWorld!" });
 });
 
 app.get("/auth", (req, res) => {
