@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -12,7 +12,6 @@ import Unknown from "./pages/Unknown";
 import Welcome from "./pages/welcome/Welcome";
 
 import Loading from "./pages/authenticator/Loading";
-import ServerNotAvailable from "./pages/authenticator/ServerNotAvailable";
 import UnknownStatus from "./pages/authenticator/UnknownStatus";
 
 import Header from "./components/Header";
@@ -20,11 +19,16 @@ import Footer from "./components/Footer";
 import { useAuth } from "./pages/authenticator/AuthContext";
 
 function App() {
-    const { getAuthStatus } = useAuth();
+    const { getAuthStatus, doAuth } = useAuth();
+
+    useEffect(() => { // Bucle para comprobar que todo vaya bien
+        const interval = setInterval(async () => await doAuth(), 5000);
+        return () => clearInterval(interval);
+    }, [])
 
     const statusPages = {
         "-2": <Loading />,
-        "-1": <ServerNotAvailable />,
+        "-1": <Navigate to="/" />,
         "0": <Navigate to="/login" />,
     };
 

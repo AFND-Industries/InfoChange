@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         } catch (Exception) {
             console.log("El servidor no está disponible en estos momentos.");
 
-            setAuthStatus("1"); // Pon aqui un 1 si quieres que aunque no vaya el servidor te deje entrar al front-end
+            setAuthStatus("-1"); // Pon aqui un 1 si quieres que aunque no vaya el servidor te deje entrar al front-end
             // normalmente tiene que ser un -1, server not available
             //(se puede hacer que diferencie entre si tienes internet o no)
         }

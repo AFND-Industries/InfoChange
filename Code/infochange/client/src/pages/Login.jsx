@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import * as Icons from "react-bootstrap-icons";
-import axios from "axios";
 
 import { useAuth } from "./authenticator/AuthContext";
 
@@ -97,7 +96,7 @@ function Login() {
                   </div>
                 </div>
 
-                {false && <div class="mb-3 form-check">
+                <div class="mb-3 form-check">
                   <input
                     type="checkbox"
                     class="form-check-input"
@@ -106,7 +105,7 @@ function Login() {
                   <label class="form-check-label" for="exampleCheck1">
                     Mantener la sesión iniciada
                   </label>
-                </div>}
+                </div>
                 <div className="d-flex justify-content-around mb-3">
                   <Link to={"/"}>
                     <button className="btn btn-outline-secondary">
