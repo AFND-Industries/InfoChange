@@ -7,6 +7,8 @@ const mysql = require("mysql");
 require("dotenv").config();
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(session({ secret: "IEEE754" }));
 app.use(
   cors({
@@ -17,17 +19,17 @@ app.use(
 
 // private function
 const applog = (msg, tag = "SERVER") => {
-  console.log(`[${new Date().toLocaleString()}] [${tag || "INFO"}] ${msg}`);
+  console.log(`[${new Date().toLocaleString()}] [${tag}] ${msg}`);
 };
 
 const hash = (string) => createHash("sha256").update(string).digest("hex");
 
 const error = (type, cause) => {
-  return ({
+  return {
     status: "-1",
     error: type,
-    cause: cause
-  });
+    cause: cause,
+  };
 };
 
 const port = 1024;
@@ -44,7 +46,8 @@ db.connect((err) => {
   applog("Conexión a la base de datos completada", "DATABASE");
 });
 
-app.get("/", (req, res) => { // Don't remove for checking connectivity
+app.get("/", (req, res) => {
+  // Don't remove for checking connectivity
   res.json({ message: "Hello InfoWorld!" });
 });
 
@@ -55,32 +58,31 @@ app.get("/auth", (req, res) => {
   });
 });
 
-app.get("/login", (req, res) => {
-  if (!req.query.user || !req.query.pass) {
-    res.json(error("MISSING_PARAMETERS", "Faltan los parámetros user y pass"));
+app.post("/login", (req, res) => {
+  if (!req.body.user || !req.body.pass) {
+    res.json(error("MISSING_PARAMETERS", "Debe rellenar todos los campos"));
   } else {
     const query =
       "SELECT * FROM usuario WHERE NOMBRE LIKE '" +
-      req.query.user +
+      req.body.user +
       "' AND CLAVE LIKE '" +
-      hash(req.query.pass) +
+      hash(req.body.pass) +
       "'";
     db.query(query, (err, result) => {
       if (err) {
         res.json(error(err.code, err.sqlMessage));
         applog(`Inicio de sesión fallido : ${req.ip}`, "AUTH");
-      }
-      else {
+      } else {
         let st = "0";
         if (result.length > 0) {
           st = "1";
-          req.session.user = req.query.user;
+          req.session.user = req.body.user;
+          applog(
+            `Inicio de sesión realizado [${req.body.user}] ${req.ip}`,
+            "AUTH"
+          );
         }
         res.json({ status: st });
-        applog(
-          `Inicio de sesión realizado [${req.query.user}] ${req.ip}`,
-          "AUTH"
-        );
       }
     });
   }
@@ -95,7 +97,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  const user = req.query;
+  const user = req.body;
   applog(`Usuario ${user.username} registrado`, "REQUEST");
   /*
   db.query(
@@ -123,5 +125,17 @@ app.get("/users", (req, res) => {
 });
 
 app.listen(port, () => {
-  applog(`Servidor activo en el puerto ${port}`, "SERVER");
+  console.clear();
+  console.log(
+    `
+    ___        __       ____             _                  _ 
+    |_ _|_ __  / _| ___ | __ )  __ _  ___| | _____ _ __   __| |
+     | || '_ \| |_ / _ \|  _ \ / _\` |/ __| |/ / _ \ '_ \ / _\` |
+     | || | | |  _| (_) | |_) | (_| | (__|   <  __/ | | | (_| |
+    |___|_| |_|_|  \___/|____/ \__,_|\___|_|\_\___|_| |_|\__,_|
+
+    by AFND Industries 
+    `
+  );
+  applog(`Servidor activo en el puerto ${port}`);
 });
