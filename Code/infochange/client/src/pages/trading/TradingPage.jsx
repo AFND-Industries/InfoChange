@@ -11,12 +11,14 @@ import JustCloseModal from './components/JustCloseModal';
 import "./TradingPage.css";
 
 function TradingPage() {
-  const { changeChartMode } = useTrading();
+  const { changeChartMode, getTradingMode } = useTrading();
+  const tradingMode = getTradingMode();
 
   return (
     <>
       <JustCloseModal />
-      <RotatingMarquee />
+      <RotatingMarquee display={tradingMode == 1} />
+
       <div className="container mt-2 mb-5 d-flex flex-column">
         <div className="row">
           <div className="col ps-0">
@@ -28,7 +30,7 @@ function TradingPage() {
             <TradingChart />
           </div>
           <div className="col-md-3">
-            <SymbolSearch />
+            <SymbolSearch style={tradingMode} />
           </div>
         </div>
         <div className="row" style={{ marginTop: "10px" }}>

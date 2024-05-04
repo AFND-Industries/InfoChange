@@ -25,7 +25,7 @@ export const TradingProvider = ({ children }) => {
     const getActualPairPrice = () => getActualPair() === undefined || symbols[0].price === undefined ? -1 : getPair(getActualPair().symbol).price;
 
     const [mode, setMode] = useState(0);
-    const getChartMode = () => mode;
+    const getTradingMode = () => mode;
     const changeChartMode = () => setMode(mode => (mode + 1) % 2);
 
     function getPair(symbol) {
@@ -36,13 +36,13 @@ export const TradingProvider = ({ children }) => {
         return CoinMarketCapData.data[token.toUpperCase()][0];
     }
 
-    function filterPairs(regex = "") {
+    function filterPairs(regex = "", quoteRegex = "") {
         if (symbols == null)
             return [];
 
         return Object.values(symbols).filter(s =>
-            s.baseAssetName.toUpperCase().startsWith(regex.toUpperCase()) ||
-            s.symbol.startsWith(regex.toUpperCase()));
+            (s.baseAssetName.toUpperCase().startsWith(regex.toUpperCase()) || s.symbol.startsWith(regex.toUpperCase()))
+            && s.quoteAsset.startsWith(quoteRegex));
     }
 
     useEffect(() => {
@@ -91,7 +91,7 @@ export const TradingProvider = ({ children }) => {
                 getActualPair,
                 setActualPair,
                 getActualPairPrice,
-                getChartMode,
+                getTradingMode,
                 changeChartMode,
                 getPairPath
             }}

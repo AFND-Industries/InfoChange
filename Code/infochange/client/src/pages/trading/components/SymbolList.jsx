@@ -3,7 +3,7 @@ import React from "react";
 import { useTrading } from "../context/TradingContext";
 import SymbolItem from "./SymbolItem";
 
-function SymbolList({ pairs, regex = "", onClick }) {
+function SymbolList({ style = 0, pairs, regex = "", onClick }) {
     const { getPair, getTokenInfo, getActualPair } = useTrading();
 
     const renderNoMatches = (
@@ -20,6 +20,7 @@ function SymbolList({ pairs, regex = "", onClick }) {
 
         return (
             <SymbolItem
+                style={style}
                 key={actualPair.symbol}
                 tokenInfo={getTokenInfo(actualPair.baseAsset)}
                 pair={actualPair}
