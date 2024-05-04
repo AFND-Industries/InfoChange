@@ -4,12 +4,19 @@ import { useTrading } from "../context/TradingContext";
 
 // poner lo de las comas y punto
 
-function BuyAndSell() {
+function BuyAndSell({ style = 0 }) {
     const { getActualPair, getActualPairPrice } = useTrading();
 
     const [myWallet, setMyWallet] = useState({ "USDT": 100000 });
     const getWalletAmount = (symbol) => myWallet[symbol] || 0;
     const tradingComision = 0.00065;
+
+    const getBaseAsset = () => getActualPair()?.baseAsset || "";
+    const showBaseAsset = style === 0 ? getActualPair().baseAssetName : getActualPair().baseAsset;
+
+    const getQuoteAsset = () => getActualPair()?.quoteAsset || "";
+    const showQuoteAsset = style === 0 ? "$" : " " + getActualPair().quoteAsset;
+    const showQuoteDecimals = style === 0 ? 2 : 8;
 
     const [buyQuoteAssetInput, setBuyQuoteAssetInput] = useState("");
     const [buyBaseAssetInput, setBuyBaseAssetInput] = useState("");
@@ -19,8 +26,6 @@ function BuyAndSell() {
     const [buyRangeValue, setBuyRangeValue] = useState(0);
     const [sellRangeValue, setSellRangeValue] = useState(0);
 
-    const getBaseAsset = () => getActualPair()?.baseAsset || "";
-    const getQuoteAsset = () => getActualPair()?.quoteAsset || "";
 
     const updateInputValues = (value, setValueFunc, oppositeSetValueFunc, action, assetChanged) => {
         const newValue = parseFloat(value);
@@ -100,14 +105,13 @@ function BuyAndSell() {
         const receivedAmount = (paidAmount - comission) * (action === "BUY" ? 1 / getActualPairPrice() : getActualPairPrice());
         const symbol = action === "BUY" ? quoteAsset : baseAsset;
 
-
         if (getActualPairPrice() <= 0 || isNaN(receivedAmount) || isNaN(paidAmount)) {
             showModal("Error", "El monto de la transacción introducido no es válido");
             return;
         }
 
         if (getWalletAmount(symbol) < paidAmount) {
-            showModal("Error", `No tienes suficientes ${symbol}`);
+            showModal("Error", `No tienes suficientes ${action === "BUY" ? showQuoteAsset : showBaseAsset} `);
             return;
         }
 
@@ -123,12 +127,12 @@ function BuyAndSell() {
 
         if (action === "BUY") {
             showModal(`Compra realizada con éxito`,
-                `Has comprado <b>${receivedAmount.toFixed(8)} ${baseAsset}</b> por <b>${paidAmount.toFixed(8)}
-                 ${quoteAsset}</b> y has pagado <b>${comission.toFixed(8)} ${quoteAsset}</b> de comisión.`);
+                `Has comprado <b> ${receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b> ${paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                </b> y has pagado <b> ${comission.toFixed(showQuoteDecimals)}${showQuoteAsset}</b> de comisión.`);
         } else {
             showModal(`Venta realizada con éxito`,
-                `Has vendido <b>${paidAmount.toFixed(8)} ${baseAsset}</b> por <b>${receivedAmount.toFixed(8)} 
-                ${quoteAsset}</b> y has pagado <b>${comission.toFixed(8)} ${baseAsset}</b> de comisión.`);
+                `Has vendido <b> ${paidAmount.toFixed(8)} ${showBaseAsset}</b> por <b> ${receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                </b> y has pagado <b> ${comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
         }
     };
 
@@ -146,40 +150,40 @@ function BuyAndSell() {
         <>
             <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
-                    Disp: {getWalletAmount(getQuoteAsset()).toFixed(8)} {getQuoteAsset()}
+                    Disponible: {getWalletAmount(getQuoteAsset()).toFixed(showQuoteDecimals)}{showQuoteAsset}
                 </div>
                 <div className="input-group input-group-sm">
                     <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
-                    <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+                    <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
                 </div>
                 <input type="range" className="form-range" value={buyRangeValue} onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")} />
                 <div className="input-group input-group-sm">
                     <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={buyBaseAssetInput} onChange={handleBuyBaseAsset} />
-                    <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+                    <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
                 </div>
                 <div className="mt-1 mb-1">
-                    Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(8)} {getQuoteAsset()}
+                    Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(8)}{showQuoteAsset}
                 </div>
-                <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {getBaseAsset()}</button>
+                <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {showBaseAsset}</button>
             </div>
             <div className="col-md border border-4 rounded ms-2">
                 <div className="mt-1 mb-1">
-                    Disp: {getWalletAmount(getBaseAsset()).toFixed(8)} {getBaseAsset()}
+                    Disponible: {getWalletAmount(getBaseAsset()).toFixed(8)} {showBaseAsset}
                 </div>
                 <div>
                     <div className="input-group input-group-sm">
                         <input type="text" className="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput} onChange={handleSellBaseAsset} />
-                        <span className="input-group-text" id="inputGroup-sizing-sm">{getBaseAsset()}</span>
+                        <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
                     </div>
                     <input type="range" className="form-range" value={sellRangeValue} onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")} />
                     <div className="input-group input-group-sm">
                         <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={sellQuoteAssetInput} onChange={handleSellQuoteAsset} />
-                        <span className="input-group-text" id="inputGroup-sizing-sm">{getQuoteAsset()}</span>
+                        <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
                     </div>
                     <div className="mt-1 mb-1">
-                        Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {getBaseAsset()}
+                        Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}
                     </div>
-                    <button className="btn btn-danger w-100 mb-2" onClick={onSell}>Vender {getBaseAsset()}</button>
+                    <button className="btn btn-danger w-100 mb-2" onClick={onSell}>Vender {showBaseAsset}</button>
                 </div>
             </div>
         </>

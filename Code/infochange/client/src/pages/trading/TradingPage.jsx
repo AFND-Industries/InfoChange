@@ -11,8 +11,11 @@ import JustCloseModal from './components/JustCloseModal';
 import "./TradingPage.css";
 
 function TradingPage() {
-  const { changeChartMode, getTradingMode } = useTrading();
+  const { changeChartMode, getTradingMode, getActualPair } = useTrading();
   const tradingMode = getTradingMode();
+
+  if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT")
+    changeChartMode();
 
   return (
     <>
@@ -27,14 +30,14 @@ function TradingPage() {
         </div>
         <div className="row">
           <div className="col-md-9 ps-0">
-            <TradingChart />
+            <TradingChart style={tradingMode} />
           </div>
           <div className="col-md-3">
             <SymbolSearch style={tradingMode} />
           </div>
         </div>
         <div className="row" style={{ marginTop: "10px" }}>
-          <BuyAndSell />
+          <BuyAndSell style={tradingMode} />
         </div>
       </div>
     </>

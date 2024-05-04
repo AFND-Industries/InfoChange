@@ -1,23 +1,21 @@
 import { useState } from "react";
 import banner from "../assets/banner.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
 import { useAuth } from "../pages/authenticator/AuthContext";
 
 export default function Header() {
   const { getActualUser, doLogout } = useAuth();
-  const navigate = useNavigate();
 
   const items = [
-    { link: "/", name: "Inicio" },
-    { link: "/coins", name: "Monedas" },
-    { link: "/trading", name: "Trading" },
-    { link: "/dashboard", name: "Panel de control" },
+    { link: "", name: "Inicio" },
+    { link: "coins", name: "Monedas" },
+    { link: "trading", name: "Trading" },
+    { link: "dashboard", name: "Panel de control" },
   ];
 
   // Dropdown show?
   const [show, setShow] = useState(false);
-
   const user = getActualUser();
 
   return (
@@ -100,8 +98,8 @@ const item = (link, name) => {
   return (
     <li key={link} className="nav-item">
       <Link
-        className={"nav-link" + (document.URL.endsWith(link) ? " active" : "")}
-        to={link}
+        className={"nav-link" + (document.URL.split("/")[3] === (link) ? " active" : "")}
+        to={"/" + link}
       >
         {name}
       </Link>

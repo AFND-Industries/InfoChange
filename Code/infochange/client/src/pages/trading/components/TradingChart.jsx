@@ -4,8 +4,8 @@ import { useTrading } from '../context/TradingContext';
 import SimpleChart from './SimpleChart';
 import AdvancedChart from './AdvancedChart';
 
-function TradingChart() {
-    const { getActualPair, getTradingMode, getPairPath } = useTrading();
+function TradingChart({ style = 0 }) {
+    const { getActualPair, getPairPath } = useTrading();
 
     const [simpleChart, setSimpleChart] = useState(null);
     const [advancedChart, setAdvancedChart] = useState(null);
@@ -29,12 +29,12 @@ function TradingChart() {
     const renderChart = ( // Esto igual, se hace por el boton Cambiar Modo para que sea instantaneo, cuando se quite se puede simplificar
         <>
             <div className="border border-4 rounded tradingview-widget-container"
-                style={{ height: "100%", width: "100%", display: (getTradingMode() === 0 ? "block" : "none") }}>
+                style={{ height: "100%", width: "100%", display: (style === 0 ? "block" : "none") }}>
                 {simpleChart}
             </div>
 
             <div className="border border-4 rounded tradingview-widget-container"
-                style={{ height: "100%", width: "100%", display: (getTradingMode() === 1 ? "block" : "none") }}>
+                style={{ height: "100%", width: "100%", display: (style === 1 ? "block" : "none") }}>
                 {advancedChart}
             </div>
         </>
