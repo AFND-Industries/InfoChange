@@ -6,6 +6,8 @@ const mysql = require("mysql");
 const Symbols = require("./Coins.json");
 const { clear } = require("console");
 
+let coins = [];
+
 require("dotenv").config();
 
 const app = express();
@@ -18,6 +20,37 @@ app.use(
     credentials: true,
   })
 );
+
+const getCoins = () => {
+  const url = "https://api.binance.com/api/v3/ticker/24hr";
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      const filteredSymbols = data.filter((symbol) => {
+        if (symbol.symbol.endsWith("USDT")) {
+          const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
+
+          if (Symbols.allCoins.includes(symbolWithoutUsdt)) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+
+      coins = filteredSymbols;
+      applog("Datos de la API actualizados", "RESTAPI");
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+// tomar los datos de la api inicial
+getCoins();
+
+// actualizar cada 2 minutos
+setInterval(getCoins, 120000);
 
 // private function
 const applog = (msg, tag = "SERVER") => {
@@ -127,27 +160,7 @@ app.get("/users", (req, res) => {
 });
 
 app.get("/coins", (req, res) => {
-  const url = "https://api.binance.com/api/v3/ticker/24hr";
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      const filteredSymbols = data.filter((symbol) => {
-        if (symbol.symbol.endsWith("USDT")) {
-          const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
-
-          if (Symbols.allCoins.includes(symbolWithoutUsdt)) {
-            return true;
-          }
-        }
-
-        return false;
-      });
-
-      res.json(filteredSymbols);
-    })
-    .catch((error) => {
-      throw error;
-    });
+  res.json(coins);
   applog(`Petición "/coins" ejecutada`, "REQUEST");
 });
 

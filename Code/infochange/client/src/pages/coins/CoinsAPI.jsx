@@ -12,12 +12,7 @@ const CoinsContext = createContext();
 const SERVER_URL = "http://localhost:1024";
 
 export const CoinsAPI = ({ children }) => {
-  const [coins, setCoins] = useState(() => {
-    const savedCoins = localStorage.getItem("coins");
-    return savedCoins ? JSON.parse(savedCoins) : [];
-  });
-
-  const coinsData = useRef(coins);
+  const [coins, setCoins] = useState([]);
 
   const get = async (url) =>
     await axios.get(SERVER_URL + url, { withCredentials: true });
@@ -25,17 +20,9 @@ export const CoinsAPI = ({ children }) => {
   const getCoins = () => coins;
 
   async function getCoinsAPI() {
-    console.log(coinsData.current.length);
-    if (coinsData.current.length === 0) {
-      console.log("coins empty");
-      const response = await get("/coins");
-      setCoins(response.data);
-      coinsData.current = response.data;
-      console.log("coins set");
-      localStorage.setItem("coins", JSON.stringify(response.data));
-
-      return response;
-    }
+    const response = await get("/coins");
+    setCoins(response.data);
+    return response;
   }
 
   const doAction = async (func) => {
@@ -53,13 +40,9 @@ export const CoinsAPI = ({ children }) => {
   const doGetCoins = async () => await doAction(getCoinsAPI);
 
   useEffect(() => {
-    console.log("FirstCoins called");
     doGetCoins();
 
     const interval = setInterval(async () => {
-      console.log("calling coins");
-      coinsData.current = [];
-      console.log("Coins a 0 :" + coinsData.current.length);
       await doGetCoins();
     }, 120000); // Interval checking auth
     return () => clearInterval(interval);
