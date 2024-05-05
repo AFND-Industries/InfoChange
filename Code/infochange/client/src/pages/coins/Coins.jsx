@@ -13,12 +13,15 @@ import { Timeline } from "react-ts-tradingview-widgets";
 import CoinInfo from "./CoinInfo";
 import { useLocation } from "react-router-dom";
 
+import { useCoins } from "./CoinsAPI";
+
 export default function Coins() {
   const params = window.location.pathname.split("/").slice(2);
 
   const [filters1, setFilters1] = useState(null);
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [coinInfo, setCoinInfo] = useState([]);
+  const { getCoins } = useCoins();
 
   /*useEffect(() => {
     const fetchData = async () => {
@@ -80,20 +83,7 @@ export default function Coins() {
     setCoinInfo(event.data);
   };
 
-  const filteredSymbols = Data.filter((symbol) => {
-    // Check if symbol ends with 'USDT'
-    if (symbol.symbol.endsWith("USDT")) {
-      // Get the part of the symbol that is not 'USDT'
-      const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
-
-      // Check if this part is in Symbols.json
-      if (Symbols.allCoins.includes(symbolWithoutUsdt)) {
-        return true;
-      }
-    }
-
-    return false;
-  });
+  const filteredSymbols = getCoins();
 
   const onGlobalFilterChange1 = (e) => {
     const value = e.target.value;
@@ -110,7 +100,7 @@ export default function Coins() {
         <Button
           type="button"
           icon="pi pi-filter-slash"
-          label="Clear"
+          label="Limpiar"
           className="p-button-outlined rounded clear-button d-flex justify-content-center"
           onClick={initFilters1}
         />
@@ -270,16 +260,18 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
         </DataTable>
       </div>
 
-      <div className="m-5">
-        <Timeline
-          colorTheme="light"
-          feedMode="all_symbols"
-          market="crypto"
-          locale="es"
-          height={400}
-          width="100%"
-        ></Timeline>
-      </div>
+      {/*
+<div className="m-5">
+  <Timeline
+    colorTheme="light"
+    feedMode="all_symbols"
+    market="crypto"
+    locale="es"
+    height={400}
+    width="100%"
+  ></Timeline>
+</div>
+*/}
     </div>
   );
 }

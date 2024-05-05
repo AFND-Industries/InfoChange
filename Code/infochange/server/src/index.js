@@ -4,6 +4,7 @@ const { createHash } = require("crypto");
 const cors = require("cors");
 const mysql = require("mysql");
 const Symbols = require("./Coins.json");
+const { clear } = require("console");
 
 require("dotenv").config();
 
@@ -130,7 +131,6 @@ app.get("/coins", (req, res) => {
   fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       const filteredSymbols = data.filter((symbol) => {
         if (symbol.symbol.endsWith("USDT")) {
           const symbolWithoutUsdt = symbol.symbol.slice(0, -4);

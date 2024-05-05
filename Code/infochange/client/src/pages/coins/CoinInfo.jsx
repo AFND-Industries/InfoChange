@@ -7,7 +7,7 @@ import { Timeline } from "react-ts-tradingview-widgets";
 import { SymbolOverview } from "react-ts-tradingview-widgets";
 
 export default function CoinInfo(props) {
-  const { coin } = props;
+  const { coin, key } = props;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,8 +25,8 @@ export default function CoinInfo(props) {
           </button>
         </div>
       </div>
-      <div className="row d-flex m-3">
-        <div className="col mx-1 ">
+      <div className="row d-flex m-3 ">
+        <div className="col mx-1 h-100">
           <SymbolInfo
             colorTheme="light"
             symbol={coin.symbol}
@@ -37,7 +37,7 @@ export default function CoinInfo(props) {
           ></SymbolInfo>
           <h6 className="text-center m-5">{coin.description}</h6>
         </div>
-        <div className="col mx-1">
+        <div className="col mx-1 h-100">
           <Timeline
             colorTheme="light"
             feedMode="symbol"
@@ -50,7 +50,7 @@ export default function CoinInfo(props) {
         </div>
       </div>
 
-      <div className="m-3">
+      <div className="m-3 h-100">
         <SymbolOverview
           colorTheme="light"
           symbols={[coin.symbol + "USDT"]}
