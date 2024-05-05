@@ -3,6 +3,7 @@ const session = require("express-session");
 const { createHash } = require("crypto");
 const cors = require("cors");
 const mysql = require("mysql");
+const Symbols = require("./Coins.json");
 
 require("dotenv").config();
 
@@ -122,6 +123,32 @@ app.get("/users", (req, res) => {
     res.json(result);
   });
   applog(`Petición "/users" ejecutada`, "REQUEST");
+});
+
+app.get("/coins", (req, res) => {
+  const url = "https://api.binance.com/api/v3/ticker/24hr";
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      const filteredSymbols = data.filter((symbol) => {
+        if (symbol.symbol.endsWith("USDT")) {
+          const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
+
+          if (Symbols.allCoins.includes(symbolWithoutUsdt)) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+
+      res.json(filteredSymbols);
+    })
+    .catch((error) => {
+      throw error;
+    });
+  applog(`Petición "/coins" ejecutada`, "REQUEST");
 });
 
 app.listen(port, () => {

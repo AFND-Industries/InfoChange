@@ -9,6 +9,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 
 import { AuthProvider } from "./pages/authenticator/AuthContext";
+import { CoinsAPI } from "./pages/coins/CoinsAPI";
 import App from "./App";
 
 // ordenar el login y register tambien
@@ -17,6 +18,8 @@ import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AuthProvider>
-    <App />
+    <CoinsAPI>
+      <App />
+    </CoinsAPI>
   </AuthProvider>
 );
