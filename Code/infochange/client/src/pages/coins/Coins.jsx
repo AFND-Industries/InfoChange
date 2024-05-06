@@ -23,34 +23,6 @@ export default function Coins() {
   const [coinInfo, setCoinInfo] = useState([]);
   const { getCoins } = useCoins();
 
-  /*useEffect(() => {
-    const fetchData = async () => {
-      const url = "https://api.binance.com/api/v3/ticker/24hr";
-      const response = await fetch(url);
-      const data = await response.json();
-
-      // Filter symbols
-      const filteredSymbols = data.filter(symbol => {
-        // Check if symbol ends with 'USDT'
-        if (symbol.symbol.endsWith('USDT')) {
-          // Get the part of the symbol that is not 'USDT'
-          const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
-      
-          // Check if this part is in Symbols.json
-          if (Symbols.includes(symbolWithoutUsdt)) {
-            return true;
-          }
-        }
-      
-        return false;
-      });
-
-      setPrices(filteredSymbols);
-    };
-
-    fetchData();
-  }, []);*/ // Empty dependency array ensures this runs once on mount
-
   useEffect(() => {
     initFilters1();
   }, []);

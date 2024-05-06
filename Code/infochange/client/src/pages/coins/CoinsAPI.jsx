@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-  createContext,
-} from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 
 import axios from "axios";
 
@@ -44,7 +38,7 @@ export const CoinsAPI = ({ children }) => {
 
     const interval = setInterval(async () => {
       await doGetCoins();
-    }, 120000); // Interval checking auth
+    }, 120000); // 2 minutes
     return () => clearInterval(interval);
   }, []);
 
