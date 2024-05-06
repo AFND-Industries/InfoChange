@@ -57,13 +57,13 @@ const fs = require("fs");
 const logFilePath = "././server_log/server.log";
 
 const applog = (msg, tag = "SERVER") => {
-  const logMessage = `[${new Date().toLocaleString()}] [${tag}] ${msg}\n`;
+  const logMessage = `[${new Date().toLocaleString()}] [${tag}] ${msg}`;
   console.log(logMessage);
-  fs.appendFile(logFilePath, logMessage, (err) => {
+  /*fs.appendFile(logFilePath, logMessage + '\n', (err) => {
     if (err) {
       console.error("Error al escribir en el archivo de registro:", err);
     }
-  });
+  });*/
 };
 
 const hash = (string) => createHash("sha256").update(string).digest("hex");
