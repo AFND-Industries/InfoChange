@@ -98,9 +98,9 @@ app.post("/login", (req, res) => {
         res.json(error("MISSING_PARAMETERS", "Debe rellenar todos los campos"));
     } else {
         const query =
-            "SELECT * FROM usuario WHERE Nombre LIKE '" +
+            "SELECT * FROM usuario WHERE username LIKE '" +
             req.body.user +
-            "' AND Clave LIKE '" +
+            "' AND password LIKE '" +
             hash(req.body.pass) +
             "'";
         db.query(query, (err, result) => {
@@ -111,7 +111,7 @@ app.post("/login", (req, res) => {
                 let st = "0";
                 if (result.length > 0) {
                     st = "1";
-                    req.session.user = req.body.user;
+                    req.session.user = result[0];
                     applog(
                         `Inicio de sesión realizado [${req.body.user}] ${req.ip}`,
                         "AUTH"
@@ -132,7 +132,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-    const user = req.body;
+    const user = req.body.user;
     if (
         !user.username ||
         !user.password ||
@@ -142,32 +142,51 @@ app.post("/register", (req, res) => {
         !user.phone ||
         !user.document ||
         !user.address ||
-        !user.postalcode ||
+        !user.postalCode ||
         !user.country
     ) {
         res.json(error("MISSING_PARAMETERS", "Debe rellenar todos los campos"));
+        applog(`Register: Malformed Request`, "ERROR");
     } else {
-        const query = `INSERT INTO usuario (Nombre, Clave, NombreCompleto, Apellidos, Correo, Telefono, Documento, Direccion, CodigoPostal, Pais) VALUES ('${
+        const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${
             user.username
         }', '${hash(user.password)}', '${user.name}', '${user.lastname}', '${
             user.email
         }', '${user.phone}', '${user.document}', '${user.address}', '${
-            user.postalcode
-        }', '${user.country}')`;
+            user.postalCode
+        }', '${user.country}'); SELECT LAST_ID() "ID";`;
         db.query(query, (err, result) => {
             if (err) {
                 res.json(error(err.code, err.sqlMessage));
                 applog(`Registro fallido : ${req.ip}`, "AUTH");
             } else {
-                res.json({ status: "1" });
-                applog(`Registro exitoso : ${req.ip}`, "AUTH");
+                applog(`Usuario ${user.username} registrado`, "REQUEST");
+                applog(`Resultado de consulta: ${result.ID}`, "DEBUG");
+
+                req.session.user = user;
+                res.json({
+                    status: "1",
+                    user: user,
+                });
             }
         });
-        applog(`Usuario ${user.username} registrado`, "REQUEST");
-        req.session.user = user;
-        res.json({
-            status: "1",
-            user: user,
+    }
+});
+
+app.get("/wallet", (req, res) => {
+    if (!req.session.user) {
+        res.json(error("UNAUTHORIZED", "No ha iniciado sesión"));
+    } else {
+        const query = `SELECT coin, quantity FROM cartera WHERE user = ${req.session.user.ID}`;
+        db.query(query, (err, result) => {
+            if (err) {
+                res.json(error(err.code, err.sqlMessage));
+            } else {
+                res.json({
+                    status: 1,
+                    wallet: result,
+                });
+            }
         });
     }
 });

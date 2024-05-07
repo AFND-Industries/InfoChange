@@ -18,17 +18,23 @@ export const AuthProvider = ({ children }) => {
 
     // future changes
     const post = async (url, parameters) =>
-        await axios.post(SERVER_URL + url, parameters, { withCredentials: true });
+        await axios.post(SERVER_URL + url, parameters, {
+            withCredentials: true,
+        });
 
     async function auth() {
         const response = await get("/auth");
+        const walletRes = await get("/wallet");
 
         setAuthStatus(response.data.status);
         setActualUser(
             response.data.status === "1"
-                ? Object.values(users).filter(
-                    (u) => u.profile.username == response.data.user
-                )[0]
+                ? {
+                      profile: response.data.user,
+                      wallet: {
+                          coins: walletRes.data.wallet,
+                      },
+                  }
                 : null
         );
 
@@ -37,6 +43,13 @@ export const AuthProvider = ({ children }) => {
 
     async function login(user, pass) {
         const response = await post("/login", { user: user, pass: pass });
+        if (response.data.status === "1") await doAuth();
+
+        return response;
+    }
+
+    async function register(user) {
+        const response = await post("/register", { user: user });
         if (response.data.status === "1") await doAuth();
 
         return response;
@@ -65,8 +78,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const doAuth = async () => await doAction(() => auth());
-    const doLogin = async (user, pass) => await doAction(() => login(user, pass));
+    const doLogin = async (user, pass) =>
+        await doAction(() => login(user, pass));
     const doLogout = async () => await doAction(() => logout());
+    const doRegister = async (user) => await doAction(() => register(user));
 
     useEffect(() => {
         doAuth(); // Initial auth
@@ -83,6 +98,7 @@ export const AuthProvider = ({ children }) => {
                 doAuth,
                 doLogin,
                 doLogout,
+                doRegister,
             }}
         >
             {children}
