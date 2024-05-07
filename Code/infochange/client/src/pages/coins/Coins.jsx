@@ -21,7 +21,7 @@ export default function Coins() {
   const [filters1, setFilters1] = useState(null);
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [coinInfo, setCoinInfo] = useState([]);
-  const { getCoins } = useCoins();
+  const { getCoins, getLastDate } = useCoins();
 
   useEffect(() => {
     initFilters1();
@@ -56,6 +56,7 @@ export default function Coins() {
   };
 
   const filteredSymbols = getCoins();
+  // const lastDate = getLastDate();
 
   const onGlobalFilterChange1 = (e) => {
     const value = e.target.value;
@@ -92,9 +93,10 @@ export default function Coins() {
   const data = getData(filteredSymbols);
   const header1 = renderHeader1();
   const location = useLocation();
+  const lastDate = getLastDate();
 
   return params.length === 0 ? (
-    getCoinDataTable(data, filters1, header1, onRowClick)
+    getCoinDataTable(data, filters1, header1, onRowClick, lastDate)
   ) : (
     <CoinInfo coin={coinInfo} key={location.key} />
   );
@@ -130,7 +132,7 @@ function getData(symbols) {
   return array;
 }
 
-function getCoinDataTable(data, filters1, header1, onRowClick) {
+function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
   const imageBodyTemplate = (rowData) => {
     const onImageLoad = (event) => {
       const loadingImage =
@@ -144,7 +146,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
         <img
           name="charge"
           src="/favicon.ico"
-          alt="Cargando..."
+          alt="Imagen de carga"
           className="img-fluid pe-1"
           style={{ maxWidth: "50px" }}
         />
@@ -179,6 +181,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
 
   return (
     <div>
+      <h6 className="text-secondary m-3">Última actualización: {lastDate}</h6>
       <div className="border rounded m-3">
         <DataTable
           value={data}
@@ -194,6 +197,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick) {
           rowClassName={"row-data-tables hover-row"}
           sortField="price"
           sortOrder={-1}
+          size="small"
         >
           <Column
             body={imageBodyTemplate}

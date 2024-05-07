@@ -7,15 +7,19 @@ const SERVER_URL = "http://localhost:1024";
 
 export const CoinsAPI = ({ children }) => {
   const [coins, setCoins] = useState([]);
+  const [lastDate, setLastDate] = useState("");
 
   const get = async (url) =>
     await axios.get(SERVER_URL + url, { withCredentials: true });
 
   const getCoins = () => coins;
 
+  const getLastDate = () => lastDate;
+
   async function getCoinsAPI() {
     const response = await get("/coins");
-    setCoins(response.data);
+    setCoins(response.data.coins);
+    setLastDate(response.data.last_update);
     return response;
   }
 
@@ -43,7 +47,7 @@ export const CoinsAPI = ({ children }) => {
   }, []);
 
   return (
-    <CoinsContext.Provider value={{ doGetCoins, getCoins }}>
+    <CoinsContext.Provider value={{ doGetCoins, getCoins, getLastDate }}>
       {children}
     </CoinsContext.Provider>
   );

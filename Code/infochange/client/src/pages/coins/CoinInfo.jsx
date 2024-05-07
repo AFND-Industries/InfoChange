@@ -17,8 +17,14 @@ export default function CoinInfo(props) {
 
   return (
     <div key={location.key} style={{ overflowX: "hidden" }}>
-      <div className="row m-3">
-        <div className="col-md-6">
+      <div className="row d-flex justify-content-between m-3">
+        <div className="col-md-6 d-flex justify-content-start">
+          <button className="btn btn-outline-primary" onClick={goBack}>
+            <i className="bi bi-chevron-left me-2"></i>
+            <span className="d-sm-inline d-none">Volver</span>
+          </button>
+        </div>
+        <div className="col-md-6 d-flex justify-content-end">
           <button className="btn btn-outline-primary" onClick={goBack}>
             <i className="bi bi-chevron-left me-2"></i>
             <span className="d-sm-inline d-none">Volver</span>
