@@ -35,7 +35,16 @@ export default function CoinInfo(props) {
             width="100%"
             height="100%"
           ></SymbolInfo>
-          <h6 className="text-center m-5">{coin.description}</h6>
+          <p
+            className="text-center mt-2 mb-2 p-3"
+            style={{
+              backgroundColor: "#f8f9fa",
+              borderRadius: "15px",
+              fontSize: "1.2em",
+            }}
+          >
+            {coin.description}
+          </p>
         </div>
         <div className="col mx-1 h-100">
           <Timeline
