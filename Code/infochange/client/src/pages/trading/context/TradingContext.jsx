@@ -12,6 +12,14 @@ const TradingContext = createContext();
 // Cuando haya backend siempre activo, hacer que se pidan los precios cada X tiempo y se guarde con su time actual asi se puede
 // conseguir que haya siempre el % cambio, el mini grafico de las monedas con puntos random y cosas asi jeje
 
+// METER MODO NO LOGEADO QUE SEA NOOB + BOTON CAMBIADO
+// MODO NOOB METER VAS A RECIBIR (ESTIMADO) DE BAJO Y QUITAR EL SLIDER
+// PONER EN EL MODO NOOB UNA CONFIRMACION 
+// PASAR EL FETCH DE COINS AL BACKEND
+// FILTRAR MONEDAS QUE NO ESTA NEN TRADING VIEW
+// ARREGLAR LO DE QUE PUEDES REGISTRARTE EN TRADING VIEW DESDE INFOCHANGE
+// SOPORTE CON PAYMENT ?
+
 export const TradingProvider = ({ children }) => {
     const params = useParams();
     const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
