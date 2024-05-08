@@ -84,6 +84,8 @@ export default function Register() {
           return !(await checkEmailExists(value));
         }
       ),
+    birthday: yup.date().required("Por favor, ingrese su fecha de nacimiento"),
+    sexo: yup.string().required("Por favor, seleccione su sexo"),
     username: yup.string().required(),
     city: yup.string().required(),
     state: yup.string().required(),
@@ -105,6 +107,8 @@ export default function Register() {
         username: "",
         city: "",
         state: "",
+        birthday: "",
+        sexo: "",
         zip: "",
         file: null,
         terms: false,
@@ -123,7 +127,7 @@ export default function Register() {
               <div className="col-5 bg-light rounded-2 my-5 bg-tertiary">
                 <Form className="mx-5  my-5" noValidate onSubmit={handleSubmit}>
                   <h3>Informacion Personal</h3>
-                  <Row className="mb-5">
+                  <Row className="mb-3">
                     <Form.Group as={Col} md="4" controlId="validationFormik01">
                       <Form.Label>Nombre</Form.Label>
                       <Form.Control
@@ -152,6 +156,68 @@ export default function Register() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
+                  <Row className="mb-3">
+                    <Form.Group as={Col} md="12" controlId="validationFormik01">
+                      <Form.Label>Fecha de nacimiento</Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="birthday"
+                        value={values.birthday}
+                        onChange={handleChange}
+                        isInvalid={!!errors.birthday}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.birthday}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                  <Row className="mb-5">
+                    <Form.Group as={Col} md="12" controlId="validationFormik09">
+                      <Form.Label>Sexo:</Form.Label>
+                      <div
+                        key="inline-radio"
+                        className="d-flex justify-content-between"
+                      >
+                        <Form.Check
+                          inline
+                          label="Masculino"
+                          name="sexo"
+                          type="radio"
+                          value={"mas"}
+                          onChange={handleChange}
+                          isInvalid={!!errors.sexo}
+                          feedback={errors.sexo}
+                          feedbackType="invalid"
+                          id="inline-radio-1"
+                        />
+                        <Form.Check
+                          inline
+                          label="Femenino"
+                          name="sexo"
+                          type="radio"
+                          value={"fem"}
+                          onChange={handleChange}
+                          isInvalid={!!errors.sexo}
+                          feedback={errors.sexo}
+                          feedbackType="invalid"
+                          id="inline-radio-2"
+                        />
+                        <Form.Check
+                          inline
+                          label="Prefiero no decirlo"
+                          name="sexo"
+                          type="radio"
+                          value={"NA"}
+                          onChange={handleChange}
+                          isInvalid={!!errors.sexo}
+                          feedback={errors.sexo}
+                          feedbackType="invalid"
+                          id="inline-radio-2"
+                        />
+                      </div>
+                    </Form.Group>
+                  </Row>
+                  <h3>Informacion sobre la cuenta</h3>
                   <Row className="mb-5">
                     <Form.Group as={Col} md="12" controlId="validationFormik01">
                       <Form.Label>Correo Electronico</Form.Label>
@@ -168,6 +234,7 @@ export default function Register() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
+
                   <Row className="mb-3">
                     <Form.Group as={Col} md="6" controlId="validationFormik03">
                       <Form.Label>City</Form.Label>
@@ -218,13 +285,28 @@ export default function Register() {
                     <Form.Check
                       required
                       name="terms"
-                      label="Agree to terms and conditions"
+                      label="Acepto los terminos y condiciones"
                       onChange={handleChange}
                       isInvalid={!!errors.terms}
                       feedback={errors.terms}
                       feedbackType="invalid"
                       id="validationFormik0"
                     />
+                    {/* <Row>
+                      Acepto los{" "}
+                      <a href="https://tus-terminos-y-condiciones.com">
+                        términos y condiciones
+                      </a>
+                      <Form.Check
+                        required
+                        name="terms"
+                        onChange={handleChange}
+                        isInvalid={!!errors.terms}
+                        feedback={errors.terms}
+                        feedbackType="invalid"
+                        id="validationFormik0"
+                      />
+                    </Row> */}
                   </Form.Group>
                   <Button type="submit">Submit form</Button>
                 </Form>
