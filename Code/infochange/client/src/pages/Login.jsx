@@ -26,7 +26,7 @@ function Login() {
     setUser(value);
   };
   useEffect(() => {
-    let email = location.state !== null ? location.state.email : "";
+    let email = location.state !== nullgit ? location.state.email : "";
     setUser(email);
   }, []);
   const togglePasswordVisibility = () => {
