@@ -5,6 +5,7 @@ import { SymbolInfo } from "react-ts-tradingview-widgets";
 import { MiniChart } from "react-ts-tradingview-widgets";
 import { Timeline } from "react-ts-tradingview-widgets";
 import { SymbolOverview } from "react-ts-tradingview-widgets";
+import { SingleTicker } from "react-ts-tradingview-widgets";
 
 export default function CoinInfo(props) {
   const { coin, key } = props;
@@ -17,47 +18,40 @@ export default function CoinInfo(props) {
 
   return (
     <div key={location.key} style={{ overflowX: "hidden" }}>
-      <div className="row d-flex justify-content-between m-3">
-        <div className="col-md-6 d-flex justify-content-start">
-          <button className="btn btn-outline-primary" onClick={goBack}>
-            <i className="bi bi-chevron-left me-2"></i>
-            <span className="d-sm-inline d-none">Volver</span>
-          </button>
-        </div>
-        <div className="col-md-6 d-flex justify-content-end">
-          <button className="btn btn-outline-primary" onClick={goBack}>
-            <i className="bi bi-chevron-left me-2"></i>
-            <span className="d-sm-inline d-none">Volver</span>
-          </button>
+      <div className="row my-4 mx-4 text-secondary">
+        <div className="col">
+          <span style={{ cursor: "pointer" }} onClick={goBack}>
+            Monedas &ensp;
+          </span>
+          <i class="bi bi-chevron-right"></i> &ensp;
+          <span className="text-dark">{coin.name}</span>
         </div>
       </div>
-      <div className="row d-flex m-3 ">
+      <div className="row d-flex m-3 w-75">
         <div className="col mx-1 h-100">
-          <SymbolInfo
-            colorTheme="light"
-            symbol={coin.symbol}
-            locale="es"
-            largeChartUrl="true"
+          <SingleTicker
+            symbol={coin.symbol + "USDT"}
             width="100%"
-            height="100%"
-          ></SymbolInfo>
-          <p
-            className="text-center mt-2 mb-2 p-3"
-            style={{
-              backgroundColor: "#f8f9fa",
-              borderRadius: "15px",
-              fontSize: "1.2em",
-            }}
-          >
-            {coin.description}
-          </p>
+          ></SingleTicker>
+
+          <div className="card">
+            <div className="card-body">
+              <div className="row">
+                <div className="col">
+                  <span className="text-secondary">24 Hour Trading Vol </span>
+                  <i class="bi bi-info-circle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="col mx-1 h-100">
           <Timeline
             colorTheme="light"
             feedMode="symbol"
             market="crypto"
-            symbol={coin.symbol + "USD"}
+            symbol={coin.symbol + "USDT"}
             locale="es"
             height={400}
             width="100%"

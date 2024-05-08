@@ -264,7 +264,7 @@ export default function Register() {
                                         registerUser({
                                             username: user.current.value,
                                             name: name.current.value,
-                                            lastname: surname.current.value,
+                                            surname: surname.current.value,
                                             password: password.current.value,
                                             email: email.current.value,
                                             phone: phone.current.value,
