@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }) => {
         await doAction(() => login(user, pass));
     const doLogout = async () => await doAction(() => logout());
     const doRegister = async (user) => await doAction(() => register(user));
+    const buyProduct = async (buy) => await post("/payment", buy);
 
     useEffect(() => {
         doAuth(); // Initial auth
@@ -99,6 +100,7 @@ export const AuthProvider = ({ children }) => {
                 doLogin,
                 doLogout,
                 doRegister,
+                buyProduct,
             }}
         >
             {children}
