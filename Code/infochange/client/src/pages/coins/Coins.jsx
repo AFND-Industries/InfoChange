@@ -123,6 +123,8 @@ function getData(symbols) {
           volume: symbol === undefined ? null : symbol.volume,
           price: symbol === undefined ? null : symbol.lastPrice,
           description: item.description,
+          high_price: symbol === undefined ? null : symbol.highPrice,
+          low_price: symbol === undefined ? null : symbol.lowPrice,
         };
       });
 
