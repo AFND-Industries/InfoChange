@@ -4,6 +4,13 @@ import { useRef, useState } from "react";
 import "./login.css";
 import Users from "./../data/users.json";
 import { useAuth } from "./authenticator/AuthContext";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
+import * as formik from "formik";
+import * as yup from "yup";
 
 export default function Register() {
   const [country, setCountry] = useState(Countries[0]);
@@ -11,7 +18,7 @@ export default function Register() {
 
   const navigate = useNavigate();
   const { doRegister } = useAuth();
-
+  const { doCheckEmail } = useAuth();
   const name = useRef(null);
   const surname = useRef(null);
   const user = useRef(null);
@@ -21,6 +28,25 @@ export default function Register() {
   const address = useRef(null);
   const postalCode = useRef(null);
   const password = useRef(null);
+
+  const checkEmailExists = async (email) => {
+    const response = await doCheckEmail(email);
+    const status =
+      response !== undefined && response.data !== undefined
+        ? response.data.status
+        : "";
+
+    if (status === "0") {
+      console.log(response.data.message);
+      return true;
+    } else if (status === "1") {
+      console.log(response.data.message);
+      return false;
+    } else if (status === "-1") {
+      console.log(response.data.message);
+      return true;
+    }
+  };
 
   const registerUser = async (user) => {
     console.log(user);
@@ -41,200 +67,172 @@ export default function Register() {
       setError("Error desconocido (por ahora)");
     }
   };
+  const { Formik } = formik;
+  let emailRegex =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const schema = yup.object().shape({
+    firstName: yup.string().required("Por favor, ingrese su nombre"),
+    lastName: yup.string().required("Por favor, ingrese sus apellidos"),
+    email: yup
+      .string()
+      .matches(emailRegex, "Formato de correo electrónico inválido")
+      .required("Por favor, ingrese su correo electronico")
+      .test(
+        "unique-email",
+        "Este correo electrónico ya está registrado",
+        async function (value) {
+          return !(await checkEmailExists(value));
+        }
+      ),
+    username: yup.string().required(),
+    city: yup.string().required(),
+    state: yup.string().required(),
+    terms: yup
+      .bool()
+      .required()
+      .oneOf([true], "Debe aceptar los terminos para continuar"),
+  });
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
 
   return (
-    <div className="anim_gradient">
-      <div className="container d-flex flex-column justify-content-center align-items-center my-5">
-        <div className="card text-center p-4">
-          <form className="card-body text-start" noValidate>
-            <h2 className="text-secondary card-title mb-4 text-center">
-              Regístrate
-            </h2>
-            <h5 className="text-center mb-4">Datos personales</h5>
-            <div className="row">
-              <div className="col-lg-4 mb-3">
-                <label htmlFor="nameInput" className="form-label">
-                  Nombre
-                </label>
-                <input
-                  id="nameInput"
-                  ref={name}
-                  type="text"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-lg-8 mb-3">
-                <label htmlFor="surnameInput" className="form-label">
-                  Apellidos
-                </label>
-                <input
-                  id="surnameInput"
-                  ref={surname}
-                  type="text"
-                  className="form-control"
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 mb-5">
-                <label htmlFor="userInput" className="form-label">
-                  Usuario
-                </label>
-                <input
-                  id="userInput"
-                  ref={user}
-                  type="text"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-lg-6 mb-5">
-                <label htmlFor="emailInput" className="form-label">
-                  Correo electrónico
-                </label>
-                <input
-                  id="emailInput"
-                  ref={email}
-                  type="email"
-                  className="form-control"
-                  placeholder="example@infochange.org"
-                />
-              </div>
-            </div>
-            <h5 className="text-center mb-1">Datos fiscales</h5>
-            <label htmlFor="directionInput" className="form-label">
-              Dirección
-            </label>
-            <input
-              id="directionInput"
-              type="text"
-              ref={address}
-              className="form-control mb-3"
-              placeholder='Ex: Calle Diego "El Cigala", 34 '
-            />
-            <div className="row">
-              <div className="col-lg-7 mb-3">
-                <label htmlFor="countryInput" className="form-label">
-                  País
-                </label>
-                <select
-                  onChange={(e) =>
-                    setCountry(Countries.find((v) => v.iso3 === e.target.value))
-                  }
-                  id="countryInput"
-                  className="form-select"
-                >
-                  {Countries.map((v) => (
-                    <option key={v.iso3} value={v.iso3}>
-                      {v.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-lg-5 mb-3">
-                <label htmlFor="postalInput" className="form-label">
-                  Código Postal
-                </label>
-                <input
-                  id="postalInput"
-                  type="number"
-                  ref={postalCode}
-                  className="form-control"
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 mb-3">
-                <label htmlFor="userInput" className="form-label">
-                  Teléfono móvil
-                </label>
-                <div className="input-group">
-                  <span className="input-group-text">
-                    {country === undefined ? "?" : "+" + country.phone_code}
-                  </span>
-                  <input
-                    id="phoneInput"
-                    ref={phone}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-lg-6 mb-3">
-                <label htmlFor="docInput" className="form-label">
-                  Documento de identificación
-                </label>
-                <input
-                  id="docInput"
-                  type="text"
-                  ref={_document}
-                  className="form-control"
-                  placeholder="Ex: 12345678X"
-                />
-              </div>
-            </div>
-            <div className="row mb-5">
-              <div className="col-lg-6 mb-4">
-                <label htmlFor="passInput" className="form-label">
-                  Contraseña
-                </label>
-                <input
-                  id="passInput"
-                  ref={password}
-                  type="password"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-lg-6 mb-4">
-                <label htmlFor="rePassInput" className="form-label">
-                  Repetir contraseña
-                </label>
-                <input
-                  id="rePassInput"
-                  type="password"
-                  className="form-control"
-                />
+    <Formik
+      validationSchema={schema}
+      onSubmit={console.log}
+      initialValues={{
+        firstName: "",
+        lastName: "",
+        email: "",
+        username: "",
+        city: "",
+        state: "",
+        zip: "",
+        file: null,
+        terms: false,
+      }}
+      // initialErrors={{
+      //   firstName: "Aaaaaaaaa",
+      //   lastName: "",
+      //   email: "",
+      //   username: "",
+      // }}
+    >
+      {({ handleSubmit, handleChange, values, touched, errors }) => (
+        <div className=" anim_gradient">
+          <div className="container-fluid vh-100 ">
+            <div className="row justify-content-center align-items-center">
+              <div className="col-5 bg-light rounded-2 my-5 bg-tertiary">
+                <Form className="mx-5  my-5" noValidate onSubmit={handleSubmit}>
+                  <h3>Informacion Personal</h3>
+                  <Row className="mb-5">
+                    <Form.Group as={Col} md="4" controlId="validationFormik01">
+                      <Form.Label>Nombre</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="firstName"
+                        value={values.firstName}
+                        onChange={handleChange}
+                        isInvalid={!!errors.firstName}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.firstName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group as={Col} md="8" controlId="validationFormik02">
+                      <Form.Label>Apellidos</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="lastName"
+                        value={values.lastName}
+                        onChange={handleChange}
+                        isInvalid={!!errors.lastName}
+                      />
+
+                      <Form.Control.Feedback type="invalid">
+                        {errors.lastName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                  <Row className="mb-5">
+                    <Form.Group as={Col} md="12" controlId="validationFormik01">
+                      <Form.Label>Correo Electronico</Form.Label>
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        isValid={touched.email && !errors.email}
+                        isInvalid={!!errors.email}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.email}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                  <Row className="mb-3">
+                    <Form.Group as={Col} md="6" controlId="validationFormik03">
+                      <Form.Label>City</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="City"
+                        name="city"
+                        value={values.city}
+                        onChange={handleChange}
+                        isInvalid={!!errors.city}
+                      />
+
+                      <Form.Control.Feedback type="invalid">
+                        {errors.city}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group as={Col} md="3" controlId="validationFormik04">
+                      <Form.Label>State</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="State"
+                        name="state"
+                        value={values.state}
+                        onChange={handleChange}
+                        isInvalid={!!errors.state}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.state}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group as={Col} md="3" controlId="validationFormik05">
+                      <Form.Label>Zip</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Zip"
+                        name="zip"
+                        value={values.zip}
+                        onChange={handleChange}
+                        isInvalid={!!errors.zip}
+                      />
+
+                      <Form.Control.Feedback type="invalid">
+                        {errors.zip}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                  <Form.Group className="mb-3">
+                    <Form.Check
+                      required
+                      name="terms"
+                      label="Agree to terms and conditions"
+                      onChange={handleChange}
+                      isInvalid={!!errors.terms}
+                      feedback={errors.terms}
+                      feedbackType="invalid"
+                      id="validationFormik0"
+                    />
+                  </Form.Group>
+                  <Button type="submit">Submit form</Button>
+                </Form>
               </div>
             </div>
-            <div className="row">
-              <div className="col-sm-6 mb-3">
-                <Link to={"/"}>
-                  <button className="btn btn-outline-secondary w-100">
-                    Volver a inicio
-                  </button>
-                </Link>
-              </div>
-              <div className="col-sm-6 mb-3">
-                <button
-                  className="btn btn-primary w-100"
-                  onClick={async () =>
-                    registerUser({
-                      username: user.current.value,
-                      name: name.current.value,
-                      lastname: surname.current.value,
-                      password: password.current.value,
-                      email: email.current.value,
-                      phone: phone.current.value,
-                      document: _document.current.value,
-                      address: address.current.value,
-                      postalCode: postalCode.current.value,
-                      country: country.iso3,
-                    })
-                  }
-                >
-                  Registrarse
-                </button>
-              </div>
-            </div>
-            <p className="mb-0 fs-6 text-center">
-              ¿Ya tienes una cuenta?
-              <br />
-              <Link to={"/login"} style={{ textDecoration: "none" }}>
-                Inicia sesión pulsando sobre este enlace
-              </Link>
-            </p>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </Formik>
   );
 }

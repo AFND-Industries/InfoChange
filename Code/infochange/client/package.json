@@ -13,16 +13,19 @@
   "dependencies": {
     "axios": "^1.6.8",
     "bootstrap-icons": "^1.11.3",
+    "formik": "^2.4.6",
     "mdb-react-ui-kit": "^8.0.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.6.3",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.2",
     "react-bootstrap-icons": "^1.11.4",
     "react-dom": "^18.2.0",
     "react-parallax": "^3.5.1",
     "react-router-dom": "^6.22.3",
     "react-scroll-parallax": "^3.4.5",
-    "react-ts-tradingview-widgets": "^1.2.4"
+    "react-ts-tradingview-widgets": "^1.2.4",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
