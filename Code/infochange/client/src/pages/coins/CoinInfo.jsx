@@ -15,6 +15,10 @@ export default function CoinInfo(props) {
   const [dollar, setDollar] = useState(symbolCoin * coin.price);
 
   useEffect(() => {
+    if (coin.length === 0) {
+      console.log("Coin is undefined");
+      goBack();
+    }
     const popoverTriggerList = [].slice.call(
       document.querySelectorAll('[data-bs-toggle="popover"]')
     );
@@ -48,7 +52,11 @@ export default function CoinInfo(props) {
   );
 
   return (
-    <div key={location.key} style={{ overflowX: "hidden" }}>
+    <div
+      className="container-flex"
+      key={location.key}
+      style={{ overflowX: "hidden" }}
+    >
       <div className="row my-4 mx-4 text-secondary">
         <div className="col">
           <span style={{ cursor: "pointer" }} onClick={goBack}>
@@ -58,8 +66,8 @@ export default function CoinInfo(props) {
           <span className="text-dark">{coin.name}</span>
         </div>
       </div>
-      <div className="row d-flex m-3">
-        <div className="col-12 col-md-4 ">
+      <div className="row mx-3">
+        <div className="col-12 col-md-5 ">
           <SingleTicker
             symbol={coin.symbol + "USDT"}
             width="100%"
@@ -159,8 +167,8 @@ export default function CoinInfo(props) {
             </div>
           </div>
         </div>
-        <div className="col-12 col-md-8 ">
-          <div className="row">{symbolOverview}</div>
+        <div className="col-12 col-md-7">
+          <div className="row ">{symbolOverview}</div>
         </div>
       </div>
 
