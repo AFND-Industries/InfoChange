@@ -19,6 +19,7 @@ const TradingContext = createContext();
 // FILTRAR MONEDAS QUE NO ESTA NEN TRADING VIEW
 // ARREGLAR LO DE QUE PUEDES REGISTRARTE EN TRADING VIEW DESDE INFOCHANGE
 // SOPORTE CON PAYMENT ?
+// PONER EL NEEDSERVER Y NEEDSAUTH SERIA NEEDAUTS(MNNEDSERVER)
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();
