@@ -29,8 +29,6 @@ export default function Wallet(props) {
               })
             : [];
 
-    console.log(coins);
-
     return (
         <>
             <div className="container d-flex flex-column align-items-center py-3">
