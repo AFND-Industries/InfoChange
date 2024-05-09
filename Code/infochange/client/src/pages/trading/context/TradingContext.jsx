@@ -7,8 +7,6 @@ import axios from 'axios';
 
 const TradingContext = createContext();
 
-// Pensar en una posible forma de usar clases con metodos para los simbolos asi el getPrice seria mas sencillo
-
 // Cuando haya backend siempre activo, hacer que se pidan los precios cada X tiempo y se guarde con su time actual asi se puede
 // conseguir que haya siempre el % cambio, el mini grafico de las monedas con puntos random y cosas asi jeje
 
@@ -29,7 +27,7 @@ export const TradingProvider = ({ children }) => {
     const getPairPath = () => pairPath;
 
     const [symbols, setSymbols] = useState(Symbols.symbols);
-    const reloadPricesTime = 15000;
+    const reloadPricesTime = 10000;
 
     const [actualPair, setActualPair] = useState(getPair(pairPath));
     const getActualPair = () => actualPair;
@@ -64,7 +62,7 @@ export const TradingProvider = ({ children }) => {
     useEffect(() => {
         const loadPrices = async () => {
             try {
-                const responsePrices = await axios.get('https://api.binance.com/api/v1/ticker/price');
+                const responsePrices = await axios.get('http://localhost:1024/prices');
                 const dataPrices = responsePrices.data;
 
                 console.log("Updating prices " + new Date().toLocaleString());

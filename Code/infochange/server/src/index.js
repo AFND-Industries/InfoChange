@@ -4,8 +4,8 @@ const { createHash } = require("crypto");
 const cors = require("cors");
 const mysql = require("mysql");
 const Symbols = require("./Coins.json");
-const { clear } = require("console");
 
+let prices = [];
 let coins = [];
 let last_update;
 
@@ -21,6 +21,23 @@ app.use(
         credentials: true,
     })
 );
+
+const getPrices = () => {
+    try {
+        fetch('https://api.binance.com/api/v1/ticker/price')
+            .then((response) => response.json())
+            .then((data) => {
+                prices = data;
+
+                applog("Precios actualizados: " + new Date().toLocaleString(), "BINANCE");
+            })
+    } catch (e) {
+        applog(e, "ERROR");
+    }
+}
+
+getPrices();
+setInterval(getPrices, 10000);
 
 const getCoins = () => {
     try {
@@ -48,7 +65,7 @@ const getCoins = () => {
                 throw error;
             });
     } catch (e) {
-        applog(e.message, "ERROR");
+        applog(e, "ERROR");
     }
 };
 
@@ -378,6 +395,11 @@ app.get("/users", (req, res) => {
 app.get("/coins", (req, res) => {
     res.json({ coins: coins, last_update: last_update });
     applog(`Petición "/coins" ejecutada`, "REQUEST");
+});
+
+app.get("/prices", (req, res) => {
+    res.json(prices);
+    applog(`Petición "/prices" ejecutada`, "REQUEST");
 });
 
 app.listen(port, () => {
