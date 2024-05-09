@@ -125,6 +125,7 @@ function getData(symbols) {
           description: item.description,
           high_price: symbol === undefined ? null : symbol.highPrice,
           low_price: symbol === undefined ? null : symbol.lowPrice,
+          urls: item.urls,
         };
       });
 
