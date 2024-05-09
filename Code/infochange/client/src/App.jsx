@@ -51,7 +51,9 @@ function App() {
             <Footer />
         </>
     );
-    const needAuth = (v) => <>{getAuthStatus() === "1" ? v : getPage()}</>;
+
+    const needBackend = (v) => <>{getAuthStatus() === "-1" ? <Navigate to="/" /> : v}</>;
+    const needAuth = (v) => <>{needBackend(getAuthStatus() === "1" ? v : getPage())}</>;
 
     return (
         <>
@@ -92,8 +94,12 @@ function App() {
             <div className="d-flex flex-column min-vh-100">
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={wrap(<Welcome />)} />
-                        <Route path="/coins/*" element={wrap(<Coins />)} />
+                        <Route
+                            path="/"
+                            element={wrap(<Welcome />)} />
+                        <Route
+                            path="/coins/*"
+                            element={needBackend(wrap(<Coins />))} />
                         <Route
                             path="/dashboard/:username"
                             element={needAuth(wrap(<Dashboard />))}
@@ -102,15 +108,19 @@ function App() {
                             path="/dashboard"
                             element={needAuth(wrap(<Dashboard />))}
                         />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                        <Route
+                            path="/login"
+                            element={needBackend(<Login />)} />
+                        <Route
+                            path="/register"
+                            element={needBackend(<Register />)} />
                         <Route
                             path="/trading/:pair"
-                            element={needAuth(wrap(<Trading />))}
+                            element={needBackend(wrap(<Trading />))}
                         />
                         <Route
                             path="/trading"
-                            element={needAuth(wrap(<Trading />))}
+                            element={needBackend(wrap(<Trading />))}
                         />
                         <Route
                             path="/payment"
