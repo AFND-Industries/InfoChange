@@ -20,8 +20,6 @@ function Dashboard() {
     user.wallet = user.wallet ?? {};
     user.wallet.balance = user.profile.balance;
 
-    console.log(user);
-
     const pages = [
         <Profile profile={user.profile} />,
         <Wallet wallet={user.wallet ?? {}} />,

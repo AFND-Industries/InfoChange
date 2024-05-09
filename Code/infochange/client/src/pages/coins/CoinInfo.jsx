@@ -46,14 +46,18 @@ export default function CoinInfo(props) {
         borderDownColor="#800080"
         wickDownColor="#800080"
         chartOnly="true"
+        width={"100%"}
       />
     ),
     [coin.symbol]
   );
 
   return (
-    <div className="container-flex" key={location.key}>
-      <div className="row my-4 mx-4 text-secondary">
+    <div
+      className="container-fluid mt-2 mb-5 d-flex flex-column"
+      key={location.key}
+    >
+      <div className="row my-4 mx-3 text-secondary">
         <div className="col-12">
           <span style={{ cursor: "pointer" }} onClick={goBack}>
             Monedas &ensp;
@@ -63,7 +67,7 @@ export default function CoinInfo(props) {
         </div>
       </div>
       <div className="row mx-3">
-        <div className="col col-md-4 ">
+        <div className="col-lg-4">
           <SingleTicker
             symbol={coin.symbol + "USDT"}
             width="100%"
@@ -163,11 +167,9 @@ export default function CoinInfo(props) {
             </div>
           </div>
         </div>
-        <div className="col col-md-8">
-          <div className="row ">{symbolOverview}</div>
-        </div>
+        <div className="col-lg-8">{symbolOverview}</div>
       </div>
-      <div className="row m-4 h-100">
+      <div className="row m-4">
         <Timeline
           colorTheme="light"
           feedMode="symbol"
