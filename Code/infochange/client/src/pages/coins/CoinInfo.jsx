@@ -6,13 +6,20 @@ import { MiniChart } from "react-ts-tradingview-widgets";
 import { Timeline } from "react-ts-tradingview-widgets";
 import { SymbolOverview } from "react-ts-tradingview-widgets";
 import { SingleTicker } from "react-ts-tradingview-widgets";
+import { useCoins } from "./CoinsAPI";
 
 export default function CoinInfo(props) {
   const { coin, key } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const [symbolCoin, setSymbolCoin] = useState(1);
-  const [dollar, setDollar] = useState(symbolCoin * coin.price);
+  const { doGetCoinPrice } = useCoins();
+  const [price, setPrice] = useState("");
+
+  const fetchPrice = async () => {
+    const priceGet = await doGetCoinPrice(coin.symbol + "USDT");
+    setPrice(priceGet.data.price);
+  };
 
   useEffect(() => {
     if (coin.length === 0) {
@@ -26,9 +33,15 @@ export default function CoinInfo(props) {
       return new bootstrap.Popover(popoverTriggerEl);
     });
 
+    fetchPrice();
+    const interval = setInterval(async () => {
+      fetchPrice();
+    }, 10000);
+
     // Cleanup popovers when component unmounts
     return () => {
       popoverList.map((popover) => popover.dispose());
+      clearInterval(interval);
     };
   }, []);
 
@@ -77,9 +90,7 @@ export default function CoinInfo(props) {
             <div className="card-body">
               <div className="row">
                 <div className="col">
-                  <span className="text-secondary">
-                    Volumen de Mercado 24H{" "}
-                  </span>
+                  <span className="text-secondary">Volumen Mercado 24H </span>
                   <i
                     className="bi bi-info-circle"
                     data-bs-toggle="popover"
@@ -134,7 +145,7 @@ export default function CoinInfo(props) {
             <h5 className="text-secondary">
               <strong className="text-dark"> {coin.symbol} Converter </strong>
               <span style={{ fontSize: "17px" }}>
-                a {Number(coin.price).toFixed(3)} el {coin.symbol}
+                a {Number(price).toFixed(3)} el {coin.symbol}
               </span>
             </h5>
           </div>
@@ -147,7 +158,7 @@ export default function CoinInfo(props) {
                 placeholder={symbolCoin}
                 onChange={(e) => {
                   setSymbolCoin(e.target.value);
-                  setDollar(e.target.value * coin.price);
+                  setDollar(e.target.value * price);
                 }}
               />
               <span className="input-group-text">{coin.symbol}&nbsp;</span>
@@ -156,11 +167,11 @@ export default function CoinInfo(props) {
               <input
                 type="text"
                 className="form-control"
-                value={dollar}
-                placeholder={dollar}
+                value={price}
+                placeholder={price}
                 onChange={(e) => {
                   setDollar(e.target.value);
-                  setSymbolCoin(e.target.value / coin.price);
+                  setSymbolCoin(e.target.value / price);
                 }}
               />
               <span className="input-group-text">USD</span>

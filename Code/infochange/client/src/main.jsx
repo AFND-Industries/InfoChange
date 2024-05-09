@@ -18,8 +18,6 @@ import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AuthProvider>
-    <CoinsAPI>
-      <App />
-    </CoinsAPI>
+    <App />
   </AuthProvider>
 );
