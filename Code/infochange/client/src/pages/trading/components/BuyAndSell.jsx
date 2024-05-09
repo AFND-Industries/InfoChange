@@ -7,9 +7,10 @@ import { useAuth } from "../../authenticator/AuthContext";
 // meter aqui trading mode y quitar lo de style por argumento
 function BuyAndSell({ style = 0 }) {
     const { getActualPair, getActualPairPrice } = useTrading();
-    const { getActualUserWallet } = useAuth();
+    const { getActualUserWallet, tradeCoins } = useAuth();
 
     const actualUserWallet = getActualUserWallet();
+
     const getWalletAmount = (symbol) => {
         let balance = 0;
 
@@ -126,16 +127,7 @@ function BuyAndSell({ style = 0 }) {
             return;
         }
 
-        const updatedWallet = { ...actualUserWallet };
-
-        const newBaseAssetAmount = getWalletAmount(baseAsset) + (action === "BUY" ? receivedAmount : -paidAmount);
-        updatedWallet[baseAsset] = parseFloat(newBaseAssetAmount.toFixed(8));
-
-        const newQuoteAssetAmount = getWalletAmount(quoteAsset) + (action === "BUY" ? -paidAmount : receivedAmount);
-        updatedWallet[quoteAsset] = parseFloat(newQuoteAssetAmount.toFixed(8));
-
-        // hacer un post
-        //setMyWallet(updatedWallet);
+        tradeCoins(getActualPair().symbol, paidAmount, action);
 
         if (action === "BUY") {
             showModal(`Compra realizada con éxito`,

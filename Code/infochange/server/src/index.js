@@ -303,7 +303,7 @@ app.get("/wallet", (req, res) => {
 });
 
 app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS COMISIONES
-    if (req.session.user) {
+    if (!req.session.user) {
         res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
     } else {
         const symbol = Object.values(Symbols.symbols).filter(s => s.symbol === req.query.symbol)[0]; //req.body.symbol
@@ -330,25 +330,57 @@ app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS
 
         if (type === "BUY") {
             const paidAmount = quantity; // Lo que se quita de QUOTE
-            db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${symbol.quoteAsset}';`,
+            db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                 (err, result) => {
                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                     else {
-                        const currentQuoteAmount = parseFloat(result);
+                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
                         if (currentQuoteAmount < paidAmount) {
                             res.json(error("INSUFFICIENT_BALANCE", "No tienes suficientes " + symbol.quoteAssetName + "."))
                         } else {
                             const comission = paidAmount * tradingComision;
                             const receivedAmount = (paidAmount - comission) / symbolPrice; // Lo que se añade a BASE
 
-
-                            // update en la bd o insert si no esta
+                            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                                (err, result) => {
+                                    if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+                                    else {
+                                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
+                                        db.query(`UPDATE cartera SET quantity = ${currentQuoteAmount - paidAmount} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+                                            (err, _) => {
+                                                if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                                else {
+                                                    if (currentBaseAmount >= 0) {
+                                                        db.query(`UPDATE cartera SET quantity = ${currentBaseAmount + receivedAmount} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                                                            (err, _) => {
+                                                                if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                                                else {
+                                                                    res.json({ status: 1 });
+                                                                }
+                                                            }
+                                                        )
+                                                    } else {
+                                                        db.query(`INSERT INTO cartera (user, coin, quantity) VALUES (1, '${symbol.baseAsset}', ${receivedAmount});`,
+                                                            (err, _) => {
+                                                                if (err) res.json(error("INSERT_ERROR", "Se ha producido un error inesperado"));
+                                                                else {
+                                                                    res.json({ status: 1 });
+                                                                }
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            )
                         }
                     }
                 });
         } else if (type === "SELL") {
             const paidAmount = quantity; // Lo que se quita de BASE
-            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = 1;`, //${req.session.user.ID}
+            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                 (err, result) => {
                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                     else {
@@ -359,18 +391,17 @@ app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS
                             const comission = paidAmount * tradingComision;
                             const receivedAmount = (paidAmount - comission) * symbolPrice; // Lo que se añade a QUOTE
 
-                            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.quoteAsset}' AND user = 1;`,
+                            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                                 (err, result) => {
                                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                                     else {
                                         const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-
-                                        db.query(`UPDATE cartera SET quantity = ${currentBaseAmount - paidAmount} WHERE coin = '${symbol.baseAsset}' AND user = 1;`,
+                                        db.query(`UPDATE cartera SET quantity = ${currentBaseAmount - paidAmount} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                                             (err, _) => {
                                                 if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
                                                 else {
-                                                    if (currentQuoteAmount > 0) {
-                                                        db.query(`UPDATE cartera SET quantity = ${currentQuoteAmount + receivedAmount} WHERE coin = '${symbol.quoteAsset}' AND user = 1;`,
+                                                    if (currentQuoteAmount >= 0) {
+                                                        db.query(`UPDATE cartera SET quantity = ${currentQuoteAmount + receivedAmount} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                                                             (err, _) => {
                                                                 if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
                                                                 else {

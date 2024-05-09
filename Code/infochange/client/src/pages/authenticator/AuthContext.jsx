@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext, createContext, act } from "react";
-import users from "../../data/users.json";
+import React, { useState, useEffect, useContext, createContext } from "react";
 
 import { toUser } from "../../types/user";
 
@@ -97,6 +96,7 @@ export const AuthProvider = ({ children }) => {
     const doRegister = async (user) => await doAction(() => register(user));
 
     const buyProduct = async (buy) => await post("/payment", buy);
+    const tradeCoins = async (symbol, quantity, type) => await get("/trade?symbol=" + symbol + "&quantity=" + quantity + "&type=" + type);
 
     useEffect(() => {
         doAuth(); // Initial auth
@@ -117,6 +117,7 @@ export const AuthProvider = ({ children }) => {
                 doLogout,
                 doRegister,
                 buyProduct,
+                tradeCoins
             }}
         >
             {children}

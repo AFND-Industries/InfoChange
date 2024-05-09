@@ -14,7 +14,7 @@ function TradingPage() {
   const { changeChartMode, getTradingMode, getActualPair } = useTrading();
   const tradingMode = getTradingMode();
 
-  if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT")
+  if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT") // Por si entra a un par de modo pro
     changeChartMode();
 
   return (
