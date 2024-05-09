@@ -129,7 +129,7 @@ const addBalance = (balance, navigate) => {
     else {
         navigate("/payment", {
             state: {
-                type: "USD",
+                type: "USDT",
                 quantity: balance,
             },
         });

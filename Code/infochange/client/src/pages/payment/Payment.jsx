@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 import Banner from "./../../assets/payment_banner.png";
 
@@ -8,14 +8,55 @@ import PaymentCompleted from "./steps/PaymentCompleted";
 import ConfirmPayment from "./steps/ConfirmPayment";
 import { CreditForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
+import { useCoins } from "../coins/CoinsAPI";
+import { useAuth } from "../authenticator/AuthContext";
 
 export default function Payment(props) {
+    const TIMEOUT = 5;
+
     const [step, setStep] = useState({ step: 1, data: {} });
-    const [error, setError] = useState(undefined);
+    const [counter, setCounter] = useState(0);
+    const [feedback, setFeedback] = useState(undefined);
+    const state = useLocation()?.state;
+    const [cart, setCart] = useState(state === null ? props.cart : state);
+    const _fupdate_ = useRef();
 
-    const cart = props.cart === undefined ? useLocation().state : props.cart;
+    const { getCoins } = useCoins();
+    const { buyProduct } = useAuth();
 
-    if (cart === null)
+    const updateCart = (cart) => {
+        const price = getCoins().filter(
+            (v) => v.symbol === `${cart.type}USDT`
+        )[0].lastPrice;
+        const _cart = cart;
+        _cart.price = price;
+        setCart(cart);
+        return cart.price === _cart.price;
+    };
+
+    useEffect(() => {
+        if (cart.type === "USDT") return;
+
+        if (!_fupdate_.current) {
+            updateCart(cart);
+            _fupdate_.current = true;
+        }
+
+        if (step.step < 4) {
+            const id = setInterval(() => {
+                setCounter(counter + 1);
+
+                if (counter === TIMEOUT) {
+                    setCounter(0);
+                    updateCart(cart);
+                }
+            }, 1000);
+
+            return () => clearInterval(id);
+        }
+    });
+
+    if (cart === null || step.step > 4 || step.step < 1)
         return (
             <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
                 <div className="card p-2">
@@ -146,6 +187,12 @@ export default function Payment(props) {
                                             cart={cart}
                                             data={step.data}
                                             nextHandler={async () => {
+                                                const result = await buyProduct(
+                                                    { cart: cart }
+                                                );
+                                                setFeedback(
+                                                    result.data.feedback
+                                                );
                                                 setStep({
                                                     step: 4,
                                                     data: step.data,
@@ -159,7 +206,10 @@ export default function Payment(props) {
                                             }
                                         />
                                     ) : (
-                                        <PaymentCompleted cart={cart} />
+                                        <PaymentCompleted
+                                            cart={cart}
+                                            feedback={feedback}
+                                        />
                                     )}
                                 </div>
                             </div>
@@ -170,6 +220,11 @@ export default function Payment(props) {
                                 style={{ width: `${step.step * 25}%` }}
                             ></div>
                         </div>
+                        {cart.type !== "USDT" && step.step < 4
+                            ? `El precio se actualizará en ${
+                                  TIMEOUT - counter
+                              } segundos`
+                            : ""}
                     </div>
                 </div>
             </div>
