@@ -21,6 +21,7 @@ const TradingContext = createContext();
 // DISEÑO RESPONSIVE
 // TRADE POST PARA PODER TRADEAR
 // ENTER EN EL LOGIN
+// ELIMINAR LA DATA DUPLICADA
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();
