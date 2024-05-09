@@ -23,29 +23,33 @@ app.use(
 );
 
 const getCoins = () => {
-    const url = "https://api.binance.com/api/v3/ticker/24hr";
-    fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-            const filteredSymbols = data.filter((symbol) => {
-                if (symbol.symbol.endsWith("USDT")) {
-                    const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
+    try {
+        const url = "https://api.binance.com/api/v3/ticker/24hr";
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                const filteredSymbols = data.filter((symbol) => {
+                    if (symbol.symbol.endsWith("USDT")) {
+                        const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
 
-                    if (Symbols.allCoins.includes(symbolWithoutUsdt)) {
-                        return true;
+                        if (Symbols.allCoins.includes(symbolWithoutUsdt)) {
+                            return true;
+                        }
                     }
-                }
 
-                return false;
+                    return false;
+                });
+
+                coins = filteredSymbols;
+                applog("Datos de la API actualizados", "RESTAPI");
+                last_update = new Date().toLocaleString();
+            })
+            .catch((error) => {
+                throw error;
             });
-
-            coins = filteredSymbols;
-            applog("Datos de la API actualizados", "RESTAPI");
-            last_update = new Date().toLocaleString();
-        })
-        .catch((error) => {
-            throw error;
-        });
+    } catch (e) {
+        applog(e.message, "ERROR");
+    }
 };
 
 // tomar los datos de la api inicial
@@ -226,15 +230,11 @@ app.post("/register", (req, res) => {
                         "ERROR"
                     );
                 } else {
-                    const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${
-                        user.username
-                    }', '${hash(user.password)}', '${user.name}', '${
-                        user.lastname
-                    }', '${user.email}', '${user.phone}', '${
-                        user.document
-                    }', '${user.address}', '${user.postalCode}', '${
-                        user.country
-                    }');`;
+                    const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${user.username
+                        }', '${hash(user.password)}', '${user.name}', '${user.lastname
+                        }', '${user.email}', '${user.phone}', '${user.document
+                        }', '${user.address}', '${user.postalCode}', '${user.country
+                        }');`;
                     db.query(query, (err, result) => {
                         if (err) {
                             res.json(error(err.code, err.sqlMessage));

@@ -20,6 +20,8 @@ const TradingContext = createContext();
 // ARREGLAR LO DE QUE PUEDES REGISTRARTE EN TRADING VIEW DESDE INFOCHANGE
 // SOPORTE CON PAYMENT ?
 // PONER EL NEEDSERVER Y NEEDSAUTH SERIA NEEDAUTS(MNNEDSERVER)
+// ADAPTARLO CON LA WALLET QUE HA HECHO TONI
+// DISEÑO RESPONSIVE
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();
