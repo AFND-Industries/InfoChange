@@ -58,8 +58,8 @@ export default function CoinInfo(props) {
           <span className="text-dark">{coin.name}</span>
         </div>
       </div>
-      <div className="row d-flex m-3 w-75">
-        <div className="col mx-1 ">
+      <div className="row d-flex m-3">
+        <div className="col-12 col-md-4 ">
           <SingleTicker
             symbol={coin.symbol + "USDT"}
             width="100%"
@@ -159,8 +159,7 @@ export default function CoinInfo(props) {
             </div>
           </div>
         </div>
-
-        <div className="col mx-1 w-50 h-100">
+        <div className="col-12 col-md-8 ">
           <div className="row">{symbolOverview}</div>
         </div>
       </div>
