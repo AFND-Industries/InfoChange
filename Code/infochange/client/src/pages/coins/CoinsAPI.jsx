@@ -23,6 +23,11 @@ export const CoinsAPI = ({ children }) => {
     return response;
   }
 
+  async function getCoinPrice(symbol) {
+    const response = await get("/prices?symbol=" + symbol);
+    return response;
+  }
+
   const doAction = async (func) => {
     let response;
 
@@ -36,6 +41,8 @@ export const CoinsAPI = ({ children }) => {
   };
 
   const doGetCoins = async () => await doAction(getCoinsAPI);
+  const doGetCoinPrice = async (symbol) =>
+    await doAction(() => getCoinPrice(symbol));
 
   useEffect(() => {
     doGetCoins();
@@ -47,7 +54,9 @@ export const CoinsAPI = ({ children }) => {
   }, []);
 
   return (
-    <CoinsContext.Provider value={{ doGetCoins, getCoins, getLastDate }}>
+    <CoinsContext.Provider
+      value={{ doGetCoins, getCoins, getLastDate, doGetCoinPrice }}
+    >
       {children}
     </CoinsContext.Provider>
   );
