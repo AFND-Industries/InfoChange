@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
 
 import { useTrading } from "../context/TradingContext";
+import { useAuth } from "../../authenticator/AuthContext";
 
 // poner lo de las comas y punto
-
+// meter aqui trading mode y quitar lo de style por argumento
 function BuyAndSell({ style = 0 }) {
     const { getActualPair, getActualPairPrice } = useTrading();
+    const { getActualUserWallet } = useAuth();
 
-    const [myWallet, setMyWallet] = useState({ "USDT": 100000 });
-    const getWalletAmount = (symbol) => myWallet[symbol] || 0;
+    const actualUserWallet = getActualUserWallet();
+    const getWalletAmount = (symbol) => {
+        let balance = 0;
+
+        if (actualUserWallet !== null) {
+            const search = Object.values(actualUserWallet).filter(w => w.coin === symbol);
+            if (search.length > 0)
+                balance = search[0].quantity;
+        }
+        return balance;
+    }
     const tradingComision = 0.00065;
 
     const getBaseAsset = () => getActualPair()?.baseAsset || "";
@@ -84,7 +95,7 @@ function BuyAndSell({ style = 0 }) {
 
     useEffect(() => {
         clearAmountInputs();
-    }, [getActualPair(), myWallet]);
+    }, [getActualPair(), actualUserWallet]);
 
     const showModal = (title, message) => {
         const modal = new bootstrap.Modal(document.getElementById('just-close-modal'));
@@ -115,7 +126,7 @@ function BuyAndSell({ style = 0 }) {
             return;
         }
 
-        const updatedWallet = { ...myWallet };
+        const updatedWallet = { ...actualUserWallet };
 
         const newBaseAssetAmount = getWalletAmount(baseAsset) + (action === "BUY" ? receivedAmount : -paidAmount);
         updatedWallet[baseAsset] = parseFloat(newBaseAssetAmount.toFixed(8));
@@ -123,7 +134,8 @@ function BuyAndSell({ style = 0 }) {
         const newQuoteAssetAmount = getWalletAmount(quoteAsset) + (action === "BUY" ? -paidAmount : receivedAmount);
         updatedWallet[quoteAsset] = parseFloat(newQuoteAssetAmount.toFixed(8));
 
-        setMyWallet(updatedWallet);
+        // hacer un post
+        //setMyWallet(updatedWallet);
 
         if (action === "BUY") {
             showModal(`Compra realizada con éxito`,

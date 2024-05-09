@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext, act } from "react";
 import users from "../../data/users.json";
 
 import { toUser } from "../../types/user";
@@ -14,26 +14,35 @@ export const AuthProvider = ({ children }) => {
 
     const getAuthStatus = () => authStatus;
     const getActualUser = () => actualUser;
+    const getActualUserWallet = () => actualUser === null ? null : actualUser.wallet;
 
     const get = async (url) =>
-        await axios.get(SERVER_URL + url, { withCredentials: true });
+        await axios.get(SERVER_URL + url, {
+            withCredentials: true
+        });
 
-    // future changes
     const post = async (url, parameters) =>
         await axios.post(SERVER_URL + url, parameters, {
             withCredentials: true,
         });
 
-    async function auth() {
+    async function auth() { // yo pondria que el wallet lo devolviese tambien el auth y asi es solo una peticion
         const response = await get("/auth");
         const walletRes = await get("/wallet");
 
         setAuthStatus(response.data.status);
-        setActualUser(
-            response.data.status === "1"
-                ? toUser(response.data.user, response.data.wallet)
-                : null
-        );
+
+        if (response.data.status === "1") {
+            const user = response.data.user;
+            const wallet = walletRes.data.wallet;
+
+            setActualUser(prevActualUser => { // Todo esto es para que si no ha cambiado no haga un setState de nuevo y recargue todo
+                if (prevActualUser === null || prevActualUser === undefined || JSON.stringify(user) != JSON.stringify(prevActualUser.profile) || JSON.stringify(wallet) != JSON.stringify(prevActualUser.wallet))
+                    return toUser(user, wallet);
+                else
+                    return prevActualUser;
+            });
+        }
 
         return response;
     }
@@ -71,8 +80,8 @@ export const AuthProvider = ({ children }) => {
 
         try {
             response = await func();
-        } catch (Exception) {
-            console.log("El servidor no está disponible en estos momentos.");
+        } catch (e) {
+            console.log("El servidor no está disponible en estos momentos:", e);
 
             setAuthStatus("-1"); // Pon aqui un 1 si quieres que aunque no vaya el servidor te deje entrar al front-end
             setActualUser(null); // normalmente tiene que ser un -1, server not available
@@ -82,12 +91,11 @@ export const AuthProvider = ({ children }) => {
     };
 
     const doAuth = async () => await doAction(() => auth());
-    const doLogin = async (user, pass) =>
-        await doAction(() => login(user, pass));
+    const doLogin = async (user, pass) => await doAction(() => login(user, pass));
     const doLogout = async () => await doAction(() => logout());
-    const doCheckEmail = async (email) =>
-        await doAction(() => checkEmail(email));
+    const doCheckEmail = async (email) => await doAction(() => checkEmail(email));
     const doRegister = async (user) => await doAction(() => register(user));
+
     const buyProduct = async (buy) => await post("/payment", buy);
 
     useEffect(() => {
@@ -102,6 +110,7 @@ export const AuthProvider = ({ children }) => {
             value={{
                 getActualUser,
                 getAuthStatus,
+                getActualUserWallet,
                 doAuth,
                 doCheckEmail,
                 doLogin,
