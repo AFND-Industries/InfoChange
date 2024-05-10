@@ -1,16 +1,25 @@
 import { Link, redirect, useNavigate } from "react-router-dom";
 import Countries from "./../assets/countries.json";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import "./login.css";
 import Users from "./../data/users.json";
 import { useAuth } from "./authenticator/AuthContext";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
+
 import Row from "react-bootstrap/Row";
 import * as formik from "formik";
 import * as yup from "yup";
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+
+import Typography from "@mui/material/Typography";
+
+const steps = ["Informacion Personal", "Informacion sobre la", "Create an ad"];
 
 export default function Register() {
   const [country, setCountry] = useState(Countries[0]);
@@ -67,9 +76,10 @@ export default function Register() {
       setError("Error desconocido (por ahora)");
     }
   };
+
   const { Formik } = formik;
   let emailRegex =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<div>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const schema = yup.object().shape({
     firstName: yup.string().required("Por favor, ingrese su nombre"),
     lastName: yup.string().required("Por favor, ingrese sus apellidos"),
@@ -94,37 +104,107 @@ export default function Register() {
       .required()
       .oneOf([true], "Debe aceptar los terminos para continuar"),
   });
-  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [skipped, setSkipped] = React.useState(new Set());
 
+  const isStepOptional = (step) => {
+    return step === 1;
+  };
+
+  const isStepSkipped = (step) => {
+    return skipped.has(step);
+  };
+
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      // You probably want to guard against something like this,
+      // it should never occur unless someone's actively trying to break something.
+      throw new Error("You can't skip a step that isn't optional.");
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values());
+      newSkipped.add(activeStep);
+      return newSkipped;
+    });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
   return (
-    <Formik
-      validationSchema={schema}
-      onSubmit={console.log}
-      initialValues={{
-        firstName: "",
-        lastName: "",
-        email: "",
-        username: "",
-        city: "",
-        state: "",
-        birthday: "",
-        sexo: "",
-        zip: "",
-        file: null,
-        terms: false,
-      }}
-      // initialErrors={{
-      //   firstName: "Aaaaaaaaa",
-      //   lastName: "",
-      //   email: "",
-      //   username: "",
-      // }}
-    >
-      {({ handleSubmit, handleChange, values, touched, errors }) => (
-        <div className=" anim_gradient">
-          <div className="container-fluid vh-100 ">
-            <div className="row justify-content-center align-items-center">
-              <div className="col-5 bg-light rounded-2 my-5 bg-tertiary">
+    <div className="anim_gradient container-fluid h-100 ">
+      <div className="row align-content-center justify-content-center ">
+        <div
+          className="col-5 mx-5 my-5 rounded-3"
+          style={{ backgroundColor: "white" }}
+        >
+          <Box sx={{ width: "100%" }}>
+            <Stepper activeStep={activeStep} alternativeLabel>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
+                if (isStepOptional(index)) {
+                  labelProps.optional = (
+                    <Typography variant="caption">Optional</Typography>
+                  );
+                }
+                if (isStepSkipped(index)) {
+                  stepProps.completed = false;
+                }
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+          </Box>
+        </div>
+      </div>
+      <div className="row d-flex  align-content-center justify-content-center ">
+        <div className="col-5 h-100" style={{ backgroundColor: "white" }}>
+          <Formik
+            validationSchema={schema}
+            onSubmit={console.log}
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              username: "",
+              city: "",
+              state: "",
+              birthday: "",
+              sexo: "",
+              zip: "",
+              file: null,
+              terms: false,
+            }}
+            // initialErrors={{
+            //   firstName: "Aaaaaaaaa",
+            //   lastName: "",
+            //   email: "",
+            //   username: "",
+            // }}
+          >
+            {({ handleSubmit, handleChange, values, touched, errors }) => (
+              <div>
                 <Form className="mx-5  my-5" noValidate onSubmit={handleSubmit}>
                   <h3>Informacion Personal</h3>
                   <Row className="mb-3">
@@ -217,6 +297,16 @@ export default function Register() {
                       </div>
                     </Form.Group>
                   </Row>
+
+                  <Button type="" onClick={handleBack}>
+                    Anteriorrerer
+                  </Button>
+                  <Button onClick={handleNext}>Next</Button>
+                  <Button type="submit" onClick={handleNext}>
+                    Submit form
+                  </Button>
+                </Form>
+                <Form className="mx-5  my-5" noValidate onSubmit={handleSubmit}>
                   <h3>Informacion sobre la cuenta</h3>
                   <Row className="mb-5">
                     <Form.Group as={Col} md="12" controlId="validationFormik01">
@@ -234,7 +324,6 @@ export default function Register() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
-
                   <Row className="mb-3">
                     <Form.Group as={Col} md="6" controlId="validationFormik03">
                       <Form.Label>City</Form.Label>
@@ -308,13 +397,19 @@ export default function Register() {
                       />
                     </Row> */}
                   </Form.Group>
-                  <Button type="submit">Submit form</Button>
+                  <Button type="" onClick={handleBack}>
+                    Anteriorrerer
+                  </Button>
+                  <Button onClick={handleNext}>Next</Button>
+                  <Button type="submit" onClick={handleNext}>
+                    Submit form
+                  </Button>
                 </Form>
               </div>
-            </div>
-          </div>
+            )}
+          </Formik>
         </div>
-      )}
-    </Formik>
+      </div>
+    </div>
   );
 }
