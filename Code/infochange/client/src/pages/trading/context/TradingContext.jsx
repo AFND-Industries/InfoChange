@@ -9,10 +9,11 @@ const TradingContext = createContext();
 
 // Cuando haya backend siempre activo, hacer que se pidan los precios cada X tiempo y se guarde con su time actual asi se puede
 // conseguir que haya siempre el % cambio, el mini grafico de las monedas con puntos random y cosas asi jeje
-
-// HACER APICONTEXT
+// hacer api context
 // SI VAS A UN SITIO Y TE PIDE LOGEARTE PUES QUE DESPUES DE LOGEARTE TE LLEVE A ESE SITIO
-// METER MODO NO LOGEADO QUE SEA NOOB + BOTON CAMBIADO
+
+// poner lo de las comas y punto y el infinity
+// METER MODO NO LOGEADO QUE SEA NOOB
 // MODO NOOB METER VAS A RECIBIR (ESTIMADO) DE BAJO Y QUITAR EL SLIDER
 // PONER EN EL MODO NOOB UNA CONFIRMACION 
 // FILTRAR MONEDAS QUE NO ESTA NEN TRADING VIEW

@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useTrading } from "../context/TradingContext";
 import { useAuth } from "../../authenticator/AuthContext";
 
-// poner lo de las comas y punto
-// meter aqui trading mode y quitar lo de style por argumento
 function BuyAndSell({ style = 0 }) {
     const { getActualPair, getActualPairPrice, getPair } = useTrading();
     const { getActualUserWallet, tradeCoins } = useAuth();
@@ -171,13 +169,17 @@ function BuyAndSell({ style = 0 }) {
                     <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
                     <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
                 </div>
-                <input type="range" className="form-range" value={buyRangeValue} onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")} />
-                <div className="input-group input-group-sm">
-                    <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={buyBaseAssetInput} onChange={handleBuyBaseAsset} />
-                    <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
-                </div>
-                <div className="mt-1 mb-1">
-                    Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(8)}{showQuoteAsset}
+                {style == 1 && <>
+                    <input type="range" className="form-range" value={buyRangeValue}
+                        onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")} />
+                    <div className="input-group input-group-sm">
+                        <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={buyBaseAssetInput} onChange={handleBuyBaseAsset} />
+                        <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
+                    </div>
+                </>}
+                <div className="mt-1 mb-1 d-flex justify-content-between">
+                    {style == 0 && <span>Vas a recibir: {(buyQuoteAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
+                    Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(showQuoteDecimals)}{showQuoteAsset}
                 </div>
                 <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {showBaseAsset}</button>
             </div>
@@ -190,17 +192,22 @@ function BuyAndSell({ style = 0 }) {
                         <input type="text" className="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput} onChange={handleSellBaseAsset} />
                         <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
                     </div>
-                    <input type="range" className="form-range" value={sellRangeValue} onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")} />
-                    <div className="input-group input-group-sm">
-                        <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={sellQuoteAssetInput} onChange={handleSellQuoteAsset} />
-                        <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
-                    </div>
-                    <div className="mt-1 mb-1">
-                        Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}
+                    {style == 1 &&
+                        <>
+                            <input type="range" className="form-range" value={sellRangeValue}
+                                onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")} />
+                            <div className="input-group input-group-sm">
+                                <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={sellQuoteAssetInput} onChange={handleSellQuoteAsset} />
+                                <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
+                            </div>
+                        </>}
+                    <div className="mt-1 mb-1 d-flex justify-content-between">
+                        {style == 0 && <span>Vas a recibir: {(sellQuoteAssetInput * 1).toFixed(showQuoteDecimals)}$</span>}
+                        <span>Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}</span>
                     </div>
                     <button className="btn btn-danger w-100 mb-2" onClick={onSell}>Vender {showBaseAsset}</button>
                 </div>
-            </div>
+            </div >
         </>
     );
 }
