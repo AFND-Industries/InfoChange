@@ -6,10 +6,20 @@ import { useAuth } from "../../authenticator/AuthContext";
 // poner lo de las comas y punto
 // meter aqui trading mode y quitar lo de style por argumento
 function BuyAndSell({ style = 0 }) {
-    const { getActualPair, getActualPairPrice } = useTrading();
+    const { getActualPair, getActualPairPrice, getPair } = useTrading();
     const { getActualUserWallet, tradeCoins } = useAuth();
 
     const actualUserWallet = getActualUserWallet();
+    const totalMoney = actualUserWallet === null ? 0 : actualUserWallet.map(c => { // esto va a dashboard
+        let dollarAmount;
+        if (c.coin === "USDT") dollarAmount = c.quantity;
+        else {
+            const usdPair = getPair(c.coin + "USDT");
+            dollarAmount = c.quantity * (usdPair.price ?? 0);
+        }
+
+        return dollarAmount;
+    }).reduce((total, currentValue) => total + currentValue, 0);
 
     const getWalletAmount = (symbol) => {
         let balance = 0;
@@ -19,7 +29,7 @@ function BuyAndSell({ style = 0 }) {
             if (search.length > 0)
                 balance = search[0].quantity;
         }
-        return balance;
+        return parseFloat(balance.toFixed(8));
     }
     const tradingComision = 0.00065;
 
@@ -121,8 +131,8 @@ function BuyAndSell({ style = 0 }) {
             showModal("Error", "El monto de la transacción introducido no es válido");
             return;
         }
-
-        if (getWalletAmount(symbol) < paidAmount) {
+        console.log(getWalletAmount(symbol), paidAmount);
+        if (getWalletAmount(symbol) < parseFloat(paidAmount.toFixed(8))) {
             showModal("Error", `No tienes suficientes ${action === "BUY" ? showQuoteAsset : showBaseAsset} `);
             return;
         }
@@ -152,6 +162,7 @@ function BuyAndSell({ style = 0 }) {
 
     return (
         <>
+            <div id="borrar" className="h1 d-flex justify-content-center border border-4 rounded">Balance total ≈ {totalMoney.toFixed(showQuoteDecimals)}$</div>
             <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
                     Disponible: {getWalletAmount(getQuoteAsset()).toFixed(showQuoteDecimals)}{showQuoteAsset}

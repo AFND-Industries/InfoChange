@@ -335,7 +335,7 @@ app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS
                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                     else {
                         const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-                        if (currentQuoteAmount < paidAmount) {
+                        if (parseFloat(currentQuoteAmount.toFixed(8)) < parseFloat(paidAmount.toFixed(8))) {
                             res.json(error("INSUFFICIENT_BALANCE", "No tienes suficientes " + symbol.quoteAssetName + "."))
                         } else {
                             const comission = paidAmount * tradingComision;
@@ -385,7 +385,7 @@ app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS
                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                     else {
                         const currentBaseAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-                        if (currentBaseAmount < paidAmount) {
+                        if (parseFloat(currentBaseAmount.toFixed(8)) < parseFloat(paidAmount.toFixed(8))) {
                             res.json(error("INSUFFICIENT_BALANCE", "No tienes suficiente " + symbol.baseAssetName + "."))
                         } else {
                             const comission = paidAmount * tradingComision;
