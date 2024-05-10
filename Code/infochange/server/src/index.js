@@ -302,14 +302,14 @@ app.get("/wallet", (req, res) => {
     }
 });
 
-// Importante, todo con 8 decimales SIEMPRE no tenemos más precisión
-app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS COMISIONES
+// Importante, todo con 8 decimales SIEMPRE, no tenemos más precisión
+app.post("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS COMISIONES
     if (!req.session.user) {
         res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
     } else {
-        const symbol = Object.values(Symbols.symbols).filter(s => s.symbol === req.query.symbol)[0]; //req.body.symbol
-        const quantity = parseFloat(req.query.quantity); //req.body.quantity;
-        const type = req.query.type; //req.body.type;
+        const symbol = Object.values(Symbols.symbols).filter(s => s.symbol === req.body.symbol)[0];
+        const quantity = parseFloat(req.body.quantity);
+        const type = req.body.type;
 
         if (symbol === undefined) {
             res.json(error("INVALID_SYMBOL", "No se ha encontrado el símbolo especificado."));
