@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useTrading } from "../context/TradingContext";
 import { useAuth } from "../../authenticator/AuthContext";
 
-function BuyAndSell({ style = 0 }) {
+function BuyAndSell({ style = 1 }) {
+    const navigate = useNavigate();
+
     const { getActualPair, getActualPairPrice, getPair } = useTrading();
-    const { getActualUserWallet, tradeCoins } = useAuth();
+    const { getAuthStatus, getActualUserWallet, tradeCoins } = useAuth();
+
+    useEffect(() => {
+        if (getAuthStatus() !== "-2" && getAuthStatus() !== "1")
+            style = 0;
+    }, [getAuthStatus()]);
 
     const actualUserWallet = getActualUserWallet();
     const totalMoney = actualUserWallet === null ? 0 : actualUserWallet.map(c => { // esto va a dashboard
@@ -158,9 +166,15 @@ function BuyAndSell({ style = 0 }) {
         performTransaction(paidAmount, "SELL");
     };
 
+    const notLoggedButton =
+        <button className="btn w-100 mb-2" style={{ backgroundColor: "rgb(108, 117, 125)", fontWeight: "bold", cursor: "default" }}>
+            <span style={{ color: "#ffbb00", cursor: "pointer" }} onClick={() => navigate("/login")}>Inicia sesión</span>
+            <span className="text-white"> o </span>
+            <span style={{ color: "#ffbb00", cursor: "pointer" }} onClick={() => navigate("/register")}>Regístrate ahora</span>
+        </button>
+
     return (
         <>
-            <div id="borrar" className="h1 d-flex justify-content-center border border-4 rounded">Balance total ≈ {totalMoney.toFixed(showQuoteDecimals)}$</div>
             <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
                     Disponible: {getWalletAmount(getQuoteAsset()).toFixed(showQuoteDecimals)}{showQuoteAsset}
@@ -181,7 +195,9 @@ function BuyAndSell({ style = 0 }) {
                     {style == 0 && <span>Vas a recibir: {(buyQuoteAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
                     Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(showQuoteDecimals)}{showQuoteAsset}
                 </div>
-                <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {showBaseAsset}</button>
+                {getAuthStatus() !== "1" ?
+                    notLoggedButton :
+                    <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {showBaseAsset}</button>}
             </div>
             <div className="col-md border border-4 rounded ms-2">
                 <div className="mt-1 mb-1">
@@ -205,7 +221,9 @@ function BuyAndSell({ style = 0 }) {
                         {style == 0 && <span>Vas a recibir: {(sellQuoteAssetInput * 1).toFixed(showQuoteDecimals)}$</span>}
                         <span>Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}</span>
                     </div>
-                    <button className="btn btn-danger w-100 mb-2" onClick={onSell}>Vender {showBaseAsset}</button>
+                    {getAuthStatus() !== "1" ?
+                        notLoggedButton :
+                        <button className="btn btn-danger w-100 mb-2" onClick={onSell}>Vender {showBaseAsset}</button>}
                 </div>
             </div >
         </>
