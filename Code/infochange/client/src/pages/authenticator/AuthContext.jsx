@@ -41,6 +41,8 @@ export const AuthProvider = ({ children }) => {
                 else
                     return prevActualUser;
             });
+        } else {
+            setActualUser(null);
         }
 
         return response;
