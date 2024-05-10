@@ -175,6 +175,7 @@ function BuyAndSell({ style = 1 }) {
 
     return (
         <>
+            <div id="borrar" className="h1 d-flex justify-content-center border border-4 rounded">Balance total ≈ {totalMoney.toFixed(showQuoteDecimals)}$</div>
             <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
                     Disponible: {getWalletAmount(getQuoteAsset()).toFixed(showQuoteDecimals)}{showQuoteAsset}
