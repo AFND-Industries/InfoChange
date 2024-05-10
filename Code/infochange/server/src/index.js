@@ -302,12 +302,13 @@ app.get("/wallet", (req, res) => {
     }
 });
 
+// Importante, todo con 8 decimales SIEMPRE no tenemos más precisión
 app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS COMISIONES
     if (!req.session.user) {
         res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
     } else {
         const symbol = Object.values(Symbols.symbols).filter(s => s.symbol === req.query.symbol)[0]; //req.body.symbol
-        const quantity = req.query.quantity; //req.body.quantity;
+        const quantity = parseFloat(req.query.quantity); //req.body.quantity;
         const type = req.query.type; //req.body.type;
 
         if (symbol === undefined) {
@@ -329,29 +330,29 @@ app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS
         const symbolPrice = symbolPriceObject.price;
 
         if (type === "BUY") {
-            const paidAmount = quantity; // Lo que se quita de QUOTE
+            const paidAmount = parseFloat(quantity.toFixed(8)); // Lo que se quita de QUOTE
             db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                 (err, result) => {
                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                     else {
-                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-                        if (parseFloat(currentQuoteAmount.toFixed(8)) < parseFloat(paidAmount.toFixed(8))) {
+                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
+                        if (parseFloat(currentQuoteAmount.toFixed(8)) < paidAmount) {
                             res.json(error("INSUFFICIENT_BALANCE", "No tienes suficientes " + symbol.quoteAssetName + "."))
                         } else {
-                            const comission = paidAmount * tradingComision;
-                            const receivedAmount = (paidAmount - comission) / symbolPrice; // Lo que se añade a BASE
+                            const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
+                            const receivedAmount = parseFloat(((paidAmount - comission) / symbolPrice).toFixed(8)); // Lo que se añade a BASE
 
                             db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                                 (err, result) => {
                                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                                     else {
-                                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-                                        db.query(`UPDATE cartera SET quantity = ${currentQuoteAmount - paidAmount} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+                                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
+                                        db.query(`UPDATE cartera SET quantity = ${(currentQuoteAmount - paidAmount).toFixed(8)} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                                             (err, _) => {
                                                 if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
                                                 else {
                                                     if (currentBaseAmount >= 0) {
-                                                        db.query(`UPDATE cartera SET quantity = ${currentBaseAmount + receivedAmount} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                                                        db.query(`UPDATE cartera SET quantity = ${(currentBaseAmount + receivedAmount).toFixed(8)} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                                                             (err, _) => {
                                                                 if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
                                                                 else {
@@ -379,29 +380,29 @@ app.get("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS
                     }
                 });
         } else if (type === "SELL") {
-            const paidAmount = quantity; // Lo que se quita de BASE
+            const paidAmount = parseFloat(quantity.toFixed(8)); // Lo que se quita de BASE
             db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                 (err, result) => {
                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                     else {
-                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-                        if (parseFloat(currentBaseAmount.toFixed(8)) < parseFloat(paidAmount.toFixed(8))) {
+                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
+                        if (parseFloat(currentBaseAmount.toFixed(8)) < paidAmount.toFixed(8)) {
                             res.json(error("INSUFFICIENT_BALANCE", "No tienes suficiente " + symbol.baseAssetName + "."))
                         } else {
-                            const comission = paidAmount * tradingComision;
-                            const receivedAmount = (paidAmount - comission) * symbolPrice; // Lo que se añade a QUOTE
+                            const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
+                            const receivedAmount = parseFloat(((paidAmount - comission) * symbolPrice).toFixed(8)); // Lo que se añade a QUOTE
 
                             db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                                 (err, result) => {
                                     if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
                                     else {
-                                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity);
-                                        db.query(`UPDATE cartera SET quantity = ${currentBaseAmount - paidAmount} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
+                                        db.query(`UPDATE cartera SET quantity = ${(currentBaseAmount - paidAmount).toFixed(8)} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                                             (err, _) => {
                                                 if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
                                                 else {
                                                     if (currentQuoteAmount >= 0) {
-                                                        db.query(`UPDATE cartera SET quantity = ${currentQuoteAmount + receivedAmount} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+                                                        db.query(`UPDATE cartera SET quantity = ${(currentQuoteAmount + receivedAmount).toFixed(8)} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                                                             (err, _) => {
                                                                 if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
                                                                 else {
