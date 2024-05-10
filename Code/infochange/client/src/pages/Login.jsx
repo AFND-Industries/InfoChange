@@ -71,7 +71,7 @@ function Login() {
                                 <h2 className="text-secondary card-title mb-4">
                                     Iniciar sesión
                                 </h2>
-                                <div className="row mb-2 text-start">
+                                <div className="row mb-2 text-start d-flex align-items-center">
                                     <div className="col-4">
                                         <label>Usuario</label>
                                     </div>
@@ -92,7 +92,7 @@ function Login() {
                                         />
                                     </div>
                                 </div>
-                                <div className="row mb-4 text-start">
+                                <div className="row mb-4 text-start d-flex align-items-center">
                                     <div className="col-4">
                                         <label>Contraseña</label>
                                     </div>
@@ -131,10 +131,10 @@ function Login() {
                                     </div>
                                 </div>
 
-                                <div className="mb-3 form-check">
+                                <div className="mb-3 form-check d-flex justify-content-center">
                                     <input
                                         type="checkbox"
-                                        className="form-check-input"
+                                        className="form-check-input me-2"
                                         id="exampleCheck1"
                                     />
                                     <label
