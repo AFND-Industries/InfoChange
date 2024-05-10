@@ -17,7 +17,9 @@ import App from "./App";
 // ponerlo todo a int en los status
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <AuthProvider>
-    <App />
-  </AuthProvider>
+  <CoinsAPI>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </CoinsAPI>
 );

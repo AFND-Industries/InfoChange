@@ -18,8 +18,6 @@ import CoinsPage from "./CoinsPage";
 
 export default function Coins() {
   return (
-    <CoinsAPI>
-      <CoinsPage />
-    </CoinsAPI>
+    <CoinsPage />
   );
 }
