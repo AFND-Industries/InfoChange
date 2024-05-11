@@ -21,15 +21,12 @@ export default function Payment(props) {
     const [cart, setCart] = useState(state === null ? props.cart : state);
     const _fupdate_ = useRef();
 
-    const { getCoins } = useCoins();
+    const { doGetCoinPrice } = useCoins();
     const { buyProduct } = useAuth();
 
-    const updateCart = (cart) => {
-        const price = getCoins().filter(
-            (v) => v.symbol === `${cart.type}USDT`
-        )[0].lastPrice;
+    const updateCart = async (cart) => {
         const _cart = cart;
-        _cart.price = price;
+        _cart.price = (await doGetCoinPrice(`${cart.type}USDT`)).data.price;
         setCart(cart);
         return cart.price === _cart.price;
     };
@@ -43,12 +40,12 @@ export default function Payment(props) {
         }
 
         if (step.step < 4) {
-            const id = setInterval(() => {
+            const id = setInterval(async () => {
                 setCounter(counter + 1);
 
                 if (counter === TIMEOUT) {
                     setCounter(0);
-                    updateCart(cart);
+                    await updateCart(cart);
                 }
             }, 1000);
 

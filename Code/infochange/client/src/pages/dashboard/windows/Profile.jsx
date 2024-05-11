@@ -12,7 +12,7 @@ export default function Profile(props) {
         },
         {
             label: "Apellidos",
-            value: profile.surname,
+            value: profile.lastname,
         },
         {
             label: "Email",
@@ -52,7 +52,7 @@ export default function Profile(props) {
                 <div className="col-md-9 d-flex flex-column justify-content-center">
                     <h2>{profile.username}</h2>
                     <h4 className="text-body-secondary">
-                        {profile.name} {profile.surname}
+                        {profile.name} {profile.lastname}
                     </h4>
                 </div>
             </div>

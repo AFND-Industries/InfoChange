@@ -17,9 +17,6 @@ function Dashboard() {
         return <Navigate to={"/login"} />;
     }
 
-    user.wallet = user.wallet ?? {};
-    user.wallet.balance = user.profile.balance;
-
     const pages = [
         <Profile profile={user.profile} />,
         <Wallet wallet={user.wallet ?? {}} />,

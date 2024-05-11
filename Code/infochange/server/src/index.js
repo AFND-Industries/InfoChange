@@ -240,44 +240,69 @@ app.post("/register", (req, res) => {
         db.query(
             `SELECT username FROM usuario WHERE username like '${user.username}'`,
             (err, result) => {
-                let l = result.length;
-                if (l > 0) {
+                if (err) {
                     res.json(
-                        error("NOT_UNIQUE_USERNAME", "El nombre de usuario ya existe")
-                    );
-                    applog(
-                        `Register: Attempted to register with a username that exists`,
-                        "ERROR"
+                        error(
+                            "SELECT_ERROR",
+                            "Ha ocurrido un error inesperado."
+                        )
                     );
                 } else {
-                    const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${user.username
-                        }', '${hash(user.password)}', '${user.name}', '${user.lastname}', '${user.email
-                        }', '${user.phone}', '${user.document}', '${user.address}', '${user.postalCode
-                        }', '${user.country}');`;
-                    db.query(query, (err, result) => {
-                        if (err) {
-                            res.json(error(err.code, err.sqlMessage));
-                            applog(`Registro fallido : ${req.ip}`, "AUTH");
-                        } else {
-                            applog(`Usuario ${user.username} registrado`, "REQUEST");
+                    let l = result.length;
+                    if (l > 0) {
+                        res.json(
+                            error(
+                                "NOT_UNIQUE_USERNAME",
+                                "El nombre de usuario ya existe"
+                            )
+                        );
+                        applog(
+                            `Register: Attempted to register with a username that exists`,
+                            "ERROR"
+                        );
+                    } else {
+                        const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${
+                            user.username
+                        }', '${hash(user.password)}', '${user.name}', '${
+                            user.lastname
+                        }', '${user.email}', '${user.phone}', '${
+                            user.document
+                        }', '${user.address}', '${user.postalCode}', '${
+                            user.country
+                        }');`;
+                        db.query(query, (err, result) => {
+                            if (err) {
+                                res.json(error(err.code, err.sqlMessage));
+                                applog(`Registro fallido : ${req.ip}`, "AUTH");
+                            } else {
+                                applog(
+                                    `Usuario ${user.username} registrado`,
+                                    "REQUEST"
+                                );
 
-                            db.query(
-                                `SELECT MAX(ID) "ID" FROM usuario WHERE username like '${user.username}';`,
-                                (err, result) => {
-                                    if (err) {
-                                        res.json(error(err.code, err.sqlMessage));
-                                        applog(`Registro fallido : ${req.ip}`, "AUTH");
-                                    } else {
-                                        user.ID = result.ID;
-                                        req.session.user = user;
-                                        res.json({
-                                            status: "1",
-                                        });
+                                db.query(
+                                    `SELECT MAX(ID) "ID" FROM usuario WHERE username like '${user.username}';`,
+                                    (err, result) => {
+                                        if (err) {
+                                            res.json(
+                                                error(err.code, err.sqlMessage)
+                                            );
+                                            applog(
+                                                `Registro fallido : ${req.ip}`,
+                                                "AUTH"
+                                            );
+                                        } else {
+                                            user.ID = result.ID;
+                                            req.session.user = user;
+                                            res.json({
+                                                status: "1",
+                                            });
+                                        }
                                     }
-                                }
-                            );
-                        }
-                    });
+                                );
+                            }
+                        });
+                    }
                 }
             }
         );
@@ -303,27 +328,47 @@ app.get("/wallet", (req, res) => {
 });
 
 // Importante, todo con 8 decimales SIEMPRE, no tenemos más precisión
-app.post("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LAS COMISIONES
+app.post("/trade", (req, res) => {
+    // METER LO QUE VA GANANDO EL SERVIDOR CON LAS COMISIONES
     if (!req.session.user) {
         res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
     } else {
-        const symbol = Object.values(Symbols.symbols).filter(s => s.symbol === req.body.symbol)[0];
+        const symbol = Object.values(Symbols.symbols).filter(
+            (s) => s.symbol === req.body.symbol
+        )[0];
         const quantity = parseFloat(req.body.quantity);
         const type = req.body.type;
 
         if (symbol === undefined) {
-            res.json(error("INVALID_SYMBOL", "No se ha encontrado el símbolo especificado."));
+            res.json(
+                error(
+                    "INVALID_SYMBOL",
+                    "No se ha encontrado el símbolo especificado."
+                )
+            );
             return;
         }
 
         if (isNaN(parseFloat(quantity)) || parseFloat(quantity) <= 0) {
-            res.json(error("INVALID_QUANTITY", "La cantidad introducida no es válida."));
+            res.json(
+                error(
+                    "INVALID_QUANTITY",
+                    "La cantidad introducida no es válida."
+                )
+            );
             return;
         }
 
-        const symbolPriceObject = Object.values(prices).filter(p => p.symbol === symbol.symbol)[0];
+        const symbolPriceObject = Object.values(prices).filter(
+            (p) => p.symbol === symbol.symbol
+        )[0];
         if (symbolPriceObject === undefined) {
-            res.json(error("NO_SERVER_PRICE", "El servidor no dispone de los precios actualmente. Intentalo de nuevo más tarde."));
+            res.json(
+                error(
+                    "NO_SERVER_PRICE",
+                    "El servidor no dispone de los precios actualmente. Intentalo de nuevo más tarde."
+                )
+            );
             return;
         }
 
@@ -331,106 +376,285 @@ app.post("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LA
 
         if (type === "BUY") {
             const paidAmount = parseFloat(quantity.toFixed(8)); // Lo que se quita de QUOTE
-            db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+            db.query(
+                `SELECT quantity FROM cartera WHERE coin LIKE '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                 (err, result) => {
-                    if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+                    if (err)
+                        res.json(
+                            error(
+                                "SELECT_ERROR",
+                                "Se ha producido un error inesperado"
+                            )
+                        );
                     else {
-                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
-                        if (parseFloat(currentQuoteAmount.toFixed(8)) < paidAmount) {
-                            res.json(error("INSUFFICIENT_BALANCE", "No tienes suficientes " + symbol.quoteAssetName + "."))
+                        const currentQuoteAmount =
+                            result.length === 0
+                                ? -1
+                                : parseFloat(
+                                      parseFloat(result[0].quantity).toFixed(8)
+                                  );
+                        if (
+                            parseFloat(currentQuoteAmount.toFixed(8)) <
+                            paidAmount
+                        ) {
+                            res.json(
+                                error(
+                                    "INSUFFICIENT_BALANCE",
+                                    "No tienes suficientes " +
+                                        symbol.quoteAssetName +
+                                        "."
+                                )
+                            );
                         } else {
-                            const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
-                            const receivedAmount = parseFloat(((paidAmount - comission) / symbolPrice).toFixed(8)); // Lo que se añade a BASE
+                            const comission = parseFloat(
+                                (paidAmount * tradingComision).toFixed(8)
+                            );
+                            const receivedAmount = parseFloat(
+                                (
+                                    (paidAmount - comission) /
+                                    symbolPrice
+                                ).toFixed(8)
+                            ); // Lo que se añade a BASE
 
-                            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                            db.query(
+                                `SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                                 (err, result) => {
-                                    if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+                                    if (err)
+                                        res.json(
+                                            error(
+                                                "SELECT_ERROR",
+                                                "Se ha producido un error inesperado"
+                                            )
+                                        );
                                     else {
-                                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
-                                        db.query(`UPDATE cartera SET quantity = ${(currentQuoteAmount - paidAmount).toFixed(8)} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+                                        const currentBaseAmount =
+                                            result.length === 0
+                                                ? -1
+                                                : parseFloat(
+                                                      parseFloat(
+                                                          result[0].quantity
+                                                      ).toFixed(8)
+                                                  );
+                                        db.query(
+                                            `UPDATE cartera SET quantity = ${(
+                                                currentQuoteAmount - paidAmount
+                                            ).toFixed(8)} WHERE coin = '${
+                                                symbol.quoteAsset
+                                            }' AND user = ${
+                                                req.session.user.ID
+                                            };`,
                                             (err, _) => {
-                                                if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                                if (err)
+                                                    res.json(
+                                                        error(
+                                                            "UPDATE_ERROR",
+                                                            "Se ha producido un error inesperado"
+                                                        )
+                                                    );
                                                 else {
-                                                    if (currentBaseAmount >= 0) {
-                                                        db.query(`UPDATE cartera SET quantity = ${(currentBaseAmount + receivedAmount).toFixed(8)} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                                                    if (
+                                                        currentBaseAmount >= 0
+                                                    ) {
+                                                        db.query(
+                                                            `UPDATE cartera SET quantity = ${(
+                                                                currentBaseAmount +
+                                                                receivedAmount
+                                                            ).toFixed(
+                                                                8
+                                                            )} WHERE coin = '${
+                                                                symbol.baseAsset
+                                                            }' AND user = ${
+                                                                req.session.user
+                                                                    .ID
+                                                            };`,
                                                             (err, _) => {
-                                                                if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                                                if (err)
+                                                                    res.json(
+                                                                        error(
+                                                                            "UPDATE_ERROR",
+                                                                            "Se ha producido un error inesperado"
+                                                                        )
+                                                                    );
                                                                 else {
-                                                                    res.json({ status: 1 });
+                                                                    res.json({
+                                                                        status: 1,
+                                                                    });
                                                                 }
                                                             }
-                                                        )
+                                                        );
                                                     } else {
-                                                        db.query(`INSERT INTO cartera (user, coin, quantity) VALUES (1, '${symbol.baseAsset}', ${receivedAmount});`,
+                                                        db.query(
+                                                            `INSERT INTO cartera (user, coin, quantity) VALUES (1, '${symbol.baseAsset}', ${receivedAmount});`,
                                                             (err, _) => {
-                                                                if (err) res.json(error("INSERT_ERROR", "Se ha producido un error inesperado"));
+                                                                if (err)
+                                                                    res.json(
+                                                                        error(
+                                                                            "INSERT_ERROR",
+                                                                            "Se ha producido un error inesperado"
+                                                                        )
+                                                                    );
                                                                 else {
-                                                                    res.json({ status: 1 });
+                                                                    res.json({
+                                                                        status: 1,
+                                                                    });
                                                                 }
                                                             }
-                                                        )
+                                                        );
                                                     }
                                                 }
                                             }
-                                        )
+                                        );
                                     }
                                 }
-                            )
+                            );
                         }
                     }
-                });
+                }
+            );
         } else if (type === "SELL") {
             const paidAmount = parseFloat(quantity.toFixed(8)); // Lo que se quita de BASE
-            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+            db.query(
+                `SELECT quantity FROM cartera WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
                 (err, result) => {
-                    if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+                    if (err)
+                        res.json(
+                            error(
+                                "SELECT_ERROR",
+                                "Se ha producido un error inesperado"
+                            )
+                        );
                     else {
-                        const currentBaseAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
-                        if (parseFloat(currentBaseAmount.toFixed(8)) < paidAmount.toFixed(8)) {
-                            res.json(error("INSUFFICIENT_BALANCE", "No tienes suficiente " + symbol.baseAssetName + "."))
+                        const currentBaseAmount =
+                            result.length === 0
+                                ? -1
+                                : parseFloat(
+                                      parseFloat(result[0].quantity).toFixed(8)
+                                  );
+                        if (
+                            parseFloat(currentBaseAmount.toFixed(8)) <
+                            paidAmount.toFixed(8)
+                        ) {
+                            res.json(
+                                error(
+                                    "INSUFFICIENT_BALANCE",
+                                    "No tienes suficiente " +
+                                        symbol.baseAssetName +
+                                        "."
+                                )
+                            );
                         } else {
-                            const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
-                            const receivedAmount = parseFloat(((paidAmount - comission) * symbolPrice).toFixed(8)); // Lo que se añade a QUOTE
+                            const comission = parseFloat(
+                                (paidAmount * tradingComision).toFixed(8)
+                            );
+                            const receivedAmount = parseFloat(
+                                (
+                                    (paidAmount - comission) *
+                                    symbolPrice
+                                ).toFixed(8)
+                            ); // Lo que se añade a QUOTE
 
-                            db.query(`SELECT quantity FROM cartera WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+                            db.query(
+                                `SELECT quantity FROM cartera WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
                                 (err, result) => {
-                                    if (err) res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+                                    if (err)
+                                        res.json(
+                                            error(
+                                                "SELECT_ERROR",
+                                                "Se ha producido un error inesperado"
+                                            )
+                                        );
                                     else {
-                                        const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(parseFloat(result[0].quantity).toFixed(8));
-                                        db.query(`UPDATE cartera SET quantity = ${(currentBaseAmount - paidAmount).toFixed(8)} WHERE coin = '${symbol.baseAsset}' AND user = ${req.session.user.ID};`,
+                                        const currentQuoteAmount =
+                                            result.length === 0
+                                                ? -1
+                                                : parseFloat(
+                                                      parseFloat(
+                                                          result[0].quantity
+                                                      ).toFixed(8)
+                                                  );
+                                        db.query(
+                                            `UPDATE cartera SET quantity = ${(
+                                                currentBaseAmount - paidAmount
+                                            ).toFixed(8)} WHERE coin = '${
+                                                symbol.baseAsset
+                                            }' AND user = ${
+                                                req.session.user.ID
+                                            };`,
                                             (err, _) => {
-                                                if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                                if (err)
+                                                    res.json(
+                                                        error(
+                                                            "UPDATE_ERROR",
+                                                            "Se ha producido un error inesperado"
+                                                        )
+                                                    );
                                                 else {
-                                                    if (currentQuoteAmount >= 0) {
-                                                        db.query(`UPDATE cartera SET quantity = ${(currentQuoteAmount + receivedAmount).toFixed(8)} WHERE coin = '${symbol.quoteAsset}' AND user = ${req.session.user.ID};`,
+                                                    if (
+                                                        currentQuoteAmount >= 0
+                                                    ) {
+                                                        db.query(
+                                                            `UPDATE cartera SET quantity = ${(
+                                                                currentQuoteAmount +
+                                                                receivedAmount
+                                                            ).toFixed(
+                                                                8
+                                                            )} WHERE coin = '${
+                                                                symbol.quoteAsset
+                                                            }' AND user = ${
+                                                                req.session.user
+                                                                    .ID
+                                                            };`,
                                                             (err, _) => {
-                                                                if (err) res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                                                if (err)
+                                                                    res.json(
+                                                                        error(
+                                                                            "UPDATE_ERROR",
+                                                                            "Se ha producido un error inesperado"
+                                                                        )
+                                                                    );
                                                                 else {
-                                                                    res.json({ status: 1 });
+                                                                    res.json({
+                                                                        status: 1,
+                                                                    });
                                                                 }
                                                             }
-                                                        )
+                                                        );
                                                     } else {
-                                                        db.query(`INSERT INTO cartera (user, coin, quantity) VALUES (1, '${symbol.quoteAsset}', ${receivedAmount});`,
+                                                        db.query(
+                                                            `INSERT INTO cartera (user, coin, quantity) VALUES (1, '${symbol.quoteAsset}', ${receivedAmount});`,
                                                             (err, _) => {
-                                                                if (err) res.json(error("INSERT_ERROR", "Se ha producido un error inesperado"));
+                                                                if (err)
+                                                                    res.json(
+                                                                        error(
+                                                                            "INSERT_ERROR",
+                                                                            "Se ha producido un error inesperado"
+                                                                        )
+                                                                    );
                                                                 else {
-                                                                    res.json({ status: 1 });
+                                                                    res.json({
+                                                                        status: 1,
+                                                                    });
                                                                 }
                                                             }
-                                                        )
+                                                        );
                                                     }
                                                 }
                                             }
-                                        )
+                                        );
                                     }
                                 }
-                            )
+                            );
                         }
                     }
-                });
+                }
+            );
         } else {
-            res.json(error("INVALID_TYPE", "No existe el tipo de operación especificado."))
+            res.json(
+                error(
+                    "INVALID_TYPE",
+                    "No existe el tipo de operación especificado."
+                )
+            );
         }
     }
 });
@@ -438,67 +662,68 @@ app.post("/trade", (req, res) => { // METER LO QUE VA GANANDO EL SERVIDOR CON LA
 app.post("/payment", (req, res) => {
     if (!req.session.user) {
         res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+    } else if (
+        !req.body.cart ||
+        !req.body.cart.type ||
+        !req.body.cart.quantity
+    ) {
+        res.json(
+            error(
+                "MALFORMED_REQUEST",
+                "La petición no se ha formulado correctamente"
+            )
+        );
     } else {
         const cart = req.body.cart;
-
-        if (cart.type === "USDT") {
-            db.query(
-                `UPDATE usuario SET balance = balance + ${cart.quantity} WHERE ID = ${req.session.user.ID}`,
-                (err, _) => {
-                    if (err) {
-                        applog(err.sqlMessage, "ERROR");
-                        res.json({
-                            status: 0,
-                        });
-                    }
-                    res.json({
-                        status: 1,
-                        feedback: "OK",
-                    });
-                }
-            );
-        } else {
-            db.query(
-                `SELECT coin FROM cartera where coin like '${cart.type}' and user = ${req.session.user.ID}`,
-                (err, result) => {
-                    if (err) {
-                        res.json(
-                            error("SELECT_ERROR", "Se ha producido un error inesperado")
-                        );
-                    } else if (result.length === 0) {
-                        db.query(
-                            `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID}, '${cart.type}', ${cart.quantity})`,
-                            (err, _) => {
-                                if (err) {
-                                    res.json(
-                                        error("INSERT_ERROR", "Se ha producido un error inesperado")
-                                    );
-                                }
-                                res.json({
-                                    status: 1,
-                                    feedback: "OK",
-                                });
+        db.query(
+            `SELECT coin FROM cartera where coin like '${cart.type}' and user = ${req.session.user.ID}`,
+            (err, result) => {
+                if (err) {
+                    res.json(
+                        error(
+                            "SELECT_ERROR",
+                            "Se ha producido un error inesperado"
+                        )
+                    );
+                } else if (result.length === 0) {
+                    db.query(
+                        `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID}, '${cart.type}', ${cart.quantity})`,
+                        (err, _) => {
+                            if (err) {
+                                res.json(
+                                    error(
+                                        "INSERT_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
+                                );
                             }
-                        );
-                    } else {
-                        db.query(
-                            `UPDATE cartera SET quantity = quantity + ${cart.quantity} WHERE user = ${req.session.user.ID} and coin like '${cart.type}'`,
-                            (err, _) => {
-                                if (err) {
-                                    res.json(
-                                        error("UPDATE_ERROR", "Se ha producido un error inesperado")
-                                    );
-                                }
-                                res.json({
-                                    status: 1,
-                                    feedback: "OK",
-                                });
+                            res.json({
+                                status: 1,
+                                feedback: "OK",
+                            });
+                        }
+                    );
+                } else {
+                    db.query(
+                        `UPDATE cartera SET quantity = quantity + ${cart.quantity} WHERE user = ${req.session.user.ID} and coin like '${cart.type}'`,
+                        (err, _) => {
+                            if (err) {
+                                res.json(
+                                    error(
+                                        "UPDATE_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
+                                );
                             }
-                        );
-                    }
+                            res.json({
+                                status: 1,
+                                feedback: "OK",
+                            });
+                        }
+                    );
                 }
-            );
-        }
+            }
+        );
     }
 });
 

@@ -1,8 +1,8 @@
-import { useRef } from "react";
-import { PlusCircle, PlusLg } from "react-bootstrap-icons";
+import { useEffect, useRef, useState } from "react";
+import { PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { useCoins } from "../../coins/CoinsAPI";
-import CoinsDataset from "./../../../data/CoinMarketCapData.json";
+import CoinsDataset from "../../../data/CoinMarketCapData.json";
 
 export default function Wallet(props) {
     const { wallet } = props;
@@ -11,20 +11,25 @@ export default function Wallet(props) {
 
     const { getCoins } = useCoins();
 
-    const prices = getCoins();
+    const coinsInfo = getCoins();
 
     const coins =
-        wallet.coins !== undefined
-            ? wallet.coins.map((coin) => {
+        wallet !== undefined
+            ? wallet.map((coin) => {
                   const data = CoinsDataset.data[coin.coin][0];
-                  data.quantity = coin.quantity.toFixed(10);
-                  data.price =
-                      coin.quantity *
-                      parseFloat(
-                          prices.filter(
-                              (v) => v.symbol === `${coin.coin}USDT`
-                          )[0].lastPrice
+                  if (coin.coin !== "USDT") {
+                      const price = coinsInfo.find(
+                          (v) => v.symbol === `${coin.coin}USDT`
                       );
+                      data.quantity = coin.quantity.toFixed(10);
+                      data.price = price
+                          ? coin.quantity * price.lastPrice
+                          : "?";
+                  } else {
+                      data.quantity = coin.quantity.toFixed(2);
+                      data.price = coin.quantity;
+                  }
+
                   return data;
               })
             : [];
@@ -37,7 +42,18 @@ export default function Wallet(props) {
                     className="rounded-pill p-5 text-white mb-4"
                     style={{ backgroundColor: "#20c997", width: "fit-content" }}
                 >
-                    <h1>{wallet.balance ?? 0} $</h1>
+                    <h1>
+                        {coins
+                            ? coins
+                                  .reduce(
+                                      (t, v) =>
+                                          t + (v.price === "?" ? 0 : v.price),
+                                      0
+                                  )
+                                  .toFixed(2)
+                            : 0}{" "}
+                        $
+                    </h1>
                 </div>
                 <div className="row">
                     <div className="col-md-7 mb-3">
@@ -104,11 +120,16 @@ export default function Wallet(props) {
                                         />
                                         <p className="card-text">{coin.name}</p>
                                         <h5 className="card-title mt-0">
-                                            {coin.quantity} {coin.symbol}
+                                            {coin.quantity}{" "}
+                                            {coin.symbol !== "USDT"
+                                                ? coin.symbol
+                                                : "$"}
                                         </h5>
-                                        <h6 className="text-secondary">
-                                            ~ {coin.price} $
-                                        </h6>
+                                        {coin.symbol !== "USDT" ? (
+                                            <h6 className="text-secondary">
+                                                ~ {coin.price} $
+                                            </h6>
+                                        ) : undefined}
                                     </div>
                                 </div>
                             </div>
