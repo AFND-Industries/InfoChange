@@ -7,6 +7,8 @@ import BuyAndSell from './components/BuyAndSell';
 import TradingChart from './components/TradingChart';
 import { useTrading } from './context/TradingContext';
 import JustCloseModal from './components/JustCloseModal';
+import TradeConfirmationModal from './components/TradeConfirmationModal';
+import TradeToast from './components/TradeToast';
 
 import "./TradingPage.css";
 
@@ -19,6 +21,7 @@ function TradingPage() {
 
   return (
     <>
+      <TradeConfirmationModal />
       <JustCloseModal />
       <RotatingMarquee display={tradingMode == 1} />
 
@@ -40,6 +43,8 @@ function TradingPage() {
           <BuyAndSell style={tradingMode} />
         </div>
       </div>
+
+      <TradeToast />
     </>
   );
 }

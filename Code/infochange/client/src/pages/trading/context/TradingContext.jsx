@@ -14,26 +14,24 @@ const TradingContext = createContext();
 // FILTRAR MONEDAS QUE NO ESTA NEN TRADING VIEW
 // ARREGLAR LO DE QUE PUEDES REGISTRARTE EN TRADING VIEW DESDE INFOCHANGE
 
-// poner lo de las comas y punto y el infinity
-// PONER EN EL MODO NOOB UNA CONFIRMACION 
 // SOPORTE CON PAYMENT SI NO TIENES SALDO DISPONIBLE LLEVAR A PAYMENT
 // DISEÑO RESPONSIVE
 // ELIMINAR LA DATA DUPLICADA
 // HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 
-/* 
- PONER QUE EL BACKEND TE TRAIGA TU NUEVA WALLET TRAS EL TRADE PARA ASI ACTUALIZAR MAS RAPIDO
- Y QUE TAMBIEN TE DEVUELVA LO QUE HAS PAGADO, LO QUE HAS RECIBIDO Y LA COMISION QUE HAS PAGADO
- PARA MOSTRARLO EN EL FRONT END
- PONER QUE MIENTRAS SE ESTA PAGANDO SALGA ALGO DE CARGANDO Y DESPUES DE CARGAR EN VEZ
- DE ESPERAR AL SIGUIENTE DOAUTH QUE ACTUALICE LA WALLET PUES ESO QUE LO DEVUELVA EL BACKEND
- Y EL TRADE COINS SE ENCARGUE DE ACTUALIZARLO
-*/
-
 // MOSTRAR EN TRADING ANTES Q HACER FAVORITOS LA LISTA DE MONEDAS QUE TIENES
 // HACER PANEL PARA ADMIN CON TODA LA COMISION QUE HA GANAO UNA TABLA ADMIN ALGO ASI WAPO WAPO
 // HISTORIAL DE TRANSACCIONES
+
+const LOSIGUIENTEESTO = 0;
+// PONER EN EL MODO NOOB UNA CONFIRMACION 
 // ELIMINAR DE LA BD SI UNA MONEDA SE QUEDA A 0
+// Pagas. Se hace la peticion, se queda cargando todo bloqueado, cuando cargue, si hay error
+// se muestra mensaje de error, si no, se devuelve la comision cuanto has ganao recibio y tal y se
+// cierra el cargando, cuando termine el doauth que acabas de hacer se actualiza la wallet sola, si tarda mucho
+// que no creo, pues se pone todo esto despues del doAuth
+// poner lo de las comas y punto y el infinity
+
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();

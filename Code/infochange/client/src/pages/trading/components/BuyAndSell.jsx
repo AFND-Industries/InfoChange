@@ -114,7 +114,7 @@ function BuyAndSell({ style = 1 }) {
         clearAmountInputs();
     }, [getActualPair(), actualUserWallet]);
 
-    const showModal = (title, message) => {
+    const showJustCloseModal = (title, message) => {
         const modal = new bootstrap.Modal(document.getElementById('just-close-modal'));
         const modalTitle = document.getElementById('just-close-modal-title');
         const modalBody = document.getElementById('just-close-modal-body');
@@ -125,6 +125,35 @@ function BuyAndSell({ style = 1 }) {
         modal.show();
     };
 
+    const showTradeConfirmationModal = (title, message, onConfirm) => {
+        const modal = new bootstrap.Modal(document.getElementById('trade-confirmation-modal'));
+        const modalTitle = document.getElementById('trade-confirmation-modal-title');
+        const modalBody = document.getElementById('trade-confirmation-modal-body');
+        const tradeConfirmationButton = document.getElementById('trade-confirmation-button');
+
+        tradeConfirmationButton.addEventListener('click', () => {
+            modal.hide();
+            onConfirm();
+        });
+        modalTitle.innerHTML = title;
+        modalBody.innerHTML = message;
+
+        modal.show();
+    };
+
+    const showTradeDoneToast = (title, message) => {
+        const toast = new bootstrap.Toast(document.getElementById("trade-toast"), {
+            autohide: false
+        });
+        const toastTitle = document.getElementById("trade-toast-title");
+        const toastBody = document.getElementById("trade-toast-body");
+
+        toastTitle.innerHTML = title;
+        toastBody.innerHTML = message;
+
+        toast.show();
+    }
+
     const performTransaction = (paidAmount, action) => {
         const baseAsset = getBaseAsset();
         const quoteAsset = getQuoteAsset();
@@ -134,27 +163,42 @@ function BuyAndSell({ style = 1 }) {
         const symbol = action === "BUY" ? quoteAsset : baseAsset;
 
         if (getActualPairPrice() <= 0 || isNaN(receivedAmount) || isNaN(paidAmount)) {
-            showModal("Error", "El monto de la transacción introducido no es válido");
-            return;
-        }
-        console.log(getWalletAmount(symbol), paidAmount);
-        if (getWalletAmount(symbol) < parseFloat(paidAmount.toFixed(8))) {
-            showModal("Error", `No tienes suficientes ${action === "BUY" ? showQuoteAsset : showBaseAsset} `);
+            showJustCloseModal("Error", "El monto de la transacción introducido no es válido");
             return;
         }
 
+        if (getWalletAmount(symbol) < parseFloat(paidAmount.toFixed(8))) {
+            showJustCloseModal("Error", `No tienes suficientes ${action === "BUY" ? showQuoteAsset : showBaseAsset} `);
+            return;
+        }
+
+        const transac = () => doTransaction(paidAmount, receivedAmount, comission, action);
+        if (style == 0) {
+            if (action == "BUY")
+                showTradeConfirmationModal("¡ATENCIÓN!",
+                    `Estás a punto de comprar <b>${receivedAmount.toFixed(8)} ${showBaseAsset}</b>. ¿Estás seguro?`
+                    , transac);
+            else
+                showTradeConfirmationModal("¡ATENCIÓN!",
+                    `Estás a punto de vender <b>${paidAmount.toFixed(8)} ${showBaseAsset}</b>. ¿Estás seguro?`
+                    , transac);
+        }
+        else transac();
+    };
+
+    const doTransaction = (paidAmount, receivedAmount, comission, action) => {
         tradeCoins(getActualPair().symbol, paidAmount, action);
 
         if (action === "BUY") {
-            showModal(`Compra realizada con éxito`,
-                `Has comprado <b> ${receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b> ${paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+            showTradeDoneToast(`Compra realizada con éxito`,
+                `Has comprado <b>${receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
                 </b> y has pagado <b> ${comission.toFixed(showQuoteDecimals)}${showQuoteAsset}</b> de comisión.`);
         } else {
-            showModal(`Venta realizada con éxito`,
-                `Has vendido <b> ${paidAmount.toFixed(8)} ${showBaseAsset}</b> por <b> ${receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
-                </b> y has pagado <b> ${comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
+            showTradeDoneToast(`Venta realizada con éxito`,
+                `Has vendido <b>${paidAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                </b> y has pagado <b>${comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
         }
-    };
+    }
 
     const onBuy = () => {
         const paidAmount = parseFloat(buyQuoteAssetInput);
@@ -173,12 +217,14 @@ function BuyAndSell({ style = 1 }) {
             <span style={{ color: "#ffbb00", cursor: "pointer" }} onClick={() => navigate("/register")}>Regístrate ahora</span>
         </button>
 
+    const trunc = (number, n) => Math.trunc(number * Math.pow(10, n)) / (Math.pow(10, n));
+
     return (
         <>
             <div id="borrar" className="h1 d-flex justify-content-center border border-4 rounded">Balance total ≈ {totalMoney.toFixed(showQuoteDecimals)}$</div>
             <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
-                    Disponible: {getWalletAmount(getQuoteAsset()).toFixed(showQuoteDecimals)}{showQuoteAsset}
+                    Disponible: {trunc(getWalletAmount(getQuoteAsset()), showQuoteDecimals)}{showQuoteAsset}
                 </div>
                 <div className="input-group input-group-sm">
                     <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
@@ -193,16 +239,16 @@ function BuyAndSell({ style = 1 }) {
                     </div>
                 </>}
                 <div className="mt-1 mb-1 d-flex justify-content-between">
-                    {style == 0 && <span>Vas a recibir: {(buyQuoteAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
+                    {style == 0 && <span>Vas a recibir: {(buyBaseAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
                     Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(showQuoteDecimals)}{showQuoteAsset}
                 </div>
                 {getAuthStatus() !== "1" ?
                     notLoggedButton :
-                    <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {showBaseAsset}</button>}
+                    <button className="btn btn-success w-100 mb-2" onClick={onBuy}> Comprar {showBaseAsset}</button>}
             </div>
             <div className="col-md border border-4 rounded ms-2">
                 <div className="mt-1 mb-1">
-                    Disponible: {getWalletAmount(getBaseAsset()).toFixed(8)} {showBaseAsset}
+                    Disponible: {trunc(getWalletAmount(getBaseAsset()), 8)} {showBaseAsset}
                 </div>
                 <div>
                     <div className="input-group input-group-sm">
