@@ -131,10 +131,10 @@ function BuyAndSell({ style = 1 }) {
         const modalBody = document.getElementById('trade-confirmation-modal-body');
         const tradeConfirmationButton = document.getElementById('trade-confirmation-button');
 
-        tradeConfirmationButton.addEventListener('click', () => {
+        tradeConfirmationButton.onclick = () => {
             modal.hide();
             onConfirm();
-        });
+        };
         modalTitle.innerHTML = title;
         modalBody.innerHTML = message;
 

@@ -98,7 +98,10 @@ export const AuthProvider = ({ children }) => {
     const doRegister = async (user) => await doAction(() => register(user));
 
     const buyProduct = async (buy) => await post("/payment", buy);
-    const tradeCoins = async (symbol, quantity, type) => await post("/trade?", { symbol: symbol, quantity: quantity, type: type });
+    const tradeCoins = async (symbol, quantity, type) => {
+        console.log(symbol, quantity, type);
+        await post("/trade?", { symbol: symbol, quantity: quantity, type: type })
+    };
 
     useEffect(() => {
         doAuth(); // Initial auth
