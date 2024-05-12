@@ -365,7 +365,12 @@ app.post("/trade", (req, res) => {
             const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
             const receivedAmount = type === 'BUY' ? (paidAmount - comission) / symbolPrice : (paidAmount - comission) * symbolPrice;
 
-            db.query(`UPDATE cartera SET quantity = quantity - ${paidAmount.toFixed(8)} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`,
+            const updatedAmount = currentAmount - paidAmount;
+            const updateQuery = updatedAmount === 0 ?
+                `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};` :
+                `UPDATE cartera SET quantity = ${updatedAmount.toFixed(8)} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`;
+
+            db.query(updateQuery,
                 (err, _) => {
                     if (err) return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
 
