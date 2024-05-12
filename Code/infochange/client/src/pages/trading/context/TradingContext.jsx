@@ -24,6 +24,11 @@ const TradingContext = createContext();
 const LOSIGUIENTE = 1;
 // HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 // HISTORIAL DE TRANSACCIONES
+// se puede poner a parte de en dashboard en trading un boton para ver el historial
+// quitar lo del balance total y ver donde ponerlo
+// el footer y welcome q este en condiciones
+// poner compra minima si eso y maxima
+// poner el marquee abajo position fixed a ve que tal queda
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();
