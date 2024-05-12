@@ -9,7 +9,7 @@ const TradingContext = createContext();
 
 // Cuando haya backend siempre activo, hacer que se pidan los precios cada X tiempo y se guarde con su time actual asi se puede
 // conseguir que haya siempre el % cambio, el mini grafico de las monedas con puntos random y cosas asi jeje
-// hacer api context
+
 // SI VAS A UN SITIO Y TE PIDE LOGEARTE PUES QUE DESPUES DE LOGEARTE TE LLEVE A ESE SITIO
 // FILTRAR MONEDAS QUE NO ESTA NEN TRADING VIEW
 // ARREGLAR LO DE QUE PUEDES REGISTRARTE EN TRADING VIEW DESDE INFOCHANGE
@@ -17,21 +17,13 @@ const TradingContext = createContext();
 // SOPORTE CON PAYMENT SI NO TIENES SALDO DISPONIBLE LLEVAR A PAYMENT
 // DISEÑO RESPONSIVE
 // ELIMINAR LA DATA DUPLICADA
-// HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 
 // MOSTRAR EN TRADING ANTES Q HACER FAVORITOS LA LISTA DE MONEDAS QUE TIENES
 // HACER PANEL PARA ADMIN CON TODA LA COMISION QUE HA GANAO UNA TABLA ADMIN ALGO ASI WAPO WAPO
+
+const LOSIGUIENTE = 1;
+// HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 // HISTORIAL DE TRANSACCIONES
-
-const LOSIGUIENTEESTO = 0;
-// PONER EN EL MODO NOOB UNA CONFIRMACION 
-// ELIMINAR DE LA BD SI UNA MONEDA SE QUEDA A 0
-// Pagas. Se hace la peticion, se queda cargando todo bloqueado, cuando cargue, si hay error
-// se muestra mensaje de error, si no, se devuelve la comision cuanto has ganao recibio y tal y se
-// cierra el cargando, cuando termine el doauth que acabas de hacer se actualiza la wallet sola, si tarda mucho
-// que no creo, pues se pone todo esto despues del doAuth
-// poner lo de las comas y punto y el infinity
-
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();

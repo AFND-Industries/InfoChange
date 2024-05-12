@@ -10,7 +10,7 @@ function BuyAndSell({ style = 1 }) {
     const MAXVALUE = 1000000000000;
 
     const { getActualPair, getActualPairPrice, getPair } = useTrading();
-    const { getAuthStatus, getActualUserWallet, tradeCoins } = useAuth();
+    const { getAuthStatus, getActualUserWallet, doTrade } = useAuth();
 
     useEffect(() => {
         if (getAuthStatus() !== "-2" && getAuthStatus() !== "1")
@@ -62,21 +62,22 @@ function BuyAndSell({ style = 1 }) {
     }
 
     const updateInputValues = (value, setValueFunc, oppositeSetValueFunc, action, assetChanged) => {
-        const parsedValue = parseFloat(value);
+        const valueTrim = value.trim();
+        const parsedValue = parseFloat(valueTrim);
 
-        if (value.length == 0 || (!isNaN(value) && parsedValue >= 0 && countDecimals(value) <= 8 && parsedValue <= MAXVALUE)) {
-            setValueFunc(value);
-            const oppositeValue = assetChanged === "BASE" ? value * getActualPairPrice() : value / getActualPairPrice();
-            oppositeSetValueFunc(value.length == 0 ? "" : oppositeValue.toFixed(8));
+        if (valueTrim.length == 0 || (!isNaN(valueTrim) && parsedValue >= 0 && countDecimals(valueTrim) <= 8 && parsedValue <= MAXVALUE)) {
+            setValueFunc(valueTrim);
+            const oppositeValue = assetChanged === "BASE" ? valueTrim * getActualPairPrice() : valueTrim / getActualPairPrice();
+            oppositeSetValueFunc(valueTrim.length == 0 ? "" : oppositeValue.toFixed(8));
 
             const amountDisp = getWalletAmount(action === "BUY" ? getQuoteAsset() : getBaseAsset());
 
             let rangeValue;
             if (amountDisp > 0) {
-                if (action === "BUY" && assetChanged === "QUOTE") rangeValue = 100 * value / amountDisp;
-                else if (action === "BUY" && assetChanged === "BASE") rangeValue = 100 * value * getActualPairPrice() / amountDisp;
-                else if (action === "SELL" && assetChanged === "BASE") rangeValue = 100 * value / amountDisp;
-                else if (action === "SELL" && assetChanged === "QUOTE") rangeValue = 100 * (value / getActualPairPrice()) / amountDisp;
+                if (action === "BUY" && assetChanged === "QUOTE") rangeValue = 100 * valueTrim / amountDisp;
+                else if (action === "BUY" && assetChanged === "BASE") rangeValue = 100 * valueTrim * getActualPairPrice() / amountDisp;
+                else if (action === "SELL" && assetChanged === "BASE") rangeValue = 100 * valueTrim / amountDisp;
+                else if (action === "SELL" && assetChanged === "QUOTE") rangeValue = 100 * (valueTrim / getActualPairPrice()) / amountDisp;
 
                 rangeValue = Math.round(100 * rangeValue) / 100;
             } else {
@@ -154,7 +155,7 @@ function BuyAndSell({ style = 1 }) {
         toast.show();
     }
 
-    const performTransaction = (paidAmount, action) => {
+    const performTransaction = async (paidAmount, action) => {
         const baseAsset = getBaseAsset();
         const quoteAsset = getQuoteAsset();
 
@@ -172,7 +173,7 @@ function BuyAndSell({ style = 1 }) {
             return;
         }
 
-        const transac = () => doTransaction(paidAmount, receivedAmount, comission, action);
+        const transac = async () => await doTransaction(paidAmount, receivedAmount, comission, action);
         if (style == 0) {
             if (action == "BUY")
                 showTradeConfirmationModal("¡ATENCIÓN!",
@@ -186,28 +187,36 @@ function BuyAndSell({ style = 1 }) {
         else transac();
     };
 
-    const doTransaction = (paidAmount, receivedAmount, comission, action) => {
-        tradeCoins(getActualPair().symbol, paidAmount, action);
+    const doTransaction = async (paidAmount, receivedAmount, comission, action) => {
+        const loadingScreen = document.getElementById("loading-screen");
 
-        if (action === "BUY") {
-            showTradeDoneToast(`Compra realizada con éxito`,
-                `Has comprado <b>${receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
-                </b> y has pagado <b> ${comission.toFixed(showQuoteDecimals)}${showQuoteAsset}</b> de comisión.`);
+        loadingScreen.style.display = "block";
+        const response = await doTrade(getActualPair().symbol, paidAmount, action);
+        loadingScreen.style.display = "none";
+
+        if (response.data.status === "1") {
+            if (action === "BUY") {
+                showTradeDoneToast(`Compra realizada con éxito`,
+                    `Has comprado <b>${receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                    </b> y has pagado <b> ${comission.toFixed(showQuoteDecimals)}${showQuoteAsset}</b> de comisión.`);
+            } else {
+                showTradeDoneToast(`Venta realizada con éxito`,
+                    `Has vendido <b>${paidAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                    </b> y has pagado <b>${comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
+            }
         } else {
-            showTradeDoneToast(`Venta realizada con éxito`,
-                `Has vendido <b>${paidAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
-                </b> y has pagado <b>${comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
+            console.log("Algo ha salido mal con el trade... (Hacer aqui un toast)");
         }
     }
 
-    const onBuy = () => {
+    const onBuy = async () => {
         const paidAmount = parseFloat(buyQuoteAssetInput);
-        performTransaction(paidAmount, "BUY");
+        await performTransaction(paidAmount, "BUY");
     };
 
-    const onSell = () => {
+    const onSell = async () => {
         const paidAmount = parseFloat(sellBaseAssetInput);
-        performTransaction(paidAmount, "SELL");
+        await performTransaction(paidAmount, "SELL");
     };
 
     const notLoggedButton =

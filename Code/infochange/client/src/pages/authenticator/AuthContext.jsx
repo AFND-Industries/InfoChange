@@ -76,6 +76,13 @@ export const AuthProvider = ({ children }) => {
         return response;
     }
 
+    async function trade(symbol, quantity, type) {
+        const response = await post("/trade?", { symbol: symbol, quantity: quantity, type: type })
+        if (response.data.status === "1") await doAuth();
+
+        return response;
+    };
+
     const doAction = async (func) => {
         let response;
 
@@ -96,12 +103,9 @@ export const AuthProvider = ({ children }) => {
     const doLogout = async () => await doAction(() => logout());
     const doCheckEmail = async (email) => await doAction(() => checkEmail(email));
     const doRegister = async (user) => await doAction(() => register(user));
+    const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
 
     const buyProduct = async (buy) => await post("/payment", buy);
-    const tradeCoins = async (symbol, quantity, type) => {
-        console.log(symbol, quantity, type);
-        await post("/trade?", { symbol: symbol, quantity: quantity, type: type })
-    };
 
     useEffect(() => {
         doAuth(); // Initial auth
@@ -120,9 +124,9 @@ export const AuthProvider = ({ children }) => {
                 doCheckEmail,
                 doLogin,
                 doLogout,
+                doTrade,
                 doRegister,
                 buyProduct,
-                tradeCoins
             }}
         >
             {children}
