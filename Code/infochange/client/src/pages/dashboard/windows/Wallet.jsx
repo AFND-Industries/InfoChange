@@ -16,41 +16,41 @@ export default function Wallet(props) {
     const coins =
         wallet !== undefined
             ? wallet.map((coin) => {
-                  const data = CoinsDataset.data[coin.coin][0];
-                  if (coin.coin !== "USDT") {
-                      const price = coinsInfo.find(
-                          (v) => v.symbol === `${coin.coin}USDT`
-                      );
-                      data.quantity = coin.quantity.toFixed(10);
-                      data.price = price
-                          ? coin.quantity * price.lastPrice
-                          : "?";
-                  } else {
-                      data.quantity = coin.quantity.toFixed(2);
-                      data.price = coin.quantity;
-                  }
+                const data = CoinsDataset.data[coin.coin][0];
+                if (coin.coin !== "USDT") {
+                    const price = coinsInfo.find(
+                        (v) => v.symbol === `${coin.coin}USDT`
+                    );
+                    data.quantity = coin.quantity.toFixed(8);
+                    data.price = price
+                        ? coin.quantity * price.lastPrice
+                        : "?";
+                } else {
+                    data.quantity = coin.quantity.toFixed(2);
+                    data.price = coin.quantity;
+                }
 
-                  return data;
-              })
+                return data;
+            })
             : [];
 
     return (
         <>
             <div className="container d-flex flex-column align-items-center py-3">
-                <h2>Tu saldo actual es</h2>
+                <h2>Balance</h2>
                 <div
-                    className="rounded-pill p-5 text-white mb-4"
+                    className="rounded-pill p-4 text-white mb-4"
                     style={{ backgroundColor: "#20c997", width: "fit-content" }}
                 >
                     <h1>
                         {coins
                             ? coins
-                                  .reduce(
-                                      (t, v) =>
-                                          t + (v.price === "?" ? 0 : v.price),
-                                      0
-                                  )
-                                  .toFixed(2)
+                                .reduce(
+                                    (t, v) =>
+                                        t + (v.price === "?" ? 0 : v.price),
+                                    0
+                                )
+                                .toFixed(2)
                             : 0}{" "}
                         $
                     </h1>
@@ -81,7 +81,7 @@ export default function Wallet(props) {
             <hr className="mx-4 my-2" />
             <div className="mx-4">
                 <h4 className="text-center text-body-secondary mb-3">
-                    Monedas adquiridas
+                    Tu cartera
                 </h4>
                 {coins.length === 0 ? (
                     <h5 className="text-center text-body-secondary mb-3">
@@ -119,7 +119,7 @@ export default function Wallet(props) {
                                             alt={coin.name}
                                         />
                                         <p className="card-text">{coin.name}</p>
-                                        <h5 className="card-title mt-0">
+                                        <h5 className="card-title mt-0 mb-1">
                                             {coin.quantity}{" "}
                                             {coin.symbol !== "USDT"
                                                 ? coin.symbol
@@ -127,7 +127,7 @@ export default function Wallet(props) {
                                         </h5>
                                         {coin.symbol !== "USDT" ? (
                                             <h6 className="text-secondary">
-                                                ~ {coin.price} $
+                                                ~{coin.price.toFixed(2)} $
                                             </h6>
                                         ) : undefined}
                                     </div>
