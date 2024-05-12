@@ -7,6 +7,8 @@ import { useAuth } from "../../authenticator/AuthContext";
 function BuyAndSell({ style = 1 }) {
     const navigate = useNavigate();
 
+    const MAXVALUE = 1000000000000;
+
     const { getActualPair, getActualPairPrice, getPair } = useTrading();
     const { getAuthStatus, getActualUserWallet, tradeCoins } = useAuth();
 
@@ -54,37 +56,35 @@ function BuyAndSell({ style = 1 }) {
     const [buyRangeValue, setBuyRangeValue] = useState(0);
     const [sellRangeValue, setSellRangeValue] = useState(0);
 
+    const countDecimals = (number) => {
+        const decimalIndex = number.indexOf('.');
+        return decimalIndex === -1 ? 0 : number.length - decimalIndex - 1;
+    }
 
     const updateInputValues = (value, setValueFunc, oppositeSetValueFunc, action, assetChanged) => {
-        const newValue = parseFloat(value);
+        const parsedValue = parseFloat(value);
 
-        if (!isNaN(newValue) && newValue > 0) {
-            setValueFunc(newValue);
-            const oppositeValue = assetChanged === "BASE" ? newValue * getActualPairPrice() : newValue / getActualPairPrice();
-            oppositeSetValueFunc(oppositeValue.toFixed(8));
+        if (value.length == 0 || (!isNaN(value) && parsedValue >= 0 && countDecimals(value) <= 8 && parsedValue <= MAXVALUE)) {
+            setValueFunc(value);
+            const oppositeValue = assetChanged === "BASE" ? value * getActualPairPrice() : value / getActualPairPrice();
+            oppositeSetValueFunc(value.length == 0 ? "" : oppositeValue.toFixed(8));
 
             const amountDisp = getWalletAmount(action === "BUY" ? getQuoteAsset() : getBaseAsset());
 
             let rangeValue;
             if (amountDisp > 0) {
-                if (action === "BUY" && assetChanged === "QUOTE") rangeValue = 100 * newValue / amountDisp;
-                else if (action === "BUY" && assetChanged === "BASE") rangeValue = 100 * newValue * getActualPairPrice() / amountDisp;
-                else if (action === "SELL" && assetChanged === "BASE") rangeValue = 100 * newValue / amountDisp;
-                else if (action === "SELL" && assetChanged === "QUOTE") rangeValue = 100 * (newValue / getActualPairPrice()) / amountDisp;
+                if (action === "BUY" && assetChanged === "QUOTE") rangeValue = 100 * value / amountDisp;
+                else if (action === "BUY" && assetChanged === "BASE") rangeValue = 100 * value * getActualPairPrice() / amountDisp;
+                else if (action === "SELL" && assetChanged === "BASE") rangeValue = 100 * value / amountDisp;
+                else if (action === "SELL" && assetChanged === "QUOTE") rangeValue = 100 * (value / getActualPairPrice()) / amountDisp;
 
                 rangeValue = Math.round(100 * rangeValue) / 100;
             } else {
                 rangeValue = 1000;
             }
 
-            if (action === "BUY") setBuyRangeValue(rangeValue);
-            else setSellRangeValue(rangeValue);
-        } else {
-            setValueFunc("");
-            oppositeSetValueFunc("");
-
-            if (action === "BUY") setBuyRangeValue(0);
-            else setSellRangeValue(0);
+            if (action === "BUY") setBuyRangeValue(value.length == 0 ? 0 : rangeValue);
+            else setSellRangeValue(value.length == 0 ? 0 : rangeValue);
         }
     };
 
@@ -99,8 +99,8 @@ function BuyAndSell({ style = 1 }) {
 
         setValueFunc(rangeValue);
 
-        if (action === "BUY") updateInputValues(newValue.toFixed(8), setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY", "QUOTE");
-        else updateInputValues(newValue.toFixed(8), setSellBaseAssetInput, setSellQuoteAssetInput, "SELL", "BASE")
+        if (action === "BUY") updateInputValues(newValue == 0 ? "" : newValue.toFixed(8), setBuyQuoteAssetInput, setBuyBaseAssetInput, "BUY", "QUOTE");
+        else updateInputValues(newValue == 0 ? "" : newValue.toFixed(8), setSellBaseAssetInput, setSellQuoteAssetInput, "SELL", "BASE")
     };
 
     const clearAmountInputs = () => {
@@ -162,7 +162,7 @@ function BuyAndSell({ style = 1 }) {
         const receivedAmount = (paidAmount - comission) * (action === "BUY" ? 1 / getActualPairPrice() : getActualPairPrice());
         const symbol = action === "BUY" ? quoteAsset : baseAsset;
 
-        if (getActualPairPrice() <= 0 || isNaN(receivedAmount) || isNaN(paidAmount)) {
+        if (getActualPairPrice() <= 0 || isNaN(receivedAmount) || isNaN(paidAmount) || paidAmount <= 0) {
             showJustCloseModal("Error", "El monto de la transacción introducido no es válido");
             return;
         }
