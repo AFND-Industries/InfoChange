@@ -1,5 +1,7 @@
 import React, { createContext, useContext } from "react";
+
 import axios from "axios"
+import { Cart } from "../types/payment";
 
 const APIContext = createContext({});
 
@@ -16,7 +18,7 @@ export const APIProvider = ({ children }) =>  {
             withCredentials: true,
         });
 
-    const buyProduct = async (buy : Object) => await post("/payment", buy);
+    const buyProduct = async (buy : Cart) => await post("/payment", buy);
 
     return (
         <APIContext.Provider value={{ buyProduct }}>
