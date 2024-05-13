@@ -50,10 +50,10 @@ export default function Profile(props) {
                     />
                 </div>
                 <div className="col-md-9 d-flex flex-column justify-content-center">
-                    <h2>{profile.username}</h2>
-                    <h4 className="text-body-secondary">
+                    <h2>
                         {profile.name} {profile.lastname}
-                    </h4>
+                    </h2>
+                    <h4 className="text-body-secondary">@{profile.username}</h4>
                 </div>
             </div>
             <hr className="mx-4 my-2" />
