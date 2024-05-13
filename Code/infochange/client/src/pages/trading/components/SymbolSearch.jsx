@@ -49,7 +49,7 @@ function SymbolSearch({ style = 0 }) {
                     onKeyPress={handleKeyPress}
                 />
             </div>
-            <div className="row border overflow-y-scroll mt-2 custom-scrollbar rounded" style={{ height: "50vh", overflowX: "hidden" }}>
+            <div className="row border border-4 overflow-y-scroll mt-2 custom-scrollbar rounded" style={{ height: "50vh", overflowX: "hidden" }}>
                 <div className="d-flex flex-column ps-0 pe-0">
                     <ul className="list-group list-group-flush">
                         <SymbolList
