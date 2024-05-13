@@ -386,6 +386,24 @@ app.post("/trade", (req, res) => {
                             db.query(query, (err, _) => {
                                 if (err) return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
 
+                                const currentDate = new Date();
+                                const year = currentDate.getFullYear();
+                                const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Agrega un cero inicial si es necesario
+                                const day = ('0' + currentDate.getDate()).slice(-2); // Agrega un cero inicial si es necesario
+                                const hours = ('0' + currentDate.getHours()).slice(-2); // Agrega un cero inicial si es necesario
+                                const minutes = ('0' + currentDate.getMinutes()).slice(-2); // Agrega un cero inicial si es necesario
+                                const seconds = ('0' + currentDate.getSeconds()).slice(-2); // Agrega un cero inicial si es necesario
+
+                                const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                                const historyQuery =
+                                    `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
+                                    (${req.session.user.ID}, '${symbolPriceObject.symbol}', '${type}', ${paidAmount.toFixed(8)}, ${receivedAmount.toFixed(8)}, ${comission.toFixed(8)}, '${formattedDate}', ${symbolPrice});`;
+
+                                db.query(historyQuery, (err, _) => {
+                                    if (err) return res.json(error("HISTORY_ERROR", "Se ha producido un error inesperado"));
+                                })
+
                                 return res.json({
                                     status: "1",
                                     comission: comission,
