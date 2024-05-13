@@ -21,6 +21,7 @@ export default function CoinInfo(props) {
   const [price, setPrice] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [activeNavItem, setActiveNavItem] = useState("");
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 990);
 
   const logos = [
     "bi bi-globe2",
@@ -102,6 +103,16 @@ export default function CoinInfo(props) {
       }
     };
 
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 990);
+      if (window.innerWidth < 990) {
+        const columnElement = document.querySelector(".col-lg-8");
+        columnElement.removeEventListener("scroll", handleScroll);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
     const throttledScrollHandler = throttle(handleScroll);
 
     const columnElement = document.querySelector(".col-lg-8");
@@ -116,7 +127,8 @@ export default function CoinInfo(props) {
     return () => {
       popoverList.map((popover) => popover.dispose());
       clearInterval(interval);
-      window.removeEventListener("scroll", handleScroll);
+      columnElement.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -215,8 +227,8 @@ export default function CoinInfo(props) {
   };
 
   const renderEtiquetas = () => {
-    if (coin.tags === undefined) return null;
-    if (coin.tags.length === 0) return null;
+    if (coin.tags === null || coin.tags === undefined || coin.tags.length === 0)
+      return null;
     if (coin.tags.length <= 3) {
       return coin.tags.map((tag, index) => {
         return (
@@ -316,10 +328,10 @@ export default function CoinInfo(props) {
 
           <div className="card">
             <div
-              className="card-body"
+              className="scroll card-body"
               style={{
-                overflowY: "auto",
-                maxHeight: "600px",
+                overflowY: isSmallScreen ? "visible" : "auto",
+                maxHeight: isSmallScreen ? "" : "475px",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
               }}
@@ -482,8 +494,8 @@ export default function CoinInfo(props) {
         <div
           className="col-lg-8"
           style={{
-            overflowY: "auto",
-            maxHeight: "600px",
+            overflowY: isSmallScreen ? "visible" : "auto",
+            maxHeight: isSmallScreen ? "" : "600px",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}
@@ -496,7 +508,11 @@ export default function CoinInfo(props) {
               backgroundColor: "white",
             }}
           >
-            <div data-bs-spy="scroll" data-bs-target=".bs-docs-sidebar">
+            <div
+              className={isSmallScreen ? "d-none" : ""}
+              data-bs-spy="scroll"
+              data-bs-target=".bs-docs-sidebar"
+            >
               <div className="bs-docs-sidebar">
                 <ul
                   className="nav nav-underline flex-row "
@@ -527,11 +543,14 @@ export default function CoinInfo(props) {
               </div>
             </div>
           </div>
-          <section id="one">{symbolOverview}</section>
+          <section id="one">
+            <h3 className={isSmallScreen ? "my-4" : "d-none"}>Gráfico</h3>
+            {symbolOverview}
+          </section>
           <br></br>
           <section id="two">
             <h3>Noticias</h3>
-            <div className="row my-4">
+            <div className="row my-4 mx-1">
               <Timeline
                 colorTheme="light"
                 feedMode="symbol"
