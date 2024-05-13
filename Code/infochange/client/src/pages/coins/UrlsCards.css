@@ -1,0 +1,21 @@
+@media(max-width: 500px) {
+  .url-card .url-name {
+    display: none;
+  }
+
+  .url-card {
+    justify-content: center;
+  }
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+.nav-link {
+    color: black;
+  }
+  
+  .nav-link.active {
+    color: red;
+  }
