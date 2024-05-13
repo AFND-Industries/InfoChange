@@ -12,6 +12,10 @@ function Login() {
     const { doLogin } = useAuth();
     const navigate = useNavigate();
 
+    onkeydown = (e) => {
+        if (e.code === "Enter") onLogin();
+    };
+
     const user = useRef("");
     const pass = useRef("");
 
@@ -59,9 +63,9 @@ function Login() {
     return (
         <div
             className="anim_gradient"
-        // style={{
-        //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
-        // }}
+            // style={{
+            //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
+            // }}
         >
             <div className="container-fluid vh-100 ">
                 <div className="row align-items-center justify-content-center vh-100">
@@ -85,10 +89,6 @@ function Login() {
                                             onChange={(e) =>
                                                 handleUserChange(e.target.value)
                                             }
-                                            onKeyPress={(e) => {
-                                                if (e.code === "Enter")
-                                                    onLogin()
-                                            }}
                                         />
                                     </div>
                                 </div>
@@ -103,10 +103,6 @@ function Login() {
                                                 ref={pass}
                                                 className="form-control"
                                                 placeholder="Tu contraseña..."
-                                                onKeyPress={(e) => {
-                                                    if (e.code === "Enter")
-                                                        onLogin()
-                                                }}
                                             />
                                             <button
                                                 type="button"
