@@ -386,7 +386,12 @@ app.post("/trade", (req, res) => {
                             db.query(query, (err, _) => {
                                 if (err) return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
 
-                                return res.json({ status: "1" });
+                                return res.json({
+                                    status: "1",
+                                    comission: comission,
+                                    paidAmount: paidAmount,
+                                    receivedAmount: receivedAmount
+                                });
                             });
                         }
                     );

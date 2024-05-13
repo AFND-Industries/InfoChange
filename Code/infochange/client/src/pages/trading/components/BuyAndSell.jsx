@@ -194,18 +194,18 @@ function BuyAndSell({ style = 1 }) {
         const response = await doTrade(getActualPair().symbol, paidAmount, action);
         loadingScreen.style.display = "none";
 
-        if (response.data.status === "1") {
+        if (response !== undefined && response.data.status === "1") {
             if (action === "BUY") {
                 showTradeDoneToast(`Compra realizada con éxito`,
-                    `Has comprado <b>${receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
-                    </b> y has pagado <b> ${comission.toFixed(showQuoteDecimals)}${showQuoteAsset}</b> de comisión.`);
+                    `Has comprado <b>${response.data.receivedAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${response.data.paidAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                    </b> y has pagado <b> ${response.data.comission.toFixed(showQuoteDecimals)}${showQuoteAsset}</b> de comisión.`);
             } else {
                 showTradeDoneToast(`Venta realizada con éxito`,
-                    `Has vendido <b>${paidAmount.toFixed(8)} ${showBaseAsset}</b> por <b>${receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
-                    </b> y has pagado <b>${comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
+                    `Has vendido <b>${response.data.paidAmount} ${showBaseAsset}</b> por <b>${response.data.receivedAmount.toFixed(showQuoteDecimals)}${showQuoteAsset}
+                    </b> y has pagado <b>${response.data.comission.toFixed(8)} ${showBaseAsset}</b> de comisión.`);
             }
         } else {
-            console.log("Algo ha salido mal con el trade... (Hacer aqui un toast)");
+            console.log("Algo ha salido mal con el trade... (Hacer aqui un toast)", response);
         }
     }
 
