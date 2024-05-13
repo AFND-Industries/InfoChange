@@ -346,7 +346,10 @@ app.get("/trade_history", (req, res) => {
             tradeHistory.push(trade);
         });
 
-        res.json(tradeHistory);
+        res.json({
+            status: "1",
+            tradeHistory: tradeHistory
+        });
     });
 });
 

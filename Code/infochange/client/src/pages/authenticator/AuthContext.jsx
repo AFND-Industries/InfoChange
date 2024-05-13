@@ -103,8 +103,10 @@ export const AuthProvider = ({ children }) => {
     const doLogout = async () => await doAction(() => logout());
     const doCheckEmail = async (email) => await doAction(() => checkEmail(email));
     const doRegister = async (user) => await doAction(() => register(user));
-    const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
 
+    // meter en apicontext
+    const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
+    const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
     const buyProduct = async (buy) => await post("/payment", buy);
 
     useEffect(() => {
@@ -127,6 +129,7 @@ export const AuthProvider = ({ children }) => {
                 doTrade,
                 doRegister,
                 buyProduct,
+                doTradeHistory
             }}
         >
             {children}

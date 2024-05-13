@@ -24,7 +24,6 @@ const TradingContext = createContext();
 
 const LOSIGUIENTE = 1;
 
-// mirar si se puede cambiar la barra derecha del buscar par
 // HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 // HISTORIAL DE TRANSACCIONES
 // se puede poner a parte de en dashboard en trading un boton para ver el historial
