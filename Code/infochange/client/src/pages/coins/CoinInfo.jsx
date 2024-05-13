@@ -197,7 +197,7 @@ export default function CoinInfo(props) {
     return (
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{coin.name + "etiquetas"}</Modal.Title>
+          <Modal.Title>{coin.name + " etiquetas"}</Modal.Title>
         </Modal.Header>
         <Modal.Body
           style={{ maxHeight: "calc(100vh - 210px)", overflowY: "auto" }}
