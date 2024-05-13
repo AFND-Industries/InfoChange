@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { PersonFill, Wallet2 } from "react-bootstrap-icons";
+import { PersonFill, Wallet2, LayoutTextSidebar } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
 import History from "./windows/History";
@@ -68,7 +68,7 @@ function Dashboard() {
                                 } d-flex align-items-center`}
                             onClick={() => setPage(2)}
                         >
-                            <Wallet2 className="me-3" />
+                            <LayoutTextSidebar className="me-3" />
                             Historial
                         </button>
                     </div>
