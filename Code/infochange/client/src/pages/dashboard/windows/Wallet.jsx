@@ -11,27 +11,31 @@ export default function Wallet(props) {
 
     const { getCoins } = useCoins();
 
+    onkeydown = (event) => {
+        if (event.key === "Enter") addBalance(balance.current.value, navigate);
+    };
+
     const coinsInfo = getCoins();
 
     const coins =
         wallet !== undefined
             ? wallet.map((coin) => {
-                const data = CoinsDataset.data[coin.coin][0];
-                if (coin.coin !== "USDT") {
-                    const price = coinsInfo.find(
-                        (v) => v.symbol === `${coin.coin}USDT`
-                    );
-                    data.quantity = coin.quantity.toFixed(8);
-                    data.price = price
-                        ? coin.quantity * price.lastPrice
-                        : "?";
-                } else {
-                    data.quantity = coin.quantity.toFixed(8);
-                    data.price = coin.quantity;
-                }
+                  const data = CoinsDataset.data[coin.coin][0];
+                  if (coin.coin !== "USDT") {
+                      const price = coinsInfo.find(
+                          (v) => v.symbol === `${coin.coin}USDT`
+                      );
+                      data.quantity = coin.quantity.toFixed(8);
+                      data.price = price
+                          ? coin.quantity * price.lastPrice
+                          : "?";
+                  } else {
+                      data.quantity = coin.quantity.toFixed(8);
+                      data.price = coin.quantity;
+                  }
 
-                return data;
-            })
+                  return data;
+              })
             : [];
 
     return (
@@ -45,12 +49,12 @@ export default function Wallet(props) {
                     <h1>
                         {coins
                             ? coins
-                                .reduce(
-                                    (t, v) =>
-                                        t + (v.price === "?" ? 0 : v.price),
-                                    0
-                                )
-                                .toFixed(2)
+                                  .reduce(
+                                      (t, v) =>
+                                          t + (v.price === "?" ? 0 : v.price),
+                                      0
+                                  )
+                                  .toFixed(2)
                             : 0}{" "}
                         $
                     </h1>
@@ -62,10 +66,6 @@ export default function Wallet(props) {
                                 ref={balance}
                                 type="number"
                                 className="form-control"
-                                onKeyPress={(event) => {
-                                    if (event.key === "Enter")
-                                        addBalance(balance.current.value, navigate)
-                                }}
                             />
                             <span className="input-group-text">$</span>
                         </div>
@@ -124,8 +124,7 @@ export default function Wallet(props) {
                                         />
                                         <p className="card-text">{coin.name}</p>
                                         <h5 className="card-title mt-0 mb-1">
-                                            {coin.quantity}{" "}
-                                            {coin.symbol}
+                                            {coin.quantity} {coin.symbol}
                                         </h5>
                                         <h6 className="text-secondary">
                                             ~{coin.price.toFixed(2)} $
