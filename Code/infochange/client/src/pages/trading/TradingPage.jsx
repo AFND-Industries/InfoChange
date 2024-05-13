@@ -32,7 +32,7 @@ function TradingPage() {
       <TradeConfirmationModal />
       <JustCloseModal />
 
-      <RotatingMarquee display={tradingMode == 1} />
+      <RotatingMarquee display={tradingMode == 1} floatingBottom={true} />
 
       <div className="container mt-2 mb-5 d-flex flex-column">
         <div className="row">

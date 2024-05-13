@@ -20,21 +20,17 @@ const TradingContext = createContext();
 
 // MOSTRAR EN TRADING ANTES Q HACER FAVORITOS LA LISTA DE MONEDAS QUE TIENES
 // HACER PANEL PARA ADMIN CON TODA LA COMISION QUE HA GANAO UNA TABLA ADMIN ALGO ASI WAPO WAPO
+// cambiar modo, cambiar grafico, posicion del marquee configurable
 
 const LOSIGUIENTE = 1;
-// quitar lo del balance total y ver donde ponerlo
-// el footer y welcome q este en condiciones
-// poner compra minima si eso y maxima
-// poner el marquee abajo position fixed a ve que tal queda
-// poner modo en dashboard
+
 // que el backend devuelva los datos lo pagado la comision y demas y el tradetoast se pueda hacer rojo y verde para por si sale bien
 // o por si sale mal
-// que cuando no haya nada escrito el vas a recibir y comision no salga pero sin cambiar el tamaño de la pantalla
 // mirar si se puede cambiar la barra derecha del buscar par
-// meter cambiar modo en dashboard
 // HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 // HISTORIAL DE TRANSACCIONES
 // se puede poner a parte de en dashboard en trading un boton para ver el historial
+// retirar saldo
 
 export const TradingProvider = ({ children }) => {
     const params = useParams();

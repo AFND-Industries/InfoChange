@@ -11,7 +11,7 @@ const defaultPairs = [
     "DOTUSDT",
     "VITEUSDT"]
 
-function RotatingMarquee({ display = true, pairs = [] }) {
+function RotatingMarquee({ display = true, pairs = [], floatingBottom = false }) {
     const { getPair, getTokenInfo } = useTrading();
     const actualPairs = pairs.length == 0 ? defaultPairs : pairs;
 
@@ -31,8 +31,11 @@ function RotatingMarquee({ display = true, pairs = [] }) {
         );
     })
 
+
+
     return (
-        <div className="rotating-marquee bg-secondary" style={{ display: (display ? "block" : "none") }}>
+        <div className={(floatingBottom ? "floating-bottom " : "") + "rotating-marquee bg-secondary"}
+            style={{ display: (display ? "block" : "none") }}>
             {marquee}
         </div >
     );
