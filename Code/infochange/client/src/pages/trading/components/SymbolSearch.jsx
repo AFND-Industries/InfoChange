@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
 import { useTrading } from "../context/TradingContext";
 import SymbolList from "./SymbolList";
+import "./SymbolSearch.css"; // Archivo CSS para estilos personalizados
 
 const topPairs = [
     "BTCUSDT",
@@ -15,8 +15,6 @@ const topPairs = [
     "AVAXUSDT",
     "TRXUSDT"
 ]
-
-// meter a parte de TOP (que es como lo que esta puesto, que son los marqueePairs pero mejor poner el top 10) un favoritos
 
 function SymbolSearch({ style = 0 }) {
     const { filterPairs, setActualPair, getActualPair } = useTrading();
@@ -51,7 +49,7 @@ function SymbolSearch({ style = 0 }) {
                     onKeyPress={handleKeyPress}
                 />
             </div>
-            <div className="row border overflow-y-scroll mt-2 border border-4 rounded" style={{ height: "50vh", overflowX: "hidden" }}>
+            <div className="row border overflow-y-scroll mt-2 custom-scrollbar rounded" style={{ height: "50vh", overflowX: "hidden" }}>
                 <div className="d-flex flex-column ps-0 pe-0">
                     <ul className="list-group list-group-flush">
                         <SymbolList
