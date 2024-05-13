@@ -523,7 +523,7 @@ export default function CoinInfo(props) {
                 market="crypto"
                 symbol={coin.symbol + "USD"}
                 locale="es"
-                height={1000}
+                height={600}
                 width="100%"
               ></Timeline>
             </div>
