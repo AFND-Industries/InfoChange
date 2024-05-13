@@ -74,28 +74,12 @@ export default function Header() {
 
                                     <ul className="dropdown-menu">
                                         <li>
-                                            <a
+                                            <Link
+                                                to={"/dashboard"}
                                                 className="dropdown-item"
-                                                href="#"
                                             >
                                                 Panel de control
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                className="dropdown-item"
-                                                href="#"
-                                            >
-                                                Another action
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                className="dropdown-item"
-                                                href="#"
-                                            >
-                                                Something else here
-                                            </a>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -103,7 +87,7 @@ export default function Header() {
                                     className="btn btn-primary"
                                     onClick={doLogout}
                                 >
-                                    Salir
+                                    Cerrar Sesión
                                 </button>
                             </div>
                         )}
