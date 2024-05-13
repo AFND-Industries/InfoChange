@@ -24,8 +24,6 @@ const TradingContext = createContext();
 
 const LOSIGUIENTE = 1;
 
-// que el backend devuelva los datos lo pagado la comision y demas y el tradetoast se pueda hacer rojo y verde para por si sale bien
-// o por si sale mal
 // mirar si se puede cambiar la barra derecha del buscar par
 // HACER APICONTEXT Y METER AHI EL tradeCoins y el buyProduct de toni ademas de lo de getCoins de roman y el getPrices mio
 // HISTORIAL DE TRANSACCIONES

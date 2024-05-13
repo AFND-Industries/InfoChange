@@ -232,7 +232,7 @@ function BuyAndSell({ style = 1 }) {
         <>
             <div className="col-md border border-4 rounded me-1">
                 <div className="mt-1 mb-1">
-                    Disponible: {trunc(getWalletAmount(getQuoteAsset()), showQuoteDecimals)}{showQuoteAsset}
+                    Disponible: {trunc(getWalletAmount(getQuoteAsset()), showQuoteDecimals).toFixed(showQuoteDecimals)}{showQuoteAsset}
                 </div>
                 <div className="input-group input-group-sm">
                     <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
@@ -256,7 +256,7 @@ function BuyAndSell({ style = 1 }) {
             </div>
             <div className="col-md border border-4 rounded ms-2">
                 <div className="mt-1 mb-1">
-                    Disponible: {trunc(getWalletAmount(getBaseAsset()), 8)} {showBaseAsset}
+                    Disponible: {trunc(getWalletAmount(getBaseAsset()), 8).toFixed(8)} {showBaseAsset}
                 </div>
                 <div>
                     <div className="input-group input-group-sm">
