@@ -10,6 +10,7 @@ import { useCoins } from "./CoinsAPI";
 import Modal from "react-bootstrap/Modal";
 
 import "./UrlsCards.css";
+import { Button } from "primereact/button";
 
 export default function CoinInfo(props) {
   const { coin, key } = props;
@@ -275,6 +276,10 @@ export default function CoinInfo(props) {
     }
   };
 
+  const onClickTrading = () => {
+    navigate("/trading/" + coin.symbol + "USDT");
+  };
+
   return (
     <div
       className="container-fluid mt-2 mb-5 d-flex flex-column"
@@ -282,12 +287,22 @@ export default function CoinInfo(props) {
       id="container-coin-info"
     >
       <div className="row mb-4 mx-3 text-secondary">
-        <div className="col-12">
-          <span style={{ cursor: "pointer" }} onClick={goBack}>
-            Monedas &ensp;
-          </span>
-          <i class="bi bi-chevron-right"></i> &ensp;
-          <span className="text-dark">{coin.name}</span>
+        <div className="col-12 d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center">
+            <span style={{ cursor: "pointer" }} onClick={goBack}>
+              Monedas &ensp;
+            </span>
+            <i class="bi bi-chevron-right"></i> &ensp;
+            <span className="text-dark">{coin.name}</span>
+          </div>
+          <div className="mt-2 d-flex align-items-center">
+            <button
+              className="btn btn-outline-primary rounded h-25"
+              onClick={onClickTrading}
+            >
+              Ir a Trading{" "}
+            </button>
+          </div>
         </div>
       </div>
       <div className="row mx-3">
