@@ -64,28 +64,47 @@ export default function CoinInfo(props) {
       return new bootstrap.Popover(popoverTriggerEl);
     });
 
+    const throttle = (callback, delay = 16) => {
+      let lastCall = 0;
+      return function (...args) {
+        const now = new Date().getTime();
+        if (now - lastCall < delay) {
+          return;
+        }
+        lastCall = now;
+        callback(...args);
+      };
+    };
+
     const handleScroll = () => {
-      const sections = document.querySelectorAll("section");
-      const scrollPosition = document.querySelector(".col-lg-8").scrollTop;
-      console.log(activeNavItem);
+      const columnElement = document.querySelector(".col-lg-8");
+      const scrollPosition = columnElement.scrollTop;
+      const sections = document.querySelectorAll(".col-lg-8 > section");
+
+      let activeSection = null;
 
       sections.forEach((section) => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
+        const sectionMid = sectionTop + sectionHeight / 2;
 
         if (
-          scrollPosition >= sectionTop &&
-          scrollPosition < sectionTop + sectionHeight
+          scrollPosition >= sectionTop - sectionTop / 3 &&
+          scrollPosition < sectionMid + sectionHeight / 2
         ) {
-          setActiveNavItem(section.id);
+          activeSection = section;
         }
       });
+
+      if (activeSection) {
+        setActiveNavItem(activeSection.id);
+      }
     };
 
-    const columnElement = document.querySelector(".col-lg-8");
-    columnElement.addEventListener("scroll", handleScroll);
+    const throttledScrollHandler = throttle(handleScroll);
 
-    window.addEventListener("scroll", handleScroll);
+    const columnElement = document.querySelector(".col-lg-8");
+    columnElement.addEventListener("scroll", throttledScrollHandler);
 
     fetchPrice();
     const interval = setInterval(async () => {
@@ -486,16 +505,6 @@ export default function CoinInfo(props) {
                       }`}
                       href="#two"
                     >
-                      Mercado
-                    </a>
-                  </li>
-                  <li className={`nav-item `}>
-                    <a
-                      className={`nav-link ${
-                        activeNavItem === "three" && "active"
-                      }`}
-                      href="#three"
-                    >
                       Noticias
                     </a>
                   </li>
@@ -506,153 +515,18 @@ export default function CoinInfo(props) {
           <section id="one">{symbolOverview}</section>
           <br></br>
           <section id="two">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quae et
-            laboriosam beatae ducimus laudantium error aspernatur dolore
-            impedit, quas labore eligendi molestias eaque recusandae consequatur
-            fugiat exercitationem asperiores magnam eos! Lorem ipsum dolor sit,
-            amet consectetur adipisicing elit. Nobis dolor velit reprehenderit!
-            Hic maiores in quaerat quasi soluta nulla aut consequatur. Eligendi
-            provident delectus, voluptatibus error voluptatum harum eum
-            doloremque. Lorem ipsum dolor, sit amet consectetur adipisicing
-            elit. Cumque, corrupti molestiae sed voluptatem optio vitae nostrum
-            ab dolorum commodi, rem excepturi beatae praesentium consequuntur
-            voluptate sunt possimus. Natus, numquam deserunt. Lorem ipsum dolor
-            sit amet consectetur adipisicing elit. Perspiciatis eius cupiditate
-            pariatur ab, fuga commodi. Quo omnis aliquam deleniti blanditiis! In
-            quo incidunt asperiores sit nisi ea. Optio, nisi omnis? Lorem ipsum
-            dolor sit amet consectetur adipisicing elit. Sunt recusandae atque
-            architecto ut laborum amet accusantium similique voluptatum deserunt
-            eos, aut, provident quaerat iure? Rem quis reiciendis repudiandae
-            commodi necessitatibus. Lorem ipsum dolor sit amet consectetur,
-            adipisicing elit. Atque minima exercitationem, voluptatibus ab cum
-            obcaecati et numquam dolores excepturi temporibus nam, dolor, quasi
-            iste tempora reiciendis dolore quae rerum voluptates? Lorem, ipsum
-            dolor sit amet consectetur adipisicing elit. Facere esse minus
-            eveniet, laudantium cum facilis placeat aliquam dolores rerum iure?
-            Sunt, saepe laboriosam? Corrupti officia quas voluptatem, reiciendis
-            illum alias. Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Dolorem, magnam recusandae. Hic eveniet sit neque. Omnis sint
-            ipsam, iusto laudantium et assumenda, placeat doloremque vitae cum
-            dolorem sed minus quasi? Lorem ipsum dolor sit, amet consectetur
-            adipisicing elit. Facere delectus eveniet quas minus animi. Maxime,
-            obcaecati voluptatem quis iusto perferendis id nemo similique porro
-            cumque eum unde, quibusdam, perspiciatis illum. Lorem ipsum dolor
-            sit amet consectetur adipisicing elit. Quidem nobis reprehenderit,
-            sed ut quasi aliquid accusamus necessitatibus exercitationem
-            repudiandae magni neque dicta sequi beatae omnis, in molestias
-            incidunt nisi quos! Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Earum doloremque, iste exercitationem asperiores
-            quia quisquam magni eaque ea, vitae debitis quas quo quibusdam
-            obcaecati quam corporis. Quaerat ipsam modi accusamus. Lorem ipsum
-            dolor sit amet consectetur adipisicing elit. Placeat saepe voluptas
-            deserunt eos nobis minima exercitationem ea explicabo dolor! Vel
-            rerum aperiam, aliquid officiis ullam perspiciatis pariatur
-            architecto quibusdam quas. Lorem, ipsum dolor sit amet consectetur
-            adipisicing elit. Ratione praesentium, accusamus rem dolore tempore
-            eligendi quo ea, magni placeat laudantium vel dolor exercitationem
-            et, quis incidunt enim. Nobis, tempora omnis? Lorem ipsum dolor sit
-            amet consectetur, adipisicing elit. Laudantium soluta cum optio ad
-            cumque quaerat, numquam recusandae id voluptatum, perferendis earum
-            omnis odit dignissimos ratione atque dolore veniam. Quidem, aperiam!
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia,
-            harum quam architecto aliquid incidunt doloremque suscipit culpa
-            autem alias! Est distinctio maxime commodi tenetur veritatis. Optio
-            assumenda harum sequi sint! Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Sint, iure? Voluptatum id, consectetur excepturi
-            eaque, distinctio autem fuga magni, suscipit beatae deleniti impedit
-            optio est et deserunt rerum laboriosam ipsa. Lorem ipsum dolor sit
-            amet consectetur, adipisicing elit. Tempore, corporis! Consequatur
-            provident enim soluta exercitationem voluptatibus officiis numquam
-            aperiam ratione quibusdam optio. Molestiae, officiis. Veniam laborum
-            tenetur nihil officiis dolorem! Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Consequatur laboriosam esse reiciendis
-            fugiat omnis at voluptatem cumque temporibus tempora, beatae
-            delectus nulla odit autem corporis possimus vel libero corrupti
-            vero? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
-            tempore illo unde molestias repellendus, enim, totam placeat sint ut
-            doloribus omnis. At esse a mollitia asperiores error itaque illum
-            ipsum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Molestiae quos atque quam quas hic nulla consequuntur voluptatum ut
-            vero, numquam architecto at maiores iusto ea adipisci unde voluptate
-            impedit doloribus? Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Dolorem culpa minima alias. Eveniet porro nam hic
-            atque adipisci tenetur delectus ullam ut quia unde, nihil libero
-            facere dolor omnis sint? Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Minus ducimus consequuntur voluptatem, est at in
-            reprehenderit voluptas consequatur nisi aliquid mollitia laborum
-            ullam doloribus et molestiae sapiente corrupti blanditiis vel?
-          </section>
-          <br></br>
-          <section id="three">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis
-            dolor velit reprehenderit! Hic maiores in quaerat quasi soluta nulla
-            aut consequatur. Eligendi provident delectus, voluptatibus error
-            voluptatum harum eum doloremque. Lorem ipsum dolor, sit amet
-            consectetur adipisicing elit. Cumque, corrupti molestiae sed
-            voluptatem optio vitae nostrum ab dolorum commodi, rem excepturi
-            beatae praesentium consequuntur voluptate sunt possimus. Natus,
-            numquam deserunt. Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Perspiciatis eius cupiditate pariatur ab, fuga commodi. Quo
-            omnis aliquam deleniti blanditiis! In quo incidunt asperiores sit
-            nisi ea. Optio, nisi omnis? Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Sunt recusandae atque architecto ut laborum amet
-            accusantium similique voluptatum deserunt eos, aut, provident
-            quaerat iure? Rem quis reiciendis repudiandae commodi
-            necessitatibus. Lorem ipsum dolor sit amet consectetur, adipisicing
-            elit. Atque minima exercitationem, voluptatibus ab cum obcaecati et
-            numquam dolores excepturi temporibus nam, dolor, quasi iste tempora
-            reiciendis dolore quae rerum voluptates? Lorem, ipsum dolor sit amet
-            consectetur adipisicing elit. Facere esse minus eveniet, laudantium
-            cum facilis placeat aliquam dolores rerum iure? Sunt, saepe
-            laboriosam? Corrupti officia quas voluptatem, reiciendis illum
-            alias. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Dolorem, magnam recusandae. Hic eveniet sit neque. Omnis sint ipsam,
-            iusto laudantium et assumenda, placeat doloremque vitae cum dolorem
-            sed minus quasi? Lorem ipsum dolor sit, amet consectetur adipisicing
-            elit. Facere delectus eveniet quas minus animi. Maxime, obcaecati
-            voluptatem quis iusto perferendis id nemo similique porro cumque eum
-            unde, quibusdam, perspiciatis illum. Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Quidem nobis reprehenderit, sed ut
-            quasi aliquid accusamus necessitatibus exercitationem repudiandae
-            magni neque dicta sequi beatae omnis, in molestias incidunt nisi
-            quos! Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-            doloremque, iste exercitationem asperiores quia quisquam magni eaque
-            ea, vitae debitis quas quo quibusdam obcaecati quam corporis.
-            Quaerat ipsam modi accusamus. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Placeat saepe voluptas deserunt eos nobis minima
-            exercitationem ea explicabo dolor! Vel rerum aperiam, aliquid
-            officiis ullam perspiciatis pariatur architecto quibusdam quas.
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ratione
-            praesentium, accusamus rem dolore tempore eligendi quo ea, magni
-            placeat laudantium vel dolor exercitationem et, quis incidunt enim.
-            Nobis, tempora omnis? Lorem ipsum dolor sit amet consectetur,
-            adipisicing elit. Laudantium soluta cum optio ad cumque quaerat,
-            numquam recusandae id voluptatum, perferendis earum omnis odit
-            dignissimos ratione atque dolore veniam. Quidem, aperiam! Lorem
-            ipsum dolor sit amet, consectetur adipisicing elit. Officia, harum
-            quam architecto aliquid incidunt doloremque suscipit culpa autem
-            alias! Est distinctio maxime commodi tenetur veritatis. Optio
-            assumenda harum sequi sint! Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Sint, iure? Voluptatum id, consectetur excepturi
-            eaque, distinctio autem fuga magni, suscipit beatae deleniti impedit
-            optio est et deserunt rerum laboriosam ipsa. Lorem ipsum dolor sit
-            amet consectetur, adipisicing elit. Tempore, corporis! Consequatur
-            provident enim soluta exercitationem voluptatibus officiis numquam
-            aperiam ratione quibusdam optio. Molestiae, officiis. Veniam laborum
-            tenetur nihil officiis dolorem! Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Consequatur laboriosam esse reiciendis
-            fugiat omnis at voluptatem cumque temporibus tempora, beatae
-            delectus nulla odit autem corporis possimus vel libero corrupti
-            vero? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
-            tempore illo unde molestias repellendus, enim, totam placeat sint ut
-            doloribus omnis. At esse a mollitia asperiores error itaque illum
-            ipsum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Molestiae quos atque quam quas hic nulla consequuntur voluptatum ut
-            vero, numquam architecto at maiores iusto ea adipisci unde voluptate
-            impedit doloribus? Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Dolorem culpa minima alias. Eveniet porro nam hic
-            atque adipisci tenetur delectus ullam ut quia unde, nihil libero
-            facere dolor omnis sint? Lorem{" "}
+            <h3>Noticias</h3>
+            <div className="row my-4">
+              <Timeline
+                colorTheme="light"
+                feedMode="symbol"
+                market="crypto"
+                symbol={coin.symbol + "USD"}
+                locale="es"
+                height={1000}
+                width="100%"
+              ></Timeline>
+            </div>
           </section>
         </div>
       </div>
