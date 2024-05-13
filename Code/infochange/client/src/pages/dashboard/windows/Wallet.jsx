@@ -26,7 +26,7 @@ export default function Wallet(props) {
                         ? coin.quantity * price.lastPrice
                         : "?";
                 } else {
-                    data.quantity = coin.quantity.toFixed(2);
+                    data.quantity = coin.quantity.toFixed(8);
                     data.price = coin.quantity;
                 }
 
@@ -121,15 +121,11 @@ export default function Wallet(props) {
                                         <p className="card-text">{coin.name}</p>
                                         <h5 className="card-title mt-0 mb-1">
                                             {coin.quantity}{" "}
-                                            {coin.symbol !== "USDT"
-                                                ? coin.symbol
-                                                : "$"}
+                                            {coin.symbol}
                                         </h5>
-                                        {coin.symbol !== "USDT" ? (
-                                            <h6 className="text-secondary">
-                                                ~{coin.price.toFixed(2)} $
-                                            </h6>
-                                        ) : undefined}
+                                        <h6 className="text-secondary">
+                                            ~{coin.price.toFixed(2)} $
+                                        </h6>
                                     </div>
                                 </div>
                             </div>
