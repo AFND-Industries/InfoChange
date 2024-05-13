@@ -28,4 +28,19 @@ table cartera (
     coin varchar(4) not null,
     quantity double not null,
     constraint cartera_usuario_fk foreign key (user) references usuario (ID)
+)
+
+CREATE TABLE `trade_history` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user` int NOT NULL,
+  `symbol` varchar(64) NOT NULL,
+  `type` varchar(32) NOT NULL,
+  `paid_amount` double NOT NULL,
+  `amount_received` double NOT NULL,
+  `comission` double NOT NULL,
+  `date` datetime NOT NULL,
+  `price` double NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `userfk_idx` (`user`),
+  CONSTRAINT `userfk` FOREIGN KEY (`user`) REFERENCES `usuario` (`ID`)
 );

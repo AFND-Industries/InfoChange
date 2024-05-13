@@ -62,6 +62,10 @@ export default function Wallet(props) {
                                 ref={balance}
                                 type="number"
                                 className="form-control"
+                                onKeyPress={(event) => {
+                                    if (event.key === "Enter")
+                                        addBalance(balance.current.value, navigate)
+                                }}
                             />
                             <span className="input-group-text">$</span>
                         </div>

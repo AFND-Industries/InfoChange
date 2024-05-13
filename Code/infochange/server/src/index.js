@@ -323,6 +323,34 @@ app.get("/wallet", (req, res) => {
     }
 });
 
+app.get("/trade_history", (req, res) => {
+    if (!req.session.user) {
+        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+    }
+
+    const query = `SELECT symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${req.session.user.ID};`;
+    db.query(query, (err, result) => {
+        if (err) return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+
+        const tradeHistory = [];
+        result.forEach(row => {
+            const trade = {
+                symbol: row.symbol,
+                type: row.type,
+                paid_amount: row.paid_amount,
+                amount_received: row.amount_received,
+                comission: row.comission,
+                date: row.date,
+                price: row.price
+            };
+            tradeHistory.push(trade);
+        });
+
+        res.json(tradeHistory);
+    });
+});
+
+
 app.post("/trade", (req, res) => {
     if (!req.session.user) {
         return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
