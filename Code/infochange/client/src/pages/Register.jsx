@@ -1,6 +1,6 @@
 import { Link, redirect, useNavigate } from "react-router-dom";
 import Countries from "./../assets/countries.json";
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import "./login.css";
 import Users from "./../data/users.json";
 import { useAuth } from "./authenticator/AuthContext";
@@ -75,18 +75,19 @@ export default function Register() {
       return true;
     }
   };
-  let values1;
-  let values2;
-  let values3;
-  let res1;
-  let res2;
-  let res3;
+  const [values1, setValues1] = useState(null);
+  const [values2, setValues2] = useState(null);
+  const [values3, setValues3] = useState(null);
 
-  const registerUser = async () => {
-    let user = Object.assign({}, res1, res2, res3);
-    console.log(res1);
-    console.log(res2);
-    console.log(res3);
+  useEffect(() => {
+    if (values1 !== null && values2 !== null && values3 !== null) {
+      // Todas las variables están listas, puedes llamar a registerUser con los valores actualizados
+      registerUser(values1, values2, values3);
+    }
+  }, [values1, values2, values3]);
+
+  const registerUser = async (values1, values2, values3) => {
+    let user = Object.assign({}, values1, values2, values3);
     console.log(user);
 
     const response = await doRegister(user);
@@ -106,7 +107,6 @@ export default function Register() {
     //   setError("Error desconocido (por ahora)");
     // }
   };
-
   const { Formik } = formik;
   let emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<div>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -167,22 +167,17 @@ export default function Register() {
   const handleShow = () => setShow(true);
 
   const handleNext = (values) => {
+    console.log(values);
+    console.log(activeStep);
     if (activeStep == 0) {
-      values1 = { ...values };
-      res1 = values1;
+      setValues1({ ...values });
     }
     if (activeStep == 1) {
-      values2 = { ...values };
-      res2 = values2;
-      delete res2.secureQuestion;
-      delete res2.confirmPassword;
+      setValues2({ ...values });
     }
     if (activeStep == 2) {
-      values3 = { ...values };
-      res3 = values3;
-      delete res3.terms;
+      setValues3({ ...values });
       handleShow();
-      registerUser();
     }
     if (activeStep < 3) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -375,12 +370,12 @@ export default function Register() {
                 validationSchema={schema2}
                 onSubmit={(values) => handleNext(values)}
                 initialValues={{
-                  username: "",
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                  secureQuestion: "",
-                  secureQuestionText: "",
+                  username: values2?.username || "",
+                  email: values2?.email || "",
+                  password: values2?.password || "",
+                  confirmPassword: values2?.confirmPassword || "",
+                  secureQuestion: values2?.secureQuestion || "",
+                  secureQuestionText: values2?.secureQuestionText || "",
                 }}
                 enableReinitialize={true}
                 validateOnChange={false}
@@ -551,12 +546,12 @@ export default function Register() {
                 validationSchema={schema3}
                 onSubmit={(values) => handleNext(values)}
                 initialValues={{
-                  direccion: "",
-                  ciudad: "",
-                  codigoPostal: "",
-                  pais: "",
-                  telefono: "",
-                  terms: false,
+                  direccion: values3?.direccion || "",
+                  ciudad: values3?.ciudad || "",
+                  codigoPostal: values3?.codigoPostal || "",
+                  pais: values3?.pais || "",
+                  telefono: values3?.telefono || "",
+                  terms: values3?.terms || false,
                 }}
                 enableReinitialize={true}
                 validateOnChange={false}

@@ -240,81 +240,121 @@ app.post("/register", (req, res) => {
     res.json(error("MISSING_PARAMETERS", "Debe rellenar todos los campos"));
     applog(`Register: Malformed Request`, "ERROR");
   } else {
-    db.query(
-      `SELECT username FROM usuario WHERE username like '${user.username}'`,
-      (err, result) => {
-        if (err) {
-          res.json(error("SELECT_ERROR", "Ha ocurrido un error inesperado."));
-        } else {
-          let l = result.length;
-          if (l > 0) {
-            res.json(
-              error("NOT_UNIQUE_USERNAME", "El nombre de usuario ya existe")
-            );
-            applog(
-              `Register: Attempted to register with a username that exists`,
-              "ERROR"
-            );
-          } else {
-            const query = `
-        INSERT INTO usuario (
-            firstName,
-            lastName,
-            birthday,
-            sexo,
-            username,
-            email,
-            password,
-            secureQuestionText,
-            direccion,
-            ciudad,
-            codigoPostal,
-            pais,
-            telefono
-        ) VALUES (
-            '${user.firstName}',
-            '${user.lastName}',
-            '${user.birthday}',
-            '${user.sexo}',
-            '${user.username}',
-            '${user.email}',
-            '${hash(user.password)}',
-            '${user.secureQuestionText}',
-            '${user.direccion}',
-            '${user.ciudad}',
-            '${user.codigoPostal}',
-            '${user.pais}',
-            '${user.telefono}'
-        );
-    `;
-            db.query(query, (err, result) => {
-              if (err) {
-                res.json(error(err.code, err.sqlMessage));
-                applog(`Registro fallido : ${req.ip}`, "AUTH");
-              } else {
-                applog(`Usuario ${user.username} registrado`, "REQUEST");
-
-                db.query(
-                  `SELECT MAX(ID) "ID" FROM usuario WHERE username like '${user.username}';`,
-                  (err, result) => {
-                    if (err) {
-                      res.json(error(err.code, err.sqlMessage));
-                      applog(`Registro fallido : ${req.ip}`, "AUTH");
-                    } else {
-                      user.ID = result.ID;
-                      req.session.user = user;
-                      res.json({
-                        status: "1",
-                      });
-                    }
-                  }
-                );
-              }
-            });
-          }
-        }
-      }
+    const query = `
+    INSERT INTO usuario (
+        firstName,
+        lastName,
+        birthday,
+        sexo,
+        username,
+        email,
+        password,
+        secureQuestionText,
+        direccion,
+        ciudad,
+        codigoPostal,
+        pais,
+        telefono
+    ) VALUES (
+        '${user.firstName}',
+        '${user.lastName}',
+        '${user.birthday}',
+        '${user.sexo}',
+        '${user.username}',
+        '${user.email}',
+        '${hash(user.password)}',
+        '${user.secureQuestionText}',
+        '${user.direccion}',
+        '${user.ciudad}',
+        '${user.codigoPostal}',
+        '${user.pais}',
+        '${user.telefono}'
     );
+`;
+    db.query(query, (err, result) => {
+      if (err) {
+        res.json(error(err.code, err.sqlMessage));
+        applog(`Registro fallido : ${req.ip}`, "AUTH");
+      } else {
+        applog(`Usuario ${user.username} registrado`, "REQUEST");
+      }
+    });
+
+    // db.query(
+    //   `SELECT username FROM usuario WHERE username like '${user.username}'`,
+    //   (err, result) => {
+    //     if (err) {
+    //       res.json(error("SELECT_ERROR", "Ha ocurrido un error inesperado."));
+    //     } else {
+    //       let l = result.length;
+    //       if (l > 0) {
+    //         res.json(
+    //           error("NOT_UNIQUE_USERNAME", "El nombre de usuario ya existe")
+    //         );
+    //         applog(
+    //           `Register: Attempted to register with a username that exists`,
+    //           "ERROR"
+    //         );
+    //       } else {
+    //         const query = `
+    //     INSERT INTO usuario (
+    //         firstName,
+    //         lastName,
+    //         birthday,
+    //         sexo,
+    //         username,
+    //         email,
+    //         password,
+    //         secureQuestionText,
+    //         direccion,
+    //         ciudad,
+    //         codigoPostal,
+    //         pais,
+    //         telefono
+    //     ) VALUES (
+    //         '${user.firstName}',
+    //         '${user.lastName}',
+    //         '${user.birthday}',
+    //         '${user.sexo}',
+    //         '${user.username}',
+    //         '${user.email}',
+    //         '${hash(user.password)}',
+    //         '${user.secureQuestionText}',
+    //         '${user.direccion}',
+    //         '${user.ciudad}',
+    //         '${user.codigoPostal}',
+    //         '${user.pais}',
+    //         '${user.telefono}'
+    //     );
+    // `;
+    //         db.query(query, (err, result) => {
+    //           if (err) {
+    //             res.json(error(err.code, err.sqlMessage));
+    //             applog(`Registro fallido : ${req.ip}`, "AUTH");
+    //           } else {
+    //             applog(`Usuario ${user.username} registrado`, "REQUEST");
+
+    //             db.query(
+    //               `SELECT MAX(ID) "ID" FROM usuario WHERE username like '${user.username}';`,
+    //               (err, result) => {
+    //                 if (err) {
+    //                   res.json(error(err.code, err.sqlMessage));
+    //                   applog(`Registro fallido : ${req.ip}`, "AUTH");
+    //                 } else {
+    //                   user.ID = result.ID;
+    //                   req.session.user = user;
+    //                   res.json({
+    //                     status: "1",
+    //                   });
+    //                 }
+    //               }
+    //             );
+    //           }
+    //         });
+    //       }
+    //     }
+    //   }
+    // );
   }
 });
 
