@@ -38,15 +38,9 @@ export const AuthProvider = ({ children }) => {
             const wallet = walletRes.data.wallet;
 
             setActualUser((prevActualUser) => {
-                // Todo esto es para que si no ha cambiado no haga un setState de nuevo y recargue todo
-                if (
-                    prevActualUser === null ||
-                    prevActualUser === undefined ||
-                    JSON.stringify(user) !=
-                        JSON.stringify(prevActualUser.profile) ||
-                    JSON.stringify(wallet) !=
-                        JSON.stringify(prevActualUser.wallet)
-                )
+                if (prevActualUser === null || prevActualUser === undefined ||
+                    JSON.stringify(user) != JSON.stringify(prevActualUser.profile) ||
+                    JSON.stringify(wallet) != JSON.stringify(prevActualUser.wallet))
                     return toUser(user, wallet);
                 else return prevActualUser;
             });
@@ -85,16 +79,6 @@ export const AuthProvider = ({ children }) => {
         return response;
     }
 
-    async function trade(symbol, quantity, type) {
-        const response = await post("/trade?", {
-            symbol: symbol,
-            quantity: quantity,
-            type: type,
-        });
-        if (response.data.status === "1") await doAuth();
-
-        return response;
-    }
 
     const doAction = async (func) => {
         let response;
@@ -112,19 +96,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const doAuth = async () => await doAction(() => auth());
-    const doLogin = async (user, pass) =>
-        await doAction(() => login(user, pass));
+    const doLogin = async (user, pass) => await doAction(() => login(user, pass));
     const doLogout = async () => await doAction(() => logout());
-    const doCheckEmail = async (email) =>
-        await doAction(() => checkEmail(email));
+    const doCheckEmail = async (email) => await doAction(() => checkEmail(email));
     const doRegister = async (user) => await doAction(() => register(user));
-
-    // meter en apicontext
-    const doTradeHistory = async () =>
-        await doAction(async () => await get("/trade_history"));
-    const doTrade = async (symbol, quantity, type) =>
-        await doAction(() => trade(symbol, quantity, type));
-    const buyProduct = async (buy) => await post("/payment", buy);
 
     useEffect(() => {
         doAuth(); // Initial auth
@@ -143,10 +118,8 @@ export const AuthProvider = ({ children }) => {
                 doCheckEmail,
                 doLogin,
                 doLogout,
-                doTrade,
                 doRegister,
-                buyProduct,
-                doTradeHistory,
+                doAction
             }}
         >
             {children}

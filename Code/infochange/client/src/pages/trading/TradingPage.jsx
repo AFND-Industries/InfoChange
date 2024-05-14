@@ -22,9 +22,9 @@ function TradingPage() {
   return (
     <>
       <div id="loading-screen" style={{ display: "none" }}>
-        <div class="loading-screen d-flex justify-content-center align-items-center">
-          <div class="spinner-border" style={{ width: "100px", height: "100px" }} role="status">
-            <span class="visually-hidden">Loading...</span>
+        <div className="loading-screen d-flex justify-content-center align-items-center">
+          <div className="spinner-border" style={{ width: "100px", height: "100px" }} role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
         </div>
       </div>

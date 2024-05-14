@@ -2,9 +2,11 @@ import React from "react";
 
 import { useTrading } from "../context/TradingContext";
 import SymbolItem from "./SymbolItem";
+import { useAPI } from "../../../context/APIContext";
 
 function SymbolList({ style = 0, pairs, regex = "", onClick }) {
-    const { getPair, getTokenInfo, getActualPair } = useTrading();
+    const { getPair, getTokenInfo } = useAPI();
+    const { getActualPair } = useTrading();
 
     const renderNoMatches = (
         <div className="d-flex justify-content-start align-items-center mt-2">

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 
+import { Navigate } from "react-router-dom";
+
 import { PersonFill, Wallet2, LayoutTextSidebar } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
 import History from "./windows/History";
 
 import { useAuth } from "../authenticator/AuthContext";
-import { Navigate } from "react-router-dom";
+import { useAPI } from "../../context/APIContext";
 
 function Dashboard() {
-    const { getActualUser, doTradeHistory } = useAuth();
+    const { getActualUser } = useAuth();
+    const { doTradeHistory } = useAPI();
+
     const [page, setPage] = useState(0);
     const [tradeHistory, setTradeHistory] = useState(null);
 
