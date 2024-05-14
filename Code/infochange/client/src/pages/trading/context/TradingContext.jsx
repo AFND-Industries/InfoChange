@@ -19,10 +19,14 @@ const TradingContext = createContext();
 // cambiar modo, cambiar grafico, posicion del marquee configurable
 
 const LOSIGUIENTE = 1;
-// infobizum
 // panel admin
+// infobizum
 // MOSTRAR EN TRADING ANTES Q HACER FAVORITOS LA LISTA DE MONEDAS QUE TIENES
 // boton en trading para ver historial?
+// diseño responsive como en binance qe en el movil tiene uno que swapeas a comprar y otro q swapeas a vender
+// boton historial ahi tmb q swapee entre comprar e historial
+// historial de ingresos y retiros
+// historial de bizums
 // hints en trading, minimo y maximo
 
 export const TradingProvider = ({ children }) => {
