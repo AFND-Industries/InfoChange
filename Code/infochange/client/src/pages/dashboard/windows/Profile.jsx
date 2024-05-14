@@ -51,6 +51,7 @@ export default function Profile(props) {
                     ></div>
                     <img
                         className="rounded-pill"
+                        onError={(event) => event.target.src = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"}
                         src={`https://github.com/${profile.username}.png`}
                         style={{ width: "100%" }}
                         onLoad={(e) => {
