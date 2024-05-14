@@ -40,8 +40,9 @@ export const AdminProvider = ({ children }) => {
         let totalBalance = 0;
 
         const userCoins = adminInfo.wallets.filter(wallet => wallet.user === id);
+
         userCoins.forEach(wallet => {
-            const pairPrice = getPairPrice(wallet.coin + "USDT");
+            const pairPrice = wallet.coin === "USDT" ? 1 : getPairPrice(wallet.coin + "USDT");
             totalBalance += wallet.quantity * pairPrice;
         });
 
