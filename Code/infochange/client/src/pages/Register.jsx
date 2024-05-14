@@ -7,7 +7,8 @@ import { useAuth } from "./authenticator/AuthContext";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-
+import countriesList from "../assets/countries.json"; // Supongamos que tienes una lista de países en un archivo separado
+import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import * as formik from "formik";
 import * as yup from "yup";
@@ -19,7 +20,11 @@ import StepLabel from "@mui/material/StepLabel";
 
 import Typography from "@mui/material/Typography";
 
-const steps = ["Informacion Personal", "Informacion sobre la", "Create an ad"];
+const steps = [
+  "Informacion Personal",
+  "Informacion sobre la cuenta",
+  "Datos de facturación",
+];
 
 export default function Register() {
   const [country, setCountry] = useState(Countries[0]);
@@ -37,7 +42,18 @@ export default function Register() {
   const address = useRef(null);
   const postalCode = useRef(null);
   const password = useRef(null);
-
+  const [prefix, setPrefix] = useState("");
+  const handleCountryChange = (event) => {
+    const selectedCountry = event.target.value;
+    const selectedCountryObject = countriesList.find(
+      (country) => country.name === selectedCountry
+    );
+    const selectedCountryPrefix = selectedCountryObject
+      ? `+${selectedCountryObject.phone_code}`
+      : "";
+    setPrefix(selectedCountryPrefix);
+    handleChange(event); // Para que Formik también actualice el valor del campo 'pais'
+  };
   const checkEmailExists = async (email) => {
     const response = await doCheckEmail(email);
     const status =
@@ -88,56 +104,63 @@ export default function Register() {
     sexo: yup.string().required("Por favor, seleccione su sexo"),
   });
   const schema2 = yup.object().shape({
-    username: yup.string().required(),
-    city: yup.string().required(),
-    state: yup.string().required(),
-    terms: yup
-      .bool()
-      .required()
-      .oneOf([true], "Debe aceptar los terminos para continuar"),
+    username: yup.string().required("Por favor, ingrese su nombre de usuario"),
     email: yup
       .string()
-      .matches(emailRegex, "Formato de correo electrónico inválido")
-      .required("Por favor, ingrese su correo electronico")
-      .test(
-        "unique-email",
-        "Este correo electrónico ya está registrado",
-        async function (value) {
-          return !(await checkEmailExists(value));
-        }
+      .email("Formato de correo electrónico inválido")
+      .required("Por favor, ingrese su correo electrónico"),
+    password: yup.string().required("Por favor, ingrese su contraseña"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Las contraseñas deben coincidir")
+      .required("Por favor, confirme su contraseña"),
+    secureQuestion: yup
+      .string()
+      .required("Por favor, seleccione una pregunta de seguridad")
+      .oneOf(
+        ["question1", "question2", "question3"],
+        "Por favor, seleccione una pregunta de seguridad válida"
       ),
+    secureQuestionText: yup
+      .string()
+      .required("Por favor, responda una pregunta de seguridad"),
   });
   const schema3 = yup.object().shape({
-    firstName: yup.string().required("Por favor, ingrese su nombre"),
-    lastName: yup.string().required("Por favor, ingrese sus apellidos"),
-    email: yup
+    direccion: yup.string().required("Por favor, introduzca su dirección"),
+    ciudad: yup.string().required("Por favor, introduzca su ciudad"),
+    codigoPostal: yup
       .string()
-      .matches(emailRegex, "Formato de correo electrónico inválido")
-      .required("Por favor, ingrese su correo electronico")
-      .test(
-        "unique-email",
-        "Este correo electrónico ya está registrado",
-        async function (value) {
-          return !(await checkEmailExists(value));
-        }
-      ),
-    birthday: yup.date().required("Por favor, ingrese su fecha de nacimiento"),
-    sexo: yup.string().required("Por favor, seleccione su sexo"),
-    username: yup.string().required(),
-    city: yup.string().required(),
-    state: yup.string().required(),
-    terms: yup
-      .bool()
-      .required()
-      .oneOf([true], "Debe aceptar los terminos para continuar"),
+      .matches(/^\d+$/, "El codigo postal solo puede contener dígitos")
+      .required("Por favor, introduzca su código postal"),
+    pais: yup.string().required("Por favor, seleccione su país"),
+    telefono: yup
+      .string()
+      .matches(/^\d+$/, "El número de teléfono solo puede contener dígitos")
+      .matches(/^\d{9}$/, "El número de teléfono solo puede contener 9 dígitos")
+      .required("Por favor, introduzca su número de teléfono"),
   });
-
+  const countries = countriesList.map((country) => (
+    <option key={country.code} value={country.name}>
+      {country.name}
+    </option>
+  ));
   const [activeStep, setActiveStep] = React.useState(0);
+  let values1;
+  let values2;
+  let values3;
 
-  const handleNext = () => {
+  const handleNext = (values) => {
+    if (activeStep == 0) {
+      values1 = { ...values };
+    }
+    if (activeStep == 1) {
+      values2 = { ...values };
+    }
+    if (activeStep == 2) {
+      values3 = { ...values };
+    }
     if (activeStep < 2) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      setSkipped(newSkipped);
     }
   };
 
@@ -173,18 +196,22 @@ export default function Register() {
         </div>
       </div>
       <div className="row d-flex  align-content-center justify-content-center ">
-        <div className="col-5 h-100" style={{ backgroundColor: "white" }}>
+        <div
+          className="col-5 h-100 rounded-1"
+          style={{ backgroundColor: "white" }}
+        >
           {activeStep === 0 ? (
             <Formik
               validationSchema={schema1}
-              onSubmit={console.log}
+              onSubmit={(values) => handleNext(values)}
               initialValues={{
-                firstName: "",
-                lastName: "",
-                birthday: "",
-                sexo: "",
+                firstName: values1?.firstName || "",
+                lastName: values1?.lastName || "",
+                birthday: values1?.birthday || "",
+                sexo: values1?.sexo || "",
               }}
-              validateOnChange={true}
+              enableReinitialize={true}
+              validateOnChange={false}
               validateOnBlur={false}
             >
               {({
@@ -199,14 +226,7 @@ export default function Register() {
                   <Form
                     className="mx-5  my-5"
                     noValidate
-                    onSubmit={(e) => {
-                      e.preventDefault(); // Prevenir el envío del formulario por defecto
-                      handleSubmit(); // Realizar la validación manualmente
-                      if (Object.keys(errors).length === 0) {
-                        // Si no hay errores, avanzar al siguiente paso
-                        handleNext();
-                      }
-                    }}
+                    onSubmit={handleSubmit}
                   >
                     <h3>Informacion Personal</h3>
                     <Row className="mb-3">
@@ -221,7 +241,7 @@ export default function Register() {
                           name="firstName"
                           value={values.firstName}
                           onChange={handleChange}
-                          isInvalid={!!errors.firstName}
+                          isInvalid={errors.firstName && touched.firstName}
                         />
                         <Form.Control.Feedback type="invalid">
                           {errors.firstName}
@@ -325,388 +345,28 @@ export default function Register() {
 
           {activeStep === 1 ? (
             <Formik
-              validationSchema={schema1}
-              onSubmit={console.log}
-              initialValues={{
-                firstName: "",
-                lastName: "",
-                birthday: "",
-                sexo: "",
-              }}
-            >
-              {({ handleSubmit, handleChange, values, touched, errors }) => (
-                <div>
-                  {activeStep === 0 && (
-                    <Form
-                      className="mx-5  my-5"
-                      noValidate
-                      onSubmit={handleSubmit}
-                    >
-                      <h3>Informacion Personal</h3>
-                      <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="4"
-                          controlId="validationFormik01"
-                        >
-                          <Form.Label>Nombre</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="firstName"
-                            value={values.firstName}
-                            onChange={handleChange}
-                            isInvalid={!!errors.firstName}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.firstName}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group
-                          as={Col}
-                          md="8"
-                          controlId="validationFormik02"
-                        >
-                          <Form.Label>Apellidos</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="lastName"
-                            value={values.lastName}
-                            onChange={handleChange}
-                            isInvalid={!!errors.lastName}
-                          />
-
-                          <Form.Control.Feedback type="invalid">
-                            {errors.lastName}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Row>
-                      <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="12"
-                          controlId="validationFormik01"
-                        >
-                          <Form.Label>Fecha de nacimiento</Form.Label>
-                          <Form.Control
-                            type="date"
-                            name="birthday"
-                            value={values.birthday}
-                            onChange={handleChange}
-                            isInvalid={!!errors.birthday}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.birthday}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Row>
-                      <Row className="mb-5">
-                        <Form.Group
-                          as={Col}
-                          md="12"
-                          controlId="validationFormik09"
-                        >
-                          <Form.Label>Sexo:</Form.Label>
-                          <div
-                            key="inline-radio"
-                            className="d-flex justify-content-between"
-                          >
-                            <Form.Check
-                              inline
-                              label="Masculino"
-                              name="sexo"
-                              type="radio"
-                              value={"mas"}
-                              onChange={handleChange}
-                              isInvalid={!!errors.sexo}
-                              feedback={errors.sexo}
-                              feedbackType="invalid"
-                              id="inline-radio-1"
-                            />
-                            <Form.Check
-                              inline
-                              label="Femenino"
-                              name="sexo"
-                              type="radio"
-                              value={"fem"}
-                              onChange={handleChange}
-                              isInvalid={!!errors.sexo}
-                              feedback={errors.sexo}
-                              feedbackType="invalid"
-                              id="inline-radio-2"
-                            />
-                            <Form.Check
-                              inline
-                              label="Prefiero no decirlo"
-                              name="sexo"
-                              type="radio"
-                              value={"NA"}
-                              onChange={handleChange}
-                              isInvalid={!!errors.sexo}
-                              feedback={errors.sexo}
-                              feedbackType="invalid"
-                              id="inline-radio-3"
-                            />
-                          </div>
-                        </Form.Group>
-                      </Row>
-
-                      <Button onClick={handleNext}>Siguiente Paso</Button>
-                    </Form>
-                  )}
-                  {activeStep === 1 && (
-                    <Form
-                      className="mx-5  my-5"
-                      noValidate
-                      onSubmit={handleSubmit}
-                    >
-                      <h3>Informacion sobre la cuenta</h3>
-                      <Row className="mb-5">
-                        <Form.Group
-                          as={Col}
-                          md="12"
-                          controlId="validationFormik01"
-                        >
-                          <Form.Label>Correo Electronico</Form.Label>
-                          <Form.Control
-                            type="email"
-                            name="email"
-                            value={values.email}
-                            onChange={handleChange}
-                            isValid={touched.email && !errors.email}
-                            isInvalid={!!errors.email}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.email}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Row>
-                      <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="6"
-                          controlId="validationFormik03"
-                        >
-                          <Form.Label>City</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="City"
-                            name="city"
-                            value={values.city}
-                            onChange={handleChange}
-                            isInvalid={!!errors.city}
-                          />
-
-                          <Form.Control.Feedback type="invalid">
-                            {errors.city}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group
-                          as={Col}
-                          md="3"
-                          controlId="validationFormik04"
-                        >
-                          <Form.Label>State</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="State"
-                            name="state"
-                            value={values.state}
-                            onChange={handleChange}
-                            isInvalid={!!errors.state}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.state}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group
-                          as={Col}
-                          md="3"
-                          controlId="validationFormik05"
-                        >
-                          <Form.Label>Zip</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="Zip"
-                            name="zip"
-                            value={values.zip}
-                            onChange={handleChange}
-                            isInvalid={!!errors.zip}
-                          />
-
-                          <Form.Control.Feedback type="invalid">
-                            {errors.zip}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Row>
-                      <Form.Group className="mb-3">
-                        <Form.Check
-                          required
-                          name="terms"
-                          label="Acepto los terminos y condiciones"
-                          onChange={handleChange}
-                          isInvalid={!!errors.terms}
-                          feedback={errors.terms}
-                          feedbackType="invalid"
-                          id="validationFormik0"
-                        />
-                        {/* <Row>
-                      Acepto los{" "}
-                      <a href="https://tus-terminos-y-condiciones.com">
-                        términos y condiciones
-                      </a>
-                      <Form.Check
-                        required
-                        name="terms"
-                        onChange={handleChange}
-                        isInvalid={!!errors.terms}
-                        feedback={errors.terms}
-                        feedbackType="invalid"
-                        id="validationFormik0"
-                      />
-                    </Row> */}
-                      </Form.Group>
-                      <Button type="" onClick={handleBack}>
-                        Paso Anterior
-                      </Button>
-                      <Button onClick={handleNext}>Siguiente Paso</Button>
-                    </Form>
-                  )}
-                  {activeStep === 2 && (
-                    <Form
-                      className="mx-5  my-5"
-                      noValidate
-                      onSubmit={handleSubmit}
-                    >
-                      <h3>Informacion sobre la cuenta</h3>
-                      <Row className="mb-5">
-                        <Form.Group
-                          as={Col}
-                          md="12"
-                          controlId="validationFormik01"
-                        >
-                          <Form.Label>Correo Electronico</Form.Label>
-                          <Form.Control
-                            type="email"
-                            name="email"
-                            value={values.email}
-                            onChange={handleChange}
-                            isValid={touched.email && !errors.email}
-                            isInvalid={!!errors.email}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.email}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Row>
-                      <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="6"
-                          controlId="validationFormik03"
-                        >
-                          <Form.Label>City</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="City"
-                            name="city"
-                            value={values.city}
-                            onChange={handleChange}
-                            isInvalid={!!errors.city}
-                          />
-
-                          <Form.Control.Feedback type="invalid">
-                            {errors.city}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group
-                          as={Col}
-                          md="3"
-                          controlId="validationFormik04"
-                        >
-                          <Form.Label>State</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="State"
-                            name="state"
-                            value={values.state}
-                            onChange={handleChange}
-                            isInvalid={!!errors.state}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.state}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group
-                          as={Col}
-                          md="3"
-                          controlId="validationFormik05"
-                        >
-                          <Form.Label>Zip</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="Zip"
-                            name="zip"
-                            value={values.zip}
-                            onChange={handleChange}
-                            isInvalid={!!errors.zip}
-                          />
-
-                          <Form.Control.Feedback type="invalid">
-                            {errors.zip}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Row>
-                      <Form.Group className="mb-3">
-                        <Form.Check
-                          required
-                          name="terms"
-                          label="Acepto los terminos y condiciones"
-                          onChange={handleChange}
-                          isInvalid={!!errors.terms}
-                          feedback={errors.terms}
-                          feedbackType="invalid"
-                          id="validationFormik0"
-                        />
-                        {/* <Row>
-                      Acepto los{" "}
-                      <a href="https://tus-terminos-y-condiciones.com">
-                        términos y condiciones
-                      </a>
-                      <Form.Check
-                        required
-                        name="terms"
-                        onChange={handleChange}
-                        isInvalid={!!errors.terms}
-                        feedback={errors.terms}
-                        feedbackType="invalid"
-                        id="validationFormik0"
-                      />
-                    </Row> */}
-                      </Form.Group>
-                      <Button type="" onClick={handleBack}>
-                        Paso Anterior
-                      </Button>
-                      <Button type="submit" onClick={handleNext}>
-                        Submit form
-                      </Button>
-                    </Form>
-                  )}
-                </div>
-              )}
-            </Formik>
-          ) : null}
-          {activeStep === 2 ? (
-            <Formik
               validationSchema={schema2}
-              onSubmit={console.log}
+              onSubmit={(values) => handleNext(values)}
               initialValues={{
-                firstName: "",
-                lastName: "",
-                birthday: "",
-                sexo: "",
+                username: values2?.username || "",
+                email: values2?.email || "",
+                password: values2?.password || "",
+                confirmPassword: values2?.confirmPassword || "",
+                secureQuestion: values2?.secureQuestion || "",
+                secureQuestionText: values2?.secureQuestionText || "",
               }}
+              enableReinitialize={true}
+              validateOnChange={false}
+              validateOnBlur={false}
             >
-              {({ handleSubmit, handleChange, values, touched, errors }) => (
+              {({
+                handleSubmit,
+                handleChange,
+                values,
+                touched,
+                errors,
+                isValid,
+              }) => (
                 <div>
                   <Form
                     className="mx-5  my-5"
@@ -714,7 +374,7 @@ export default function Register() {
                     onSubmit={handleSubmit}
                   >
                     <h3>Informacion sobre la cuenta</h3>
-                    <Row className="mb-5">
+                    <Row className="mb-3">
                       <Form.Group
                         as={Col}
                         md="12"
@@ -737,39 +397,197 @@ export default function Register() {
                     <Row className="mb-3">
                       <Form.Group
                         as={Col}
-                        md="6"
-                        controlId="validationFormik03"
+                        md="12"
+                        controlId="validationFormik01"
                       >
-                        <Form.Label>City</Form.Label>
+                        <Form.Label>Nombre de usuario</Form.Label>
+
                         <Form.Control
                           type="text"
-                          placeholder="City"
-                          name="city"
-                          value={values.city}
+                          name="username"
+                          value={values.username}
                           onChange={handleChange}
-                          isInvalid={!!errors.city}
+                          isInvalid={!!errors.username}
+                        />
+                        <small className="ml-2 text-muted">
+                          Este nombre te identificará dentro de infoChange
+                        </small>
+                        <Form.Control.Feedback type="invalid">
+                          {errors.username}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                      <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik01"
+                      >
+                        <Form.Label>Contraseña</Form.Label>
+
+                        <Form.Control
+                          type="text"
+                          name="password"
+                          value={values.password}
+                          onChange={handleChange}
+                          isInvalid={!!errors.password}
                         />
 
                         <Form.Control.Feedback type="invalid">
-                          {errors.city}
+                          {errors.password}
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group
                         as={Col}
-                        md="3"
-                        controlId="validationFormik04"
+                        md="6"
+                        controlId="validationFormik01"
                       >
-                        <Form.Label>State</Form.Label>
+                        <Form.Label>Repite tu Contraseña</Form.Label>
+
+                        <Form.Control
+                          type="password"
+                          name="confirmPassword"
+                          value={values.confirmPassword}
+                          onChange={handleChange}
+                          isInvalid={!!errors.confirmPassword}
+                        />
+
+                        <Form.Control.Feedback type="invalid">
+                          {errors.confirmPassword}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row className="mb-5">
+                      <Form.Group
+                        className="mb-1"
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik09"
+                      >
+                        <Form.Label>Pregunta de seguridad:</Form.Label>
+                        <Form.Select
+                          name="secureQuestion"
+                          value={values.secureQuestion}
+                          onChange={handleChange}
+                          isInvalid={!!errors.secureQuestion}
+                        >
+                          <option value="">Seleccione una opción</option>
+                          <option value="question1">
+                            ¿Cuál es el nombre de tu primera mascota?
+                          </option>
+                          <option value="question2">¿Dónde naciste?</option>
+                          <option value="question3">
+                            ¿Cuál fue tu mote en la escuela?
+                          </option>
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">
+                          {errors.secureQuestion}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik0919"
+                      >
                         <Form.Control
                           type="text"
-                          placeholder="State"
-                          name="state"
-                          value={values.state}
+                          name="secureQuestionText"
+                          value={values.secureQuestionText}
                           onChange={handleChange}
-                          isInvalid={!!errors.state}
+                          isInvalid={!!errors.secureQuestionText}
                         />
                         <Form.Control.Feedback type="invalid">
-                          {errors.state}
+                          {errors.secureQuestionText}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Button onClick={handleBack}>Paso Anterior</Button>
+                    <Button type="submit">Siguiente Paso</Button>
+                  </Form>
+                </div>
+              )}
+            </Formik>
+          ) : null}
+          {activeStep === 2 ? (
+            <Formik
+              validationSchema={schema3}
+              onSubmit={console.log}
+              initialValues={{
+                direccion: "",
+                ciudad: "",
+                codigoPostal: "",
+                pais: "",
+                telefono: "",
+              }}
+              enableReinitialize={true}
+              validateOnChange={false}
+              validateOnBlur={false}
+            >
+              {({ handleSubmit, handleChange, values, touched, errors }) => (
+                <div>
+                  <Form
+                    className="mx-5  my-5"
+                    noValidate
+                    onSubmit={handleSubmit}
+                  >
+                    <h3>Datos de facturacion</h3>
+                    <Row className="mb-3">
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik01"
+                      >
+                        <Form.Label>Direccion</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="direccion"
+                          value={values.direccion}
+                          onChange={handleChange}
+                          isInvalid={!!errors.direccion}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.direccion}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                      <Form.Group
+                        as={Col}
+                        md="5"
+                        controlId="validationFormik03"
+                      >
+                        <Form.Label>País</Form.Label>
+                        <Form.Select
+                          name="pais"
+                          value={values.pais}
+                          onChange={(event) => {
+                            handleChange(event);
+                            handleCountryChange(event);
+                          }}
+                          isInvalid={!!errors.pais}
+                        >
+                          <option value="">Seleccione su país</option>
+                          {countries}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">
+                          {errors.pais}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group
+                        as={Col}
+                        md="4"
+                        controlId="validationFormik04"
+                      >
+                        <Form.Label>Ciudad</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="ciudad"
+                          value={values.ciudad}
+                          onChange={handleChange}
+                          isInvalid={!!errors.ciudad}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.ciudad}
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group
@@ -777,18 +595,39 @@ export default function Register() {
                         md="3"
                         controlId="validationFormik05"
                       >
-                        <Form.Label>Zip</Form.Label>
+                        <Form.Label>Codigo Postal</Form.Label>
                         <Form.Control
                           type="text"
-                          placeholder="Zip"
-                          name="zip"
-                          value={values.zip}
+                          name="codigoPostal"
+                          value={values.codigoPostal}
                           onChange={handleChange}
-                          isInvalid={!!errors.zip}
+                          isInvalid={!!errors.codigoPostal}
                         />
 
                         <Form.Control.Feedback type="invalid">
-                          {errors.zip}
+                          {errors.codigoPostal}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                      <Form.Group
+                        as={Col}
+                        md="5"
+                        controlId="validationFormik03"
+                      >
+                        <Form.Label>Numero de telefono</Form.Label>
+                        <InputGroup>
+                          <InputGroup.Text>{prefix}</InputGroup.Text>
+                          <Form.Control
+                            type="text"
+                            name="telefono"
+                            value={values.telefono}
+                            onChange={handleChange}
+                            isInvalid={!!errors.telefono}
+                          />
+                        </InputGroup>
+                        <Form.Control.Feedback type="invalid">
+                          {errors.telefono}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
@@ -803,26 +642,11 @@ export default function Register() {
                         feedbackType="invalid"
                         id="validationFormik0"
                       />
-                      {/* <Row>
-                      Acepto los{" "}
-                      <a href="https://tus-terminos-y-condiciones.com">
-                        términos y condiciones
-                      </a>
-                      <Form.Check
-                        required
-                        name="terms"
-                        onChange={handleChange}
-                        isInvalid={!!errors.terms}
-                        feedback={errors.terms}
-                        feedbackType="invalid"
-                        id="validationFormik0"
-                      />
-                    </Row> */}
                     </Form.Group>
                     <Button type="" onClick={handleBack}>
                       Paso Anterior
                     </Button>
-                    <Button onClick={handleNext}>Siguiente Paso</Button>
+                    <Button type="summit">Siguiente Paso</Button>
                   </Form>
                 </div>
               )}
