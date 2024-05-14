@@ -106,8 +106,8 @@ const item = (link, name) => {
         <li key={link} className="nav-item">
             <Link
                 className={
-                    "nav-link" +
-                    (document.URL.split("/")[3].toLowerCase() === link.toLowerCase() ? " text-dark fw-bold" : " text-secondary")
+                    "nav-link text-dark" +
+                    (document.URL.split("/")[3].toLowerCase() === link.toLowerCase() ? " active fw-bold" : "")
                 }
                 to={"/" + link}
             >

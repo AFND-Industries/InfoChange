@@ -1,9 +1,14 @@
-import React from "react";
+import React from 'react';
 
-export default function Admin() {
+import { AdminProvider } from './context/AdminContext';
+import AdminPage from './AdminPage';
+
+function Admin() {
     return (
-        <>
-            Admin
-        </>
-    )
+        <AdminProvider>
+            <AdminPage />
+        </AdminProvider>
+    );
 }
+
+export default Admin;
