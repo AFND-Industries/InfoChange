@@ -261,15 +261,11 @@ app.post("/register", (req, res) => {
                             "ERROR"
                         );
                     } else {
-                        const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${
-                            user.username
-                        }', '${hash(user.password)}', '${user.name}', '${
-                            user.lastname
-                        }', '${user.email}', '${user.phone}', '${
-                            user.document
-                        }', '${user.address}', '${user.postalCode}', '${
-                            user.country
-                        }');`;
+                        const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${user.username
+                            }', '${hash(user.password)}', '${user.name}', '${user.lastname
+                            }', '${user.email}', '${user.phone}', '${user.document
+                            }', '${user.address}', '${user.postalCode}', '${user.country
+                            }');`;
                         db.query(query, (err, result) => {
                             if (err) {
                                 res.json(error(err.code, err.sqlMessage));
@@ -308,6 +304,52 @@ app.post("/register", (req, res) => {
         );
     }
 });
+
+app.get("/admin", (req, res) => {
+    if (!req.session.user || req.session.user.name !== "admin") {
+        res.json(error("UNAUTHORIZED", "No eres administrador"));
+    } else {
+        let usersPromise = new Promise((resolve, reject) => {
+            db.query("SELECT username, id FROM usuario;", (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            });
+        });
+
+        let walletsPromise = new Promise((resolve, reject) => {
+            db.query("SELECT user, coin, quantity FROM cartera;", (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            });
+        });
+
+        let tradeHistoryPromise = new Promise((resolve, reject) => {
+            db.query("SELECT user, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history;", (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            });
+        });
+
+        Promise.all([usersPromise, walletsPromise, tradeHistoryPromise])
+            .then(([users, wallets, tradeHistory]) => {
+                let payment_history = []; // Aquí puedes hacer lo que necesites con payment_history
+
+                res.json({
+                    status: "1",
+                    info: {
+                        users: users,
+                        wallets: wallets,
+                        trade_history: tradeHistory,
+                        payment_history: payment_history,
+                    }
+                });
+            })
+            .catch(er => {
+                res.json(error(er.code, er.sqlMessage)); // Manejar errores de consulta
+            });
+    }
+});
+
 
 app.get("/wallet", (req, res) => {
     if (!req.session.user) {
@@ -445,10 +487,9 @@ app.post("/trade", (req, res) => {
                 updatedAmount === 0
                     ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`
                     : `UPDATE cartera SET quantity = ${updatedAmount.toFixed(
-                          8
-                      )} WHERE coin = '${removeAsset}' AND user = ${
-                          req.session.user.ID
-                      };`;
+                        8
+                    )} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID
+                    };`;
 
             db.query(updateQuery, (err, _) => {
                 if (err)
@@ -477,15 +518,13 @@ app.post("/trade", (req, res) => {
                         const query =
                             currentQuoteAmount >= 0
                                 ? `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(
-                                      8
-                                  )} WHERE coin = '${addAsset}' AND user = ${
-                                      req.session.user.ID
-                                  };`
-                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${
-                                      req.session.user.ID
-                                  }, '${addAsset}', ${receivedAmount.toFixed(
-                                      8
-                                  )});`;
+                                    8
+                                )} WHERE coin = '${addAsset}' AND user = ${req.session.user.ID
+                                };`
+                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID
+                                }, '${addAsset}', ${receivedAmount.toFixed(
+                                    8
+                                )});`;
 
                         db.query(query, (err, _) => {
                             if (err)
@@ -516,15 +555,14 @@ app.post("/trade", (req, res) => {
                             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
                             const historyQuery = `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
-                                    (${req.session.user.ID}, '${
-                                symbolPriceObject.symbol
-                            }', '${type}', ${paidAmount.toFixed(
-                                8
-                            )}, ${receivedAmount.toFixed(
-                                8
-                            )}, ${comission.toFixed(
-                                8
-                            )}, '${formattedDate}', ${symbolPrice});`;
+                                    (${req.session.user.ID}, '${symbolPriceObject.symbol
+                                }', '${type}', ${paidAmount.toFixed(
+                                    8
+                                )}, ${receivedAmount.toFixed(
+                                    8
+                                )}, ${comission.toFixed(
+                                    8
+                                )}, '${formattedDate}', ${symbolPrice});`;
 
                             db.query(historyQuery, (err, _) => {
                                 if (err)

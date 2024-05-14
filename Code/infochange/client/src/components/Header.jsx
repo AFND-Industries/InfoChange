@@ -101,7 +101,6 @@ export default function Header() {
 }
 
 const item = (link, name) => {
-    console.log(document.URL.split("/")[3].toLowerCase(), link.toLowerCase(), document.URL.split("/")[3].toLowerCase() === link.toLowerCase());
     return (
         <li key={link} className="nav-item">
             <Link
