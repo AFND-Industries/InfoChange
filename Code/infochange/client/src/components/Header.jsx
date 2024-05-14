@@ -7,7 +7,7 @@ import { useAuth } from "../pages/authenticator/AuthContext";
 export default function Header() {
     const { getActualUser, doLogout } = useAuth();
 
-    const items = [
+    let items = [
         { link: "", name: "Inicio" },
         { link: "coins", name: "Monedas" },
         { link: "trading", name: "Trading" },
@@ -17,6 +17,8 @@ export default function Header() {
     // Dropdown show?
     const [show, setShow] = useState(false);
     const user = getActualUser();
+    if (user !== null && user.profile.name === "admin")
+        items = [...items, { link: "admin", name: "Admin" }];
 
     return (
         <header>
@@ -99,12 +101,13 @@ export default function Header() {
 }
 
 const item = (link, name) => {
+    console.log(document.URL.split("/")[3].toLowerCase(), link.toLowerCase(), document.URL.split("/")[3].toLowerCase() === link.toLowerCase());
     return (
         <li key={link} className="nav-item">
             <Link
                 className={
                     "nav-link" +
-                    (document.URL.split("/")[3] === link ? " active" : "")
+                    (document.URL.split("/")[3].toLowerCase() === link.toLowerCase() ? " text-dark fw-bold" : " text-secondary")
                 }
                 to={"/" + link}
             >

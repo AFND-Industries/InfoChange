@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Trading from "./pages/trading/Trading";
 import Unknown from "./pages/Unknown";
 import Welcome from "./pages/welcome/Welcome";
+import Admin from "./pages/admin/Admin";
 
 import Loading from "./pages/authenticator/Loading";
 import UnknownStatus from "./pages/authenticator/UnknownStatus";
@@ -19,7 +20,7 @@ import Footer from "./components/Footer";
 import { useAuth } from "./pages/authenticator/AuthContext";
 
 function App() {
-    const { getAuthStatus } = useAuth();
+    const { getAuthStatus, getActualUser } = useAuth();
 
     useEffect(() => {
         const toast = new bootstrap.Toast(
@@ -54,6 +55,7 @@ function App() {
 
     const needBackend = (v) => <>{getAuthStatus() === "-1" ? <Navigate to="/" /> : v}</>;
     const needAuth = (v) => <>{needBackend(getAuthStatus() === "1" ? v : getPage())}</>;
+    const needAdmin = (v) => <>{getActualUser() !== null && getActualUser().profile.name === "admin" ? v : <Unknown />}</>;
 
     return (
         <>
@@ -133,6 +135,10 @@ function App() {
                                     }}
                                 />
                             )}
+                        />
+                        <Route
+                            path="/admin"
+                            element={needAdmin(wrap(<Admin />))}
                         />
                         <Route path="*" element={<Unknown />} />
                     </Routes>
