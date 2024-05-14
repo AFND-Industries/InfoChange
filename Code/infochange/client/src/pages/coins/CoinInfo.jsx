@@ -19,6 +19,7 @@ export default function CoinInfo(props) {
   const [symbolCoin, setSymbolCoin] = useState(1);
   const { doGetCoinPrice } = useCoins();
   const [price, setPrice] = useState("");
+  const [dollar, setDollar] = useState(price);
   const [showModal, setShowModal] = useState(false);
   const [activeNavItem, setActiveNavItem] = useState("");
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 990);
@@ -455,7 +456,7 @@ export default function CoinInfo(props) {
               <div className="row">
                 <div className="input-group input-group-lg d-flex align-items-start mb-3">
                   <input
-                    type="text"
+                    type="number"
                     className="form-control h-100"
                     value={symbolCoin}
                     placeholder={symbolCoin}
@@ -468,10 +469,10 @@ export default function CoinInfo(props) {
                 </div>
                 <div className="input-group input-group-lg d-flex align-items-start mb-3">
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
-                    value={price}
-                    placeholder={price}
+                    value={dollar}
+                    placeholder={dollar}
                     onChange={(e) => {
                       setDollar(e.target.value);
                       setSymbolCoin(e.target.value / price);

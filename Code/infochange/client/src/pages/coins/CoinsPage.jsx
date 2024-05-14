@@ -239,19 +239,6 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
           ></Column>
         </DataTable>
       </div>
-
-      {/*
-  <div className="m-5">
-    <Timeline
-      colorTheme="light"
-      feedMode="all_symbols"
-      market="crypto"
-      locale="es"
-      height={400}
-      width="100%"
-    ></Timeline>
-  </div>
-  */}
     </div>
   );
 }
