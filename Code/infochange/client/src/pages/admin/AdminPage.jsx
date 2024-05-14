@@ -64,7 +64,13 @@ export default function AdminPage() {
                             <div className="card-text">
                                 <ul className="list-group list-group-flush">
                                     {usersByBalance.map((user, index) => (
-                                        <li key={index} className="list-group-item ps-0 pe-0"><span className="fw-bold">{user.username}</span>: {user.totalBalance.toFixed(2)}$</li>
+                                        <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center">
+                                            <img onError={(event) => event.target.src = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"}
+                                                src={"https://github.com/" + user.username + ".png"} alt={user.username} className="me-2 rounded-4"
+                                                style={{ width: "40px", height: "40px" }} />
+                                            <span className="fw-bold h5 m-0">{user.username}</span>
+                                            <span className="h5 m-0">:  {user.totalBalance.toFixed(2)}$</span>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
