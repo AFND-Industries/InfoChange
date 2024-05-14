@@ -5,3 +5,7 @@ export interface Cart{
     quantity : Number,
     price? : Number
 }
+
+export interface PaymentResponse{
+    feedback : String
+}
