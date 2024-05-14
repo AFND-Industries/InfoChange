@@ -86,7 +86,48 @@ export const AdminProvider = ({ children }) => {
 
         return usersByBalance;
     }
-    const getCoinsSortedByExchangeVolume = () => [];
+
+    const getCoinsSortedByExchangeVolume = () => {
+        const volumeMap = {};
+
+        if (adminInfo !== undefined) {
+            adminInfo.trade_history.forEach(trade => {
+                const symbol = getPair(trade.symbol);
+
+                if (!volumeMap[symbol.baseAsset]) {
+                    volumeMap[symbol.baseAsset] = {
+                        symbol: symbol.baseAsset,
+                        name: symbol.baseAssetName,
+                        logo: getTokenInfo(symbol.baseAsset).logo,
+                        volume: 0,
+                        dolar_volume: 0,
+                    };
+                }
+
+                if (!volumeMap[symbol.quoteAsset]) {
+                    volumeMap[symbol.quoteAsset] = {
+                        symbol: symbol.quoteAsset,
+                        name: symbol.quoteAssetName,
+                        logo: getTokenInfo(symbol.quoteAsset).logo,
+                        volume: 0,
+                        dolar_volume: 0,
+                    };
+                }
+
+                volumeMap[symbol.baseAsset].volume += trade.type === "BUY" ? trade.amount_received : trade.paid_amount;
+                volumeMap[symbol.baseAsset].dolar_volume = volumeMap[symbol.baseAsset].volume * (symbol.baseAsset === "USDT" ? 1 : getPairPrice(symbol.baseAsset + "USDT"));
+
+                volumeMap[symbol.quoteAsset].volume += trade.type === "BUY" ? trade.paid_amount : trade.amount_received;
+                volumeMap[symbol.quoteAsset].dolar_volume = volumeMap[symbol.quoteAsset].volume * (symbol.quoteAsset === "USDT" ? 1 : getPairPrice(symbol.quoteAsset + "USDT"));
+            });
+        }
+
+        const volumeList = Object.values(volumeMap);
+        volumeList.sort((a, b) => b.dolar_volume - a.dolar_volume);
+
+        return volumeList;
+    };
+
     const getPaymentHistory = () => [];
 
     return (

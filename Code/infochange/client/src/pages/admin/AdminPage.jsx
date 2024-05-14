@@ -3,7 +3,6 @@ import { useAdmin } from "./context/AdminContext";
 
 export default function AdminPage() {
     const {
-        getTotalUserBalance,
         getTotalUsers,
         getTotalTransactions,
         getTotalComission,
@@ -27,31 +26,31 @@ export default function AdminPage() {
         <div className="container mt-4 mb-4">
             <div className="row">
                 <div className="col-12 text-center mb-4">
-                    <h2>Panel de Administrador - InfoMetrics</h2>
+                    <h1>Panel de Administrador - InfoMetrics</h1>
                 </div>
             </div>
             <div className="row">
                 <div className="col-md-4">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Usuarios Registrados</h5>
-                            <p className="card-text">{totalUsers}</p>
+                            <h2 className="card-title">Usuarios Registrados</h2>
+                            <p className="card-text h5">{totalUsers}</p>
                         </div>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Trades Realizados</h5>
-                            <p className="card-text">{totalTransactions}</p>
+                            <h2 className="card-title">Trades Realizados</h2>
+                            <p className="card-text h5">{totalTransactions}</p>
                         </div>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Ganancias por Comisiones</h5>
-                            <p className="card-text">{totalCommission.toFixed(2)}$</p>
+                            <h2 className="card-title">Ganancias por Comisiones</h2>
+                            <p className="card-text h5">{totalCommission.toFixed(2)}$</p>
                         </div>
                     </div>
                 </div>
@@ -60,7 +59,7 @@ export default function AdminPage() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Usuarios con Mayor Balance</h5>
+                            <h2 className="card-title">Usuarios con Mayor Balance</h2>
                             <div className="card-text">
                                 <ul className="list-group list-group-flush">
                                     {usersByBalance.map((user, index) => (
@@ -80,10 +79,18 @@ export default function AdminPage() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Monedas con Mayor Volumen</h5>
+                            <h2 className="card-title">Monedas con Mayor Volumen</h2>
                             <ul className="list-group list-group-flush">
                                 {coinsSortedByVolume.map((coin, index) => (
-                                    <li key={index} className="list-group-item">{1}</li>
+                                    <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center">
+                                        <img src={coin.logo} alt={coin.name} className="me-2 rounded-4"
+                                            style={{ width: "40px", height: "40px" }} />
+                                        <span className="h5">
+                                            <span className="fw-bold m-0 me-2">{coin.name}: </span>
+                                            <span>{coin.volume.toFixed(8)} {coin.symbol}</span>
+                                            <span className="h6 text-secondary m-0"> ~{coin.dolar_volume.toFixed(2)}$</span>
+                                        </span>
+                                    </li>
                                 ))}
                             </ul>
                         </div>
@@ -94,7 +101,7 @@ export default function AdminPage() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Historial de depósitos y retiros</h5>
+                            <h2 className="card-title">Historial de depósitos y retiros</h2>
                             <ul className="list-group list-group-flush">
                                 {paymentHistory.map((payment, index) => (
                                     <li key={index} className="list-group-item">{2}</li>
@@ -106,8 +113,8 @@ export default function AdminPage() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h5 className="card-title">Balance total de InfoChange</h5>
-                            <p className="card-text">{totalExchangeBalance.toFixed(2)}$</p>
+                            <h2 className="card-title">Balance total de InfoChange</h2>
+                            <p className="card-text h5">{totalExchangeBalance.toFixed(2)}$</p>
                         </div>
                     </div>
                 </div>
