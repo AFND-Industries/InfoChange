@@ -10,6 +10,7 @@ import { CreditForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
 import { useCoins } from "../coins/CoinsAPI";
 import { useAuth } from "../authenticator/AuthContext";
+import { useAPI } from "../../context/APIContext";
 
 export default function Payment(props) {
     const TIMEOUT = 5;
@@ -22,7 +23,7 @@ export default function Payment(props) {
     const _fupdate_ = useRef();
 
     const { doGetCoinPrice } = useCoins();
-    const { buyProduct } = useAuth();
+    const { buyProduct } = useAPI();
 
     const updateCart = async (cart) => {
         const _cart = cart;

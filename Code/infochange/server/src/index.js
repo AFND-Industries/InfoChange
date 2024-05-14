@@ -261,11 +261,15 @@ app.post("/register", (req, res) => {
                             "ERROR"
                         );
                     } else {
-                        const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${user.username
-                            }', '${hash(user.password)}', '${user.name}', '${user.lastname
-                            }', '${user.email}', '${user.phone}', '${user.document
-                            }', '${user.address}', '${user.postalCode}', '${user.country
-                            }');`;
+                        const query = `INSERT INTO usuario (username, password, name, surname, email, phone, document, address, postalCode, country) VALUES ('${
+                            user.username
+                        }', '${hash(user.password)}', '${user.name}', '${
+                            user.lastname
+                        }', '${user.email}', '${user.phone}', '${
+                            user.document
+                        }', '${user.address}', '${user.postalCode}', '${
+                            user.country
+                        }');`;
                         db.query(query, (err, result) => {
                             if (err) {
                                 res.json(error(err.code, err.sqlMessage));
@@ -325,15 +329,20 @@ app.get("/wallet", (req, res) => {
 
 app.get("/trade_history", (req, res) => {
     if (!req.session.user) {
-        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+        return res.json(
+            error("NOT_LOGGED", "No existe una sesión del usuario.")
+        );
     }
 
     const query = `SELECT symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${req.session.user.ID};`;
     db.query(query, (err, result) => {
-        if (err) return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+        if (err)
+            return res.json(
+                error("SELECT_ERROR", "Se ha producido un error inesperado")
+            );
 
         const tradeHistory = [];
-        result.forEach(row => {
+        result.forEach((row) => {
             const trade = {
                 symbol: row.symbol,
                 type: row.type,
@@ -341,116 +350,205 @@ app.get("/trade_history", (req, res) => {
                 amount_received: row.amount_received,
                 comission: row.comission,
                 date: row.date,
-                price: row.price
+                price: row.price,
             };
             tradeHistory.push(trade);
         });
 
         res.json({
             status: "1",
-            tradeHistory: tradeHistory
+            tradeHistory: tradeHistory,
         });
     });
 });
 
-
 app.post("/trade", (req, res) => {
     if (!req.session.user) {
-        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+        return res.json(
+            error("NOT_LOGGED", "No existe una sesión del usuario.")
+        );
     }
 
-    const symbol = Object.values(Symbols.symbols).find(s => s.symbol === req.body.symbol);
+    const symbol = Object.values(Symbols.symbols).find(
+        (s) => s.symbol === req.body.symbol
+    );
     const quantity = parseFloat(req.body.quantity);
     const type = req.body.type;
 
     if (!symbol) {
-        return res.json(error("INVALID_SYMBOL", "No se ha encontrado el símbolo especificado."));
+        return res.json(
+            error(
+                "INVALID_SYMBOL",
+                "No se ha encontrado el símbolo especificado."
+            )
+        );
     }
 
     if (isNaN(quantity) || quantity <= 0) {
-        return res.json(error("INVALID_QUANTITY", "La cantidad introducida no es válida."));
+        return res.json(
+            error("INVALID_QUANTITY", "La cantidad introducida no es válida.")
+        );
     }
 
-    const symbolPriceObject = Object.values(prices).find(p => p.symbol === symbol.symbol);
+    const symbolPriceObject = Object.values(prices).find(
+        (p) => p.symbol === symbol.symbol
+    );
     if (!symbolPriceObject) {
-        return res.json(error("NO_SERVER_PRICE", "El servidor no dispone de los precios actualmente. Inténtalo de nuevo más tarde."));
+        return res.json(
+            error(
+                "NO_SERVER_PRICE",
+                "El servidor no dispone de los precios actualmente. Inténtalo de nuevo más tarde."
+            )
+        );
     }
 
     const symbolPrice = symbolPriceObject.price;
     const paidAmount = parseFloat(quantity.toFixed(8));
 
-    const removeAsset = type === 'BUY' ? symbol.quoteAsset : symbol.baseAsset;
-    const addAsset = type === 'BUY' ? symbol.baseAsset : symbol.quoteAsset;
+    const removeAsset = type === "BUY" ? symbol.quoteAsset : symbol.baseAsset;
+    const addAsset = type === "BUY" ? symbol.baseAsset : symbol.quoteAsset;
 
-    const paidAssetName = type === 'BUY' ? symbol.quoteAssetName : symbol.baseAssetName;
+    const paidAssetName =
+        type === "BUY" ? symbol.quoteAssetName : symbol.baseAssetName;
 
-    db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${removeAsset}' AND user = ${req.session.user.ID};`,
+    db.query(
+        `SELECT quantity FROM cartera WHERE coin LIKE '${removeAsset}' AND user = ${req.session.user.ID};`,
         (err, result) => {
-            if (err) return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+            if (err)
+                return res.json(
+                    error("SELECT_ERROR", "Se ha producido un error inesperado")
+                );
 
-            const currentAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity.toFixed(8));
+            const currentAmount =
+                result.length === 0
+                    ? -1
+                    : parseFloat(result[0].quantity.toFixed(8));
             if (currentAmount < paidAmount) {
-                return res.json(error("INSUFFICIENT_BALANCE", `No tienes suficientes ${paidAssetName}.`));
+                return res.json(
+                    error(
+                        "INSUFFICIENT_BALANCE",
+                        `No tienes suficientes ${paidAssetName}.`
+                    )
+                );
             }
 
-            const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
-            const receivedAmount = type === 'BUY' ? (paidAmount - comission) / symbolPrice : (paidAmount - comission) * symbolPrice;
+            const comission = parseFloat(
+                (paidAmount * tradingComision).toFixed(8)
+            );
+            const receivedAmount =
+                type === "BUY"
+                    ? (paidAmount - comission) / symbolPrice
+                    : (paidAmount - comission) * symbolPrice;
 
             const updatedAmount = currentAmount - paidAmount;
-            const updateQuery = updatedAmount === 0 ?
-                `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};` :
-                `UPDATE cartera SET quantity = ${updatedAmount.toFixed(8)} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`;
+            const updateQuery =
+                updatedAmount === 0
+                    ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`
+                    : `UPDATE cartera SET quantity = ${updatedAmount.toFixed(
+                          8
+                      )} WHERE coin = '${removeAsset}' AND user = ${
+                          req.session.user.ID
+                      };`;
 
-            db.query(updateQuery,
-                (err, _) => {
-                    if (err) return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
-
-                    db.query(`SELECT quantity FROM cartera WHERE coin = '${addAsset}' AND user = ${req.session.user.ID};`,
-                        (err, result) => {
-                            if (err) return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
-
-                            const currentQuoteAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity.toFixed(8));
-                            const query = currentQuoteAmount >= 0 ?
-                                `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(8)} WHERE coin = '${addAsset}' AND user = ${req.session.user.ID};` :
-                                `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID}, '${addAsset}', ${receivedAmount.toFixed(8)});`;
-
-                            db.query(query, (err, _) => {
-                                if (err) return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
-
-                                const currentDate = new Date();
-                                const year = currentDate.getFullYear();
-                                const month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Agrega un cero inicial si es necesario
-                                const day = ('0' + currentDate.getDate()).slice(-2); // Agrega un cero inicial si es necesario
-                                const hours = ('0' + currentDate.getHours()).slice(-2); // Agrega un cero inicial si es necesario
-                                const minutes = ('0' + currentDate.getMinutes()).slice(-2); // Agrega un cero inicial si es necesario
-                                const seconds = ('0' + currentDate.getSeconds()).slice(-2); // Agrega un cero inicial si es necesario
-
-                                const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-                                const historyQuery =
-                                    `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
-                                    (${req.session.user.ID}, '${symbolPriceObject.symbol}', '${type}', ${paidAmount.toFixed(8)}, ${receivedAmount.toFixed(8)}, ${comission.toFixed(8)}, '${formattedDate}', ${symbolPrice});`;
-
-                                db.query(historyQuery, (err, _) => {
-                                    if (err) return res.json(error("HISTORY_ERROR", "Se ha producido un error inesperado"));
-                                })
-
-                                return res.json({
-                                    status: "1",
-                                    comission: comission,
-                                    paidAmount: paidAmount,
-                                    receivedAmount: receivedAmount
-                                });
-                            });
-                        }
+            db.query(updateQuery, (err, _) => {
+                if (err)
+                    return res.json(
+                        error(
+                            "UPDATE_ERROR",
+                            "Se ha producido un error inesperado"
+                        )
                     );
-                }
-            );
+
+                db.query(
+                    `SELECT quantity FROM cartera WHERE coin = '${addAsset}' AND user = ${req.session.user.ID};`,
+                    (err, result) => {
+                        if (err)
+                            return res.json(
+                                error(
+                                    "SELECT_ERROR",
+                                    "Se ha producido un error inesperado"
+                                )
+                            );
+
+                        const currentQuoteAmount =
+                            result.length === 0
+                                ? -1
+                                : parseFloat(result[0].quantity.toFixed(8));
+                        const query =
+                            currentQuoteAmount >= 0
+                                ? `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(
+                                      8
+                                  )} WHERE coin = '${addAsset}' AND user = ${
+                                      req.session.user.ID
+                                  };`
+                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${
+                                      req.session.user.ID
+                                  }, '${addAsset}', ${receivedAmount.toFixed(
+                                      8
+                                  )});`;
+
+                        db.query(query, (err, _) => {
+                            if (err)
+                                return res.json(
+                                    error(
+                                        "UPDATE_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
+                                );
+
+                            const currentDate = new Date();
+                            const year = currentDate.getFullYear();
+                            const month = (
+                                "0" +
+                                (currentDate.getMonth() + 1)
+                            ).slice(-2); // Agrega un cero inicial si es necesario
+                            const day = ("0" + currentDate.getDate()).slice(-2); // Agrega un cero inicial si es necesario
+                            const hours = ("0" + currentDate.getHours()).slice(
+                                -2
+                            ); // Agrega un cero inicial si es necesario
+                            const minutes = (
+                                "0" + currentDate.getMinutes()
+                            ).slice(-2); // Agrega un cero inicial si es necesario
+                            const seconds = (
+                                "0" + currentDate.getSeconds()
+                            ).slice(-2); // Agrega un cero inicial si es necesario
+
+                            const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                            const historyQuery = `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
+                                    (${req.session.user.ID}, '${
+                                symbolPriceObject.symbol
+                            }', '${type}', ${paidAmount.toFixed(
+                                8
+                            )}, ${receivedAmount.toFixed(
+                                8
+                            )}, ${comission.toFixed(
+                                8
+                            )}, '${formattedDate}', ${symbolPrice});`;
+
+                            db.query(historyQuery, (err, _) => {
+                                if (err)
+                                    return res.json(
+                                        error(
+                                            "HISTORY_ERROR",
+                                            "Se ha producido un error inesperado"
+                                        )
+                                    );
+                            });
+
+                            return res.json({
+                                status: "1",
+                                comission: comission,
+                                paidAmount: paidAmount,
+                                receivedAmount: receivedAmount,
+                            });
+                        });
+                    }
+                );
+            });
         }
     );
 });
-
-
 
 app.post("/payment", (req, res) => {
     if (!req.session.user) {

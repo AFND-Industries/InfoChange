@@ -1,13 +1,14 @@
-import React, { createContext, useContext } from "react";
+import React from "react";
 
-import axios from "axios"
-import { Cart } from "../types/payment";
+import axios, { AxiosResponse } from "axios"
+import { Cart } from "../@types/payment";
+import { APIContextType } from "../@types/APIContextType";
 
-const APIContext = createContext({});
+const APIContext = React.createContext<APIContextType | null>(null);
 
-const SERVER_URL = "localhost:1024"
+const SERVER_URL = "http://localhost:1024"
 
-export const APIProvider = ({ children }) =>  {
+export const APIProvider : React.FC<{children : React.ReactNode}> = ({ children }) =>  {
     const get = async (url : String) =>
         await axios.get(SERVER_URL + url, {
             withCredentials: true,
@@ -27,4 +28,4 @@ export const APIProvider = ({ children }) =>  {
     );
 }
 
-export const useAPI = () => useContext(APIContext);
+export const useAPI : () => APIContextType | null = () => React.useContext(APIContext);
