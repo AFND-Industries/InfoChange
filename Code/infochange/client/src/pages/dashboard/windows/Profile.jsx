@@ -43,10 +43,24 @@ export default function Profile(props) {
         <>
             <div className="row px-5 py-4">
                 <div className="col-md-3 mb-2">
+                    <div
+                        id="loadingSpinner"
+                        className="spinner-border text-primary"
+                        role="status"
+                        style={{ width: "100px", height: "100px" }}
+                    ></div>
                     <img
                         className="rounded-pill"
                         src={`https://github.com/${profile.username}.png`}
                         style={{ width: "100%" }}
+                        onLoad={(e) => {
+                            const spinner =
+                                e.target.parentElement.querySelector(
+                                    "div[id=loadingSpinner]"
+                                );
+                            spinner.style.display = "none";
+                            e.target.style.display = "block";
+                        }}
                     />
                 </div>
                 <div className="col-md-9 d-flex flex-column justify-content-center">

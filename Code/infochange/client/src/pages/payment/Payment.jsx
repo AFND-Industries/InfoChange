@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 
-import Banner from "./../../assets/payment_banner.png";
+import Banner from "../../assets/payment_banner.png";
 
 import "./payment.css";
 import PaymentCompleted from "./steps/PaymentCompleted";
@@ -10,6 +10,8 @@ import { CreditForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
 import { useCoins } from "../coins/CoinsAPI";
 import { useAuth } from "../authenticator/AuthContext";
+import { useAPI } from "../../context/APIContext";
+import { APIContextType } from "../../@types/APIContextType";
 
 export default function Payment(props) {
     const TIMEOUT = 5;
@@ -22,7 +24,7 @@ export default function Payment(props) {
     const _fupdate_ = useRef();
 
     const { doGetCoinPrice } = useCoins();
-    const { buyProduct } = useAuth();
+    const { buyProduct } = useAPI(); // as APIContextType;
 
     const updateCart = async (cart) => {
         const _cart = cart;

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+
 import { useTrading } from "../context/TradingContext";
+import { useAPI } from "../../../context/APIContext";
+
 import SymbolList from "./SymbolList";
-import "./SymbolSearch.css"; // Archivo CSS para estilos personalizados
+import "./SymbolSearch.css";
 
 const topPairs = [
     "BTCUSDT",
@@ -17,7 +20,8 @@ const topPairs = [
 ]
 
 function SymbolSearch({ style = 0 }) {
-    const { filterPairs, setActualPair, getActualPair } = useTrading();
+    const { filterPairs } = useAPI();
+    const { setActualPair, getActualPair } = useTrading();
     const [searchInput, setSearchInput] = useState("");
     const [searchPairs, setSearchPairs] = useState([]);
 

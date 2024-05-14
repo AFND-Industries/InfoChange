@@ -1,7 +1,7 @@
 import React from "react";
-import { useTrading } from "../context/TradingContext";
 
 import "./RotatingMarquee.css";
+import { useAPI } from "../../../context/APIContext";
 
 const defaultPairs = [
     "BTCUSDT",
@@ -12,7 +12,7 @@ const defaultPairs = [
     "VITEUSDT"]
 
 function RotatingMarquee({ display = true, pairs = [], floatingBottom = false }) {
-    const { getPair, getTokenInfo } = useTrading();
+    const { getPair, getTokenInfo } = useAPI();
     const actualPairs = pairs.length == 0 ? defaultPairs : pairs;
 
     const marquee = actualPairs.map((elem, i) => {

@@ -3,14 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import { useTrading } from "../context/TradingContext";
 import { useAuth } from "../../authenticator/AuthContext";
+import { useAPI } from "../../../context/APIContext";
 
 function BuyAndSell({ style = 1 }) {
     const navigate = useNavigate();
 
     const MAXVALUE = 1000000000000;
 
-    const { getActualPair, getActualPairPrice, getPair } = useTrading();
-    const { getAuthStatus, getActualUserWallet, doTrade } = useAuth();
+    const { getActualPair, getActualPairPrice } = useTrading();
+    const { getAuthStatus, getActualUserWallet } = useAuth();
+    const { doTrade, getPair } = useAPI();
 
     useEffect(() => {
         if (getAuthStatus() !== "-2" && getAuthStatus() !== "1")

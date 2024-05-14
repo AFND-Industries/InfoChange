@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 
-import { toUser } from "../../types/user";
+import { toUser } from "../../@types/user";
 
 import axios from "axios";
 
@@ -13,11 +13,12 @@ export const AuthProvider = ({ children }) => {
 
     const getAuthStatus = () => authStatus;
     const getActualUser = () => actualUser;
-    const getActualUserWallet = () => actualUser === null ? null : actualUser.wallet;
+    const getActualUserWallet = () =>
+        actualUser === null ? null : actualUser.wallet;
 
     const get = async (url) =>
         await axios.get(SERVER_URL + url, {
-            withCredentials: true
+            withCredentials: true,
         });
 
     const post = async (url, parameters) =>
@@ -25,7 +26,8 @@ export const AuthProvider = ({ children }) => {
             withCredentials: true,
         });
 
-    async function auth() { // yo pondria que el wallet lo devolviese tambien el auth y asi es solo una peticion
+    async function auth() {
+        // yo pondria que el wallet lo devolviese tambien el auth y asi es solo una peticion
         const response = await get("/auth");
         const walletRes = await get("/wallet");
 
@@ -35,11 +37,12 @@ export const AuthProvider = ({ children }) => {
             const user = response.data.user;
             const wallet = walletRes.data.wallet;
 
-            setActualUser(prevActualUser => { // Todo esto es para que si no ha cambiado no haga un setState de nuevo y recargue todo
-                if (prevActualUser === null || prevActualUser === undefined || JSON.stringify(user) != JSON.stringify(prevActualUser.profile) || JSON.stringify(wallet) != JSON.stringify(prevActualUser.wallet))
+            setActualUser((prevActualUser) => {
+                if (prevActualUser === null || prevActualUser === undefined ||
+                    JSON.stringify(user) != JSON.stringify(prevActualUser.profile) ||
+                    JSON.stringify(wallet) != JSON.stringify(prevActualUser.wallet))
                     return toUser(user, wallet);
-                else
-                    return prevActualUser;
+                else return prevActualUser;
             });
         } else {
             setActualUser(null);
@@ -76,12 +79,6 @@ export const AuthProvider = ({ children }) => {
         return response;
     }
 
-    async function trade(symbol, quantity, type) {
-        const response = await post("/trade?", { symbol: symbol, quantity: quantity, type: type })
-        if (response.data.status === "1") await doAuth();
-
-        return response;
-    };
 
     const doAction = async (func) => {
         let response;
@@ -104,11 +101,6 @@ export const AuthProvider = ({ children }) => {
     const doCheckEmail = async (email) => await doAction(() => checkEmail(email));
     const doRegister = async (user) => await doAction(() => register(user));
 
-    // meter en apicontext
-    const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
-    const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
-    const buyProduct = async (buy) => await post("/payment", buy);
-
     useEffect(() => {
         doAuth(); // Initial auth
 
@@ -126,10 +118,8 @@ export const AuthProvider = ({ children }) => {
                 doCheckEmail,
                 doLogin,
                 doLogout,
-                doTrade,
                 doRegister,
-                buyProduct,
-                doTradeHistory
+                doAction
             }}
         >
             {children}
