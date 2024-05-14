@@ -75,55 +75,55 @@ function Login() {
                                 <h2 className="text-secondary card-title mb-4">
                                     Iniciar sesión
                                 </h2>
-                                <div className="row mb-2 text-start d-flex align-items-center">
-                                    <div className="col-4">
-                                        <label>Usuario</label>
-                                    </div>
-                                    <div className="col-8">
-                                        <input
-                                            type="text"
-                                            ref={user}
-                                            className="form-control"
-                                            placeholder="Tu usuario..."
-                                            value={Fuser}
-                                            onChange={(e) =>
-                                                handleUserChange(e.target.value)
-                                            }
-                                        />
-                                    </div>
+                                <div className="mb-3 text-start">
+                                    <label
+                                        htmlFor="userInput"
+                                        className="form-label"
+                                    >
+                                        Usuario
+                                    </label>
+                                    <input
+                                        type="text"
+                                        ref={user}
+                                        className="form-control"
+                                        value={Fuser}
+                                        id="userInput"
+                                        onChange={(e) =>
+                                            handleUserChange(e.target.value)
+                                        }
+                                    />
                                 </div>
-                                <div className="row mb-4 text-start d-flex align-items-center">
-                                    <div className="col-4">
-                                        <label>Contraseña</label>
-                                    </div>
-                                    <div className="col-8">
-                                        <div className="input-group">
-                                            <input
-                                                type={inputType}
-                                                ref={pass}
-                                                className="form-control"
-                                                placeholder="Tu contraseña..."
-                                            />
-                                            <button
-                                                type="button"
-                                                className="btn btn-dark"
-                                                onMouseDown={
-                                                    togglePasswordVisibility
-                                                }
-                                                onMouseUp={
-                                                    togglePasswordVisibility
-                                                }
-                                                onMouseLeave={() =>
-                                                    setInputType("password")
-                                                }
-                                            >
-                                                {showPassword ? (
-                                                    <Icons.Eye />
-                                                ) : (
-                                                    <Icons.EyeSlash />
-                                                )}
-                                            </button>
-                                        </div>
+                                <div className="mb-4 text-start">
+                                    <label
+                                        htmlFor="passInput"
+                                        className="form-label"
+                                    >
+                                        Contraseña
+                                    </label>
+                                    <div className="input-group">
+                                        <input
+                                            type={inputType}
+                                            ref={pass}
+                                            className="form-control"
+                                            id="passInput"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn btn-dark"
+                                            onMouseDown={
+                                                togglePasswordVisibility
+                                            }
+                                            onMouseUp={togglePasswordVisibility}
+                                            onMouseLeave={() =>
+                                                setInputType("password")
+                                            }
+                                        >
+                                            {showPassword ? (
+                                                <Icons.Eye />
+                                            ) : (
+                                                <Icons.EyeSlash />
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
 
