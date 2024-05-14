@@ -1,5 +1,6 @@
 import React from "react";
 import { useAdmin } from "./context/AdminContext";
+import Banner from "../../assets/admin_banner.png";
 
 export default function AdminPage() {
     const {
@@ -25,8 +26,8 @@ export default function AdminPage() {
     return (
         <div className="container mt-4 mb-4">
             <div className="row">
-                <div className="col-12 text-center mb-4">
-                    <h1>Panel de Administrador - InfoMetrics</h1>
+                <div className="col-12 mb-4">
+                    <img src={Banner} style={{ width: "30%", minWidth: "250px" }} />
                 </div>
             </div>
             <div className="row">
