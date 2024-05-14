@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.15.17",
     "@mui/material": "^5.15.17",
     "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "bs-stepper": "^1.7.0",
     "formik": "^2.4.6",
