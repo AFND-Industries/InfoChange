@@ -19,7 +19,6 @@ const TradingContext = createContext();
 // cambiar modo, cambiar grafico, posicion del marquee configurable
 
 const LOSIGUIENTE = 1;
-// panel admin
 // infobizum
 // MOSTRAR EN TRADING ANTES Q HACER FAVORITOS LA LISTA DE MONEDAS QUE TIENES
 // boton en trading para ver historial?

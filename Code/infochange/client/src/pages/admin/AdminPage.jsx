@@ -86,9 +86,9 @@ export default function AdminPage() {
                                     <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center">
                                         <img src={coin.logo} alt={coin.name} className="me-2 rounded-4"
                                             style={{ width: "40px", height: "40px" }} />
-                                        <span className="h5">
+                                        <span className="h5 m-0">
                                             <span className="fw-bold m-0 me-2">{coin.name}: </span>
-                                            <span>{coin.volume.toFixed(8)} {coin.symbol}</span>
+                                            <span className="m-0">{coin.volume.toFixed(8)} {coin.symbol}</span>
                                             <span className="h6 text-secondary m-0"> ~{coin.dolar_volume.toFixed(2)}$</span>
                                         </span>
                                     </li>
