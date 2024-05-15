@@ -344,7 +344,7 @@ app.post("/bizum", (req, res) => {
 });
 
 app.get("/bizum_users", (req, res) => {
-    db.query("SELECT name, lastName, username, id FROM usuario WHERE username != 'admin';", (err, result) => {
+    db.query("SELECT name, lastName, username, id FROM usuario;", (err, result) => {
         if (err) {
             res.json(error(err.code, err.sqlMessage));
         } else {
@@ -361,7 +361,7 @@ app.get("/admin", (req, res) => {
         res.json(error("UNAUTHORIZED", "No eres administrador"));
     } else {
         let usersPromise = new Promise((resolve, reject) => {
-            db.query("SELECT username, id FROM usuario WHERE username;", (err, result) => {
+            db.query("SELECT username, id FROM usuario;", (err, result) => {
                 if (err) reject(err);
                 else resolve(result);
             });
