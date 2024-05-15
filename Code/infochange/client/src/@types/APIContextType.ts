@@ -7,6 +7,7 @@ export interface APIContextType {
     buyProduct: (buy: Cart) => Promise<AxiosResponse<PaymentResponse>>,
     doTradeHistory,
     doTrade,
+    doBizum,
     getPair,
     getPairPrice,
     getTokenInfo,

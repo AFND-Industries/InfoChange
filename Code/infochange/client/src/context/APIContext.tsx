@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import axios, { AxiosResponse } from "axios"
+import axios from "axios"
 import { Cart } from "../@types/payment";
 import { APIContextType } from "../@types/APIContextType";
 
@@ -97,15 +97,27 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return response;
     }
 
+    async function bizum(userid, amount) {
+        const response = await post("/bizum", {
+            userid: userid,
+            amount: amount,
+        });
+        if (response.data.status === "1") await doAuth();
+
+        return response;
+    }
+
     const buyProduct = async (buy: Cart) => await post("/payment", buy);
     const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
     const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
+    const doBizum = async (userid, amount) => await doAction(() => bizum(userid, amount));
 
     return (
         <APIContext.Provider value={{
             buyProduct,
             doTradeHistory,
             doTrade,
+            doBizum,
             getPair,
             getPairPrice,
             getTokenInfo,

@@ -282,12 +282,86 @@ app.post("/register", (req, res) => {
     }
 });
 
+app.get("/bizum_history", (req, res) => {
+    res.json([]);
+});
+
+app.post("/bizum", (req, res) => {
+    if (!req.session.user) {
+        res.json(error("UNAUTHORIZED", "No ha iniciado sesión"));
+    } else {
+        const userid = req.body.userid;
+        const amount = req.body.amount;
+        const coin = "USDT";
+
+        if (!userid || !amount)
+            return res.json(error("MISSING_PARAMETERS", "Faltan parámetros."));
+
+        if (isNaN(amount) || amount < 0)
+            return res.json(error("INVALID_AMOUNT", "Cantidad inválida."));
+
+        const sentAmount = parseFloat(parseFloat(amount).toFixed(8));
+        db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${coin}' AND user = ${req.session.user.ID};`,
+            (err, result) => {
+                if (err)
+                    return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+
+                const currentDollarAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity.toFixed(8));
+                if (currentDollarAmount < sentAmount)
+                    return res.json(error("INSUFFICIENT_BALANCE", `No tienes suficientes ${coin}.`));
+
+                const newBizumerAmount = currentDollarAmount - sentAmount;
+                const bizumerQuery =
+                    newBizumerAmount === 0
+                        ? `DELETE FROM cartera WHERE coin = '${coin}' AND user = ${req.session.user.ID};`
+                        : `UPDATE cartera SET quantity = ${newBizumerAmount.toFixed(8)} WHERE coin = '${coin}' AND user = ${req.session.user.ID};`;
+
+                db.query(bizumerQuery, (err, result) => {
+                    if (err)
+                        return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+
+                    db.query(`SELECT quantity FROM cartera WHERE user = ${userid} AND coin = ${coin};`, (err, result) => {
+                        if (err)
+                            return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+
+                        const bizumedQuery =
+                            result.length > 0
+                                ? `UPDATE cartera SET quantity = quantity + ${sentAmount.toFixed(8)} WHERE coin = '${coin}' AND user = ${userid};`
+                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID}, '${coin}', ${sentAmount.toFixed(8)});`;
+                        db.query(bizumedQuery, (err, result) => {
+                            if (err)
+                                return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+
+                            return res.json({
+                                status: "1"
+                            });
+                        });
+                    });
+                });
+            }
+        );
+    }
+});
+
+app.get("/bizum_users", (req, res) => {
+    db.query("SELECT name, lastName, username, id FROM usuario WHERE username != 'admin';", (err, result) => {
+        if (err) {
+            res.json(error(err.code, err.sqlMessage));
+        } else {
+            res.json({
+                status: 1,
+                users: result,
+            });
+        }
+    });
+});
+
 app.get("/admin", (req, res) => {
     if (!req.session.user || req.session.user.name !== "admin") {
         res.json(error("UNAUTHORIZED", "No eres administrador"));
     } else {
         let usersPromise = new Promise((resolve, reject) => {
-            db.query("SELECT username, id FROM usuario;", (err, result) => {
+            db.query("SELECT username, id FROM usuario WHERE username;", (err, result) => {
                 if (err) reject(err);
                 else resolve(result);
             });
