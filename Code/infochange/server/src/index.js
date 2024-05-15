@@ -242,7 +242,7 @@ app.post("/register", (req, res) => {
   } else {
     const query = `
     INSERT INTO usuario (
-        firstName,
+        name,
         lastName,
         birthday,
         sexo,
@@ -250,11 +250,11 @@ app.post("/register", (req, res) => {
         email,
         password,
         secureQuestionText,
-        direccion,
+        address,
         ciudad,
-        codigoPostal,
-        pais,
-        telefono
+        postalCode,
+        country,
+        phone
     ) VALUES (
         '${user.firstName}',
         '${user.lastName}',
@@ -308,9 +308,9 @@ app.post("/register", (req, res) => {
     //         secureQuestionText,
     //         direccion,
     //         ciudad,
-    //         codigoPostal,
-    //         pais,
-    //         telefono
+    //         postalCode,
+    //         country,
+    //         phone
     //     ) VALUES (
     //         '${user.firstName}',
     //         '${user.lastName}',

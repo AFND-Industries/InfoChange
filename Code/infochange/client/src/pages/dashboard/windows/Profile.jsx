@@ -8,7 +8,7 @@ export default function Profile(props) {
     },
     {
       label: "Nombre",
-      value: profile.firstName,
+      value: profile.name,
     },
     {
       label: "Apellidos",
@@ -23,15 +23,15 @@ export default function Profile(props) {
   const taxInformation = [
     {
       label: "Dirección",
-      value: profile.direccion,
+      value: profile.address,
     },
     {
       label: "Código postal",
-      value: profile.codigoPostal,
+      value: profile.postalCode,
     },
     {
       label: "Teléfono",
-      value: profile.telefono,
+      value: profile.phone,
     },
     {
       label: "Documento de identificación",
