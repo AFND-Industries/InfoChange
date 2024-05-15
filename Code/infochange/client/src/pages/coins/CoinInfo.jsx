@@ -16,10 +16,10 @@ export default function CoinInfo(props) {
   const { coin, key } = props;
   const navigate = useNavigate();
   const location = useLocation();
-  const [symbolCoin, setSymbolCoin] = useState(1);
+  const [symbolCoin, setSymbolCoin] = useState();
   const { doGetCoinPrice } = useCoins();
   const [price, setPrice] = useState("");
-  const [dollar, setDollar] = useState(price);
+  const [dollar, setDollar] = useState();
   const [showModal, setShowModal] = useState(false);
   const [activeNavItem, setActiveNavItem] = useState("");
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 990);
@@ -308,14 +308,6 @@ export default function CoinInfo(props) {
             <i class="bi bi-chevron-right"></i> &ensp;
             <span className="text-dark">{coin.name}</span>
           </div>
-          <div className="mt-2 d-flex align-items-center">
-            <button
-              className="btn btn-outline-primary rounded h-25"
-              onClick={onClickTrading}
-            >
-              Ir a Trading{" "}
-            </button>
-          </div>
         </div>
       </div>
       <div className="row mx-3">
@@ -442,6 +434,21 @@ export default function CoinInfo(props) {
                   <div className="row my-2">{renderUrls()}</div>
                 </div>
               </div>
+              <div className="row mb-2">
+                <div className="col">
+                  <span>
+                    <strong> Para comprar la moneda {coin.name}: </strong>{" "}
+                  </span>
+                  <div className="row my-2 mx-1">
+                    <button
+                      className="btn btn-success"
+                      onClick={onClickTrading}
+                    >
+                      Compra aquí
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div className="row my-4">
                 <h5 className="text-secondary">
                   <strong className="text-dark">
@@ -525,7 +532,12 @@ export default function CoinInfo(props) {
                         (activeNavItem === "one" || activeNavItem === "") &&
                         "active"
                       }`}
-                      href="#one"
+                      href="javascript:void(0)"
+                      onClick={(event) => {
+                        document
+                          .getElementById("one")
+                          .scrollIntoView({ behavior: "smooth" });
+                      }}
                     >
                       Gráfico
                     </a>
@@ -535,7 +547,12 @@ export default function CoinInfo(props) {
                       className={`nav-link ${
                         activeNavItem === "two" && "active"
                       }`}
-                      href="#two"
+                      href="javascript:void(0)"
+                      onClick={(event) => {
+                        document
+                          .getElementById("two")
+                          .scrollIntoView({ behavior: "smooth" });
+                      }}
                     >
                       Noticias
                     </a>
