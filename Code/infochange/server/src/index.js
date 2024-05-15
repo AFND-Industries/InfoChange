@@ -293,7 +293,7 @@ app.post("/bizum", (req, res) => {
         const userid = req.body.userid;
         const amount = req.body.amount;
         const coin = "USDT";
-
+        console.log(req.body);
         if (!userid || !amount)
             return res.json(error("MISSING_PARAMETERS", "Faltan parámetros."));
 
@@ -320,14 +320,14 @@ app.post("/bizum", (req, res) => {
                     if (err)
                         return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
 
-                    db.query(`SELECT quantity FROM cartera WHERE user = ${userid} AND coin = ${coin};`, (err, result) => {
+                    db.query(`SELECT quantity FROM cartera WHERE user = ${userid} AND coin = '${coin}';`, (err, result) => {
                         if (err)
                             return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
 
                         const bizumedQuery =
                             result.length > 0
                                 ? `UPDATE cartera SET quantity = quantity + ${sentAmount.toFixed(8)} WHERE coin = '${coin}' AND user = ${userid};`
-                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID}, '${coin}', ${sentAmount.toFixed(8)});`;
+                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${userid}, '${coin}', ${sentAmount.toFixed(8)});`;
                         db.query(bizumedQuery, (err, result) => {
                             if (err)
                                 return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
@@ -349,7 +349,7 @@ app.get("/bizum_users", (req, res) => {
             res.json(error(err.code, err.sqlMessage));
         } else {
             res.json({
-                status: 1,
+                status: "1",
                 users: result,
             });
         }

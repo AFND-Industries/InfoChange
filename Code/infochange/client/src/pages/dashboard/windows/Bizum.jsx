@@ -6,15 +6,12 @@ import axios from "axios";
 
 export default function Bizum({ user }) {
     const { doBizum } = useAPI();
-    /*
-        const loadingScreen = document.getElementById("loading-screen");
 
-        loadingScreen.style.display = "block";
-        const response = await doTrade(getActualPair().symbol, paidAmount, action);
-        loadingScreen.style.display = "none";
-    */
     const [userInput, setUserInput] = useState("");
+    const handleUserInput = (event) => setUserInput(event.target.value);
+
     const [amountInput, setAmountInput] = useState("");
+    const handleAmountInput = (event) => setAmountInput(event.target.value);
 
     const [userList, setUserList] = useState(undefined);
     useEffect(() => { // Esto no está en API context porque solo se usa aquí de manera muy precisa
@@ -30,6 +27,24 @@ export default function Bizum({ user }) {
 
         loadBizumUsers();
     }, []);
+
+    const handleBizum = async (username, amount) => {
+        const sentAmount = parseFloat(amount);
+
+        if (userList !== undefined) {
+            const user = Object.values(userList).filter(u => u.username === username)[0];
+
+            if (user !== undefined) {
+                const loadingScreen = document.getElementById("loading-screen");
+
+                loadingScreen.style.display = "block";
+                const response = await doBizum(user.id, sentAmount);
+                loadingScreen.style.display = "none";
+
+                console.log(response);
+            }
+        }
+    }
 
     const dolarWallet = Object.values(user.wallet).filter(w => w.coin === "USDT");
     const userDolarBalance = dolarWallet.length === 0 ? 0 : dolarWallet[0].quantity;
@@ -51,6 +66,7 @@ export default function Bizum({ user }) {
                             className="form-control"
                             placeholder="Usuario..."
                             value={userInput}
+                            onChange={handleUserInput}
                         />
                     </div>
                 </div>
@@ -62,6 +78,7 @@ export default function Bizum({ user }) {
                             className="form-control"
                             placeholder="Cantidad..."
                             value={amountInput}
+                            onChange={handleAmountInput}
                         />
                         <span className="input-group-text">$</span>
                     </div>
@@ -71,9 +88,7 @@ export default function Bizum({ user }) {
                 <div className="col-12 mb-4 text-end">
                     <button
                         className="btn btn-success"
-                        onClick={() => {
-                            console.log(userInput, amountInput, userList);
-                        }}
+                        onClick={() => handleBizum(userInput, amountInput)}
                     >
                         Confirmar
                     </button>

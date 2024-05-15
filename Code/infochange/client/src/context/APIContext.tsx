@@ -100,9 +100,10 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     async function bizum(userid, amount) {
         const response = await post("/bizum", {
             userid: userid,
-            amount: amount,
+            amount: amount
         });
-        if (response.data.status === "1") await doAuth();
+        if (response.data.status === "1")
+            await doAuth();
 
         return response;
     }
