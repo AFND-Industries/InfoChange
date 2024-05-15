@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 import { Navigate } from "react-router-dom";
 
-import { PersonFill, Wallet2, LayoutTextSidebar } from "react-bootstrap-icons";
+import { PersonFill, Wallet2, LayoutTextSidebar, Send } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
 import History from "./windows/History";
+import Bizum from "./windows/Bizum";
 
 import { useAuth } from "../authenticator/AuthContext";
 import { useAPI } from "../../context/APIContext";
@@ -36,10 +37,11 @@ function Dashboard() {
     let pages = [
         <Profile profile={user.profile} />,
         <Wallet wallet={user.wallet ?? {}} />,
-        <History history={tradeHistory} />
+        <History history={tradeHistory} />,
+        <Bizum user={user} />
     ];
 
-    const labels = ["Perfil", "Cartera", "Historial"];
+    const labels = ["Perfil", "Cartera", "Historial", "Bizum"];
 
     return (
         <div className="container">
@@ -74,6 +76,15 @@ function Dashboard() {
                         >
                             <LayoutTextSidebar className="me-3" />
                             Historial
+                        </button>
+                        <button
+                            type="button"
+                            className={`list-group-item list-group-item-action ${page === 3 ? "active" : ""
+                                } d-flex align-items-center`}
+                            onClick={() => setPage(3)}
+                        >
+                            <Send className="me-3" />
+                            Bizum
                         </button>
                     </div>
                 </div>

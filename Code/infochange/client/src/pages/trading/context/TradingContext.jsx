@@ -20,6 +20,7 @@ const TradingContext = createContext();
 
 const LOSIGUIENTE = 1;
 // infobizum
+// poner lop de cargando como compoennete y que tmb esté en payment
 // MOSTRAR EN TRADING ANTES Q HACER FAVORITOS LA LISTA DE MONEDAS QUE TIENES
 // boton en trading para ver historial?
 // diseño responsive como en binance qe en el movil tiene uno que swapeas a comprar y otro q swapeas a vender
