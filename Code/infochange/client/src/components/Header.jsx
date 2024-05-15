@@ -1,10 +1,11 @@
 import { useState } from "react";
 import banner from "../assets/banner.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
 import { useAuth } from "../pages/authenticator/AuthContext";
 
 export default function Header() {
+    const navigate = useNavigate();
     const { getActualUser, doLogout } = useAuth();
 
     let items = [
@@ -87,7 +88,10 @@ export default function Header() {
                                 </div>
                                 <button
                                     className="btn btn-primary"
-                                    onClick={doLogout}
+                                    onClick={() => {
+                                        navigate("/");
+                                        doLogout();
+                                    }}
                                 >
                                     Cerrar Sesión
                                 </button>
