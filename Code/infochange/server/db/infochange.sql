@@ -4,7 +4,7 @@ use infochange;
 
 CREATE TABLE IF NOT EXISTS usuario (
     ID INT AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     lastName VARCHAR(255) NOT NULL,
     birthday DATE NOT NULL,
     sexo VARCHAR(10) NOT NULL,
@@ -12,11 +12,11 @@ CREATE TABLE IF NOT EXISTS usuario (
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     secureQuestionText VARCHAR(255) NOT NULL,
-    direccion VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
     ciudad VARCHAR(255) NOT NULL,
-    codigoPostal VARCHAR(10) NOT NULL,
-    pais VARCHAR(255) NOT NULL,
-    telefono VARCHAR(20) NOT NULL
+    postalCode VARCHAR(10) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL
 );
 
 
