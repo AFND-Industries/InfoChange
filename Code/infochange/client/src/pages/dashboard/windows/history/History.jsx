@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TradeHistory from "./components/TradeHistory";
 import BizumHistory from "./components/BizumHistory";
 
-export default function History({ tradeHistory, bizumHistory, bizumUsers }) {
+export default function History({ user, tradeHistory, bizumHistory, bizumUsers }) {
     const [historyMode, setHistoryMode] = useState(0);
 
     const handleModeChange = () => {
@@ -23,7 +23,7 @@ export default function History({ tradeHistory, bizumHistory, bizumUsers }) {
             </div>
             <div className="row px-5 py-4">
                 <div className="col">
-                    <HistoryComponent tradeHistory={tradeHistory} bizumHistory={bizumHistory} bizumUsers={bizumUsers} />
+                    <HistoryComponent tradeHistory={tradeHistory} bizumHistory={bizumHistory} bizumUsers={bizumUsers} user={user} />
                 </div>
             </div>
         </>

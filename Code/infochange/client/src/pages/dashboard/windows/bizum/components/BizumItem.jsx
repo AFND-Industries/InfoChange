@@ -1,6 +1,6 @@
 import React from "react";
 
-const BizumItem = ({ sender, receiver, bizum }) => {
+const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
     const altPhoto = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
     const transactionDate = new Date(bizum.date);
@@ -29,6 +29,14 @@ const BizumItem = ({ sender, receiver, bizum }) => {
         </div>
     );
 
+    let formattedQuantity = bizum.quantity + "$";
+    if (!admin) {
+        if (user.profile.ID === sender.id)
+            formattedQuantity = <span className="text-danger">-{formattedQuantity}</span>;
+        else
+            formattedQuantity = <span className="text-success">+{formattedQuantity}</span>;
+    }
+
     return (
         <li key={bizum.id} className="list-group-item">
             <div className="row align-items-center">
@@ -42,7 +50,7 @@ const BizumItem = ({ sender, receiver, bizum }) => {
                     {userDraw(receiver)}
                 </div>
                 <div className="col-md-3 d-flex flex-column align-items-center align-items-md-end">
-                    <span className="fw-bold">{bizum.quantity}$</span>
+                    <span className="fw-bold">{formattedQuantity}</span>
                     <span className="text-secondary" style={{ fontSize: "0.9em" }}>{formattedDate}</span>
                 </div>
             </div>

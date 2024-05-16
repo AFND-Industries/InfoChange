@@ -1,7 +1,7 @@
 import React from "react";
 import BizumItem from "../../bizum/components/BizumItem";
 
-const BizumHistory = ({ bizumHistory, bizumUsers }) => {
+const BizumHistory = ({ bizumHistory, bizumUsers, user }) => {
     let renderBizumHistory = null;
 
     const findUserById = (id) => Object.values(bizumUsers).filter(user => user.id == id)[0];
@@ -13,7 +13,7 @@ const BizumHistory = ({ bizumHistory, bizumUsers }) => {
             const sender = findUserById(transaction.sender);
             const receiver = findUserById(transaction.receiver);
 
-            return <BizumItem sender={sender} receiver={receiver} bizum={transaction} />
+            return <BizumItem user={user} sender={sender} receiver={receiver} bizum={transaction} />
         });
     }
 

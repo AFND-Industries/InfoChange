@@ -53,7 +53,7 @@ function Dashboard() {
     let pages = [
         <Profile profile={user.profile} />,
         <Wallet wallet={user.wallet ?? {}} />,
-        <History tradeHistory={tradeHistory} bizumHistory={bizumHistory} bizumUsers={bizumUsers} />,
+        <History tradeHistory={tradeHistory} bizumHistory={bizumHistory} bizumUsers={bizumUsers} user={user} />,
         <Bizum user={user} bizumUsers={bizumUsers} />
     ];
 
