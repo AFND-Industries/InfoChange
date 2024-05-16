@@ -6,6 +6,7 @@ import Banner from "../../../assets/bizum_banner.png";
 import { useAPI } from "../../../context/APIContext";
 
 import axios from "axios";
+import UserItem from "../components/UserItem";
 
 const countDecimals = (number) => {
     const decimalIndex = number.indexOf('.');
@@ -18,11 +19,14 @@ export default function Bizum({ user }) {
     const MAXVALUE = 1000000000;
     const MAXDECIMALS = 2;
 
-    const [bizumedUser, setBizumedUser] = useState(undefined);
+    const [userRegexList, setUserRegexList] = useState([]);
     const [userInput, setUserInput] = useState("");
-    const handleUserInput = (event) => {
-        setUserInput(event.target.value);
-        setBizumedUser(userList !== undefined ? Object.values(userList).filter(u => u.username === event.target.value)[0] : userList);
+    const handleUserInput = (regex) => {
+        setUserInput(regex);
+
+        setUserRegexList(userList !== undefined && regex.length > 0 ?
+            Object.values(userList).filter(u => u.id != user.profile.ID &&
+                u.username.toLowerCase().startsWith(regex.toLowerCase())).slice(0, 5) : []);
     }
 
     const [amountInput, setAmountInput] = useState("");
@@ -80,7 +84,17 @@ export default function Bizum({ user }) {
         toast.show();
     }
 
-    const activeButton = parseFloat(amountInput) <= userDolarBalance && parseFloat(amountInput) > 0 && bizumedUser !== undefined;
+    const activeButton =
+        parseFloat(amountInput) <= userDolarBalance &&
+        parseFloat(amountInput) > 0 &&
+        userRegexList[0] !== undefined &&
+        userRegexList[0].username === userInput &&
+        userRegexList[0].id != user.profile.ID;
+
+    const usersObject = userList === undefined ? [] :
+        userRegexList.map(user => (
+            <UserItem user={user} onClick={() => handleUserInput(user.username)} />
+        ));
 
     return (
         <>
@@ -89,21 +103,27 @@ export default function Bizum({ user }) {
                     <img src={Banner} style={{ width: "50%", minWidth: "150px" }} />
                 </div>
             </div>
+
             <div className="row mx-5 d-flex align-items-center">
-                <div className="col-md-6 mb-4">
+                <div className="col-md-7 mb-4">
                     <div style={{ height: "1.5em" }}></div>
-                    <div className="input-group">
-                        <span className="input-group-text">@</span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Usuario..."
-                            value={userInput}
-                            onChange={handleUserInput}
-                        />
+                    <div className="d-flex">
+                        <div className="dropdown w-100 me-2">
+                            <input
+                                data-bs-toggle="dropdown"
+                                className="form-control dropdown-toggle"
+                                placeholder="Buscar usuario..."
+                                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                                value={userInput}
+                                onChange={(event) => handleUserInput(event.target.value)} />
+
+                            <ul class="dropdown-menu" style={{ opacity: (usersObject.length > 0 ? "100%" : "0") }}>
+                                {usersObject}
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div className="col-md-6 mb-4">
+                <div className="col-md-3 mb-4">
                     <span>Disponible: {userDolarBalance.toFixed(2)}$</span>
                     <div className="input-group">
                         <input
@@ -116,17 +136,16 @@ export default function Bizum({ user }) {
                         <span className="input-group-text">$</span>
                     </div>
                 </div>
-            </div>
-            <div className="row mx-5">
-                <div className="col-12 mb-4 text-end">
+                <div className="col-md-2 mb-4">
+                    <div style={{ height: "1.5em" }}></div>
                     <button
                         className={`btn btn-success${activeButton ? "" : " disabled"}`}
-                        onClick={() => handleBizum(userInput, amountInput)}
+                        onClick={() => handleBizum(userRegexList[0], amountInput)}
                     >
                         Confirmar
                     </button>
                 </div>
-            </div>
+            </div >
 
             <BizumToast />
         </>

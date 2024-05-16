@@ -66,7 +66,7 @@ export default function AdminPage() {
                                     {usersByBalance.map((user, index) => (
                                         <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center">
                                             <img onError={(event) => event.target.src = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"}
-                                                src={"https://github.com/" + user.username + ".png"} alt={user.username} className="me-2 rounded-4"
+                                                src={"https://github.com/" + user.username + ".png"} alt={user.username} className="me-2 rounded-5"
                                                 style={{ width: "40px", height: "40px" }} />
                                             <span className="fw-bold h5 m-0">{user.username}</span>
                                             <span className="h5 m-0">:  {user.totalBalance.toFixed(2)}$</span>

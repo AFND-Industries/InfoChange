@@ -293,7 +293,7 @@ app.post("/bizum", (req, res) => {
         const userid = req.body.userid;
         const amount = req.body.amount;
         const coin = "USDT";
-        console.log(req.body);
+
         if (!userid || !amount)
             return res.json(error("MISSING_PARAMETERS", "Faltan parámetros."));
 
