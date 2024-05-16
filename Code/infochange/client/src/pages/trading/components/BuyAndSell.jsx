@@ -146,7 +146,7 @@ function BuyAndSell({ style = 1 }) {
 
     const showTradeDoneToast = (title, message) => {
         const toast = new bootstrap.Toast(document.getElementById("trade-toast"), {
-            autohide: false
+            autohide: true
         });
         const toastTitle = document.getElementById("trade-toast-title");
         const toastBody = document.getElementById("trade-toast-body");
