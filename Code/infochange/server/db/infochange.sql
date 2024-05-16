@@ -42,3 +42,16 @@ CREATE TABLE IF NOT EXISTS trade_history (
   KEY userfk_idx (user),
   CONSTRAINT userfk FOREIGN KEY (user) REFERENCES usuario (ID)
 );
+
+CREATE TABLE `bizum_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sender` int NOT NULL,
+  `receiver` int NOT NULL,
+  `quantity` double NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sender_fk_idx` (`sender`),
+  KEY `receiver_fk_idx` (`receiver`),
+  CONSTRAINT `receiver_fk` FOREIGN KEY (`receiver`) REFERENCES `usuario` (`ID`),
+  CONSTRAINT `sender_fk` FOREIGN KEY (`sender`) REFERENCES `usuario` (`ID`)
+);
