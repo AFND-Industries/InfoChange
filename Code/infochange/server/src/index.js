@@ -332,9 +332,25 @@ app.post("/bizum", (req, res) => {
                             if (err)
                                 return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
 
-                            return res.json({
-                                status: "1"
-                            });
+                            const currentDate = new Date();
+                            const year = currentDate.getFullYear();
+                            const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+                            const day = ("0" + currentDate.getDate()).slice(-2);
+                            const hours = ("0" + currentDate.getHours()).slice(-2);
+                            const minutes = ("0" + currentDate.getMinutes()).slice(-2);
+                            const seconds = ("0" + currentDate.getSeconds()).slice(-2);
+
+                            const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                            db.query(`INSERT INTO bizum_history (sender, receiver, quantity, date) VALUES 
+                            (${req.session.user.ID}, ${userid}, ${sentAmount.toFixed(2)}, '${formattedDate}')`, (err, result) => {
+                                if (err)
+                                    return res.json(error("HISTORY_ERROR", "Se ha producido un error inesperado"));
+
+                                return res.json({
+                                    status: "1"
+                                });
+                            })
                         });
                     });
                 });
