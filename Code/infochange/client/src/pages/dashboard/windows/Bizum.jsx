@@ -84,6 +84,7 @@ export default function Bizum({ user }) {
         toast.show();
     }
 
+    const isInputInvalid = amountInput !== '' && parseFloat(amountInput) > userDolarBalance;
     const activeButton =
         parseFloat(amountInput) <= userDolarBalance &&
         parseFloat(amountInput) > 0 &&
@@ -117,7 +118,7 @@ export default function Bizum({ user }) {
                                 value={userInput}
                                 onChange={(event) => handleUserInput(event.target.value)} />
 
-                            <ul class="dropdown-menu" style={{ opacity: (usersObject.length > 0 ? "100%" : "0") }}>
+                            <ul className="dropdown-menu" style={{ opacity: (usersObject.length > 0 ? "100%" : "0") }}>
                                 {usersObject}
                             </ul>
                         </div>
@@ -128,7 +129,7 @@ export default function Bizum({ user }) {
                     <div className="input-group">
                         <input
                             type="text"
-                            className="form-control"
+                            className={"form-control" + (isInputInvalid ? " is-invalid" : "")}
                             placeholder="Cantidad..."
                             value={amountInput}
                             onChange={handleAmountInput}
