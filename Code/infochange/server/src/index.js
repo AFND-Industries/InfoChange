@@ -283,7 +283,33 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/bizum_history", (req, res) => {
-    res.json([]);
+    if (!req.session.user) {
+        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+    }
+
+    const query = `SELECT sender, receiver, quantity, date FROM bizum_history WHERE sender = ${req.session.user.ID} OR receiver = ${req.session.user.ID};`;
+    db.query(query, (err, result) => {
+        if (err)
+            return res.json(
+                error("SELECT_ERROR", "Se ha producido un error inesperado")
+            );
+
+        const bizumHistory = [];
+        result.forEach((row) => {
+            const bizum = {
+                sender: row.sender,
+                receiver: row.receiver,
+                quantity: row.quantity,
+                date: row.date,
+            };
+            bizumHistory.push(bizum);
+        });
+
+        res.json({
+            status: "1",
+            bizumHistory: bizumHistory,
+        });
+    });
 });
 
 app.post("/bizum", (req, res) => {
