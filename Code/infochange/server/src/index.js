@@ -404,7 +404,7 @@ app.get("/admin", (req, res) => {
         res.json(error("UNAUTHORIZED", "No eres administrador"));
     } else {
         let usersPromise = new Promise((resolve, reject) => {
-            db.query("SELECT username, id FROM usuario;", (err, result) => {
+            db.query("SELECT name, lastName, username, id FROM usuario;", (err, result) => {
                 if (err) reject(err);
                 else resolve(result);
             });
@@ -427,8 +427,18 @@ app.get("/admin", (req, res) => {
             );
         });
 
-        Promise.all([usersPromise, walletsPromise, tradeHistoryPromise])
-            .then(([users, wallets, tradeHistory]) => {
+        let bizumHistoryPromise = new Promise((resolve, reject) => {
+            db.query(
+                "SELECT id, sender, receiver, quantity, date FROM bizum_history;",
+                (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }
+            );
+        });
+
+        Promise.all([usersPromise, walletsPromise, tradeHistoryPromise, bizumHistoryPromise])
+            .then(([users, wallets, tradeHistory, bizumHistory]) => {
                 let payment_history = []; // Aquí puedes hacer lo que necesites con payment_history
 
                 res.json({
@@ -437,6 +447,7 @@ app.get("/admin", (req, res) => {
                         users: users,
                         wallets: wallets,
                         trade_history: tradeHistory,
+                        bizum_history: bizumHistory,
                         payment_history: payment_history,
                     },
                 });

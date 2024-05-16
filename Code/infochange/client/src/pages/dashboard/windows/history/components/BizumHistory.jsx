@@ -2,24 +2,22 @@ import React from "react";
 import BizumItem from "../../bizum/components/BizumItem";
 
 const BizumHistory = ({ bizumHistory, bizumUsers, user }) => {
-    let renderBizumHistory = null;
+    const findUserById = (id) => bizumUsers.find(user => user.id === id);
 
-    const findUserById = (id) => Object.values(bizumUsers).filter(user => user.id == id)[0];
+    const renderBizumHistory = bizumHistory
+        ? bizumHistory
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .map((transaction, index) => {
+                const sender = findUserById(transaction.sender);
+                const receiver = findUserById(transaction.receiver);
 
-    if (bizumHistory) {
-        const sortedHistory = bizumHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        renderBizumHistory = sortedHistory.map((transaction, index) => {
-            const sender = findUserById(transaction.sender);
-            const receiver = findUserById(transaction.receiver);
-
-            return <BizumItem user={user} sender={sender} receiver={receiver} bizum={transaction} />
-        });
-    }
+                return <BizumItem key={index} user={user} sender={sender} receiver={receiver} bizum={transaction} />;
+            })
+        : null;
 
     return (
         <>
-            <ul className="list-group">
+            <ul className="list-group list-group-flush p-0 m-0">
                 {renderBizumHistory}
             </ul>
         </>

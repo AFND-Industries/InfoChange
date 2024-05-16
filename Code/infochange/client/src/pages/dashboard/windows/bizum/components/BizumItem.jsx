@@ -38,20 +38,18 @@ const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
     }
 
     return (
-        <li key={bizum.id} className="list-group-item">
+        <li key={bizum.id} className="list-group-item px-0">
             <div className="row align-items-center">
-                <div className="col-md-4 d-flex align-items-center mb-3 mb-md-0">
+                <div className="col-lg-5 d-flex align-items-center mb-3 mb-lg-0">
                     {userDraw(sender)}
-                </div>
-                <div className="col-md-1 d-flex align-items-center justify-content-center mb-3 mb-md-0">
                     <i className="bi bi-arrow-right" style={{ fontSize: '1.5em' }}></i>
                 </div>
-                <div className="col-md-4 d-flex align-items-center mb-3 mb-md-0">
+                <div className="col-lg-4 d-flex align-items-center mb-3 mb-lg-0">
                     {userDraw(receiver)}
                 </div>
-                <div className="col-md-3 d-flex flex-column align-items-center align-items-md-end">
+                <div className="col-lg-3 d-flex flex-column align-items-center align-items-lg-end">
                     <span className="fw-bold">{formattedQuantity}</span>
-                    <span className="text-secondary" style={{ fontSize: "0.9em" }}>{formattedDate}</span>
+                    <span className="text-secondary text-end" style={{ fontSize: "0.9em" }}>{formattedDate}</span>
                 </div>
             </div>
         </li>

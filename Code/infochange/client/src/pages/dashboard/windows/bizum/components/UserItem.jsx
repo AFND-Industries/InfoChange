@@ -1,7 +1,7 @@
 import React from "react";
 import "./UserItem.css";
 
-function UserItem({ user, onClick }) {
+function UserItem({ user, onClick = () => { } }) {
     const altPhoto = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
     return (

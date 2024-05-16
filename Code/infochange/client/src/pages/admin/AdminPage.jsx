@@ -1,11 +1,15 @@
 import React from "react";
 import { useAdmin } from "./context/AdminContext";
 import Banner from "../../assets/admin_banner.png";
+import BizumItem from "../dashboard/windows/bizum/components/BizumItem";
+
+const altImage = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
 export default function AdminPage() {
     const {
         getTotalUsers,
         getTotalTransactions,
+        getBizumHistorySortedByDate,
         getTotalComission,
         getTotalExchangeBalance,
         getUsersSortedByBalance,
@@ -19,6 +23,7 @@ export default function AdminPage() {
     const totalCommission = getTotalComission();
     const totalExchangeBalance = getTotalExchangeBalance();
 
+    const bizumHistoryByDate = getBizumHistorySortedByDate();
     const usersByBalance = getUsersSortedByBalance();
     const coinsSortedByVolume = getCoinsSortedByExchangeVolume();
     const paymentHistory = getPaymentHistory();
@@ -26,8 +31,16 @@ export default function AdminPage() {
     return (
         <div className="container mt-4 mb-4">
             <div className="row">
-                <div className="col-12 mb-4">
-                    <img src={Banner} style={{ width: "30%", minWidth: "250px" }} />
+                <div className="col-md-6 mb-4">
+                    <img src={Banner} style={{ width: "60%", minWidth: "250px" }} />
+                </div>
+                <div className="col-md-6 mb-4">
+                    <div className="card">
+                        <div className="card-body">
+                            <h2 className="card-title">Balance total de InfoChange</h2>
+                            <p className="card-text h5">{totalExchangeBalance.toFixed(2)}$</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="row">
@@ -64,12 +77,14 @@ export default function AdminPage() {
                             <div className="card-text">
                                 <ul className="list-group list-group-flush">
                                     {usersByBalance.map((user, index) => (
-                                        <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center">
-                                            <img onError={(event) => event.target.src = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"}
-                                                src={"https://github.com/" + user.username + ".png"} alt={user.username} className="me-2 rounded-5"
-                                                style={{ width: "40px", height: "40px" }} />
-                                            <span className="fw-bold h5 m-0">{user.username}</span>
-                                            <span className="h5 m-0">:  {user.totalBalance.toFixed(2)}$</span>
+                                        <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center justify-content-between">
+                                            <div className="d-flex align-items-center">
+                                                <img onError={(event) => event.target.src = altImage}
+                                                    src={"https://github.com/" + user.username + ".png"} alt={user.username} className="me-2 rounded-5"
+                                                    style={{ width: "50px", height: "50px" }} />
+                                                <span className="h5 m-0">{user.username}</span>
+                                            </div>
+                                            <span className="fw-bold h5 m-0">{user.totalBalance.toFixed(2)}$</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -83,14 +98,18 @@ export default function AdminPage() {
                             <h2 className="card-title">Monedas con Mayor Volumen</h2>
                             <ul className="list-group list-group-flush">
                                 {coinsSortedByVolume.map((coin, index) => (
-                                    <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center">
-                                        <img src={coin.logo} alt={coin.name} className="me-2 rounded-4"
-                                            style={{ width: "40px", height: "40px" }} />
-                                        <span className="h5 m-0">
-                                            <span className="fw-bold m-0 me-2">{coin.name}: </span>
-                                            <span className="m-0">{coin.volume.toFixed(8)} {coin.symbol}</span>
-                                            <span className="h6 text-secondary m-0"> ~{coin.dolar_volume.toFixed(2)}$</span>
-                                        </span>
+                                    <li key={index} className="list-group-item ps-0 pe-0 py-2 m-0">
+                                        <div className="row d-flex align-items-center justify-content-between">
+                                            <div className="col-lg-5 d-flex align-items-center h5 mb-0">
+                                                <img src={coin.logo} alt={coin.name} className="me-2 rounded-4"
+                                                    style={{ width: "50px", height: "50px" }} />
+                                                <div className="fw-bold m-0 me-2">{coin.name}: </div>
+                                            </div>
+                                            <div className="col-lg-7 d-flex align-items-center justify-content-end">
+                                                <span className="h5 m-0">{coin.volume.toFixed(8)} {coin.symbol}</span>
+                                                <span className="h6 text-secondary m-0"> ~{coin.dolar_volume.toFixed(2)}$</span>
+                                            </div>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -102,10 +121,10 @@ export default function AdminPage() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h2 className="card-title">Historial de depósitos y retiros</h2>
+                            <h2 className="card-title">Bizums recientes</h2>
                             <ul className="list-group list-group-flush">
-                                {paymentHistory.map((payment, index) => (
-                                    <li key={index} className="list-group-item">{2}</li>
+                                {bizumHistoryByDate.map((item, index) => (
+                                    <BizumItem sender={item.sender} receiver={item.receiver} bizum={item.bizum} admin={true} />
                                 ))}
                             </ul>
                         </div>
@@ -114,8 +133,12 @@ export default function AdminPage() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h2 className="card-title">Balance total de InfoChange</h2>
-                            <p className="card-text h5">{totalExchangeBalance.toFixed(2)}$</p>
+                            <h2 className="card-title">Depósitos y retiros recientes</h2>
+                            <ul className="list-group list-group-flush">
+                                {paymentHistory.map((payment, index) => (
+                                    <li key={index} className="list-group-item">{2}</li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>

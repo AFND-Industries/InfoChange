@@ -11,6 +11,8 @@ export const AdminProvider = ({ children }) => {
 
     const reloadTime = 30000; // 30s
 
+    const findUserById = (id) => adminInfo !== undefined ? Object.values(adminInfo.users).filter(user => user.id == id)[0] : undefined;
+
     useEffect(() => {
         const loadPrices = async () => {
             try {
@@ -82,7 +84,7 @@ export const AdminProvider = ({ children }) => {
             usersByBalance = adminInfo.users.map(user => ({
                 ...user,
                 totalBalance: getTotalUserBalance(user.id)
-            })).sort((a, b) => b.totalBalance - a.totalBalance);
+            })).sort((a, b) => b.totalBalance - a.totalBalance).slice(0, 5);
         }
 
         return usersByBalance;
@@ -123,11 +125,32 @@ export const AdminProvider = ({ children }) => {
             });
         }
 
-        const volumeList = Object.values(volumeMap);
+        let volumeList = Object.values(volumeMap);
         volumeList.sort((a, b) => b.dolar_volume - a.dolar_volume);
+        volumeList = volumeList.slice(0, 5);
 
         return volumeList;
     };
+
+
+    const getBizumHistorySortedByDate = () => {
+        let bizumHistory = [];
+
+        if (adminInfo !== undefined) {
+            bizumHistory = adminInfo.bizum_history.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(bizum => {
+                const sender = findUserById(bizum.sender);
+                const receiver = findUserById(bizum.receiver);
+
+                return ({
+                    sender: sender,
+                    receiver: receiver,
+                    bizum: bizum
+                });
+            })
+        }
+
+        return bizumHistory;
+    }
 
     const getPaymentHistory = () => [];
 
@@ -136,6 +159,7 @@ export const AdminProvider = ({ children }) => {
             value={{
                 getTotalUserBalance,
                 getTotalUsers,
+                getBizumHistorySortedByDate,
                 getTotalTransactions,
                 getTotalComission,
                 getTotalExchangeBalance,
