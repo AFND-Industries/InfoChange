@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import BizumToast from "../components/BizumToast";
-import Banner from "../../../assets/bizum_banner.png";
+import BizumToast from "./components/BizumToast";
+import Banner from "../../../../assets/bizum_banner.png";
 
-import { useAPI } from "../../../context/APIContext";
+import { useAPI } from "../../../../context/APIContext";
 
-import axios from "axios";
-import UserItem from "../components/UserItem";
+import UserItem from "./components/UserItem";
 
 const countDecimals = (number) => {
     const decimalIndex = number.indexOf('.');
     return decimalIndex === -1 ? 0 : number.length - decimalIndex - 1;
 }
 
-export default function Bizum({ user }) {
+export default function Bizum({ user, bizumUsers }) {
     const { doBizum } = useAPI();
 
     const MAXVALUE = 1000000000;
@@ -24,8 +23,8 @@ export default function Bizum({ user }) {
     const handleUserInput = (regex) => {
         setUserInput(regex);
 
-        setUserRegexList(userList !== undefined && regex.length > 0 ?
-            Object.values(userList).filter(u => u.id != user.profile.ID &&
+        setUserRegexList(bizumUsers !== undefined && regex.length > 0 ?
+            Object.values(bizumUsers).filter(u => u.id != user.profile.ID &&
                 u.username.toLowerCase().startsWith(regex.toLowerCase())).slice(0, 5) : []);
     }
 
@@ -38,25 +37,10 @@ export default function Bizum({ user }) {
             setAmountInput(event.target.value.trim());
     }
 
-    const [userList, setUserList] = useState(undefined);
-    useEffect(() => { // Esto no está en API context porque solo se usa aquí de manera muy precisa
-        const loadBizumUsers = async () => {
-            try {
-                const responseUsers = await axios.get('http://localhost:1024/bizum_users');
-                if (responseUsers.data.status === "1")
-                    setUserList(responseUsers.data.users);
-            } catch (error) {
-                console.error('Error getting users for Bizum:', error);
-            }
-        };
-
-        loadBizumUsers();
-    }, []);
-
     const handleBizum = async (user, amount) => {
         const sentAmount = parseFloat(amount);
 
-        if (userList !== undefined && user !== undefined) {
+        if (bizumUsers !== undefined && user !== undefined) {
             const loadingScreen = document.getElementById("loading-screen");
 
             loadingScreen.style.display = "block";
@@ -66,6 +50,9 @@ export default function Bizum({ user }) {
             if (response.data.status === "1")
                 showBizumDoneToast("Bizum realizado correctamente",
                     "Has enviado un bizum de <b>" + sentAmount + "$</b> a <b>" + user.username + "</b> correctamente.");
+
+            handleUserInput("");
+            setAmountInput("");
         }
     }
 
@@ -92,7 +79,7 @@ export default function Bizum({ user }) {
         userRegexList[0].username === userInput &&
         userRegexList[0].id != user.profile.ID;
 
-    const usersObject = userList === undefined ? [] :
+    const usersObject = bizumUsers === undefined ? [] :
         userRegexList.map(user => (
             <UserItem user={user} onClick={() => handleUserInput(user.username)} />
         ));

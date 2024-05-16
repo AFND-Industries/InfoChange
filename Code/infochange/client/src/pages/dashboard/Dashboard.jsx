@@ -5,18 +5,20 @@ import { Navigate } from "react-router-dom";
 import { PersonFill, Wallet2, LayoutTextSidebar, Send } from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
-import History from "./windows/History";
-import Bizum from "./windows/Bizum";
+import History from "./windows/history/History";
+import Bizum from "./windows/bizum/Bizum";
 
 import { useAuth } from "../authenticator/AuthContext";
 import { useAPI } from "../../context/APIContext";
 
 function Dashboard() {
     const { getActualUser } = useAuth();
-    const { doTradeHistory } = useAPI();
+    const { doTradeHistory, doBizumHistory, doBizumUsers } = useAPI();
 
     const [page, setPage] = useState(0);
-    const [tradeHistory, setTradeHistory] = useState(null);
+    const [tradeHistory, setTradeHistory] = useState(undefined);
+    const [bizumUsers, setBizumUserList] = useState(undefined);
+    const [bizumHistory, setBizumHistory] = useState(undefined);
 
     const loadTradeHistory = async () => {
         const response = await doTradeHistory();
@@ -24,8 +26,22 @@ function Dashboard() {
             setTradeHistory(response.data.tradeHistory);
     };
 
+    const loadBizumUsers = async () => {
+        const responseUsers = await doBizumUsers();
+        if (responseUsers !== undefined && responseUsers.data.status === "1")
+            setBizumUserList(responseUsers.data.users);
+    };
+
+    const loadBizumHistory = async () => {
+        const responseUsers = await doBizumHistory();
+        if (responseUsers !== undefined && responseUsers.data.status === "1")
+            setBizumHistory(responseUsers.data.bizumHistory);
+    };
+
     useEffect(() => {
         loadTradeHistory();
+        loadBizumUsers();
+        loadBizumHistory();
     }, []);
 
     const user = getActualUser();
@@ -37,8 +53,8 @@ function Dashboard() {
     let pages = [
         <Profile profile={user.profile} />,
         <Wallet wallet={user.wallet ?? {}} />,
-        <History history={tradeHistory} />,
-        <Bizum user={user} />
+        <History tradeHistory={tradeHistory} bizumHistory={bizumHistory} bizumUsers={bizumUsers} />,
+        <Bizum user={user} bizumUsers={bizumUsers} />
     ];
 
     const labels = ["Perfil", "Cartera", "Historial", "Bizum"];

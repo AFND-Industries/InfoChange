@@ -1,12 +1,12 @@
-import { useAPI } from "../../../context/APIContext";
+import { useAPI } from "../../../../context/APIContext";
 
-export default function History({ history }) {
+export default function TradeHistory({ tradeHistory }) {
     const { getPair } = useAPI();
 
     let renderTradeHistory = null;
 
-    if (history) {
-        const sortedHistory = history.sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (tradeHistory) {
+        const sortedHistory = tradeHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         renderTradeHistory = sortedHistory.map((trade, index) => {
             const symbol = getPair(trade.symbol);
@@ -39,27 +39,22 @@ export default function History({ history }) {
 
     return (
         <>
-            <div className="row px-5 py-4">
-                <div className="col">
-                    <h2 className="text-center">Historial de Trades</h2>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Símbolo</th>
-                                <th>Tipo</th>
-                                <th>Cantidad Pagada</th>
-                                <th>Cantidad Recibida</th>
-                                <th>Comisión</th>
-                                <th>Fecha</th>
-                                <th>Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {renderTradeHistory}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>Símbolo</th>
+                        <th>Tipo</th>
+                        <th>Cantidad Pagada</th>
+                        <th>Cantidad Recibida</th>
+                        <th>Comisión</th>
+                        <th>Fecha</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {renderTradeHistory}
+                </tbody>
+            </table>
         </>
     );
 }
