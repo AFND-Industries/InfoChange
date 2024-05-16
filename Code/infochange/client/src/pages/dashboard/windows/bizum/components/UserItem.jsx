@@ -6,14 +6,14 @@ function UserItem({ user, onClick }) {
 
     return (
         <li key={user.id} onClick={onClick}>
-            <a className="user-item d-flex align-items-center">
+            <div className="user-item d-flex align-items-center">
                 <img src={"https://github.com/" + user.username + ".png"} className="rounded rounded-5 me-2"
                     style={{ width: '50px', height: '50px' }} onError={(e) => { e.target.src = altPhoto; }} alt="Imagen del usuario" />
                 <div className="d-flex flex-column">
                     <span>{user.username}</span>
                     <span className="text-secondary" style={{ fontSize: "0.9em" }}>{user.name} {user.lastName}</span>
                 </div>
-            </a>
+            </div>
         </li >
     )
 }

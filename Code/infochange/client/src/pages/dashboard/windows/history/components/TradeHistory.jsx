@@ -1,4 +1,4 @@
-import { useAPI } from "../../../../context/APIContext";
+import { useAPI } from "../../../../../context/APIContext";
 
 export default function TradeHistory({ tradeHistory }) {
     const { getPair } = useAPI();

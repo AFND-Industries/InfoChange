@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import TradeHistory from "./TradeHistory";
-import BizumHistory from "./BizumHistory";
+import TradeHistory from "./components/TradeHistory";
+import BizumHistory from "./components/BizumHistory";
 
 export default function History({ tradeHistory, bizumHistory, bizumUsers }) {
     const [historyMode, setHistoryMode] = useState(0);

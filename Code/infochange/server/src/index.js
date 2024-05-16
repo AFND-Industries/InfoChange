@@ -287,7 +287,7 @@ app.get("/bizum_history", (req, res) => {
         return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
     }
 
-    const query = `SELECT sender, receiver, quantity, date FROM bizum_history WHERE sender = ${req.session.user.ID} OR receiver = ${req.session.user.ID};`;
+    const query = `SELECT id, sender, receiver, quantity, date FROM bizum_history WHERE sender = ${req.session.user.ID} OR receiver = ${req.session.user.ID};`;
     db.query(query, (err, result) => {
         if (err)
             return res.json(
@@ -297,6 +297,7 @@ app.get("/bizum_history", (req, res) => {
         const bizumHistory = [];
         result.forEach((row) => {
             const bizum = {
+                id: row.id,
                 sender: row.sender,
                 receiver: row.receiver,
                 quantity: row.quantity,
@@ -418,7 +419,7 @@ app.get("/admin", (req, res) => {
 
         let tradeHistoryPromise = new Promise((resolve, reject) => {
             db.query(
-                "SELECT user, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history;",
+                "SELECT id, user, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history;",
                 (err, result) => {
                     if (err) reject(err);
                     else resolve(result);
@@ -469,7 +470,7 @@ app.get("/trade_history", (req, res) => {
         return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
     }
 
-    const query = `SELECT symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${req.session.user.ID};`;
+    const query = `SELECT id, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${req.session.user.ID};`;
     db.query(query, (err, result) => {
         if (err)
             return res.json(
@@ -479,6 +480,7 @@ app.get("/trade_history", (req, res) => {
         const tradeHistory = [];
         result.forEach((row) => {
             const trade = {
+                id: row.id,
                 symbol: row.symbol,
                 type: row.type,
                 paid_amount: row.paid_amount,

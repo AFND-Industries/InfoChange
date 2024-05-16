@@ -42,7 +42,7 @@ function Dashboard() {
         loadTradeHistory();
         loadBizumUsers();
         loadBizumHistory();
-    }, []);
+    }, [getActualUser()]);
 
     const user = getActualUser();
 
