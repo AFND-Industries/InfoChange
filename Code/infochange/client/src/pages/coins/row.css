@@ -9,6 +9,7 @@
 
 .hover-row:hover .hover-column {
   background-color: #f5f5f5 !important; 
+  color: #000000;
 }
 
 .sticky-column {
@@ -28,5 +29,35 @@
   .clear-button,
   .search-input {
     justify-content: center;
+    color: #000000; /* Texto negro para buen contraste */
+    background-color: #ffffff; /* Fondo blanco */
+    border-color: #000000;
   }
+}
+
+
+
+
+
+.p-input-icon-left .pi {
+  color: #000000; /* Icono de búsqueda en negro */
+}
+
+.data-table-header {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+}
+
+.data-table-body {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+}
+
+/* Mejorar contraste de texto en cambios porcentuales */
+.red-text {
+  color: #d32f2f; /* Rojo oscuro */
+}
+
+.green-text {
+  color: #388e3c; /* Verde oscuro */
 }

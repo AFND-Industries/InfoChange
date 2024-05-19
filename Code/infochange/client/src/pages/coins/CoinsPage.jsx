@@ -12,12 +12,10 @@ import "./row.css";
 import { Timeline } from "react-ts-tradingview-widgets";
 import CoinInfo from "./CoinInfo";
 import { useLocation } from "react-router-dom";
-
 import { useCoins } from "./CoinsAPI";
 
 export default function CoinsPage() {
   const params = window.location.pathname.split("/").slice(2);
-
   const [filters1, setFilters1] = useState(null);
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [coinInfo, setCoinInfo] = useState([]);
@@ -56,7 +54,6 @@ export default function CoinsPage() {
   };
 
   const filteredSymbols = getCoins();
-  // const lastDate = getLastDate();
 
   const onGlobalFilterChange1 = (e) => {
     const value = e.target.value;
@@ -69,21 +66,24 @@ export default function CoinsPage() {
 
   const renderHeader1 = () => {
     return (
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between" role="search">
         <Button
           type="button"
           icon="pi pi-filter-slash"
           label="Limpiar"
           className="p-button-outlined rounded clear-button d-flex justify-content-center"
           onClick={initFilters1}
+          aria-label="Limpiar filtros"
         />
         <span className="p-input-icon-left mx-2 search-input">
-          <i className="pi pi-search mx-2" />
+          <i className="pi pi-search mx-2" aria-hidden="true" />
           <InputText
             value={globalFilterValue1}
             onChange={onGlobalFilterChange1}
             placeholder="Buscar por nombre o símbolo"
             style={{ paddingLeft: "30px" }}
+            aria-label="Buscar por nombre o símbolo"
+            className="search-input"
           />
         </span>
       </div>
@@ -107,12 +107,10 @@ function getData(symbols) {
   const data = CoinsCap.data;
   for (const coin in data) {
     if (data[coin] && data[coin][0]) {
-      // Check if data[coin][0] exists
       const symbol = symbols.find(
         (symbol) => symbol.symbol.slice(0, -4) === data[coin][0].symbol
       );
       const objetosMapeados = data[coin].map((item) => {
-        // Aquí puedes hacer lo que necesites con cada objeto
         return {
           id: item.id,
           name: item.name,
@@ -156,7 +154,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
         />
         <img
           src={rowData.logo}
-          alt={rowData.name}
+          alt={`Logo de ${rowData.name}`}
           className="img-fluid pe-1 d-none"
           style={{ maxWidth: "50px" }}
           onLoad={onImageLoad}
@@ -173,20 +171,20 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
 
   const changePorcentTemplate = (rowData) => {
     return rowData.change_porcent < 0 ? (
-      <span style={{ fontWeight: "bold", color: "red" }}>
+      <span className="red-text" style={{ fontWeight: "bold" }}>
         {rowData.change_porcent} %
       </span>
     ) : (
-      <span style={{ fontWeight: "bold", color: "green" }}>
+      <span className="green-text" style={{ fontWeight: "bold" }}>
         {rowData.change_porcent} %
       </span>
     );
   };
 
   return (
-    <div>
+    <main>
       <h6 className="text-secondary m-3">Última actualización: {lastDate}</h6>
-      <div className="border rounded m-3">
+      <div className="border rounded m-3 data-table-body">
         <DataTable
           value={data}
           paginator
@@ -202,6 +200,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
           sortField="price"
           sortOrder={-1}
           size="small"
+          aria-label="Tabla de datos de monedas"
         >
           <Column
             body={imageBodyTemplate}
@@ -217,6 +216,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
             }}
             className="hover-column sticky-column"
             style={{ width: "25%" }}
+            aria-label="Nombre"
           ></Column>
           <Column
             body={changePorcentTemplate}
@@ -224,21 +224,24 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
             sortField="change_porcent"
             header="Porcentaje de cambio"
             style={{ width: "25%" }}
+            aria-label="Porcentaje de cambio"
           ></Column>
           <Column
             field="volume"
             sortable
             header="Volumen"
             style={{ width: "25%" }}
+            aria-label="Volumen"
           ></Column>
           <Column
             field="price"
             sortable
             header="Precio"
             style={{ width: "25%" }}
+            aria-label="Precio"
           ></Column>
         </DataTable>
       </div>
-    </div>
+    </main>
   );
 }
