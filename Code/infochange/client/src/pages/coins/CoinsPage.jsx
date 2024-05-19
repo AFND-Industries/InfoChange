@@ -200,6 +200,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
           sortField="price"
           sortOrder={-1}
           size="small"
+          selectionMode={"single"}
           aria-label="Tabla de datos de monedas"
         >
           <Column

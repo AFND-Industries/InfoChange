@@ -12,6 +12,14 @@
   color: #000000;
 }
 
+.row-data-tables:focus,
+.row-data-tables:focus-within,
+.row-data-tables:focus .hover-column,
+.row-data-tables:focus-within .hover-column {
+  background-color: #f5f5f5 !important;
+  outline: none;
+}
+
 .sticky-column {
   background-color: #fff;
 }
