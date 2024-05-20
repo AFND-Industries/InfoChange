@@ -223,7 +223,7 @@ app.post("/register", (req, res) => {
     const user = req.body.user;
     if (
         !user ||
-        !user.firstName ||
+        !user.name ||
         !user.lastName ||
         !user.birthday ||
         !user.sexo ||
@@ -250,13 +250,13 @@ app.post("/register", (req, res) => {
         email,
         password,
         secureQuestionText,
-        address,
+        direccion,
         ciudad,
-        postalCode,
-        country,
-        phone
+        codigoPostal,
+        pais,
+        telefono
     ) VALUES (
-        '${user.firstName}',
+        '${user.name}',
         '${user.lastName}',
         '${user.birthday}',
         '${user.sexo}',
@@ -284,7 +284,9 @@ app.post("/register", (req, res) => {
 
 app.get("/bizum_history", (req, res) => {
     if (!req.session.user) {
-        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+        return res.json(
+            error("NOT_LOGGED", "No existe una sesión del usuario.")
+        );
     }
 
     const query = `SELECT id, sender, receiver, quantity, date FROM bizum_history WHERE sender = ${req.session.user.ID} OR receiver = ${req.session.user.ID};`;
@@ -328,58 +330,121 @@ app.post("/bizum", (req, res) => {
             return res.json(error("INVALID_AMOUNT", "Cantidad inválida."));
 
         const sentAmount = parseFloat(parseFloat(amount).toFixed(8));
-        db.query(`SELECT quantity FROM cartera WHERE coin LIKE '${coin}' AND user = ${req.session.user.ID};`,
+        db.query(
+            `SELECT quantity FROM cartera WHERE coin LIKE '${coin}' AND user = ${req.session.user.ID};`,
             (err, result) => {
                 if (err)
-                    return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
+                    return res.json(
+                        error(
+                            "SELECT_ERROR",
+                            "Se ha producido un error inesperado"
+                        )
+                    );
 
-                const currentDollarAmount = result.length === 0 ? -1 : parseFloat(result[0].quantity.toFixed(8));
+                const currentDollarAmount =
+                    result.length === 0
+                        ? -1
+                        : parseFloat(result[0].quantity.toFixed(8));
                 if (currentDollarAmount < sentAmount)
-                    return res.json(error("INSUFFICIENT_BALANCE", `No tienes suficientes ${coin}.`));
+                    return res.json(
+                        error(
+                            "INSUFFICIENT_BALANCE",
+                            `No tienes suficientes ${coin}.`
+                        )
+                    );
 
                 const newBizumerAmount = currentDollarAmount - sentAmount;
                 const bizumerQuery =
                     newBizumerAmount === 0
                         ? `DELETE FROM cartera WHERE coin = '${coin}' AND user = ${req.session.user.ID};`
-                        : `UPDATE cartera SET quantity = ${newBizumerAmount.toFixed(8)} WHERE coin = '${coin}' AND user = ${req.session.user.ID};`;
+                        : `UPDATE cartera SET quantity = ${newBizumerAmount.toFixed(
+                              8
+                          )} WHERE coin = '${coin}' AND user = ${
+                              req.session.user.ID
+                          };`;
 
                 db.query(bizumerQuery, (err, result) => {
                     if (err)
-                        return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                        return res.json(
+                            error(
+                                "UPDATE_ERROR",
+                                "Se ha producido un error inesperado"
+                            )
+                        );
 
-                    db.query(`SELECT quantity FROM cartera WHERE user = ${userid} AND coin = '${coin}';`, (err, result) => {
-                        if (err)
-                            return res.json(error("SELECT_ERROR", "Se ha producido un error inesperado"));
-
-                        const bizumedQuery =
-                            result.length > 0
-                                ? `UPDATE cartera SET quantity = quantity + ${sentAmount.toFixed(8)} WHERE coin = '${coin}' AND user = ${userid};`
-                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${userid}, '${coin}', ${sentAmount.toFixed(8)});`;
-                        db.query(bizumedQuery, (err, result) => {
+                    db.query(
+                        `SELECT quantity FROM cartera WHERE user = ${userid} AND coin = '${coin}';`,
+                        (err, result) => {
                             if (err)
-                                return res.json(error("UPDATE_ERROR", "Se ha producido un error inesperado"));
+                                return res.json(
+                                    error(
+                                        "SELECT_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
+                                );
 
-                            const currentDate = new Date();
-                            const year = currentDate.getFullYear();
-                            const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-                            const day = ("0" + currentDate.getDate()).slice(-2);
-                            const hours = ("0" + currentDate.getHours()).slice(-2);
-                            const minutes = ("0" + currentDate.getMinutes()).slice(-2);
-                            const seconds = ("0" + currentDate.getSeconds()).slice(-2);
-
-                            const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-                            db.query(`INSERT INTO bizum_history (sender, receiver, quantity, date) VALUES 
-                            (${req.session.user.ID}, ${userid}, ${sentAmount.toFixed(2)}, '${formattedDate}')`, (err, result) => {
+                            const bizumedQuery =
+                                result.length > 0
+                                    ? `UPDATE cartera SET quantity = quantity + ${sentAmount.toFixed(
+                                          8
+                                      )} WHERE coin = '${coin}' AND user = ${userid};`
+                                    : `INSERT INTO cartera (user, coin, quantity) VALUES (${userid}, '${coin}', ${sentAmount.toFixed(
+                                          8
+                                      )});`;
+                            db.query(bizumedQuery, (err, result) => {
                                 if (err)
-                                    return res.json(error("HISTORY_ERROR", "Se ha producido un error inesperado"));
+                                    return res.json(
+                                        error(
+                                            "UPDATE_ERROR",
+                                            "Se ha producido un error inesperado"
+                                        )
+                                    );
 
-                                return res.json({
-                                    status: "1"
-                                });
-                            })
-                        });
-                    });
+                                const currentDate = new Date();
+                                const year = currentDate.getFullYear();
+                                const month = (
+                                    "0" +
+                                    (currentDate.getMonth() + 1)
+                                ).slice(-2);
+                                const day = ("0" + currentDate.getDate()).slice(
+                                    -2
+                                );
+                                const hours = (
+                                    "0" + currentDate.getHours()
+                                ).slice(-2);
+                                const minutes = (
+                                    "0" + currentDate.getMinutes()
+                                ).slice(-2);
+                                const seconds = (
+                                    "0" + currentDate.getSeconds()
+                                ).slice(-2);
+
+                                const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                                db.query(
+                                    `INSERT INTO bizum_history (sender, receiver, quantity, date) VALUES 
+                            (${
+                                req.session.user.ID
+                            }, ${userid}, ${sentAmount.toFixed(
+                                        2
+                                    )}, '${formattedDate}')`,
+                                    (err, result) => {
+                                        if (err)
+                                            return res.json(
+                                                error(
+                                                    "HISTORY_ERROR",
+                                                    "Se ha producido un error inesperado"
+                                                )
+                                            );
+
+                                        return res.json({
+                                            status: "1",
+                                        });
+                                    }
+                                );
+                            });
+                        }
+                    );
                 });
             }
         );
@@ -387,16 +452,19 @@ app.post("/bizum", (req, res) => {
 });
 
 app.get("/bizum_users", (req, res) => {
-    db.query("SELECT name, lastName, username, id FROM usuario;", (err, result) => {
-        if (err) {
-            res.json(error(err.code, err.sqlMessage));
-        } else {
-            res.json({
-                status: "1",
-                users: result,
-            });
+    db.query(
+        "SELECT name, lastName, username, id FROM usuario ORDER BY username LIMIT 10;",
+        (err, result) => {
+            if (err) {
+                res.json(error(err.code, err.sqlMessage));
+            } else {
+                res.json({
+                    status: "1",
+                    users: result,
+                });
+            }
         }
-    });
+    );
 });
 
 app.get("/admin", (req, res) => {
@@ -404,17 +472,23 @@ app.get("/admin", (req, res) => {
         res.json(error("UNAUTHORIZED", "No eres administrador"));
     } else {
         let usersPromise = new Promise((resolve, reject) => {
-            db.query("SELECT name, lastName, username, id FROM usuario;", (err, result) => {
-                if (err) reject(err);
-                else resolve(result);
-            });
+            db.query(
+                "SELECT name, lastName, username, id FROM usuario;",
+                (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }
+            );
         });
 
         let walletsPromise = new Promise((resolve, reject) => {
-            db.query("SELECT user, coin, quantity FROM cartera;", (err, result) => {
-                if (err) reject(err);
-                else resolve(result);
-            });
+            db.query(
+                "SELECT user, coin, quantity FROM cartera;",
+                (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }
+            );
         });
 
         let tradeHistoryPromise = new Promise((resolve, reject) => {
@@ -437,7 +511,12 @@ app.get("/admin", (req, res) => {
             );
         });
 
-        Promise.all([usersPromise, walletsPromise, tradeHistoryPromise, bizumHistoryPromise])
+        Promise.all([
+            usersPromise,
+            walletsPromise,
+            tradeHistoryPromise,
+            bizumHistoryPromise,
+        ])
             .then(([users, wallets, tradeHistory, bizumHistory]) => {
                 let payment_history = []; // Aquí puedes hacer lo que necesites con payment_history
 
@@ -478,7 +557,9 @@ app.get("/wallet", (req, res) => {
 
 app.get("/trade_history", (req, res) => {
     if (!req.session.user) {
-        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+        return res.json(
+            error("NOT_LOGGED", "No existe una sesión del usuario.")
+        );
     }
 
     const query = `SELECT id, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${req.session.user.ID};`;
@@ -512,7 +593,9 @@ app.get("/trade_history", (req, res) => {
 
 app.post("/trade", (req, res) => {
     if (!req.session.user) {
-        return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+        return res.json(
+            error("NOT_LOGGED", "No existe una sesión del usuario.")
+        );
     }
 
     const symbol = Object.values(Symbols.symbols).find(
@@ -523,7 +606,10 @@ app.post("/trade", (req, res) => {
 
     if (!symbol) {
         return res.json(
-            error("INVALID_SYMBOL", "No se ha encontrado el símbolo especificado.")
+            error(
+                "INVALID_SYMBOL",
+                "No se ha encontrado el símbolo especificado."
+            )
         );
     }
 
@@ -563,7 +649,9 @@ app.post("/trade", (req, res) => {
                 );
 
             const currentAmount =
-                result.length === 0 ? -1 : parseFloat(result[0].quantity.toFixed(8));
+                result.length === 0
+                    ? -1
+                    : parseFloat(result[0].quantity.toFixed(8));
             if (currentAmount < paidAmount) {
                 return res.json(
                     error(
@@ -573,7 +661,9 @@ app.post("/trade", (req, res) => {
                 );
             }
 
-            const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
+            const comission = parseFloat(
+                (paidAmount * tradingComision).toFixed(8)
+            );
             const receivedAmount =
                 type === "BUY"
                     ? (paidAmount - comission) / symbolPrice
@@ -584,14 +674,18 @@ app.post("/trade", (req, res) => {
                 updatedAmount === 0
                     ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`
                     : `UPDATE cartera SET quantity = ${updatedAmount.toFixed(
-                        8
-                    )} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID
-                    };`;
+                          8
+                      )} WHERE coin = '${removeAsset}' AND user = ${
+                          req.session.user.ID
+                      };`;
 
             db.query(updateQuery, (err, _) => {
                 if (err)
                     return res.json(
-                        error("UPDATE_ERROR", "Se ha producido un error inesperado")
+                        error(
+                            "UPDATE_ERROR",
+                            "Se ha producido un error inesperado"
+                        )
                     );
 
                 db.query(
@@ -599,7 +693,10 @@ app.post("/trade", (req, res) => {
                     (err, result) => {
                         if (err)
                             return res.json(
-                                error("SELECT_ERROR", "Se ha producido un error inesperado")
+                                error(
+                                    "SELECT_ERROR",
+                                    "Se ha producido un error inesperado"
+                                )
                             );
 
                         const currentQuoteAmount =
@@ -609,35 +706,54 @@ app.post("/trade", (req, res) => {
                         const query =
                             currentQuoteAmount >= 0
                                 ? `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(
-                                    8
-                                )} WHERE coin = '${addAsset}' AND user = ${req.session.user.ID
-                                };`
-                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID
-                                }, '${addAsset}', ${receivedAmount.toFixed(8)});`;
+                                      8
+                                  )} WHERE coin = '${addAsset}' AND user = ${
+                                      req.session.user.ID
+                                  };`
+                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${
+                                      req.session.user.ID
+                                  }, '${addAsset}', ${receivedAmount.toFixed(
+                                      8
+                                  )});`;
 
                         db.query(query, (err, _) => {
                             if (err)
                                 return res.json(
-                                    error("UPDATE_ERROR", "Se ha producido un error inesperado")
+                                    error(
+                                        "UPDATE_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
                                 );
 
                             const currentDate = new Date();
                             const year = currentDate.getFullYear();
-                            const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Agrega un cero inicial si es necesario
+                            const month = (
+                                "0" +
+                                (currentDate.getMonth() + 1)
+                            ).slice(-2); // Agrega un cero inicial si es necesario
                             const day = ("0" + currentDate.getDate()).slice(-2); // Agrega un cero inicial si es necesario
-                            const hours = ("0" + currentDate.getHours()).slice(-2); // Agrega un cero inicial si es necesario
-                            const minutes = ("0" + currentDate.getMinutes()).slice(-2); // Agrega un cero inicial si es necesario
-                            const seconds = ("0" + currentDate.getSeconds()).slice(-2); // Agrega un cero inicial si es necesario
+                            const hours = ("0" + currentDate.getHours()).slice(
+                                -2
+                            ); // Agrega un cero inicial si es necesario
+                            const minutes = (
+                                "0" + currentDate.getMinutes()
+                            ).slice(-2); // Agrega un cero inicial si es necesario
+                            const seconds = (
+                                "0" + currentDate.getSeconds()
+                            ).slice(-2); // Agrega un cero inicial si es necesario
 
                             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
                             const historyQuery = `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
-                                    (${req.session.user.ID}, '${symbolPriceObject.symbol
-                                }', '${type}', ${paidAmount.toFixed(8)}, ${receivedAmount.toFixed(
-                                    8
-                                )}, ${comission.toFixed(
-                                    8
-                                )}, '${formattedDate}', ${symbolPrice});`;
+                                    (${req.session.user.ID}, '${
+                                symbolPriceObject.symbol
+                            }', '${type}', ${paidAmount.toFixed(
+                                8
+                            )}, ${receivedAmount.toFixed(
+                                8
+                            )}, ${comission.toFixed(
+                                8
+                            )}, '${formattedDate}', ${symbolPrice});`;
 
                             db.query(historyQuery, (err, _) => {
                                 if (err)
@@ -666,9 +782,16 @@ app.post("/trade", (req, res) => {
 app.post("/payment", (req, res) => {
     if (!req.session.user) {
         res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
-    } else if (!req.body.cart || !req.body.cart.type || !req.body.cart.quantity) {
+    } else if (
+        !req.body.cart ||
+        !req.body.cart.type ||
+        !req.body.cart.quantity
+    ) {
         res.json(
-            error("MALFORMED_REQUEST", "La petición no se ha formulado correctamente")
+            error(
+                "MALFORMED_REQUEST",
+                "La petición no se ha formulado correctamente"
+            )
         );
     } else {
         const cart = req.body.cart;
@@ -677,7 +800,10 @@ app.post("/payment", (req, res) => {
             (err, result) => {
                 if (err) {
                     res.json(
-                        error("SELECT_ERROR", "Se ha producido un error inesperado")
+                        error(
+                            "SELECT_ERROR",
+                            "Se ha producido un error inesperado"
+                        )
                     );
                 } else if (result.length === 0) {
                     db.query(
@@ -685,7 +811,10 @@ app.post("/payment", (req, res) => {
                         (err, _) => {
                             if (err) {
                                 res.json(
-                                    error("INSERT_ERROR", "Se ha producido un error inesperado")
+                                    error(
+                                        "INSERT_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
                                 );
                             }
                             res.json({
@@ -700,7 +829,10 @@ app.post("/payment", (req, res) => {
                         (err, _) => {
                             if (err) {
                                 res.json(
-                                    error("UPDATE_ERROR", "Se ha producido un error inesperado")
+                                    error(
+                                        "UPDATE_ERROR",
+                                        "Se ha producido un error inesperado"
+                                    )
                                 );
                             }
                             res.json({
