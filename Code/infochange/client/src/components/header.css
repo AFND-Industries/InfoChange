@@ -1,0 +1,39 @@
+/* Ajustes de contraste para botones y enlaces */
+.nav-link {
+    color: #0056b3; /* Azul más oscuro para mejor contraste */
+  }
+  
+  .btn-outline-primary {
+    color: #0056b3; /* Texto azul más oscuro */
+    border-color: #0056b3; /* Borde azul más oscuro */
+  }
+  
+  .btn-outline-primary:hover,
+  .btn-outline-primary:focus {
+    background-color: #0056b3; /* Fondo azul más oscuro */
+    color: #ffffff; /* Texto blanco */
+  }
+  
+  .btn-primary {
+    background-color: #0056b3; /* Fondo azul más oscuro */
+    color: #ffffff; /* Texto blanco */
+    border-color: #0056b3; /* Borde azul más oscuro */
+  }
+  
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: #004494; /* Fondo azul aún más oscuro */
+    color: #ffffff; /* Texto blanco */
+    border-color: #004494; /* Borde azul aún más oscuro */
+  }
+  
+  .dropdown-item {
+    color: #000000; /* Texto negro */
+    background-color: #ffffff; /* Fondo blanco */
+  }
+  
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    background-color: #0056b3; /* Fondo azul más oscuro */
+    color: #ffffff; /* Texto blanco */
+  }
