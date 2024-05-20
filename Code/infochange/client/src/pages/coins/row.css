@@ -67,5 +67,17 @@
 }
 
 .green-text {
-  color: #388e3c; /* Verde oscuro */
+  color: #2e7d32; /* Verde más oscuro */
+}
+
+/* Ajustes de contraste para botones */
+.btn-clear {
+  color: #3b49df !important; /* Texto azul más oscuro */
+  border-color: #3b49df !important; /* Borde azul más oscuro */
+}
+
+.btn-clear:hover,
+.btn-clear:focus {
+  background-color: #3b49df !important; /* Fondo azul más oscuro */
+  color: #ffffff !important; /* Texto blanco */
 }

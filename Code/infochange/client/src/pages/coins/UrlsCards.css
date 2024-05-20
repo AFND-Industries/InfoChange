@@ -5,6 +5,30 @@
 
   .url-card {
     justify-content: center;
+    text-align: center;
+  }
+
+  .url-card .col-auto {
+    width: 100%; /* Ocupar todo el ancho del contenedor */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1300px) {
+  .url-card .url-name {
+    display: none;
+  }
+
+  .url-card {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .url-card .col-auto {
+    width: 100%; /* Ocupar todo el ancho del contenedor */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
   }
 }
 

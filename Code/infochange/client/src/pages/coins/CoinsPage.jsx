@@ -71,7 +71,7 @@ export default function CoinsPage() {
           type="button"
           icon="pi pi-filter-slash"
           label="Limpiar"
-          className="p-button-outlined rounded clear-button d-flex justify-content-center"
+          className="p-button-outlined rounded clear-button btn-clear d-flex justify-content-center"
           onClick={initFilters1}
           aria-label="Limpiar filtros"
         />

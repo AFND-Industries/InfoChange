@@ -177,14 +177,11 @@ export default function CoinInfo(props) {
               }}
               href={url}
             >
-              <div className="col-auto mx-1">
+              <div className="col-auto mx-1 d-flex justify-content-center align-items-center">
                 <i className={`url-icon ${logos[index]}`}></i>
               </div>
               <div className="col d-flex align-items-center">
-                {" "}
-                <p className="fs-6 text-dark m-0 url-name">
-                  {nombres[index]}
-                </p>{" "}
+                <p className="fs-6 text-dark m-0 url-name">{nombres[index]}</p>
               </div>
             </a>
           </div>
@@ -254,7 +251,16 @@ export default function CoinInfo(props) {
       return firstThree.map((tag, index) => {
         if (index === 3)
           return (
-            <div className="col" key={index}>
+            <div
+              className="col"
+              key={index}
+              tabIndex="0"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setShowModal(true);
+                }
+              }}
+            >
               <a
                 className="btn col d-flex align-items-center justify-content-center url-card fs-6"
                 style={{
@@ -302,7 +308,16 @@ export default function CoinInfo(props) {
       <div className="row mb-4 mx-3 text-secondary">
         <div className="col-12 d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
-            <span style={{ cursor: "pointer" }} onClick={goBack}>
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={goBack}
+              tabIndex="0"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  goBack();
+                }
+              }}
+            >
               Monedas &ensp;
             </span>
             <i class="bi bi-chevron-right"></i> &ensp;
@@ -471,6 +486,7 @@ export default function CoinInfo(props) {
                       setSymbolCoin(e.target.value);
                       setDollar(e.target.value * price);
                     }}
+                    aria-label="Cantidad de moneda seleccionada a convertir en dólares"
                   />
                   <span className="input-group-text">{coin.symbol}&nbsp;</span>
                 </div>
@@ -484,6 +500,7 @@ export default function CoinInfo(props) {
                       setDollar(e.target.value);
                       setSymbolCoin(e.target.value / price);
                     }}
+                    aria-label="Cantidad de Dólares a convertir en la moneda seleccionada"
                   />
                   <span className="input-group-text">USD</span>
                 </div>
