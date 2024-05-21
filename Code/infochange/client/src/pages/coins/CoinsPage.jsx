@@ -20,10 +20,40 @@ export default function CoinsPage() {
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [coinInfo, setCoinInfo] = useState([]);
   const { getCoins, getLastDate } = useCoins();
+  const [dataTablePage, setDataTablePage] = useState(1);
+
+  const updateTabIndex = () => {
+    setTimeout(() => {
+      const tableBody = document.querySelector(".p-datatable-tbody");
+      if (tableBody) {
+        const rows = tableBody.querySelectorAll("tr");
+        rows.forEach((row) => {
+          console.log(row);
+          row.setAttribute("tabindex", 0);
+        });
+      }
+    }, 1000);
+  };
 
   useEffect(() => {
     initFilters1();
+    document.querySelectorAll(".p-paginator-element").forEach((element) => {
+      element.addEventListener("click", () => {
+        setDataTablePage(element.textContent);
+      });
+    });
+    //updateTabIndex();
   }, []);
+
+  useEffect(() => {
+    console.log(dataTablePage);
+    updateTabIndex();
+    document.querySelectorAll(".p-paginator-element").forEach((element) => {
+      element.addEventListener("click", () => {
+        setDataTablePage(element.textContent);
+      });
+    });
+  }, [dataTablePage]);
 
   const initFilters1 = () => {
     setFilters1({
@@ -181,6 +211,17 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
     );
   };
 
+  const updateTabIndex = () => {
+    const tableBody =
+      dataTableRef.current.container.querySelector(".p-datatable-tbody");
+    const rows = tableBody.querySelectorAll("tr");
+    rows.forEach((row) => row.setAttribute("tabIndex", 0));
+  };
+
+  const onPage = (event) => {
+    setlazyState(event);
+  };
+
   return (
     <main>
       <h6 className="text-secondary m-3">Última actualización: {lastDate}</h6>
@@ -202,6 +243,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
           size="small"
           selectionMode={"single"}
           aria-label="Tabla de datos de monedas"
+          pageLinkSize={3}
         >
           <Column
             body={imageBodyTemplate}

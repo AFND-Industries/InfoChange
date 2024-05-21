@@ -176,7 +176,7 @@ export default function CoinInfo(props) {
                 backgroundColor: "#f8f9fa",
               }}
               href={url}
-              aria-label="Enlace a una página de la moneda"
+              aria-label={`Enlace a ${nombres[index]}`}
             >
               <div className="col-auto mx-1 d-flex justify-content-center align-items-center">
                 <i className={`url-icon ${logos[index]}`}></i>
@@ -271,6 +271,7 @@ export default function CoinInfo(props) {
                   whiteSpace: "nowrap",
                 }}
                 onClick={() => setShowModal(true)}
+                aria-label="Ver todas las etiquetas"
               >
                 <strong>Ver todo</strong>
               </a>
@@ -327,11 +328,12 @@ export default function CoinInfo(props) {
         </div>
       </div>
       <div className="row mx-3">
-        <div className="col-lg-4">
+        <main className="col-lg-4">
           <div style={{ position: "sticky", top: "0", zIndex: "1" }}>
             <SingleTicker
               symbol={coin.symbol + "USDT"}
               width="100%"
+              locale="es"
             ></SingleTicker>
           </div>
 
@@ -516,8 +518,8 @@ export default function CoinInfo(props) {
               </div>
             </div>
           </div>
-        </div>
-        <div
+        </main>
+        <aside
           className="col-lg-8"
           style={{
             overflowY: isSmallScreen ? "visible" : "auto",
@@ -598,7 +600,7 @@ export default function CoinInfo(props) {
               ></Timeline>
             </div>
           </section>
-        </div>
+        </aside>
       </div>
     </div>
   );
