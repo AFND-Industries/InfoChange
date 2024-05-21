@@ -239,7 +239,7 @@ function BuyAndSell({ style = 1 }) {
 
     return (
         <>
-            <div className={`col-md border border-4 rounded me-1 ${action == 0 ? "d-md-block d-none" : ""}`}>
+            <div className={`col-md border border-4 rounded me-1 ${action === 0 ? "d-md-block d-none" : ""}`}>
                 <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
                     <div className="d-flex justify-content-start flex-sm-row flex-column">
                         <div className="me-1">Disponible:</div>
@@ -248,20 +248,44 @@ function BuyAndSell({ style = 1 }) {
                     {swapButton}
                 </div>
                 <div className="input-group input-group-sm">
-                    <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
+                    <label htmlFor="buyAmount" className="visually-hidden">Cantidad a comprar</label>
+                    <input
+                        type="text"
+                        id="buyAmount"
+                        className="form-control"
+                        placeholder="Cantidad a comprar"
+                        value={buyQuoteAssetInput}
+                        onChange={handleBuyQuoteAsset}
+                    />
                     <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
                 </div>
-                {style == 1 && <>
-                    <input type="range" className="form-range" value={buyRangeValue}
-                        onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")} />
-                    <div className="input-group input-group-sm">
-                        <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={buyBaseAssetInput} onChange={handleBuyBaseAsset} />
-                        <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
-                    </div>
-                </>}
+                {style === 1 && (
+                    <>
+                        <label htmlFor="buyRange" className="visually-hidden">Rango de compra</label>
+                        <input
+                            type="range"
+                            id="buyRange"
+                            className="form-range"
+                            value={buyRangeValue}
+                            onChange={(event) => handleRangeChange(event, setBuyRangeValue, getQuoteAsset(), "BUY")}
+                        />
+                        <div className="input-group input-group-sm">
+                            <label htmlFor="buyTotal" className="visually-hidden">Total sin comisiones</label>
+                            <input
+                                type="text"
+                                id="buyTotal"
+                                className="form-control"
+                                placeholder="Total (sin comisiones)"
+                                value={buyBaseAssetInput}
+                                onChange={handleBuyBaseAsset}
+                            />
+                            <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
+                        </div>
+                    </>
+                )}
                 <div className="row mt-1 mb-1 d-flex justify-content-between">
                     <div className="col-lg-6">
-                        {style == 0 && <span>Recibes: {(buyBaseAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
+                        {style === 0 && <span>Recibes: {(buyBaseAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
                     </div>
                     <div className="col-lg-6 d-flex justify-content-lg-end">
                         <span className="text-end">Comisión: {(buyQuoteAssetInput * tradingComision).toFixed(showQuoteDecimals)}{showQuoteAsset}</span>
@@ -269,9 +293,9 @@ function BuyAndSell({ style = 1 }) {
                 </div>
                 {getAuthStatus() !== "1" ?
                     notLoggedButton :
-                    <button className="btn btn-success w-100 mb-2" onClick={onBuy}> Comprar {showBaseAsset}</button>}
+                    <button className="btn btn-success w-100 mb-2" onClick={onBuy}>Comprar {showBaseAsset}</button>}
             </div>
-            <div className={`col-md border border-4 rounded ms-md-2 ${action == 1 ? "d-md-block d-none" : ""}`}>
+            <div className={`col-md border border-4 rounded ms-md-2 ${action === 1 ? "d-md-block d-none" : ""}`}>
                 <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
                     <div className="d-flex justify-content-start flex-sm-row flex-column">
                         <div className="me-1">Disponible:</div>
@@ -281,21 +305,44 @@ function BuyAndSell({ style = 1 }) {
                 </div>
                 <div>
                     <div className="input-group input-group-sm">
-                        <input type="text" className="form-control" placeholder="Cantidad a vender" value={sellBaseAssetInput} onChange={handleSellBaseAsset} />
+                        <label htmlFor="sellAmount" className="visually-hidden">Cantidad a vender</label>
+                        <input
+                            type="text"
+                            id="sellAmount"
+                            className="form-control"
+                            placeholder="Cantidad a vender"
+                            value={sellBaseAssetInput}
+                            onChange={handleSellBaseAsset}
+                        />
                         <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
                     </div>
-                    {style == 1 &&
+                    {style === 1 && (
                         <>
-                            <input type="range" className="form-range" value={sellRangeValue}
-                                onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")} />
+                            <label htmlFor="sellRange" className="visually-hidden">Rango de venta</label>
+                            <input
+                                type="range"
+                                id="sellRange"
+                                className="form-range"
+                                value={sellRangeValue}
+                                onChange={(event) => handleRangeChange(event, setSellRangeValue, getBaseAsset(), "SELL")}
+                            />
                             <div className="input-group input-group-sm">
-                                <input type="text" className="form-control" placeholder="Total (sin comisiones)" value={sellQuoteAssetInput} onChange={handleSellQuoteAsset} />
+                                <label htmlFor="sellTotal" className="visually-hidden">Total sin comisiones</label>
+                                <input
+                                    type="text"
+                                    id="sellTotal"
+                                    className="form-control"
+                                    placeholder="Total (sin comisiones)"
+                                    value={sellQuoteAssetInput}
+                                    onChange={handleSellQuoteAsset}
+                                />
                                 <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
                             </div>
-                        </>}
+                        </>
+                    )}
                     <div className="row mt-1 mb-1 d-flex justify-content-between">
                         <div className="col-lg-6">
-                            {style == 0 && <span>Recibes: {(sellQuoteAssetInput * 1).toFixed(showQuoteDecimals)}$</span>}
+                            {style === 0 && <span>Recibes: {(sellQuoteAssetInput * 1).toFixed(showQuoteDecimals)}$</span>}
                         </div>
                         <div className="col-lg-6 d-flex justify-content-lg-end">
                             <span className="text-end">Comisión: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}</span>
@@ -305,7 +352,7 @@ function BuyAndSell({ style = 1 }) {
                         notLoggedButton :
                         <button className="btn btn-danger w-100 mb-2" onClick={onSell}>Vender {showBaseAsset}</button>}
                 </div>
-            </div >
+            </div>
         </>
     );
 }

@@ -29,7 +29,7 @@ function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active, i
             key={pair.symbol}
             onClick={clickHandler}
             style={active ? { backgroundColor: "#fff3cd" } : {}}
-            tabIndex={index + 1}
+            tabIndex={index + 2}
         >
             <img
                 src={logoUrl}

@@ -19,8 +19,11 @@ function RotatingMarquee({ display = true, pairs = [], floatingBottom = false })
         const pair = getPair(elem);
         const tokenInfo = getTokenInfo(pair.baseAsset);
 
+        const index = 2 * i + 1;
+        const nonenize = index == 3 || index == 7 || index == 11;
+
         return (
-            <div key={i} className={`align-items-center col-2 bg-secondary rotating-marquee-element rme-${2 * i + 1}`}>
+            <div key={i} className={`d-flex align-items-center justify-content-center col-2 bg-secondary rotating-marquee-element rme-${index} ${nonenize ? "hidden-md" : ""}`}>
                 <div className="d-flex flex-row align-items-center">
                     <img src={tokenInfo.logo} className="me-2"
                         style={{ width: '15px', height: '15px' }} onError={(e) => { e.target.src = '/favicon.ico'; }} alt="Logo" />
