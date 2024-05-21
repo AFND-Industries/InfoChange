@@ -32,7 +32,7 @@ function SymbolSearch({ style = 0 }) {
 
     return (
         <>
-            <div className="row">
+            <div className="row mt-lg-0 mt-2">
                 <input
                     className="form-control border border-4 rounded"
                     type="search"

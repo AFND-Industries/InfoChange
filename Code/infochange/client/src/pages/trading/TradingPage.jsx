@@ -32,10 +32,10 @@ function TradingPage() {
           </div>
         </div>
         <div className="row">
-          <section className="col-md-9 ps-0">
+          <section className="col-lg-9 ps-0 pe-lg-2 pe-0">
             <TradingChart style={tradingMode} />
           </section>
-          <aside className="col-md-3">
+          <aside className="col-lg-3">
             <SymbolSearch style={tradingMode} />
           </aside>
         </div>

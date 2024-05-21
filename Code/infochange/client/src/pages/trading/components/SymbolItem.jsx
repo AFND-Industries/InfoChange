@@ -38,7 +38,9 @@ function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active, i
                 onError={(e) => { e.target.src = faviconUrl; }}
                 alt="Logo"
             />
-            {style === 0 ? renderNameNewbie : renderNamePro}
+            <span>
+                {style === 0 ? renderNameNewbie : renderNamePro}
+            </span>
             <span className="ms-auto text-end">
                 {pair.price}{style === 0 ? "$" : ""}
             </span>

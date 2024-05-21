@@ -6,6 +6,9 @@ import { useAuth } from "../../authenticator/AuthContext";
 import { useAPI } from "../../../context/APIContext";
 
 function BuyAndSell({ style = 1 }) {
+    const [action, setAction] = useState(0);
+    const swapAction = () => setAction(action => (action + 1) % 2);
+
     const navigate = useNavigate();
 
     const MAXVALUE = 1000000000000;
@@ -230,11 +233,19 @@ function BuyAndSell({ style = 1 }) {
 
     const trunc = (number, n) => Math.trunc(number * Math.pow(10, n)) / (Math.pow(10, n));
 
+    const swapButton = (
+        <div className="btn btn-primary d-md-none" onClick={swapAction}>Cambiar</div>
+    );
+
     return (
         <>
-            <div className="col-md border border-4 rounded me-1">
-                <div className="mt-1 mb-1">
-                    Disponible: {trunc(getWalletAmount(getQuoteAsset()), showQuoteDecimals).toFixed(showQuoteDecimals)}{showQuoteAsset}
+            <div className={`col-md border border-4 rounded me-1 ${action == 0 ? "d-md-block d-none" : ""}`}>
+                <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
+                    <div className="d-flex justify-content-start flex-sm-row flex-column">
+                        <div className="me-1">Disponible:</div>
+                        <div>{trunc(getWalletAmount(getQuoteAsset()), showQuoteDecimals).toFixed(showQuoteDecimals)}{showQuoteAsset}</div>
+                    </div>
+                    {swapButton}
                 </div>
                 <div className="input-group input-group-sm">
                     <input type="text" className="form-control" placeholder="Cantidad a comprar" value={buyQuoteAssetInput} onChange={handleBuyQuoteAsset} />
@@ -248,17 +259,25 @@ function BuyAndSell({ style = 1 }) {
                         <span className="input-group-text" id="inputGroup-sizing-sm">{showBaseAsset}</span>
                     </div>
                 </>}
-                <div className="mt-1 mb-1 d-flex justify-content-between">
-                    {style == 0 && <span>Vas a recibir: {(buyBaseAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
-                    Comisión estimada: {(buyQuoteAssetInput * tradingComision).toFixed(showQuoteDecimals)}{showQuoteAsset}
+                <div className="row mt-1 mb-1 d-flex justify-content-between">
+                    <div className="col-lg-6">
+                        {style == 0 && <span>Recibes: {(buyBaseAssetInput * 1).toFixed(8)} {showBaseAsset}</span>}
+                    </div>
+                    <div className="col-lg-6 d-flex justify-content-lg-end">
+                        <span className="text-end">Comisión: {(buyQuoteAssetInput * tradingComision).toFixed(showQuoteDecimals)}{showQuoteAsset}</span>
+                    </div>
                 </div>
                 {getAuthStatus() !== "1" ?
                     notLoggedButton :
                     <button className="btn btn-success w-100 mb-2" onClick={onBuy}> Comprar {showBaseAsset}</button>}
             </div>
-            <div className="col-md border border-4 rounded ms-2">
-                <div className="mt-1 mb-1">
-                    Disponible: {trunc(getWalletAmount(getBaseAsset()), 8).toFixed(8)} {showBaseAsset}
+            <div className={`col-md border border-4 rounded ms-md-2 ${action == 1 ? "d-md-block d-none" : ""}`}>
+                <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
+                    <div className="d-flex justify-content-start flex-sm-row flex-column">
+                        <div className="me-1">Disponible:</div>
+                        <div>{trunc(getWalletAmount(getBaseAsset()), 8).toFixed(8)} {showBaseAsset}</div>
+                    </div>
+                    {swapButton}
                 </div>
                 <div>
                     <div className="input-group input-group-sm">
@@ -274,9 +293,13 @@ function BuyAndSell({ style = 1 }) {
                                 <span className="input-group-text" id="inputGroup-sizing-sm">{showQuoteAsset}</span>
                             </div>
                         </>}
-                    <div className="mt-1 mb-1 d-flex justify-content-between">
-                        {style == 0 && <span>Vas a recibir: {(sellQuoteAssetInput * 1).toFixed(showQuoteDecimals)}$</span>}
-                        <span>Comisión estimada: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}</span>
+                    <div className="row mt-1 mb-1 d-flex justify-content-between">
+                        <div className="col-lg-6">
+                            {style == 0 && <span>Recibes: {(sellQuoteAssetInput * 1).toFixed(showQuoteDecimals)}$</span>}
+                        </div>
+                        <div className="col-lg-6 d-flex justify-content-lg-end">
+                            <span className="text-end">Comisión: {(sellBaseAssetInput * tradingComision).toFixed(8)} {showBaseAsset}</span>
+                        </div>
                     </div>
                     {getAuthStatus() !== "1" ?
                         notLoggedButton :
