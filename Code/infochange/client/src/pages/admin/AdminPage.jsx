@@ -105,7 +105,7 @@ export default function AdminPage() {
                                                     style={{ width: "50px", height: "50px" }} />
                                                 <div className="fw-bold m-0 me-2">{coin.name}: </div>
                                             </div>
-                                            <div className="col-lg-7 d-flex align-items-center justify-content-end">
+                                            <div className="col-lg-7 d-flex align-items-center justify-content-start">
                                                 <span className="h5 m-0">{coin.volume.toFixed(8)} {coin.symbol}</span>
                                                 <span className="h6 text-secondary m-0"> ~{coin.dolar_volume.toFixed(2)}$</span>
                                             </div>

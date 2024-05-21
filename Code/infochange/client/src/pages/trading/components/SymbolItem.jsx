@@ -1,7 +1,7 @@
 import React from "react";
 import "./SymbolItem.css";
 
-function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active }) {
+function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active, index }) {
     let reg = regex.toUpperCase();
     let baseAsset = pair.baseAsset.replace(reg, "");
 
@@ -24,16 +24,26 @@ function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active })
     );
 
     return (
-        <li className="clickable-item list-group-item align-items-center d-flex" key={pair.symbol} onClick={clickHandler}
-            style={active ? { backgroundColor: "#fff3cd" } : {}}>
-            <img src={logoUrl} className="me-2"
-                style={{ width: '25px', height: '25px' }} onError={(e) => { e.target.src = faviconUrl; }} alt="Logo" />
-            {style == 0 ? renderNameNewbie : renderNamePro}
+        <li
+            className="clickable-item list-group-item align-items-center d-flex"
+            key={pair.symbol}
+            onClick={clickHandler}
+            style={active ? { backgroundColor: "#fff3cd" } : {}}
+            tabIndex={index + 1}
+        >
+            <img
+                src={logoUrl}
+                className="me-2"
+                style={{ width: '25px', height: '25px' }}
+                onError={(e) => { e.target.src = faviconUrl; }}
+                alt="Logo"
+            />
+            {style === 0 ? renderNameNewbie : renderNamePro}
             <span className="ms-auto text-end">
-                {pair.price}{style == 0 ? "$" : ""}
+                {pair.price}{style === 0 ? "$" : ""}
             </span>
         </li>
-    )
+    );
 }
 
 export default SymbolItem;
