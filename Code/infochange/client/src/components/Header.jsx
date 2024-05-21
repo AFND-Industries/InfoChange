@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
 import { useAuth } from "../pages/authenticator/AuthContext";
 
+import "./header.css";
+
 export default function Header() {
   const navigate = useNavigate();
   const { getActualUser, doLogout } = useAuth();

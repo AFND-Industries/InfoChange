@@ -176,6 +176,7 @@ export default function CoinInfo(props) {
                 backgroundColor: "#f8f9fa",
               }}
               href={url}
+              aria-label="Enlace a una página de la moneda"
             >
               <div className="col-auto mx-1 d-flex justify-content-center align-items-center">
                 <i className={`url-icon ${logos[index]}`}></i>
