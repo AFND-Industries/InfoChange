@@ -32,7 +32,7 @@ export default function AdminPage() {
         <div className="container mt-4 mb-4">
             <div className="row">
                 <div className="col-md-6 mb-4">
-                    <img src={Banner} style={{ width: "60%", minWidth: "250px" }} alt="Logo del panel" />
+                    <img src={Banner} style={{ width: "60%", minWidth: "250px" }} alt="Logo del panel de admin" />
                 </div>
                 <div className="col-md-6 mb-4">
                     <div className="card">

@@ -40,7 +40,7 @@ const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
     return (
         <li key={bizum.id} className="list-group-item px-0">
             <div className="row align-items-center">
-                <div className="col-lg-5 d-flex align-items-center mb-3 mb-lg-0">
+                <div className="col-lg-5 d-flex align-items-center mb-3 mb-lg-0 justify-content-lg-between">
                     {userDraw(sender)}
                     <i className="bi bi-arrow-right" style={{ fontSize: '1.5em' }}></i>
                 </div>

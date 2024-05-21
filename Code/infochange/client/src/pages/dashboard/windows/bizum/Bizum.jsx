@@ -88,7 +88,7 @@ export default function Bizum({ user, bizumUsers }) {
         <>
             <div className="row px-5 py-4">
                 <div className="col-12 mb-4 text-center">
-                    <img src={Banner} style={{ width: "50%", minWidth: "150px" }} />
+                    <img src={Banner} style={{ width: "50%", minWidth: "150px" }} alt="Logo de InfoBizum" />
                 </div>
             </div>
 
@@ -103,7 +103,8 @@ export default function Bizum({ user, bizumUsers }) {
                                 placeholder="Buscar usuario..."
                                 style={{ backgroundColor: "#ffffff", color: "#000000" }}
                                 value={userInput}
-                                onChange={(event) => handleUserInput(event.target.value)} />
+                                onChange={(event) => handleUserInput(event.target.value)}
+                            />
 
                             <ul className="dropdown-menu" style={{ opacity: (usersObject.length > 0 ? "100%" : "0") }}>
                                 {usersObject}
@@ -127,7 +128,9 @@ export default function Bizum({ user, bizumUsers }) {
                 <div className="col-md-2 mb-4">
                     <div style={{ height: "1.5em" }}></div>
                     <button
-                        className={`btn btn-success${activeButton ? "" : " disabled"}`}
+                        className={`btn`}
+                        disabled={!activeButton}
+                        style={{ backgroundColor: "#2c6b48", color: "white" }}
                         onClick={() => handleBizum(userRegexList[0], amountInput)}
                     >
                         Confirmar
