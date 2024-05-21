@@ -25,16 +25,7 @@
     }
 }
 
-@media screen and (max-width: 1000px) {
-
-    .rotating-marquee,
-    .rotating-marquee-element {
-        height: 48px;
-        flex-direction: column;
-    }
-}
-
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 992px) {
 
     .rotating-marquee,
     .rotating-marquee-element {
@@ -44,6 +35,15 @@
 
     .marquee-pair {
         margin-right: 10px;
+    }
+}
+
+@media screen and (max-width: 991px) {
+
+    .rotating-marquee,
+    .rotating-marquee-element {
+        height: 48px;
+        flex-direction: column;
     }
 }
 

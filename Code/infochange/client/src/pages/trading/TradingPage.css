@@ -10,3 +10,9 @@ html {
 body.modal-open {
     padding-right: 0 !important;
 }
+
+@media screen and (max-width: 992px) {
+    .chart-resize {
+        height: 50vh;
+    }
+}

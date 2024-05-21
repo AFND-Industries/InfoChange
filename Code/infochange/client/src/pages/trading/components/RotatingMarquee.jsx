@@ -34,8 +34,6 @@ function RotatingMarquee({ display = true, pairs = [], floatingBottom = false })
         );
     })
 
-
-
     return (
         <div className={(floatingBottom ? "floating-bottom " : "") + "rotating-marquee bg-secondary"}
             style={{ display: (display ? "block" : "none") }}>
