@@ -44,17 +44,15 @@ export default function CoinsPage() {
       });
     });
 
-    if (rows === 1) {
-      const div_height = document.getElementById("main_div").clientHeight;
-      console.log("div_height: " + div_height);
-      const row_height =
-        document.querySelector(".row-data-tables").clientHeight;
-      console.log("row_height: " + row_height);
+    setTimeout(() => {
+      if (rows === 1) {
+        const div_height = document.getElementById("main_div").clientHeight;
+        const row_height =
+          document.querySelector(".row-data-tables").clientHeight;
 
-      setRows(Math.floor(div_height / row_height) - 4);
-    }
-
-    console.log("rows" + rows);
+        setRows(Math.floor(div_height / row_height) - 6);
+      }
+    }, 150);
   }, []);
 
   useEffect(() => {
@@ -205,9 +203,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
           <span className="coin-name p-2 small">
             <strong>{rowData.name}</strong>
           </span>
-          <span className="coin-symbol text-secondary small">
-            {rowData.symbol}
-          </span>
+          <span className="coin-symbol text-gray small">{rowData.symbol}</span>
         </div>
       </div>
     );
@@ -238,7 +234,14 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
 
   return (
     <main style={{ minHeight: "80vh" }}>
-      <h6 className="text-secondary m-3">Última actualización: {lastDate}</h6>
+      <h1 className=" m-3 mt-4 fs-1">Listado de todas las Criptomonedas</h1>
+      <h2 className="text-secondary m-3 mb-5 fs-5">
+        Consulta la información de las criptomonedas más populares en el mercado
+        en tiempo real
+      </h2>
+      <span className=" h6 text-secondary m-3">
+        Última actualización de la base de datos: {lastDate}
+      </span>
       <div className="border rounded m-3 data-table-body">
         <DataTable
           value={data}

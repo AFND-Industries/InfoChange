@@ -307,7 +307,7 @@ export default function CoinInfo(props) {
       key={location.key}
       id="container-coin-info"
     >
-      <div className="row mb-4 mx-3 text-secondary">
+      <div className="row mx-3 text-secondary">
         <div className="col-12 d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
             <span
@@ -327,7 +327,14 @@ export default function CoinInfo(props) {
           </div>
         </div>
       </div>
-      <div className="row mx-3">
+      <h1
+        className="text-center mt-0 mb-2"
+        style={{ fontSize: "2em", fontWeight: "700", letterSpacing: "1px" }}
+      >
+        {" "}
+        Información sobre {coin.name}
+      </h1>
+      <div className="row mx-3 mt-4">
         <main className="col-lg-4">
           <div style={{ position: "sticky", top: "0", zIndex: "1" }}>
             <SingleTicker
@@ -342,7 +349,7 @@ export default function CoinInfo(props) {
               className="scroll card-body"
               style={{
                 overflowY: isSmallScreen ? "visible" : "auto",
-                maxHeight: isSmallScreen ? "" : "60vh",
+                maxHeight: isSmallScreen ? "" : "55vh",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
               }}
@@ -468,7 +475,7 @@ export default function CoinInfo(props) {
                 </div>
               </div>
               <div className="row my-4">
-                <h5 className="text-secondary">
+                <span className=" h5 text-secondary">
                   <strong className="text-dark">
                     {" "}
                     {coin.symbol} Converter{" "}
@@ -476,7 +483,7 @@ export default function CoinInfo(props) {
                   <span style={{ fontSize: "17px" }}>
                     a {Number(price).toFixed(3)} el {coin.symbol}
                   </span>
-                </h5>
+                </span>
               </div>
               <div className="row">
                 <div className="input-group input-group-lg d-flex align-items-start mb-3">
@@ -523,7 +530,7 @@ export default function CoinInfo(props) {
           className="col-lg-8"
           style={{
             overflowY: isSmallScreen ? "visible" : "auto",
-            maxHeight: isSmallScreen ? "" : "72vh",
+            maxHeight: isSmallScreen ? "" : "68vh",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}

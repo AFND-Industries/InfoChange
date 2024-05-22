@@ -89,3 +89,8 @@
   background-color: #3b49df !important; /* Fondo azul más oscuro */
   color: #ffffff !important; /* Texto blanco */
 }
+
+.text-gray{
+  color: #545454;
+}
+
