@@ -1,12 +1,15 @@
 import React from 'react';
+
 import SymbolSearch from './components/SymbolSearch';
 import RotatingMarquee from './components/RotatingMarquee';
 import BuyAndSell from './components/BuyAndSell';
 import TradingChart from './components/TradingChart';
-import { useTrading } from './context/TradingContext';
 import JustCloseModal from './components/JustCloseModal';
 import TradeConfirmationModal from './components/TradeConfirmationModal';
 import TradeToast from './components/TradeToast';
+
+import { useTrading } from './context/TradingContext';
+
 import "./TradingPage.css";
 
 function TradingPage() {
@@ -17,8 +20,16 @@ function TradingPage() {
   if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT") // Por si entra a un par de modo pro
     tradingMode = 1;
 
+  const actualPair = getActualPair();
+  const titleText = tradingMode == 0 ?
+    <span>Intercambia <span className='fw-bold'>{actualPair.baseAssetName}</span> con <span className='fw-bold'>{actualPair.quoteAssetName}</span></span>
+    :
+    <span>Tradea <span className='fw-bold'>{actualPair.symbol}</span></span>
+
   return (
     <>
+      <h1 className="m-3 fs-1">{titleText}</h1>
+
       <TradeConfirmationModal />
       <JustCloseModal />
 
