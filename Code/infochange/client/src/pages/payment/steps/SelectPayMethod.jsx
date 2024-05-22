@@ -8,7 +8,6 @@ export default function SelectPayMethod(props) {
                     className="card clickableCard mb-3"
                     onClick={creditHandler}
                 >
-                    <img className="card-img-top" />
                     <div className="card-body text-center">
                         <h4 className="card-title">Tarjeta de crédito</h4>
                         <i
@@ -21,7 +20,6 @@ export default function SelectPayMethod(props) {
                     className="card clickableCard border-primary text-primary"
                     onClick={paypalHandler}
                 >
-                    <img className="card-img-top" />
                     <div className="card-body text-center">
                         <h4 className="card-title">Paypal</h4>
                         <i className="bi bi-paypal"></i>

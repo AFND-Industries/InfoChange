@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PlusCircle } from "react-bootstrap-icons";
+import { DashCircle, DashCircleFill, PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { useCoins } from "../../coins/CoinsAPI";
 import CoinsDataset from "../../../data/CoinMarketCapData.json";
@@ -43,8 +43,8 @@ export default function Wallet(props) {
             <div className="container d-flex flex-column align-items-center py-3">
                 <h2>Balance</h2>
                 <div
-                    className="rounded-pill p-4 text-white mb-4"
-                    style={{ backgroundColor: "#20c997", width: "fit-content" }}
+                    className="rounded-pill p-4 text-white mb-4 bg-success"
+                    style={{ width: "fit-content" }}
                 >
                     <h1>
                         {coins
@@ -59,20 +59,32 @@ export default function Wallet(props) {
                         $
                     </h1>
                 </div>
-                <div className="row">
-                    <div className="col-md-7 mb-3">
+                <div className="row g-4">
+                    <div className="col-12">
+                        <label htmlFor="dollarInput">Cantidad de dinero:</label>
                         <div className="input-group">
                             <input
                                 ref={balance}
                                 type="number"
+                                id="dollarInput"
                                 className="form-control"
                             />
                             <span className="input-group-text">$</span>
                         </div>
                     </div>
-                    <div className="col-md-5">
+                    <div className="col-md-6">
                         <button
-                            className="btn btn-outline-success d-flex align-items-center"
+                            className="btn btn-outline-danger d-flex align-items-center w-100"
+                            onClick={() =>
+                                addBalance(balance.current.value, navigate)
+                            }
+                        >
+                            <DashCircle className="me-2" /> Retirar saldo
+                        </button>
+                    </div>
+                    <div className="col-md-6">
+                        <button
+                            className="btn btn-success d-flex align-items-center w-100"
                             onClick={() =>
                                 addBalance(balance.current.value, navigate)
                             }
@@ -81,6 +93,7 @@ export default function Wallet(props) {
                         </button>
                     </div>
                 </div>
+                <div className="row"></div>
             </div>
             <hr className="mx-4 my-2" />
             <div className="mx-4">
@@ -100,6 +113,7 @@ export default function Wallet(props) {
                                         <img
                                             src={"/favicon.ico"}
                                             name="ph"
+                                            alt="Loading coin..."
                                             width={"32px"}
                                             height={"32px"}
                                         />
