@@ -28,6 +28,10 @@ function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active, i
             className="clickable-item list-group-item align-items-center d-flex"
             key={pair.symbol}
             onClick={clickHandler}
+            onKeyPress={(event) => {
+                if (event.key === "Enter")
+                    clickHandler();
+            }}
             style={active ? { backgroundColor: "#fff3cd" } : {}}
             tabIndex={0}
         >
