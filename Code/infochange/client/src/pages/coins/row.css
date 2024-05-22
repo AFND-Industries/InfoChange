@@ -43,7 +43,15 @@
   }
 }
 
+@media(max-width: 540px) {
+  .coin-name{
+    display: none;
+  }
 
+  .coin-symbol{
+    padding: 4px;
+  }
+}
 
 
 

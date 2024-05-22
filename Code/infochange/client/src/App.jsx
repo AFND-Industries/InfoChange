@@ -46,7 +46,9 @@ function App() {
   const wrap = (v) => (
     <>
       <Header />
-      {v}
+      <div id="main_div" style={{ minHeight: "80vh" }}>
+        {v}
+      </div>
       <Footer />
     </>
   );

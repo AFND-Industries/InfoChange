@@ -342,7 +342,7 @@ export default function CoinInfo(props) {
               className="scroll card-body"
               style={{
                 overflowY: isSmallScreen ? "visible" : "auto",
-                maxHeight: isSmallScreen ? "" : "475px",
+                maxHeight: isSmallScreen ? "" : "60vh",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
               }}
@@ -523,7 +523,7 @@ export default function CoinInfo(props) {
           className="col-lg-8"
           style={{
             overflowY: isSmallScreen ? "visible" : "auto",
-            maxHeight: isSmallScreen ? "" : "600px",
+            maxHeight: isSmallScreen ? "" : "72vh",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}

@@ -21,6 +21,7 @@ export default function CoinsPage() {
   const [coinInfo, setCoinInfo] = useState([]);
   const { getCoins, getLastDate } = useCoins();
   const [dataTablePage, setDataTablePage] = useState(1);
+  const [rows, setRows] = useState(1);
 
   const updateTabIndex = () => {
     setTimeout(() => {
@@ -42,7 +43,18 @@ export default function CoinsPage() {
         setDataTablePage(element.textContent);
       });
     });
-    //updateTabIndex();
+
+    if (rows === 1) {
+      const div_height = document.getElementById("main_div").clientHeight;
+      console.log("div_height: " + div_height);
+      const row_height =
+        document.querySelector(".row-data-tables").clientHeight;
+      console.log("row_height: " + row_height);
+
+      setRows(Math.floor(div_height / row_height) - 4);
+    }
+
+    console.log("rows" + rows);
   }, []);
 
   useEffect(() => {
@@ -126,7 +138,7 @@ export default function CoinsPage() {
   const lastDate = getLastDate();
 
   return params.length === 0 ? (
-    getCoinDataTable(data, filters1, header1, onRowClick, lastDate)
+    getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows)
   ) : (
     <CoinInfo coin={coinInfo} key={location.key} />
   );
@@ -164,7 +176,7 @@ function getData(symbols) {
   return array;
 }
 
-function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
+function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
   const imageBodyTemplate = (rowData) => {
     const onImageLoad = (event) => {
       const loadingImage =
@@ -190,10 +202,12 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
           onLoad={onImageLoad}
         />
         <div>
-          <span className="p-2 small">
+          <span className="coin-name p-2 small">
             <strong>{rowData.name}</strong>
           </span>
-          <span className="text-secondary small">{rowData.symbol}</span>
+          <span className="coin-symbol text-secondary small">
+            {rowData.symbol}
+          </span>
         </div>
       </div>
     );
@@ -223,14 +237,14 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate) {
   };
 
   return (
-    <main>
+    <main style={{ minHeight: "80vh" }}>
       <h6 className="text-secondary m-3">Última actualización: {lastDate}</h6>
       <div className="border rounded m-3 data-table-body">
         <DataTable
           value={data}
           paginator
-          rows={5}
-          rowsPerPageOptions={[5, 10, 25, 50]}
+          rows={rows}
+          rowsPerPageOptions={[rows, 25, 50]}
           tableStyle={{ minWidth: "30rem" }}
           filters={filters1}
           filterDisplay="menu"
