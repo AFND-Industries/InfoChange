@@ -9,7 +9,7 @@ export default function PaymentCompleted(props) {
 
 const paymentSuccess = (cart) => (
     <>
-        <h6>Pago completado</h6>
+        <h3 className="fs-6">Pago completado</h3>
         <div className="container">
             <div className="row">
                 <div className="col-12 text-center">
@@ -29,8 +29,8 @@ const paymentSuccess = (cart) => (
                       } $ a tu saldo.`}
             </div>
             <div className="text-center">
-                <Link to="/" className="btn btn-primary">
-                    Volver al menú
+                <Link to="/dashboard" className="btn btn-primary">
+                    Volver al panel de control
                 </Link>
             </div>
         </div>

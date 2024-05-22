@@ -111,7 +111,7 @@ export default function Payment(props) {
                         </div>
                         <div className="row mb-3">
                             <aside className="col-sm-4">
-                                <h4>Pasos del pago</h4>
+                                <h2 className="fs-4">Pasos del pago</h2>
                                 <ol className="list-group list-group-flush">
                                     <li
                                         className={
@@ -152,7 +152,7 @@ export default function Payment(props) {
                                 </ol>
                             </aside>
                             <main className="col-sm-8">
-                                <h4>Paso {step.step}</h4>
+                                <h2 className="fs-4">Paso {step.step}</h2>
                                 <div className="mb-3">
                                     {step.step === 1 ? (
                                         <SelectPayMethod

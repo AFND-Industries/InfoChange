@@ -9,7 +9,7 @@ export default function ConfirmPayment(props) {
         return buyProduct(cart, data, backHandler, nextHandler);
     return (
         <>
-            <h6>Resumen de la compra</h6>
+            <h3 className="fs-6">Resumen de la compra</h3>
             <div className="container">
                 <ul className="list-group mb-2">
                     <li className={li_classes}>
@@ -27,7 +27,7 @@ export default function ConfirmPayment(props) {
 
                 <div className="alert alert-warning">
                     <div className="alert-heading">
-                        <h5>ADVERTENCIA</h5>
+                        <h4 className="fs-5">ADVERTENCIA</h4>
                     </div>
                     Esta compra <b>NO ES REMBOLSABLE</b>
                 </div>
@@ -55,37 +55,29 @@ export default function ConfirmPayment(props) {
 }
 
 function buyProduct(cart, data, backHandler, nextHandler) {
+    const li_classes = "list-group-item d-flex justify-content-between";
+
     return (
         <div>
-            <h6>Resumen de la compra</h6>
+            <h3 className="fs-6">Resumen de la compra</h3>
             <div className="container">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{cart.type}</td>
-                            <td>{cart.quantity}</td>
-                            <td>{cart.price} $</td>
-                            <td>{cart.price * cart.quantity}</td>
-                        </tr>
-                        <tr>
-                            <td colSpan="3">
-                                <b>TOTAL</b>
-                            </td>
-                            <td>
-                                <b>{cart.price * cart.quantity} $</b>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                {payMethod(data)}
+                <ul className="list-group mb-2">
+                    <li className={li_classes}>
+                        <span>Cantidad</span>
+                        <b>
+                            {cart.quantity} {cart.type}
+                        </b>
+                    </li>
+                    <li className={li_classes}>
+                        <span>Precio (1 {cart.type})</span>
+                        {cart.price} $
+                    </li>
+                    <li className={li_classes + " list-group-item-secondary"}>
+                        <span>Total a pagar</span>
+                        <b>{cart.price * cart.quantity} $</b>
+                    </li>
+                </ul>
+                <ul className="list-group mb-2">{payMethod(data)}</ul>
                 <p>
                     Al pulsar <i>Pagar</i> aceptas los{" "}
                     <span className="text-primary">Términos de Servicio</span> y
@@ -94,7 +86,7 @@ function buyProduct(cart, data, backHandler, nextHandler) {
                 </p>
                 <div className="alert alert-warning">
                     <div className="alert-heading">
-                        <h5>ADVERTENCIA</h5>
+                        <h4 className="fs-5">ADVERTENCIA</h4>
                     </div>
                     Esta compra <b>NO ES REMBOLSABLE</b>
                 </div>
