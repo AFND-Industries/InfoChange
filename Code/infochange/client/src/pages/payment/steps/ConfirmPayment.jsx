@@ -1,5 +1,9 @@
+import { CreditCard, Paypal } from "react-bootstrap-icons";
+
 export default function ConfirmPayment(props) {
     const { cart, data, nextHandler, backHandler } = props;
+
+    const li_classes = "list-group-item d-flex justify-content-between";
 
     if (cart.type !== "USDT")
         return buyProduct(cart, data, backHandler, nextHandler);
@@ -7,17 +11,13 @@ export default function ConfirmPayment(props) {
         <>
             <h6>Resumen de la compra</h6>
             <div className="container">
-                <table className="table">
-                    <tbody>
-                        <tr>
-                            <td colSpan="3">Saldo a añadir</td>
-                            <td>
-                                <b>{cart.quantity} $</b>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                {payMethod(data)}
+                <ul className="list-group mb-2">
+                    <li className={li_classes}>
+                        <span>Saldo a añadir</span>
+                        <b>{cart.quantity} $</b>
+                    </li>
+                    {payMethod(data)}
+                </ul>
                 <p>
                     Al pulsar <i>Pagar</i> aceptas los{" "}
                     <span className="text-primary">Términos de Servicio</span> y
@@ -122,40 +122,40 @@ function buyProduct(cart, data, backHandler, nextHandler) {
 }
 
 function payMethod(data) {
+    const li_classes = "list-group-item d-flex justify-content-between";
+
     if (data.type === "paypal")
         return (
             <>
-                <div className="row">
-                    <div className="col-md-3 col-6">
-                        <b>Método de pago</b>
-                    </div>
-                    <div className="col-md-9 col-6">Paypal</div>
-                </div>
-                <div className="row mb-2">
-                    <div className="col-md-3 col-6">
-                        <b>Cuenta asociada</b>
-                    </div>
-                    <div className="col-md-9 col-6">{data.info.email}</div>
-                </div>
+                <li className={li_classes}>
+                    <span>Método de pago</span>
+                    <b>
+                        Paypal <Paypal />
+                    </b>
+                </li>
+                <li className={li_classes}>
+                    <span>Cuenta asociada</span>
+                    <b>{data.info.email}</b>
+                </li>
             </>
         );
     else if (data.type === "credit") {
         const card = data.info.cardNumber;
         return (
             <>
-                <div className="row">
-                    <div className="col-md-3 col-6">Método de pago</div>
-                    <div className="col-md-9 col-6 fw-bold">
-                        Tarjeta de crédito
-                    </div>
-                </div>
-                <div className="row mb-2">
-                    <div className="col-md-3 col-6">Número de tarjeta</div>
-                    <div className="col-md-9 col-6 fw-bold">
+                <li className={li_classes}>
+                    <span>Método de pago</span>
+                    <b>
+                        Tarjeta de crédito <CreditCard />
+                    </b>
+                </li>
+                <li className={li_classes}>
+                    <span>Número de tarjeta</span>
+                    <b>
                         {"".padStart(card.length - 4, "*")}
                         {card.slice(card.length - 4)}
-                    </div>
-                </div>
+                    </b>
+                </li>
             </>
         );
     }

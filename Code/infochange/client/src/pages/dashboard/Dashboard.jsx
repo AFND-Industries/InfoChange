@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 
 import { Navigate } from "react-router-dom";
 
-import { PersonFill, Wallet2, LayoutTextSidebar, Send } from "react-bootstrap-icons";
+import {
+    PersonFill,
+    Wallet2,
+    LayoutTextSidebar,
+    Send,
+} from "react-bootstrap-icons";
 import Profile from "./windows/Profile";
 import Wallet from "./windows/Wallet";
 import History from "./windows/history/History";
@@ -53,32 +58,39 @@ function Dashboard() {
     let pages = [
         <Profile profile={user.profile} />,
         <Wallet wallet={user.wallet ?? {}} />,
-        <History tradeHistory={tradeHistory} bizumHistory={bizumHistory} bizumUsers={bizumUsers} user={user} />,
-        <Bizum user={user} bizumUsers={bizumUsers} />
+        <History
+            tradeHistory={tradeHistory}
+            bizumHistory={bizumHistory}
+            bizumUsers={bizumUsers}
+            user={user}
+        />,
+        <Bizum user={user} bizumUsers={bizumUsers} />,
     ];
 
     const labels = ["Perfil", "Cartera", "Historial", "Bizum"];
 
     return (
         <div className="container">
-            <div className="card my-4">
-                <h1 className="text-center"> Panel de control</h1>
-            </div>
-            <div className="row align-items-start">
-                <div className="col-3 mb-4">
+            <section className="card my-4">
+                <h1 className="text-center">Panel de control</h1>
+            </section>
+            <section className="row align-items-start">
+                <aside className="col-3 mb-4">
                     <div className="list-group">
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${page === 0 ? "active" : ""
-                                } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${
+                                page === 0 ? "active" : ""
+                            } d-flex align-items-center`}
                             onClick={() => setPage(0)}
                         >
                             <PersonFill className="me-3" /> Perfil
                         </button>
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${page === 1 ? "active" : ""
-                                } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${
+                                page === 1 ? "active" : ""
+                            } d-flex align-items-center`}
                             onClick={() => setPage(1)}
                         >
                             <Wallet2 className="me-3" />
@@ -86,8 +98,9 @@ function Dashboard() {
                         </button>
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${page === 2 ? "active" : ""
-                                } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${
+                                page === 2 ? "active" : ""
+                            } d-flex align-items-center`}
                             onClick={() => setPage(2)}
                         >
                             <LayoutTextSidebar className="me-3" />
@@ -95,24 +108,25 @@ function Dashboard() {
                         </button>
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${page === 3 ? "active" : ""
-                                } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${
+                                page === 3 ? "active" : ""
+                            } d-flex align-items-center`}
                             onClick={() => setPage(3)}
                         >
                             <Send className="me-3" />
                             Bizum
                         </button>
                     </div>
-                </div>
-                <div className="col-9 mb-3">
+                </aside>
+                <main className="col-9 mb-3">
                     <div className="card">
                         <div className="card-header text-center">
                             {labels[page]}
                         </div>
                         {pages[page]}
                     </div>
-                </div>
-            </div>
+                </main>
+            </section>
         </div>
     );
 }

@@ -10,6 +10,7 @@ import { CreditForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
 import { useCoins } from "../coins/CoinsAPI";
 import { useAPI } from "../../context/APIContext";
+import { XLg } from "react-bootstrap-icons";
 
 export default function Payment(props) {
     const TIMEOUT = 10;
@@ -82,7 +83,16 @@ export default function Payment(props) {
                 <div className="card p-2">
                     <div className="card-body">
                         <div className="container d-flex align-items-center">
-                            <img className="mb-3" src={Banner} width={"25%"} />
+                            <img
+                                className="mb-3 me-3"
+                                alt="InfoPay banner"
+                                src={Banner}
+                                width={"25%"}
+                            />
+                            <h1 className="fs-3">
+                                Plataforma de pago InfoPay
+                                <span className="fs-6">&reg;</span>
+                            </h1>
 
                             <Link
                                 to={"/"}
@@ -92,7 +102,7 @@ export default function Payment(props) {
                                 }
                             >
                                 <button className="btn btn-outline-danger">
-                                    <i className="bi bi-x-lg me-2"></i>
+                                    <XLg className="me-2" />
                                     <span className="d-sm-inline d-none">
                                         Cancelar pago
                                     </span>
@@ -100,7 +110,7 @@ export default function Payment(props) {
                             </Link>
                         </div>
                         <div className="row mb-3">
-                            <div className="col-sm-4">
+                            <aside className="col-sm-4">
                                 <h4>Pasos del pago</h4>
                                 <ol className="list-group list-group-flush">
                                     <li
@@ -140,8 +150,8 @@ export default function Payment(props) {
                                         {doneCheck(4, step.step)}
                                     </li>
                                 </ol>
-                            </div>
-                            <div className="col-sm-8">
+                            </aside>
+                            <main className="col-sm-8">
                                 <h4>Paso {step.step}</h4>
                                 <div className="mb-3">
                                     {step.step === 1 ? (
@@ -209,14 +219,19 @@ export default function Payment(props) {
                                         />
                                     )}
                                 </div>
-                            </div>
+                            </main>
                         </div>
-                        <div className="progress">
+                        <section className="progress">
                             <div
+                                role="progressbar"
+                                aria-label="Barra de progreso"
+                                aria-valuemin={1}
+                                aria-valuemax={4}
+                                aria-valuenow={step.step}
                                 className="progress-bar"
                                 style={{ width: `${step.step * 25}%` }}
                             ></div>
-                        </div>
+                        </section>
                         {cart.type !== "USDT" && step.step < 4
                             ? `El precio se actualizará en ${
                                   TIMEOUT - counter
