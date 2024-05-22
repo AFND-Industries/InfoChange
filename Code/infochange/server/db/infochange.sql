@@ -2,21 +2,24 @@ create schema infochange;
 
 use infochange;
 
-CREATE TABLE IF NOT EXISTS usuario (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    lastName VARCHAR(255) NOT NULL,
-    birthday DATE NOT NULL,
-    sexo VARCHAR(10) NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    secureQuestionText VARCHAR(255) NOT NULL,
-    address VARCHAR(255) NOT NULL,
-    ciudad VARCHAR(255) NOT NULL,
-    postalCode VARCHAR(10) NOT NULL,
-    country VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL
+CREATE TABLE `usuario` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `birthday` date NOT NULL,
+  `sexo` varchar(10) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `secureQuestionText` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `ciudad` varchar(255) NOT NULL,
+  `postalCode` varchar(10) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `document` varchar(45) NOT NULL,
+  `mode` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
 );
 
 

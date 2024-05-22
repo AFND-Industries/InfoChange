@@ -2,7 +2,7 @@ export default function SelectPayMethod(props) {
     const { creditHandler, paypalHandler } = props;
     return (
         <div>
-            <h6>Seleccione el método de pago</h6>
+            <h3 className="fs-6">Seleccione el método de pago</h3>
             <div className="container">
                 <div
                     className="card clickableCard mb-3"

@@ -107,12 +107,21 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return response;
     }
 
+    async function swap() {
+        const response = await post("/swap_mode", {});
+        if (response.data.status === "1")
+            await doAuth();
+
+        return response;
+    }
+
     const buyProduct = async (buy: Cart) => await post("/payment", buy);
     const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
     const doBizumHistory = async () => await doAction(async () => await get("/bizum_history"));
     const doBizumUsers = async () => await doAction(async () => await get("/bizum_users"));
     const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
     const doBizum = async (userid, amount) => await doAction(() => bizum(userid, amount));
+    const doSwap = async () => await doAction(() => swap());
 
     return (
         <APIContext.Provider value={{
@@ -122,6 +131,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             doBizumUsers,
             doTrade,
             doBizum,
+            doSwap,
             getPair,
             getPairPrice,
             getTokenInfo,

@@ -33,15 +33,17 @@ function SymbolSearch({ style = 0 }) {
     return (
         <>
             <div className="row mt-lg-0 mt-2">
+                <label htmlFor="searchPair" className="visually-hidden">Buscar par</label>
                 <input
                     className="form-control border border-4 rounded"
                     type="search"
                     placeholder="Buscar par..."
+                    id="searchPair"
                     style={{ backgroundColor: "#ffffff", color: "#000000" }}
                     value={searchInput}
                     onChange={handleInputChange}
                     onKeyPress={handleKeyPress}
-                    tabIndex={1}
+                    tabIndex={0}
                 />
             </div>
             <div

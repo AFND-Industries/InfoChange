@@ -437,6 +437,25 @@ app.get("/bizum_users", (req, res) => {
   );
 });
 
+app.post("/swap_mode", (req, res) => {
+  if (!req.session.user) {
+    res.json(error("UNAUTHORIZED", "No ha iniciado sesión"));
+  } else {
+    db.query(
+      `UPDATE usuario SET mode = (mode + 1) % 2 WHERE ID = ${req.session.user.ID};`,
+      (err, result) => {
+        if (err) {
+          res.json(error(err.code, err.sqlMessage));
+        } else {
+          res.json({
+            status: "1",
+          });
+        }
+      }
+    );
+  }
+});
+
 app.get("/admin", (req, res) => {
   if (!req.session.user || req.session.user.name !== "admin") {
     res.json(error("UNAUTHORIZED", "No eres administrador"));

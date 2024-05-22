@@ -215,11 +215,17 @@ function BuyAndSell({ style = 1 }) {
     }
 
     const onBuy = async () => {
+        if (document.getElementById('just-close-modal').classList.contains('show'))
+            return;
+
         const paidAmount = parseFloat(buyQuoteAssetInput);
         await performTransaction(paidAmount, "BUY");
     };
 
     const onSell = async () => {
+        if (document.getElementById('just-close-modal').classList.contains('show'))
+            return;
+
         const paidAmount = parseFloat(sellBaseAssetInput);
         await performTransaction(paidAmount, "SELL");
     };

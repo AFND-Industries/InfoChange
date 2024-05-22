@@ -10,7 +10,9 @@ export function PaypalForm(props) {
 
     return (
         <div>
-            <h6>Introduzca los datos de su cuenta de Paypal</h6>
+            <h3 className="fs-6">
+                Introduzca los datos de su cuenta de Paypal
+            </h3>
             <div className="container">
                 <div className="mb-3 py-1">
                     <label htmlFor="emailInput" className="form-label">
@@ -73,7 +75,7 @@ export function CreditForm(props) {
 
     return (
         <div>
-            <h6>Introduzca los datos de la tarjeta</h6>
+            <h3 className="fs-6">Introduzca los datos de la tarjeta</h3>
             <div className="container">
                 <div className="mb-3">
                     <label htmlFor="cardInput" className="form-label">

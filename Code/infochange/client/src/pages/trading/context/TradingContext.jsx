@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { useAPI } from "../../../context/APIContext";
+import { useAuth } from "../../authenticator/AuthContext";
 
 const TradingContext = createContext();
 
@@ -31,6 +32,7 @@ const LOSIGUIENTE = 1;
 
 export const TradingProvider = ({ children }) => {
     const { getPair, getPairPrice } = useAPI();
+    const { getActualUser } = useAuth();
 
     const params = useParams();
     const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
@@ -40,9 +42,7 @@ export const TradingProvider = ({ children }) => {
     const getActualPair = () => actualPair;
     const getActualPairPrice = () => getActualPair() === undefined ? -1 : getPairPrice(actualPair.symbol);
 
-    const [mode, setMode] = useState(0);
-    const getTradingMode = () => mode;
-    const changeChartMode = () => setMode(mode => (mode + 1) % 2);
+    const getTradingMode = () => getActualUser() !== null ? getActualUser().profile.mode : 0;
 
     useEffect(() => {
         if (getActualPair() !== undefined)
@@ -56,7 +56,6 @@ export const TradingProvider = ({ children }) => {
                 setActualPair,
                 getActualPairPrice,
                 getTradingMode,
-                changeChartMode,
                 getPairPath
             }}
         >

@@ -28,7 +28,7 @@ function RotatingMarquee({ display = true, pairs = [], floatingBottom = false })
                 className={`d-flex align-items-center justify-content-center col-2 rotating-marquee-element rme-${index} ${nonenize ? "hidden-md" : ""}`}>
                 <div className="d-flex flex-row align-items-center">
                     <img src={tokenInfo.logo} className="me-2"
-                        style={{ width: '15px', height: '15px' }} onError={(e) => { e.target.src = '/favicon.ico'; }} alt="Logo" />
+                        style={{ width: '15px', height: '15px' }} onError={(e) => { e.target.src = '/favicon.ico'; }} alt={"Loho de " + tokenInfo.name} />
                     <div className="text-white marquee-pair"><b>{elem}</b></div>
                 </div>
                 <div className="text-warning"><b>{pair.price}</b></div>

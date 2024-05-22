@@ -28,15 +28,19 @@ function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active, i
             className="clickable-item list-group-item align-items-center d-flex"
             key={pair.symbol}
             onClick={clickHandler}
+            onKeyPress={(event) => {
+                if (event.key === "Enter")
+                    clickHandler();
+            }}
             style={active ? { backgroundColor: "#fff3cd" } : {}}
-            tabIndex={index + 2}
+            tabIndex={0}
         >
             <img
                 src={logoUrl}
                 className="me-2"
                 style={{ width: '25px', height: '25px' }}
                 onError={(e) => { e.target.src = faviconUrl; }}
-                alt="Logo"
+                alt={"Logo de " + pair.baseAssetName}
             />
             <span>
                 {style === 0 ? renderNameNewbie : renderNamePro}
