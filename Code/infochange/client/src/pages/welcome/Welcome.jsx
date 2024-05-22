@@ -101,7 +101,10 @@ export default function Welcome() {
                           criptomonedas!
                         </p>
                         <div className="form-group" for="emailInput">
-                          <label for="emailInput" class="form-label">
+                          <label
+                            htmlFor="emailInput"
+                            className="form-label fw-bold"
+                          >
                             Inicia sesion
                           </label>
                           <input

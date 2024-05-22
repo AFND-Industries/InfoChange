@@ -72,9 +72,9 @@ function Login() {
           <div className="col-12 col-md-6 col-xl-4 d-flex flex-column justify-content-center">
             <div className="card text-center p-4">
               <div className="card-body">
-                <h2 className="text-secondary card-title mb-4">
+                <h1 className="text-secondary card-title mb-4 fs-2">
                   Iniciar sesión
-                </h2>
+                </h1>
                 <div className="mb-3 text-start">
                   <label htmlFor="userInput" className="form-label">
                     Usuario

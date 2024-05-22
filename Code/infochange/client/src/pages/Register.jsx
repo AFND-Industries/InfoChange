@@ -11,6 +11,7 @@ import Modal from "react-bootstrap/Modal";
 import countriesList from "../assets/countries.json"; // Supongamos que tienes una lista de países en un archivo separado
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
+import Tooltip from "react-bootstrap/Tooltip";
 import * as formik from "formik";
 import * as yup from "yup";
 import * as React from "react";
@@ -18,9 +19,9 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-
+import * as Icons from "react-bootstrap-icons";
 import Typography from "@mui/material/Typography";
-
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 const steps = [
   "Informacion Personal",
   "Informacion sobre la cuenta",
@@ -35,16 +36,6 @@ export default function Register() {
   const { doRegister } = useAuth();
   const { doCheckEmail } = useAuth();
 
-  const name = useRef(null);
-  const surname = useRef(null);
-  const user = useRef(null);
-  const email = useRef(null);
-  const phone = useRef(null);
-  const _document = useRef(null);
-  const address = useRef(null);
-  const postalCode = useRef(null);
-  const password = useRef(null);
-
   const [prefix, setPrefix] = useState("");
   const handleCountryChange = (event) => {
     const selectedCountry = event.target.value;
@@ -58,23 +49,30 @@ export default function Register() {
     handleChange(event); // Para que Formik también actualice el valor del campo 'pais'
   };
   const checkEmailExists = async (email) => {
+    console.log(email);
     const response = await doCheckEmail(email);
     const status =
       response !== undefined && response.data !== undefined
         ? response.data.status
         : "";
-
+    console.log(response);
     if (status === "0") {
       console.log(response.data.message);
-      return true;
+      return false;
     } else if (status === "1") {
       console.log(response.data.message);
-      return false;
+      return true;
     } else if (status === "-1") {
       console.log(response.data.message);
       return true;
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   const [values1, setValues1] = useState(null);
   const [values2, setValues2] = useState(null);
   const [values3, setValues3] = useState(null);
@@ -114,7 +112,23 @@ export default function Register() {
   const schema1 = yup.object().shape({
     firstName: yup.string().required("Por favor, ingrese su nombre"),
     lastName: yup.string().required("Por favor, ingrese sus apellidos"),
-    birthday: yup.date().required("Por favor, ingrese su fecha de nacimiento"),
+    birthday: yup
+      .date()
+      .required("Por favor, ingrese su fecha de nacimiento")
+      .test("age", "Debes tener al menos 18 años", (value) => {
+        if (!value) return false;
+        const today = new Date();
+        const birthDate = new Date(value);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (
+          monthDifference < 0 ||
+          (monthDifference === 0 && today.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+        return age >= 18;
+      }),
     sexo: yup.string().required("Por favor, seleccione su sexo"),
   });
   const schema2 = yup.object().shape({
@@ -122,8 +136,22 @@ export default function Register() {
     email: yup
       .string()
       .email("Formato de correo electrónico inválido")
+      .test(
+        "check-email",
+        "El correo electrónico ya está en uso",
+        async function (value) {
+          if (!value) return true;
+          return await checkEmailExists(value);
+        }
+      )
       .required("Por favor, ingrese su correo electrónico"),
-    password: yup.string().required("Por favor, ingrese su contraseña"),
+    password: yup
+      .string()
+      .required("Por favor, ingrese su contraseña")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "La contraseña no cumple los requisitos mínimos de seguridad"
+      ),
     confirmPassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "Las contraseñas deben coincidir")
@@ -152,6 +180,7 @@ export default function Register() {
       .matches(/^\d+$/, "El número de teléfono solo puede contener dígitos")
       .matches(/^\d{9}$/, "El número de teléfono solo puede contener 9 dígitos")
       .required("Por favor, introduzca su número de teléfono"),
+    ID: yup.string().required("Por favor, introduzca su numero de ID"),
     terms: yup.bool().oneOf([true], "Debes aceptar los términos y condiciones"),
   });
   const countries = countriesList.map((country) => (
@@ -191,14 +220,20 @@ export default function Register() {
   const handleReset = () => {
     setActiveStep(0);
   };
-
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {showPassword ? "Ocultar Contraseña" : "Ver Contraseña"}
+    </Tooltip>
+  );
   return (
     <>
       <div className="anim_gradient container-fluid min-vh-100 ">
-        <Button className="mt-2" onClick={() => navigate("/")}>
-          Volver Inicio
-        </Button>
-        <div className="row align-content-center justify-content-center ">
+        <header>
+          <Button className="mt-2" onClick={() => navigate("/")}>
+            Volver Inicio
+          </Button>
+        </header>
+        <nav className="row align-content-center justify-content-center ">
           <div
             className="col-11 col-sm-10 col-md-8 col-lg-5 my-5 rounded-3"
             style={{ backgroundColor: "white" }}
@@ -218,8 +253,8 @@ export default function Register() {
               </Stepper>
             </Box>
           </div>
-        </div>
-        <div className="row d-flex  align-content-center justify-content-center ">
+        </nav>
+        <main className="row d-flex  align-content-center justify-content-center ">
           <div
             className="col-11 col-sm-10 col-md-8 col-lg-5 h-100 rounded-1"
             style={{ backgroundColor: "white" }}
@@ -252,12 +287,12 @@ export default function Register() {
                       noValidate
                       onSubmit={handleSubmit}
                     >
-                      <h3>Informacion Personal</h3>
+                      <h1 className="fs-3 fw-bold">Informacion Personal</h1>
                       <Row className="mb-3">
                         <Form.Group
                           as={Col}
                           md="4"
-                          controlId="validationFormik01"
+                          controlId="validationFirstName"
                         >
                           <Form.Label>Nombre</Form.Label>
                           <Form.Control
@@ -265,7 +300,7 @@ export default function Register() {
                             name="firstName"
                             value={values.firstName}
                             onChange={handleChange}
-                            isInvalid={errors.firstName && touched.firstName}
+                            isInvalid={!!errors.firstName}
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.firstName}
@@ -274,7 +309,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="8"
-                          controlId="validationFormik02"
+                          controlId="validationLastName"
                         >
                           <Form.Label>Apellidos</Form.Label>
                           <Form.Control
@@ -294,7 +329,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationFormik01"
+                          controlId="validationBirthday"
                         >
                           <Form.Label>Fecha de nacimiento</Form.Label>
                           <Form.Control
@@ -313,50 +348,52 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationFormik09"
+                          controlId="validationGender"
                         >
-                          <Form.Label>Sexo:</Form.Label>
-                          <div
-                            key="inline-radio"
-                            className="d-flex justify-content-between"
-                          >
-                            <Form.Check
-                              inline
-                              label="Masculino"
-                              name="sexo"
-                              type="radio"
-                              value={"mas"}
-                              onChange={handleChange}
-                              isInvalid={!!errors.sexo}
-                              feedback={errors.sexo}
-                              feedbackType="invalid"
-                              id="inline-radio-1"
-                            />
-                            <Form.Check
-                              inline
-                              label="Femenino"
-                              name="sexo"
-                              type="radio"
-                              value={"fem"}
-                              onChange={handleChange}
-                              isInvalid={!!errors.sexo}
-                              feedback={errors.sexo}
-                              feedbackType="invalid"
-                              id="inline-radio-2"
-                            />
-                            <Form.Check
-                              inline
-                              label="Prefiero no decirlo"
-                              name="sexo"
-                              type="radio"
-                              value={"NA"}
-                              onChange={handleChange}
-                              isInvalid={!!errors.sexo}
-                              feedback={errors.sexo}
-                              feedbackType="invalid"
-                              id="inline-radio-3"
-                            />
-                          </div>
+                          <fieldset>
+                            <Form.Label as="legend">Sexo:</Form.Label>
+                            <div
+                              key="inline-radio"
+                              className="d-flex justify-content-between"
+                            >
+                              <Form.Check
+                                inline
+                                label="Masculino"
+                                name="sexo"
+                                type="radio"
+                                value={"mas"}
+                                onChange={handleChange}
+                                isInvalid={!!errors.sexo}
+                                feedback={errors.sexo}
+                                feedbackType="invalid"
+                                id="inline-radio-1"
+                              />
+                              <Form.Check
+                                inline
+                                label="Femenino"
+                                name="sexo"
+                                type="radio"
+                                value={"fem"}
+                                onChange={handleChange}
+                                isInvalid={!!errors.sexo}
+                                feedback={errors.sexo}
+                                feedbackType="invalid"
+                                id="inline-radio-2"
+                              />
+                              <Form.Check
+                                inline
+                                label="Prefiero no decirlo"
+                                name="sexo"
+                                type="radio"
+                                value={"NA"}
+                                onChange={handleChange}
+                                isInvalid={!!errors.sexo}
+                                feedback={errors.sexo}
+                                feedbackType="invalid"
+                                id="inline-radio-3"
+                              />
+                            </div>
+                          </fieldset>
                         </Form.Group>
                       </Row>
                       <div className="d-flex justify-content-center">
@@ -398,12 +435,14 @@ export default function Register() {
                       noValidate
                       onSubmit={handleSubmit}
                     >
-                      <h3>Informacion sobre la cuenta</h3>
+                      <h1 className="fs-3 fw-bold">
+                        Informacion sobre la cuenta
+                      </h1>
                       <Row className="mb-3">
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationFormik01"
+                          controlId="validationEmail"
                         >
                           <Form.Label>Correo Electronico</Form.Label>
                           <Form.Control
@@ -423,7 +462,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationFormik01"
+                          controlId="validationUsername"
                         >
                           <Form.Label>Nombre de usuario</Form.Label>
 
@@ -446,17 +485,45 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="6"
-                          controlId="validationFormik01"
+                          controlId="validationPassword"
                         >
                           <Form.Label>Contraseña</Form.Label>
-
-                          <Form.Control
-                            type="text"
-                            name="password"
-                            value={values.password}
-                            onChange={handleChange}
-                            isInvalid={!!errors.password}
-                          />
+                          <InputGroup>
+                            <Form.Control
+                              type={showPassword ? "text" : "password"}
+                              name="password"
+                              value={values.password}
+                              onChange={handleChange}
+                              isInvalid={!!errors.password}
+                            />
+                            <div>
+                              <OverlayTrigger
+                                placement="bottom"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={renderTooltip}
+                              >
+                                <Button
+                                  variant="dark"
+                                  onClick={togglePasswordVisibility}
+                                  aria-label={
+                                    showPassword
+                                      ? "Ocultar contraseña"
+                                      : "Mostrar contraseña"
+                                  }
+                                >
+                                  {showPassword ? (
+                                    <Icons.Eye />
+                                  ) : (
+                                    <Icons.EyeSlash />
+                                  )}
+                                </Button>
+                              </OverlayTrigger>
+                            </div>
+                          </InputGroup>
+                          <small className="ml-2 text-muted">
+                            Debe tener minimo 8 caracteres, una mayúscula, una
+                            minúscula, un número y un carácter especial.
+                          </small>
 
                           <Form.Control.Feedback type="invalid">
                             {errors.password}
@@ -465,7 +532,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="6"
-                          controlId="validationFormik01"
+                          controlId="validationRepeatPassword"
                         >
                           <Form.Label>Repite tu Contraseña</Form.Label>
 
@@ -487,7 +554,7 @@ export default function Register() {
                           className="mb-1"
                           as={Col}
                           md="12"
-                          controlId="validationFormik09"
+                          controlId="validationSecurityQuestion"
                         >
                           <Form.Label>Pregunta de seguridad:</Form.Label>
                           <Form.Select
@@ -512,7 +579,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationFormik0919"
+                          controlId="validationSecurityQuestionText"
                         >
                           <Form.Label>Respuesta:</Form.Label>
                           <Form.Control
@@ -556,6 +623,7 @@ export default function Register() {
                   codigoPostal: values3?.codigoPostal || "",
                   pais: values3?.pais || "",
                   telefono: values3?.telefono || "",
+                  ID: values3?.ID || "",
                   terms: values3?.terms || false,
                 }}
                 enableReinitialize={true}
@@ -569,12 +637,12 @@ export default function Register() {
                       noValidate
                       onSubmit={handleSubmit}
                     >
-                      <h3>Datos de facturacion</h3>
+                      <h1 className="fs-3 fw-bold">Datos de facturacion</h1>
                       <Row className="mb-3">
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationFormik01"
+                          controlId="validationAddress"
                         >
                           <Form.Label>Direccion</Form.Label>
                           <Form.Control
@@ -593,7 +661,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="5"
-                          controlId="validationFormik03"
+                          controlId="validationCountry"
                         >
                           <Form.Label>País</Form.Label>
                           <Form.Select
@@ -612,11 +680,7 @@ export default function Register() {
                             {errors.pais}
                           </Form.Control.Feedback>
                         </Form.Group>
-                        <Form.Group
-                          as={Col}
-                          md="4"
-                          controlId="validationFormik04"
-                        >
+                        <Form.Group as={Col} md="4" controlId="validationCity">
                           <Form.Label>Ciudad</Form.Label>
                           <Form.Control
                             type="text"
@@ -632,7 +696,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="3"
-                          controlId="validationFormik05"
+                          controlId="validationPostalCode"
                         >
                           <Form.Label>Codigo Postal</Form.Label>
                           <Form.Control
@@ -649,11 +713,7 @@ export default function Register() {
                         </Form.Group>
                       </Row>
                       <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="7"
-                          controlId="validationFormik03"
-                        >
+                        <Form.Group as={Col} md="7" controlId="validationPhone">
                           <Form.Label>Numero de telefono</Form.Label>
                           <InputGroup>
                             <InputGroup.Text>{prefix}</InputGroup.Text>
@@ -669,6 +729,24 @@ export default function Register() {
                             </Form.Control.Feedback>
                           </InputGroup>
                         </Form.Group>
+                        <Form.Group as={Col} md="5" controlId="validationID">
+                          <Form.Label>Numero de identificacion</Form.Label>
+
+                          <Form.Control
+                            type="text"
+                            name="ID"
+                            value={values.ID}
+                            onChange={handleChange}
+                            isInvalid={!!errors.ID}
+                          />
+                          <small className="ml-2 text-muted">
+                            Por temas de seguridad, mas adelante te pediremos
+                            que verifiques tu identidad.
+                          </small>
+                          <Form.Control.Feedback type="invalid">
+                            {errors.ID}
+                          </Form.Control.Feedback>
+                        </Form.Group>
                       </Row>
                       <Form.Group className="mb-3">
                         <Form.Check
@@ -679,7 +757,7 @@ export default function Register() {
                           isInvalid={!!errors.terms}
                           feedback={errors.terms}
                           feedbackType="invalid"
-                          id="validationFormik0"
+                          id="validationTerms"
                         />
                       </Form.Group>
                       <div className="d-flex justify-content-center">
@@ -700,7 +778,7 @@ export default function Register() {
               </Formik>
             ) : null}
           </div>
-        </div>
+        </main>
       </div>
       <Modal show={showModal}>
         <Modal.Header closeButton>
