@@ -20,7 +20,7 @@ const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
                 className="rounded-circle me-2"
                 style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                 onError={(e) => { e.target.src = altPhoto; }}
-                alt="Imagen de usuario"
+                alt={"Logo de " + user.name}
             />
             <div className="d-flex flex-column">
                 <span>{user.username}</span>
