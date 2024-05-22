@@ -358,10 +358,9 @@ app.post("/bizum", (req, res) => {
                     newBizumerAmount === 0
                         ? `DELETE FROM cartera WHERE coin = '${coin}' AND user = ${req.session.user.ID};`
                         : `UPDATE cartera SET quantity = ${newBizumerAmount.toFixed(
-                              8
-                          )} WHERE coin = '${coin}' AND user = ${
-                              req.session.user.ID
-                          };`;
+                            8
+                        )} WHERE coin = '${coin}' AND user = ${req.session.user.ID
+                        };`;
 
                 db.query(bizumerQuery, (err, result) => {
                     if (err)
@@ -386,11 +385,11 @@ app.post("/bizum", (req, res) => {
                             const bizumedQuery =
                                 result.length > 0
                                     ? `UPDATE cartera SET quantity = quantity + ${sentAmount.toFixed(
-                                          8
-                                      )} WHERE coin = '${coin}' AND user = ${userid};`
+                                        8
+                                    )} WHERE coin = '${coin}' AND user = ${userid};`
                                     : `INSERT INTO cartera (user, coin, quantity) VALUES (${userid}, '${coin}', ${sentAmount.toFixed(
-                                          8
-                                      )});`;
+                                        8
+                                    )});`;
                             db.query(bizumedQuery, (err, result) => {
                                 if (err)
                                     return res.json(
@@ -423,9 +422,8 @@ app.post("/bizum", (req, res) => {
 
                                 db.query(
                                     `INSERT INTO bizum_history (sender, receiver, quantity, date) VALUES 
-                            (${
-                                req.session.user.ID
-                            }, ${userid}, ${sentAmount.toFixed(
+                            (${req.session.user.ID
+                                    }, ${userid}, ${sentAmount.toFixed(
                                         2
                                     )}, '${formattedDate}')`,
                                     (err, result) => {
@@ -674,10 +672,9 @@ app.post("/trade", (req, res) => {
                 updatedAmount === 0
                     ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`
                     : `UPDATE cartera SET quantity = ${updatedAmount.toFixed(
-                          8
-                      )} WHERE coin = '${removeAsset}' AND user = ${
-                          req.session.user.ID
-                      };`;
+                        8
+                    )} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID
+                    };`;
 
             db.query(updateQuery, (err, _) => {
                 if (err)
@@ -706,15 +703,13 @@ app.post("/trade", (req, res) => {
                         const query =
                             currentQuoteAmount >= 0
                                 ? `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(
-                                      8
-                                  )} WHERE coin = '${addAsset}' AND user = ${
-                                      req.session.user.ID
-                                  };`
-                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${
-                                      req.session.user.ID
-                                  }, '${addAsset}', ${receivedAmount.toFixed(
-                                      8
-                                  )});`;
+                                    8
+                                )} WHERE coin = '${addAsset}' AND user = ${req.session.user.ID
+                                };`
+                                : `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID
+                                }, '${addAsset}', ${receivedAmount.toFixed(
+                                    8
+                                )});`;
 
                         db.query(query, (err, _) => {
                             if (err)
@@ -745,15 +740,14 @@ app.post("/trade", (req, res) => {
                             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
                             const historyQuery = `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
-                                    (${req.session.user.ID}, '${
-                                symbolPriceObject.symbol
-                            }', '${type}', ${paidAmount.toFixed(
-                                8
-                            )}, ${receivedAmount.toFixed(
-                                8
-                            )}, ${comission.toFixed(
-                                8
-                            )}, '${formattedDate}', ${symbolPrice});`;
+                                    (${req.session.user.ID}, '${symbolPriceObject.symbol
+                                }', '${type}', ${paidAmount.toFixed(
+                                    8
+                                )}, ${receivedAmount.toFixed(
+                                    8
+                                )}, ${comission.toFixed(
+                                    8
+                                )}, '${formattedDate}', ${symbolPrice});`;
 
                             db.query(historyQuery, (err, _) => {
                                 if (err)
