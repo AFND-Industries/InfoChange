@@ -10,6 +10,7 @@ export interface APIContextType {
     doBizumUsers,
     doTrade,
     doBizum,
+    doSwap,
     getPair,
     getPairPrice,
     getTokenInfo,

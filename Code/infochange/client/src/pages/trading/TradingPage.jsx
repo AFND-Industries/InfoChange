@@ -10,11 +10,12 @@ import TradeToast from './components/TradeToast';
 import "./TradingPage.css";
 
 function TradingPage() {
-  const { changeChartMode, getTradingMode, getActualPair } = useTrading();
-  const tradingMode = getTradingMode();
+  const { getTradingMode, getActualPair } = useTrading();
+
+  let tradingMode = getTradingMode();
 
   if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT") // Por si entra a un par de modo pro
-    changeChartMode();
+    tradingMode = 1;
 
   return (
     <>
@@ -26,9 +27,7 @@ function TradingPage() {
       <div className="container mt-2 mb-5 d-flex flex-column">
         <div className="row">
           <div className="col ps-0">
-            <button className="btn btn-primary mt-2 mb-2" onClick={changeChartMode}>
-              Cambiar modo
-            </button>
+
           </div>
         </div>
         <div className="row">

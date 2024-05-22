@@ -18,7 +18,7 @@ import { useAPI } from "../../context/APIContext";
 
 function Dashboard() {
     const { getActualUser } = useAuth();
-    const { doTradeHistory, doBizumHistory, doBizumUsers } = useAPI();
+    const { doTradeHistory, doBizumHistory, doBizumUsers, doSwap } = useAPI();
 
     const [page, setPage] = useState(0);
     const [tradeHistory, setTradeHistory] = useState(undefined);
@@ -56,7 +56,7 @@ function Dashboard() {
     }
 
     let pages = [
-        <Profile profile={user.profile} />,
+        <Profile profile={user.profile} swap={doSwap} />,
         <Wallet wallet={user.wallet ?? {}} />,
         <History
             tradeHistory={tradeHistory}
@@ -79,18 +79,16 @@ function Dashboard() {
                     <div className="list-group">
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${
-                                page === 0 ? "active" : ""
-                            } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${page === 0 ? "active" : ""
+                                } d-flex align-items-center`}
                             onClick={() => setPage(0)}
                         >
                             <PersonFill className="me-3" /> Perfil
                         </button>
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${
-                                page === 1 ? "active" : ""
-                            } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${page === 1 ? "active" : ""
+                                } d-flex align-items-center`}
                             onClick={() => setPage(1)}
                         >
                             <Wallet2 className="me-3" />
@@ -98,9 +96,8 @@ function Dashboard() {
                         </button>
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${
-                                page === 2 ? "active" : ""
-                            } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${page === 2 ? "active" : ""
+                                } d-flex align-items-center`}
                             onClick={() => setPage(2)}
                         >
                             <LayoutTextSidebar className="me-3" />
@@ -108,9 +105,8 @@ function Dashboard() {
                         </button>
                         <button
                             type="button"
-                            className={`list-group-item list-group-item-action ${
-                                page === 3 ? "active" : ""
-                            } d-flex align-items-center`}
+                            className={`list-group-item list-group-item-action ${page === 3 ? "active" : ""
+                                } d-flex align-items-center`}
                             onClick={() => setPage(3)}
                         >
                             <Send className="me-3" />
