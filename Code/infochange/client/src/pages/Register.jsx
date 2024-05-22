@@ -195,9 +195,12 @@ export default function Register() {
   return (
     <>
       <div className="anim_gradient container-fluid min-vh-100 ">
+        <Button className="mt-2" onClick={() => navigate("/")}>
+          Volver Inicio
+        </Button>
         <div className="row align-content-center justify-content-center ">
           <div
-            className="col-5 my-5 rounded-3"
+            className="col-11 col-sm-10 col-md-8 col-lg-5 my-5 rounded-3"
             style={{ backgroundColor: "white" }}
           >
             <Box className="my-2" sx={{ width: "100%" }}>
@@ -218,7 +221,7 @@ export default function Register() {
         </div>
         <div className="row d-flex  align-content-center justify-content-center ">
           <div
-            className="col-5 h-100 rounded-1"
+            className="col-11 col-sm-10 col-md-8 col-lg-5 h-100 rounded-1"
             style={{ backgroundColor: "white" }}
           >
             {activeStep === 0 ? (
@@ -511,6 +514,7 @@ export default function Register() {
                           md="12"
                           controlId="validationFormik0919"
                         >
+                          <Form.Label>Respuesta:</Form.Label>
                           <Form.Control
                             type="text"
                             name="secureQuestionText"
@@ -518,6 +522,7 @@ export default function Register() {
                             onChange={handleChange}
                             isInvalid={!!errors.secureQuestionText}
                           />
+
                           <Form.Control.Feedback type="invalid">
                             {errors.secureQuestionText}
                           </Form.Control.Feedback>

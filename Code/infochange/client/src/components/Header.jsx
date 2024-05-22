@@ -28,7 +28,7 @@ export default function Header() {
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
-            <img src={banner} alt="InfoChange" width="200" height="50" />
+            <img src={banner} alt="InfoChange logo" width="200" height="50" />
           </a>
           <button
             className="navbar-toggler"

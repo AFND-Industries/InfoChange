@@ -4,6 +4,7 @@ import * as Icons from "react-bootstrap-icons";
 import TradingViewWidget from "../../components/TradingViewWidget";
 import { Parallax } from "react-parallax";
 import { Link, useNavigate } from "react-router-dom";
+import banner from "../../assets/banner.png";
 
 import bgcripto from "../../assets/bg-cripto.jpg";
 import "./Welcome.css";
@@ -30,8 +31,8 @@ export default function Welcome() {
   };
 
   return (
-    <div className={`container-fluid px-0 App ${loaded ? "loaded" : ""}`}>
-      <div style={{ height: "100vh", width: "100%" }}>
+    <main className={`container-fluid px-0 App ${loaded ? "loaded" : ""}`}>
+      <section style={{ height: "100vh", width: "100%" }}>
         <div
           className="container d-flex justify-content-center align-items-center"
           style={{ height: "70%" }}
@@ -56,8 +57,8 @@ export default function Welcome() {
           <p> Desliza para conocer mas </p>
           <Icons.ChevronDoubleDown className="" />
         </div>
-      </div>
-      <div className="mb-5">
+      </section>
+      <section className="mb-5">
         <Parallax
           blur={{ min: -5, max: 20 }}
           bgImage={bgcripto}
@@ -85,9 +86,9 @@ export default function Welcome() {
                   <div className="col-lg-3 col-md-4 flex-column  align-content-center col-7">
                     <div className="card text-center d-flex justify-content-center align-items-center">
                       <img
-                        src="https://muellestock.com/images/usuario-anonimo.png"
+                        src="/usuario-anonimo.png"
                         className="card-img-top mt-2"
-                        alt="Usuario Anónimo"
+                        alt="Imagen de usuario"
                         style={{
                           width: "30%",
                           height: "30%",
@@ -95,22 +96,27 @@ export default function Welcome() {
                         }}
                       />
                       <div className="card-body">
-                        <h5 className="card-title">Inicia sesion</h5>
-
                         <p className="card-text">
                           Estas a un paso de empezar en el mundo de las
                           criptomonedas!
                         </p>
-                        <div className="form-group">
+                        <div className="form-group" for="emailInput">
+                          <label for="emailInput" class="form-label">
+                            Inicia sesion
+                          </label>
                           <input
                             type="email"
                             className="form-control mb-3"
-                            id="exampleInputEmail1"
+                            id="emailInput"
                             aria-describedby="emailHelp"
                             placeholder="Correo Electrónico"
                             value={email}
                             onChange={handleChange}
                           />
+                          <small id="emailHelp" class="sr-only">
+                            Nunca compartiremos su correo electrónico con nadie
+                            más.
+                          </small>
                         </div>
                         <div>
                           <button
@@ -128,21 +134,21 @@ export default function Welcome() {
             </div>
           </div>
         </Parallax>
-      </div>
-      <div className="container-fluid">
+      </section>
+      <section className="container-fluid">
         <div className="row flex-row g-3 my-5 mx-2 justify-content-evenly align-content-center justify-items-center">
           <div className="col-10 col-md ">
             <div className="card card-link" style={{ height: "100%" }}>
               <img
-                src="https://www.santander.com/content/dam/santander-com/es/stories/contenido-stories/2021/educacionfinanciera/im-storie-guia-para-saber-que-son-las-criptomonedas-3.jpg"
+                src="/crypto-coins.jpeg"
                 className="card-img-top"
-                alt="texto alternativo"
+                alt="Varias criptomonedas, incluyendo Bitcoin, Ethereum, y Litecoin"
                 id="card_image"
               />
               <div className="card-body">
-                <h5 className="card-title">
+                <h1 className="card-title fs-5">
                   Explora el Mundo de las Criptomonedas
-                </h5>
+                </h1>
                 <p className="card-text">
                   Embárcate en un viaje a través de las monedas digitales en
                   nuestro exchange. Encuentra precios actualizados y datos
@@ -157,15 +163,15 @@ export default function Welcome() {
           <div className="col-10 col-md">
             <div className="card card-link" style={{ height: "100%" }}>
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3HtfCAMxulYVH25gpMMP6OZynyciD1yWvpO0oUKaedg&s"
+                src="/crypto-trading.jpg"
                 className="card-img-top"
-                alt="..."
+                alt="Gráfico de trading de criptomonedas"
                 id="card_image"
               />
               <div className="card-body">
-                <h5 className="card-title">
+                <h1 className="card-title fs-5">
                   Explora el Mercado Cripto en Profundidad
-                </h5>
+                </h1>
                 <p className="card-text">
                   Accede a nuestro exchange para explorar gráficos interactivos
                   y opciones de compra/venta de criptomonedas. ¡Empieza a operar
@@ -180,13 +186,15 @@ export default function Welcome() {
           <div className="col-10 col-md">
             <div className="card card-link" style={{ height: "100%" }}>
               <img
-                src="https://t4.ftcdn.net/jpg/00/58/54/07/360_F_58540776_2hIhJKUCrghGKszJhfeuul7hRpurV9RN.jpg"
+                src={"/wallet.jpg"}
                 className="card-img-top"
-                alt="..."
+                alt="Wallet de criptomonedas personalizado"
                 id="card_image"
               />
               <div className="card-body">
-                <h5 className="card-title">Tu Wallet Cripto Personalizado</h5>
+                <h1 className="card-title fs-5">
+                  Tu Wallet Cripto Personalizado
+                </h1>
                 <p className="card-text">
                   Descubre tu dashboard exclusivo, centrado en tu wallet de
                   criptomonedas. Gestiona y supervisa tus activos digitales con
@@ -202,9 +210,9 @@ export default function Welcome() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
       <p />
-      <div className="container d-flex justify-content-center align-items-center">
+      <section className="container d-flex justify-content-center align-items-center">
         <div className="col-md-10 text-center">
           <h1 className="row-md-4">Preguntas Frecuentes</h1>
           <div className="row-xs-12">
@@ -352,7 +360,7 @@ export default function Welcome() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
