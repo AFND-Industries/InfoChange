@@ -97,8 +97,10 @@ export default function Bizum({ user, bizumUsers }) {
                     <div style={{ height: "1.5em" }}></div>
                     <div className="d-flex">
                         <div className="dropdown w-100 me-2">
+                            <label htmlFor="searchUser" className="visually-hidden">Buscar usuario</label>
                             <input
                                 data-bs-toggle="dropdown"
+                                id="searchUser"
                                 className="form-control dropdown-toggle"
                                 placeholder="Buscar usuario..."
                                 style={{ backgroundColor: "#ffffff", color: "#000000" }}
@@ -115,7 +117,9 @@ export default function Bizum({ user, bizumUsers }) {
                 <div className="col-md-3 mb-4">
                     <span>Disponible: {userDolarBalance.toFixed(2)}$</span>
                     <div className="input-group">
+                        <label htmlFor="cantidad" className="visually-hidden">Cantidad</label>
                         <input
+                            id="cantidad"
                             type="text"
                             className={"form-control" + (isInputInvalid ? " is-invalid" : "")}
                             placeholder="Cantidad..."
