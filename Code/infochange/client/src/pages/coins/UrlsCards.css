@@ -43,12 +43,3 @@
   .nav-link.active {
     color: red;
   }
-
-  h1 {
-    font-size: 2.5em; /* Tamaño de fuente grande para destacar el título */
-    font-weight: 700; /* Negrita para mayor impacto */
-    color: #2c3e50; /* Color oscuro para un look profesional */
-    text-align: center; /* Centrar el texto */
-    margin-bottom: 20px; /* Espacio debajo del título */
-    letter-spacing: 1px; /* Espaciado entre letras para un toque elegante */
-  }

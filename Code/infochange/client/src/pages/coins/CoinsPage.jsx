@@ -21,7 +21,6 @@ export default function CoinsPage() {
   const [coinInfo, setCoinInfo] = useState([]);
   const { getCoins, getLastDate } = useCoins();
   const [dataTablePage, setDataTablePage] = useState(1);
-  const [rows, setRows] = useState(1);
 
   const updateTabIndex = () => {
     setTimeout(() => {
@@ -29,7 +28,6 @@ export default function CoinsPage() {
       if (tableBody) {
         const rows = tableBody.querySelectorAll("tr");
         rows.forEach((row) => {
-          console.log(row);
           row.setAttribute("tabindex", 0);
         });
       }
@@ -38,31 +36,23 @@ export default function CoinsPage() {
 
   useEffect(() => {
     initFilters1();
-    document.querySelectorAll(".p-paginator-element").forEach((element) => {
+    document.querySelectorAll(".p-paginator-page").forEach((element) => {
       element.addEventListener("click", () => {
         setDataTablePage(element.textContent);
       });
     });
-
-    setTimeout(() => {
-      if (rows === 1) {
-        const div_height = document.getElementById("main_div").clientHeight;
-        const row_height =
-          document.querySelector(".row-data-tables").clientHeight;
-
-        setRows(Math.floor(div_height / row_height) - 6);
-      }
-    }, 150);
   }, []);
 
   useEffect(() => {
     console.log(dataTablePage);
     updateTabIndex();
-    document.querySelectorAll(".p-paginator-element").forEach((element) => {
-      element.addEventListener("click", () => {
-        setDataTablePage(element.textContent);
+    setTimeout(() => {
+      document.querySelectorAll(".p-paginator-page").forEach((element) => {
+        element.addEventListener("click", () => {
+          setDataTablePage(element.textContent);
+        });
       });
-    });
+    }, 500);
   }, [dataTablePage]);
 
   const initFilters1 = () => {
@@ -136,7 +126,7 @@ export default function CoinsPage() {
   const lastDate = getLastDate();
 
   return params.length === 0 ? (
-    getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows)
+    getCoinDataTable(data, filters1, header1, onRowClick, lastDate)
   ) : (
     <CoinInfo coin={coinInfo} key={location.key} />
   );
@@ -246,8 +236,8 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
         <DataTable
           value={data}
           paginator
-          rows={rows}
-          rowsPerPageOptions={[rows, 25, 50]}
+          rows={5}
+          rowsPerPageOptions={[5, 10, 25, 50]}
           tableStyle={{ minWidth: "30rem" }}
           filters={filters1}
           filterDisplay="menu"
@@ -261,6 +251,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
           selectionMode={"single"}
           aria-label="Tabla de datos de monedas"
           pageLinkSize={3}
+          tabIndex="0"
         >
           <Column
             body={imageBodyTemplate}
