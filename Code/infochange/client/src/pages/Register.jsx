@@ -148,10 +148,11 @@ export default function Register() {
     password: yup
       .string()
       .required("Por favor, ingrese su contraseña")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        "La contraseña no cumple los requisitos mínimos de seguridad"
-      ),
+      .min(8, "La contraseña debe tener al menos 8 caracteres")
+      .matches(/[a-z]/, "Debe tener al menos una letra minúscula")
+      .matches(/[A-Z]/, "Debe tener al menos una letra mayúscula")
+      .matches(/[0-9]/, "Debe tener al menos un número")
+      .matches(/[@$!%*?&]/, "Debe tener al menos un carácter especial"),
     confirmPassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "Las contraseñas deben coincidir")
@@ -233,7 +234,7 @@ export default function Register() {
             Volver Inicio
           </Button>
         </header>
-        <nav className="row align-content-center justify-content-center ">
+        <banner className="row align-content-center justify-content-center ">
           <div
             className="col-11 col-sm-10 col-md-8 col-lg-5 my-5 rounded-3"
             style={{ backgroundColor: "white" }}
@@ -253,7 +254,7 @@ export default function Register() {
               </Stepper>
             </Box>
           </div>
-        </nav>
+        </banner>
         <main className="row d-flex  align-content-center justify-content-center ">
           <div
             className="col-11 col-sm-10 col-md-8 col-lg-5 h-100 rounded-1"
@@ -351,7 +352,7 @@ export default function Register() {
                           controlId="validationGender"
                         >
                           <fieldset>
-                            <Form.Label as="legend">Sexo:</Form.Label>
+                            <Form.Label>Sexo:</Form.Label>
                             <div
                               key="inline-radio"
                               className="d-flex justify-content-between"
