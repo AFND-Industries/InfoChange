@@ -44,24 +44,36 @@ function Login() {
       response !== undefined && response.data !== undefined
         ? response.data.status
         : "";
-
+    console.log(response.data.cause);
     if (status === "-1") {
-      setError(response.data.cause);
+      appendAlert(response.data.cause, "danger");
     } else if (status === "0") {
-      setError("Usuario o contraseña incorrecta");
+      appendAlert("Usuario o contraseña incorrecta", "danger");
     } else if (status === "1") {
       navigate("/dashboard");
     } else {
-      console.log(response);
-      setError("Error desconocido (por ahora)");
+      appendAlert(
+        "Error desconocido, por favor, inténtelo de nuevo más tarde",
+        "danger"
+      );
     }
-
     user.current.value = null;
     pass.current.value = null;
   };
+  const appendAlert = (message, type) => {
+    const alertPlaceholder = document.getElementById("liveAlertPlaceholder");
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = [
+      `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+      `   <div>${message}</div>`,
+      '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar alerta"></button>',
+      "</div>",
+    ].join("");
 
+    alertPlaceholder.append(wrapper);
+  };
   return (
-    <div
+    <main
       className="anim_gradient"
       // style={{
       //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
@@ -69,8 +81,8 @@ function Login() {
     >
       <div className="container-fluid vh-100 ">
         <div className="row align-items-center justify-content-center vh-100">
-          <div className="col-12 col-md-6 col-xl-4 d-flex flex-column justify-content-center">
-            <div className="card text-center p-4">
+          <div className="col-12 col-sm-6 col-lg-4  d-flex flex-column justify-content-center">
+            <div className="card text-center p-md-4 p-0">
               <div className="card-body">
                 <h1 className="text-secondary card-title mb-4 fs-2">
                   Iniciar sesión
@@ -85,6 +97,7 @@ function Login() {
                     className="form-control"
                     value={Fuser}
                     id="userInput"
+                    aria-required="true"
                     onChange={(e) => handleUserChange(e.target.value)}
                   />
                 </div>
@@ -98,55 +111,42 @@ function Login() {
                       ref={pass}
                       className="form-control"
                       id="passInput"
+                      aria-required="true"
                     />
                     <button
                       type="button"
                       className="btn btn-dark"
                       name="showPassword"
                       aria-label="Mostrar contraseña"
-                      onMouseDown={togglePasswordVisibility}
-                      onMouseUp={togglePasswordVisibility}
-                      onMouseLeave={() => setInputType("password")}
+                      onClick={togglePasswordVisibility}
                     >
                       {showPassword ? <Icons.Eye /> : <Icons.EyeSlash />}
                     </button>
                   </div>
                 </div>
 
-                <div className="mb-3 form-check d-flex justify-content-center">
+                {/* <div className="mb-3 form-check d-flex justify-content-center">
                   <input
                     type="checkbox"
                     className="form-check-input me-2"
                     id="exampleCheck1"
                   />
-                  <label className="form-check-label" for="exampleCheck1">
+                  <label className="form-check-label" htmlFor="exampleCheck1">
                     Mantener la sesión iniciada
                   </label>
-                </div>
-                <div className="d-flex justify-content-around mb-3">
+                </div> */}
+                <div id="liveAlertPlaceholder"></div>
+                <div className="d-flex justify-content-center my-3">
                   <Link to={"/"}>
-                    <button className="btn btn-outline-secondary">
+                    <button className="btn btn-outline-secondary mx-2">
                       Volver a inicio
                     </button>
                   </Link>
-                  <button className="btn btn-primary" onClick={onLogin}>
+                  <button className="btn btn-primary mx-2" onClick={onLogin}>
                     Entrar
                   </button>
                 </div>
-                {error.length !== 0 ? (
-                  <div
-                    className="alert alert-danger alert-dismissible fade show"
-                    role="alert"
-                  >
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"
-                    ></button>
-                    {error}
-                  </div>
-                ) : undefined}
+
                 <p className="mb-0 fs-6">
                   ¿Aún no tienes una cuenta?
                   <br />
@@ -159,7 +159,7 @@ function Login() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
