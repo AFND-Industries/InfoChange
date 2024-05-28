@@ -40,6 +40,18 @@ const TradeItem = ({ trade }) => {
     const baseAssetName = " " + symbol.baseAssetName;
     const quoteAssetName = symbol.quoteAsset === "USDT" ? "$" : " " + symbol.quoteAssetName;
 
+    const textBuy = (
+        <>
+            Has <span className="fw-bold">comprado {trade.amount_received}{baseAssetName}</span> por <span className="fw-bold">{trade.paid_amount}{quoteAssetName}</span>
+        </>
+    )
+
+    const textSell = (
+        <>
+            Has <span className="fw-bold">vendido {trade.paid_amount}{baseAssetName}</span> por <span className="fw-bold">{trade.amount_received}{quoteAssetName}</span>
+        </>
+    )
+
     return (
         <li key={trade.id} className="list-group-item px-0">
             <div className="row align-items-center">
@@ -48,19 +60,16 @@ const TradeItem = ({ trade }) => {
                         {drawTransaction(base, quote, symbol)}
                     </div>
                     <div>
-                        Has <span className="fw-bold">{trade.type === "BUY" ? "comprado" : "vendido"}&nbsp;
-                            {trade.paid_amount}{trade.type === "BUY" ? quoteAssetName : baseAssetName}</span> por&nbsp;
-                        <span className="fw-bold">{trade.amount_received}{trade.type === "BUY" ? baseAssetName : quoteAssetName}</span>
+                        {trade.type === "BUY" ? textBuy : textSell}
                     </div>
                     <div className="d-flex flex-row text-secondary flex-lg-row flex-column" style={{ fontSize: "0.9em" }}>
                         <span>Precio: {trade.price}{quoteAssetName}&nbsp;&nbsp;</span>
-                        <span>Comisión: {trade.comission.toFixed(8)}{baseAssetName}</span>
+                        <span>Comisión: {trade.comission.toFixed(8)}{trade.type === "BUY" ? quoteAssetName : baseAssetName}</span>
                     </div>
                 </div>
                 <div className="col-lg-3 d-flex flex-column align-items-center align-items-lg-end">
                     <span className={`fw-bold me-1 ${trade.type === "BUY" ? "text-success" : "text-danger"}`}>
                         {trade.type === "BUY" ? "COMPRA" : "VENTA"}</span>
-                    <span className="fw-bold">{trade.paid_amount}</span>
                     <span className="text-secondary text-end" style={{ fontSize: "0.9em" }}>{formattedDate}</span>
                 </div>
             </div>

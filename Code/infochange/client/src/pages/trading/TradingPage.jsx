@@ -22,7 +22,7 @@ function TradingPage() {
 
   const actualPair = getActualPair();
   const titleText = tradingMode == 0 ?
-    <span>Intercambia <span className='fw-bold'>{actualPair.baseAssetName}</span> con <span className='fw-bold'>{actualPair.quoteAssetName}</span></span>
+    <span>Compra y vende <span className='fw-bold'>{actualPair.baseAssetName}</span></span>
     :
     <span>Tradea <span className='fw-bold'>{actualPair.symbol}</span></span>
 
