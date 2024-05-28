@@ -6,7 +6,7 @@ import { useAuth } from "../../authenticator/AuthContext";
 import { useAPI } from "../../../context/APIContext";
 
 function BuyAndSell({ style = 1 }) {
-    const [action, setAction] = useState(0);
+    const [action, setAction] = useState(1);
     const swapAction = () => setAction(action => (action + 1) % 2);
 
     const navigate = useNavigate();
@@ -145,6 +145,7 @@ function BuyAndSell({ style = 1 }) {
         modalBody.innerHTML = message;
 
         modal.show();
+        tradeConfirmationButton.focus();
     };
 
     const showTradeDoneToast = (title, message) => {
@@ -215,7 +216,7 @@ function BuyAndSell({ style = 1 }) {
     }
 
     const onBuy = async () => {
-        if (document.getElementById('just-close-modal').classList.contains('show'))
+        if (document.getElementById('just-close-modal').classList.contains('show') || document.getElementById('trade-confirmation-modal').classList.contains('show'))
             return;
 
         const paidAmount = parseFloat(buyQuoteAssetInput);
@@ -223,7 +224,7 @@ function BuyAndSell({ style = 1 }) {
     };
 
     const onSell = async () => {
-        if (document.getElementById('just-close-modal').classList.contains('show'))
+        if (document.getElementById('just-close-modal').classList.contains('show') || document.getElementById('trade-confirmation-modal').classList.contains('show'))
             return;
 
         const paidAmount = parseFloat(sellBaseAssetInput);
