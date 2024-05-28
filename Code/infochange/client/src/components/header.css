@@ -4,37 +4,37 @@
   }
   
   .btn-outline-primary {
-    color: #0056b3; /* Texto azul más oscuro */
-    border-color: #0056b3; /* Borde azul más oscuro */
+    color: #0056b3 !important; /* Texto azul más oscuro */
+    border-color: #0056b3 !important; /* Borde azul más oscuro */
   }
   
   .btn-outline-primary:hover,
   .btn-outline-primary:focus {
-    background-color: #0056b3; /* Fondo azul más oscuro */
-    color: #ffffff; /* Texto blanco */
+    background-color: #0056b3 !important; /* Fondo azul más oscuro */
+    color: #ffffff !important; /* Texto blanco */
   }
   
   .btn-primary {
-    background-color: #0056b3; /* Fondo azul más oscuro */
-    color: #ffffff; /* Texto blanco */
-    border-color: #0056b3; /* Borde azul más oscuro */
+    background-color: #0056b3 !important; /* Fondo azul más oscuro */
+    color: #ffffff !important; /* Texto blanco */
+    border-color: #0056b3 !important; /* Borde azul más oscuro */
   }
   
   .btn-primary:hover,
   .btn-primary:focus {
-    background-color: #004494; /* Fondo azul aún más oscuro */
-    color: #ffffff; /* Texto blanco */
-    border-color: #004494; /* Borde azul aún más oscuro */
+    background-color: #004494 !important; /* Fondo azul aún más oscuro */
+    color: #ffffff !important; /* Texto blanco */
+    border-color: #004494 !important; /* Borde azul aún más oscuro */
   }
   
   .dropdown-item {
-    color: #000000; /* Texto negro */
-    background-color: #ffffff; /* Fondo blanco */
+    color: #000000 !important; /* Texto negro */
+    background-color: #ffffff !important; /* Fondo blanco */
   }
   
   .dropdown-item:hover,
   .dropdown-item:focus {
-    background-color: #0056b3; /* Fondo azul más oscuro */
-    color: #ffffff; /* Texto blanco */
+    background-color: #0056b3 !important; /* Fondo azul más oscuro */
+    color: #ffffff !important; /* Texto blanco */
   }
   
