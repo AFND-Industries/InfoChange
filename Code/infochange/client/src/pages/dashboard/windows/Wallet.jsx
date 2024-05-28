@@ -59,7 +59,7 @@ export default function Wallet(props) {
                         $
                     </h1>
                 </div>
-                <div className="row g-4">
+                <div className="row g-2">
                     <div className="col-12">
                         <label htmlFor="dollarInput">Cantidad de dinero:</label>
                         <div className="input-group">
@@ -72,7 +72,7 @@ export default function Wallet(props) {
                             <span className="input-group-text">$</span>
                         </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-sm-6">
                         <button
                             className="btn btn-outline-danger d-flex align-items-center w-100"
                             onClick={() =>
@@ -82,7 +82,7 @@ export default function Wallet(props) {
                             <DashCircle className="me-2" /> Retirar saldo
                         </button>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-sm-6">
                         <button
                             className="btn btn-success d-flex align-items-center w-100"
                             onClick={() =>
@@ -97,13 +97,13 @@ export default function Wallet(props) {
             </div>
             <hr className="mx-4 my-2" />
             <div className="mx-4">
-                <h4 className="text-center text-body-secondary mb-3">
+                <h2 className="fs-4 text-center text-body-secondary mb-3">
                     Tu cartera
-                </h4>
+                </h2>
                 {coins.length === 0 ? (
-                    <h5 className="text-center text-body-secondary mb-3">
+                    <h3 className="fs-5 text-center text-body-secondary mb-3">
                         No tienes monedas
-                    </h5>
+                    </h3>
                 ) : (
                     <div className="row g-3 mb-3">
                         {coins.map((coin, index) => (
@@ -137,12 +137,12 @@ export default function Wallet(props) {
                                             alt={coin.name}
                                         />
                                         <p className="card-text">{coin.name}</p>
-                                        <h5 className="card-title mt-0 mb-1">
+                                        <h3 className="fs-5 card-title mt-0 mb-1">
                                             {coin.quantity} {coin.symbol}
-                                        </h5>
-                                        <h6 className="text-secondary">
+                                        </h3>
+                                        <h4 className="fs-6 text-secondary">
                                             ~{coin.price.toFixed(2)} $
-                                        </h6>
+                                        </h4>
                                     </div>
                                 </div>
                             </div>

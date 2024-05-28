@@ -101,7 +101,7 @@ export default function Payment(props) {
                                     (step.step === 4 ? " d-none" : "")
                                 }
                             >
-                                <button className="btn btn-outline-danger">
+                                <button className="btn btn-outline-danger text-center">
                                     <XLg className="me-2" />
                                     <span className="d-sm-inline d-none">
                                         Cancelar pago
@@ -109,8 +109,8 @@ export default function Payment(props) {
                                 </button>
                             </Link>
                         </div>
-                        <div className="row mb-3">
-                            <aside className="col-sm-4">
+                        <div className="row mb-3 g-4">
+                            <aside className="col-md-4">
                                 <h2 className="fs-4">Pasos del pago</h2>
                                 <ol className="list-group list-group-flush">
                                     <li
@@ -151,7 +151,7 @@ export default function Payment(props) {
                                     </li>
                                 </ol>
                             </aside>
-                            <main className="col-sm-8">
+                            <main className="col-md-8">
                                 <h2 className="fs-4">Paso {step.step}</h2>
                                 <div className="mb-3">
                                     {step.step === 1 ? (
