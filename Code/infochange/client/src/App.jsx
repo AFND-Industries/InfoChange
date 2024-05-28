@@ -77,7 +77,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={wrap(<Welcome />)} />
-            <Route path="/coins/*" element={wrap(<Coins />)} />
+            <Route path="/coins/*" element={needBackend(wrap(<Coins />))} />
             <Route
               path="/dashboard/:username"
               element={needAuth(wrap(<Dashboard />))}
@@ -87,9 +87,9 @@ function App() {
             <Route path="/register" element={needBackend(<Register />)} />
             <Route
               path="/trading/:pair"
-              element={wrap(<Trading />)}
+              element={needBackend(wrap(<Trading />))}
             />
-            <Route path="/trading" element={wrap(<Trading />)} />
+            <Route path="/trading" element={needBackend(wrap(<Trading />))} />
             <Route
               path="/payment"
               element={needAuth(
