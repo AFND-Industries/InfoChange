@@ -28,7 +28,7 @@ function TradingPage() {
 
   return (
     <>
-      <h1 className="m-3 fs-1">{titleText}</h1>
+      <h1 className="m-3 fs-1 text-center">{titleText}</h1>
 
       <TradeConfirmationModal />
       <JustCloseModal />
