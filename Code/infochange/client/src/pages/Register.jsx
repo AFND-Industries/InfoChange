@@ -110,7 +110,7 @@ export default function Register() {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<div>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const schema1 = yup.object().shape({
-    firstName: yup.string().required("Por favor, ingrese su nombre"),
+    name: yup.string().required("Por favor, ingrese su nombre"),
     lastName: yup.string().required("Por favor, ingrese sus apellidos"),
     birthday: yup
       .date()
@@ -265,7 +265,7 @@ export default function Register() {
                 validationSchema={schema1}
                 onSubmit={(values) => handleNext(values)}
                 initialValues={{
-                  firstName: values1?.firstName || "",
+                  name: values1?.name || "",
                   lastName: values1?.lastName || "",
                   birthday: values1?.birthday || "",
                   sexo: values1?.sexo || "",
@@ -290,21 +290,17 @@ export default function Register() {
                     >
                       <h1 className="fs-3 fw-bold">Informacion Personal</h1>
                       <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="4"
-                          controlId="validationFirstName"
-                        >
+                        <Form.Group as={Col} md="4" controlId="validationname">
                           <Form.Label>Nombre</Form.Label>
                           <Form.Control
                             type="text"
-                            name="firstName"
-                            value={values.firstName}
+                            name="name"
+                            value={values.name}
                             onChange={handleChange}
-                            isInvalid={!!errors.firstName}
+                            isInvalid={!!errors.name}
                           />
                           <Form.Control.Feedback type="invalid">
-                            {errors.firstName}
+                            {errors.name}
                           </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group
