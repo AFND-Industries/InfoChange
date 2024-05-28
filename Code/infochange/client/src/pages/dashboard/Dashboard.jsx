@@ -64,7 +64,7 @@ function Dashboard() {
             bizumUsers={bizumUsers}
             user={user}
         />,
-        <Bizum user={user} bizumUsers={bizumUsers} />,
+        <Bizum user={user} bizumUsers={bizumUsers} reload={loadBizumHistory} />,
     ];
 
     const labels = ["Perfil", "Cartera", "Historial", "Bizum"];
@@ -75,7 +75,7 @@ function Dashboard() {
                 <h1 className="text-center">Panel de control</h1>
             </section>
             <section className="row align-items-start">
-                <aside className="col-3 mb-4">
+                <aside className="col-md-3 col-12 mb-4">
                     <div className="list-group">
                         <button
                             type="button"
@@ -114,7 +114,7 @@ function Dashboard() {
                         </button>
                     </div>
                 </aside>
-                <main className="col-9 mb-3">
+                <main className="col-md-9 col-12 mb-3">
                     <div className="card">
                         <div className="card-header text-center">
                             {labels[page]}

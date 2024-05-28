@@ -12,7 +12,7 @@ const countDecimals = (number) => {
     return decimalIndex === -1 ? 0 : number.length - decimalIndex - 1;
 }
 
-export default function Bizum({ user, bizumUsers }) {
+export default function Bizum({ user, bizumUsers, reload }) {
     const { doBizum } = useAPI();
 
     const MAXVALUE = 1000000000;
@@ -47,9 +47,11 @@ export default function Bizum({ user, bizumUsers }) {
             const response = await doBizum(user.id, sentAmount);
             loadingScreen.style.display = "none";
 
-            if (response.data.status === "1")
+            if (response.data.status === "1") {
                 showBizumDoneToast("Bizum realizado correctamente",
                     "Has enviado un bizum de <b>" + sentAmount + "$</b> a <b>" + user.username + "</b> correctamente.");
+                reload();
+            }
 
             handleUserInput("");
             setAmountInput("");
@@ -88,7 +90,7 @@ export default function Bizum({ user, bizumUsers }) {
         <>
             <div className="row px-5 py-4">
                 <div className="col-12 mb-4 text-center">
-                    <img src={Banner} style={{ width: "50%", minWidth: "150px" }} alt="Logo de InfoBizum" />
+                    <img src={Banner} style={{ width: "50%", minWidth: "200px" }} alt="Logo de InfoBizum" />
                 </div>
             </div>
 
@@ -99,6 +101,7 @@ export default function Bizum({ user, bizumUsers }) {
                         <div className="dropdown w-100 me-2">
                             <label htmlFor="searchUser" className="visually-hidden">Buscar usuario</label>
                             <input
+                                autocomplete="off"
                                 data-bs-toggle="dropdown"
                                 id="searchUser"
                                 className="form-control dropdown-toggle"
@@ -115,7 +118,7 @@ export default function Bizum({ user, bizumUsers }) {
                     </div>
                 </div>
                 <div className="col-md-3 mb-4">
-                    <span>Disponible: {userDolarBalance.toFixed(2)}$</span>
+                    <span>Disponible: {(Math.trunc(userDolarBalance * 100) / 100).toFixed(2)}$</span>
                     <div className="input-group">
                         <label htmlFor="cantidad" className="visually-hidden">Cantidad</label>
                         <input
