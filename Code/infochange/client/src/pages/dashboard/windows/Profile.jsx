@@ -49,7 +49,7 @@ export default function Profile(props) {
         loadingScreen.style.display = "block";
         await swap();
         loadingScreen.style.display = "none";
-    }
+    };
 
     return (
         <>
@@ -65,8 +65,8 @@ export default function Profile(props) {
                         className="rounded-pill"
                         alt={`Foto de perfil de ${profile.username}`}
                         onError={(event) =>
-                        (event.target.src =
-                            "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+                            (event.target.src =
+                                "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
                         }
                         src={`https://github.com/${profile.username}.png`}
                         style={{ width: "100%" }}
@@ -85,39 +85,44 @@ export default function Profile(props) {
                         <h2>
                             {profile.name} {profile.lastName}
                         </h2>
-                        <h4 className="text-body-secondary">@{profile.username}</h4>
+                        <h3 className="fs-4 text-body-secondary">
+                            @{profile.username}
+                        </h3>
                     </div>
                     <div className="col-6 d-flex justify-content-start align-items-end flex-column">
                         <div>
-                            <button className="btn btn-primary mt-2 mb-2 d-flex" onClick={() => handleSwap()}>
-                                Cambiar a modo {profile.mode === 0 ? "profesional" : "novato"}
+                            <button
+                                className="btn btn-primary mt-2 mb-2 d-flex"
+                                onClick={() => handleSwap()}
+                            >
+                                Cambiar a modo{" "}
+                                {profile.mode === 0 ? "profesional" : "novato"}
                             </button>
                         </div>
                         <span className="text-end">
-                            {profile.mode === 0 ?
-                                "Con el modo profesional, el gráfico de trading tendrá muchas más opciones, " +
-                                "además de que mostrará una mayor cantidad de pares. " +
-                                "También se muestran más opciones a la hora de introducir la cantidad de compra o venta deseada " +
-                                "No se recomienda para usuarios inexpertos."
-                                :
-                                "Con el modo novato, la cantidad de pares de trading están limitados a los que tienen relación con " +
-                                "el dólar estadounidense. Además, el gráfico se simplifica y la forma de comprar y vender es más básica."}
+                            {profile.mode === 0
+                                ? "Con el modo profesional, el gráfico de trading tendrá muchas más opciones, " +
+                                  "además de que mostrará una mayor cantidad de pares. " +
+                                  "También se muestran más opciones a la hora de introducir la cantidad de compra o venta deseada " +
+                                  "No se recomienda para usuarios inexpertos."
+                                : "Con el modo novato, la cantidad de pares de trading están limitados a los que tienen relación con " +
+                                  "el dólar estadounidense. Además, el gráfico se simplifica y la forma de comprar y vender es más básica."}
                         </span>
                     </div>
                 </div>
             </div>
             <hr className="mx-4 my-2" />
             <div className="px-5">
-                <h4 className="text-body-secondary text-center">
+                <h3 className="fs-4 text-body-secondary text-center">
                     Información personal
-                </h4>
+                </h3>
                 {personalInfo.map((info) => row(info.label, info.value))}
             </div>
             <hr className="mx-4 my-2" />
             <div className="px-5">
-                <h4 className="text-body-secondary text-center">
+                <h3 className="fs-4 text-body-secondary text-center">
                     Información fiscal
-                </h4>
+                </h3>
                 {taxInformation.map((info) => row(info.label, info.value))}
             </div>
         </>

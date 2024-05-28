@@ -25,6 +25,7 @@ function SymbolItem({ style = 0, pair, regex, tokenInfo, clickHandler, active, i
 
     return (
         <li
+            aria-label={pair.baseAssetName}
             className="clickable-item list-group-item align-items-center d-flex"
             key={pair.symbol}
             onClick={clickHandler}

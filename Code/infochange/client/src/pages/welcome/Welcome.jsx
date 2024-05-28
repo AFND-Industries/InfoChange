@@ -40,13 +40,15 @@ export default function Welcome() {
           <div className="row">
             <div className="col-lg-8 col-12 d-flex flex-column text-center  align-items-center justify-content-center">
               <h1>
-                ¡Bienvenido a Infochage!
+                ¡Bienvenido a Infochange!
                 <Icons.RocketTakeoffFill className="ml-2" />
               </h1>
               <h2>El exchange para todos</h2>
             </div>
             <div className="col-lg-4  col-12 d-flex flex-column  align-items-center justify-content-center ">
-              <TradingViewWidget />
+              <figure>
+                <TradingViewWidget />
+              </figure>
             </div>
           </div>
         </div>
@@ -55,14 +57,14 @@ export default function Welcome() {
           style={{ height: "10%" }}
         >
           <p> Desliza para conocer mas </p>
-          <Icons.ChevronDoubleDown className="" />
+          <Icons.ChevronDoubleDown />
         </div>
       </section>
       <section className="mb-5">
         <Parallax
           blur={{ min: -5, max: 20 }}
           bgImage={bgcripto}
-          bgImageAlt="the dog"
+          bgImageAlt="Fondo de criptomonedas"
           strength={-200}
         >
           <div className="my-5  align-content-center custom-div">
@@ -117,8 +119,7 @@ export default function Welcome() {
                             onChange={handleChange}
                           />
                           <small id="emailHelp" class="sr-only">
-                            Nunca compartiremos su correo electrónico con nadie
-                            más.
+                            Introduce tu correo electrónico.
                           </small>
                         </div>
                         <div>
@@ -140,7 +141,7 @@ export default function Welcome() {
       </section>
       <section className="container-fluid">
         <div className="row flex-row g-3 my-5 mx-2 justify-content-evenly align-content-center justify-items-center">
-          <div className="col-10 col-md ">
+          <article className="col-10 col-md ">
             <div className="card card-link" style={{ height: "100%" }}>
               <img
                 src="/crypto-coins.jpeg"
@@ -158,12 +159,17 @@ export default function Welcome() {
                   esenciales para cada criptomoneda.
                 </p>
                 <Link to="/coins">
-                  <button className="btn btn-primary me-2">Monedas</button>
+                  <button
+                    className="btn btn-primary me-2"
+                    aria-label="Pulsa para ir a ver las monedas"
+                  >
+                    Monedas
+                  </button>
                 </Link>
               </div>
             </div>
-          </div>
-          <div className="col-10 col-md">
+          </article>
+          <article className="col-10 col-md">
             <div className="card card-link" style={{ height: "100%" }}>
               <img
                 src="/crypto-trading.jpg"
@@ -181,12 +187,17 @@ export default function Welcome() {
                   con confianza!
                 </p>
                 <Link to="/trading">
-                  <button className="btn btn-primary me-2">Trading</button>
+                  <button
+                    className="btn btn-primary me-2"
+                    aria-label="Pulsa para ir a ver las graficas"
+                  >
+                    Trading{" "}
+                  </button>
                 </Link>
               </div>
             </div>
-          </div>
-          <div className="col-10 col-md">
+          </article>
+          <article className="col-10 col-md">
             <div className="card card-link" style={{ height: "100%" }}>
               <img
                 src={"/wallet.jpg"}
@@ -205,13 +216,16 @@ export default function Welcome() {
                   absoluto!
                 </p>
                 <Link to="/dashboard">
-                  <button className="btn btn-primary me-2">
+                  <button
+                    className="btn btn-primary me-2"
+                    aria-label="Pulsa para ir a ver tu cartera"
+                  >
                     Panel de Control
                   </button>
                 </Link>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </section>
       <p />

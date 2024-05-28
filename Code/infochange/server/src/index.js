@@ -235,7 +235,8 @@ app.post("/register", (req, res) => {
     !user.ciudad ||
     !user.codigoPostal ||
     !user.pais ||
-    !user.telefono
+    !user.telefono ||
+    !user.ID
   ) {
     res.json(error("MISSING_PARAMETERS", "Debe rellenar todos los campos"));
     applog(`Register: Malformed Request`, "ERROR");
@@ -250,11 +251,11 @@ app.post("/register", (req, res) => {
         email,
         password,
         secureQuestionText,
-        direccion,
+        address,
         ciudad,
-        codigoPostal,
-        pais,
-        telefono,
+        postalCode,
+        country,
+        phone,
         document
     ) VALUES (
         '${user.name}',

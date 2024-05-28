@@ -1,6 +1,7 @@
 import { Link, redirect, useNavigate } from "react-router-dom";
 import Countries from "./../assets/countries.json";
 import { useContext, useRef, useState, useEffect } from "react";
+import classNames from "classnames";
 import "./login.css";
 import Users from "./../data/users.json";
 import { useAuth } from "./authenticator/AuthContext";
@@ -13,6 +14,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import Tooltip from "react-bootstrap/Tooltip";
 import * as formik from "formik";
+import { ErrorMessage, Field } from "formik";
 import * as yup from "yup";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -110,7 +112,7 @@ export default function Register() {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<div>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const schema1 = yup.object().shape({
-    firstName: yup.string().required("Por favor, ingrese su nombre"),
+    name: yup.string().required("Por favor, ingrese su nombre"),
     lastName: yup.string().required("Por favor, ingrese sus apellidos"),
     birthday: yup
       .date()
@@ -147,12 +149,12 @@ export default function Register() {
       .required("Por favor, ingrese su correo electrónico"),
     password: yup
       .string()
-      .required("Por favor, ingrese su contraseña")
       .min(8, "La contraseña debe tener al menos 8 caracteres")
       .matches(/[a-z]/, "Debe tener al menos una letra minúscula")
       .matches(/[A-Z]/, "Debe tener al menos una letra mayúscula")
       .matches(/[0-9]/, "Debe tener al menos un número")
-      .matches(/[@$!%*?&]/, "Debe tener al menos un carácter especial"),
+      .matches(/[@$!%*?&]/, "Debe tener al menos un carácter especial")
+      .required("Por favor, ingrese su contraseña"),
     confirmPassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "Las contraseñas deben coincidir")
@@ -221,6 +223,19 @@ export default function Register() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const appendAlert = (message, type) => {
+    const alertPlaceholder = document.getElementById("liveAlertPlaceholder");
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = [
+      `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+      `   <div>${message}</div>`,
+      '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar alerta"></button>',
+      "</div>",
+    ].join("");
+
+    alertPlaceholder.append(wrapper);
+  };
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       {showPassword ? "Ocultar Contraseña" : "Ver Contraseña"}
@@ -234,7 +249,7 @@ export default function Register() {
             Volver Inicio
           </Button>
         </header>
-        <banner className="row align-content-center justify-content-center ">
+        <nav className="row align-content-center justify-content-center ">
           <div
             className="col-11 col-sm-10 col-md-8 col-lg-5 my-5 rounded-3"
             style={{ backgroundColor: "white" }}
@@ -254,7 +269,7 @@ export default function Register() {
               </Stepper>
             </Box>
           </div>
-        </banner>
+        </nav>
         <main className="row d-flex  align-content-center justify-content-center ">
           <div
             className="col-11 col-sm-10 col-md-8 col-lg-5 h-100 rounded-1"
@@ -265,7 +280,7 @@ export default function Register() {
                 validationSchema={schema1}
                 onSubmit={(values) => handleNext(values)}
                 initialValues={{
-                  firstName: values1?.firstName || "",
+                  name: values1?.name || "",
                   lastName: values1?.lastName || "",
                   birthday: values1?.birthday || "",
                   sexo: values1?.sexo || "",
@@ -286,25 +301,31 @@ export default function Register() {
                     <Form
                       className="mx-5  my-5"
                       noValidate
-                      onSubmit={handleSubmit}
+                      onSubmit={(values) => {
+                        handleSubmit(values);
+                        if (errors)
+                          appendAlert(
+                            "Por favor, revise los campos erroneos",
+                            "danger"
+                          );
+                      }}
                     >
                       <h1 className="fs-3 fw-bold">Informacion Personal</h1>
                       <Row className="mb-3">
-                        <Form.Group
-                          as={Col}
-                          md="4"
-                          controlId="validationFirstName"
-                        >
+                        <Form.Group as={Col} md="4" controlId="validationname">
                           <Form.Label>Nombre</Form.Label>
                           <Form.Control
                             type="text"
-                            name="firstName"
-                            value={values.firstName}
+                            name="name"
+                            isInvalid={!!errors.name}
+                            value={values.name}
                             onChange={handleChange}
-                            isInvalid={!!errors.firstName}
+                            aria-invalid={errors.name ? "true" : null}
+                            aria-describedby={errors.name ? "nameError" : null}
+                            aria-required="true"
                           />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.firstName}
+                          <Form.Control.Feedback type="invalid" id="nameError">
+                            {errors.name}
                           </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group
@@ -316,12 +337,19 @@ export default function Register() {
                           <Form.Control
                             type="text"
                             name="lastName"
+                            isInvalid={!!errors.lastName}
                             value={values.lastName}
                             onChange={handleChange}
-                            isInvalid={!!errors.lastName}
+                            aria-invalid={errors.lastName ? "true" : null}
+                            aria-describedby={
+                              errors.lastName ? "lastNameError" : null
+                            }
+                            aria-required="true"
                           />
-
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="lastNameError"
+                          >
                             {errors.lastName}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -339,8 +367,16 @@ export default function Register() {
                             value={values.birthday}
                             onChange={handleChange}
                             isInvalid={!!errors.birthday}
+                            aria-invalid={errors.birthday ? "true" : null}
+                            aria-describedby={
+                              errors.birthday ? "birthdayError" : null
+                            }
+                            aria-required="true"
                           />
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="birthdayError"
+                          >
                             {errors.birthday}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -349,10 +385,12 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="12"
-                          controlId="validationGender"
+                          // controlId="validationGender"
                         >
                           <fieldset>
-                            <Form.Label>Sexo:</Form.Label>
+                            <legend style={{ fontSize: "1.1rem" }}>
+                              Sexo:
+                            </legend>
                             <div
                               key="inline-radio"
                               className="d-flex justify-content-between"
@@ -365,6 +403,10 @@ export default function Register() {
                                 value={"mas"}
                                 onChange={handleChange}
                                 isInvalid={!!errors.sexo}
+                                aria-invalid={errors.sexo ? "true" : null}
+                                aria-describedby={
+                                  errors.sexo ? "sexoError" : null
+                                }
                                 feedback={errors.sexo}
                                 feedbackType="invalid"
                                 id="inline-radio-1"
@@ -377,6 +419,10 @@ export default function Register() {
                                 value={"fem"}
                                 onChange={handleChange}
                                 isInvalid={!!errors.sexo}
+                                aria-invalid={errors.sexo ? "true" : null}
+                                aria-describedby={
+                                  errors.sexo ? "sexoError" : null
+                                }
                                 feedback={errors.sexo}
                                 feedbackType="invalid"
                                 id="inline-radio-2"
@@ -389,6 +435,10 @@ export default function Register() {
                                 value={"NA"}
                                 onChange={handleChange}
                                 isInvalid={!!errors.sexo}
+                                aria-invalid={errors.sexo ? "true" : null}
+                                aria-describedby={
+                                  errors.sexo ? "sexoError" : null
+                                }
                                 feedback={errors.sexo}
                                 feedbackType="invalid"
                                 id="inline-radio-3"
@@ -397,6 +447,8 @@ export default function Register() {
                           </fieldset>
                         </Form.Group>
                       </Row>
+                      <div id="liveAlertPlaceholder"></div>
+
                       <div className="d-flex justify-content-center">
                         <Button type="submit">Siguiente Paso</Button>
                       </div>
@@ -434,7 +486,14 @@ export default function Register() {
                     <Form
                       className="mx-5  my-5"
                       noValidate
-                      onSubmit={handleSubmit}
+                      onSubmit={(values) => {
+                        handleSubmit(values);
+                        if (errors)
+                          appendAlert(
+                            "Por favor, revise los campos erroneos",
+                            "danger"
+                          );
+                      }}
                     >
                       <h1 className="fs-3 fw-bold">
                         Informacion sobre la cuenta
@@ -453,8 +512,13 @@ export default function Register() {
                             onChange={handleChange}
                             isValid={touched.email && !errors.email}
                             isInvalid={!!errors.email}
+                            aria-invalid={errors.email ? "true" : null}
+                            aria-describedby={
+                              errors.email ? "EmailError" : null
+                            }
+                            aria-required="true"
                           />
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback type="invalid" id="EmailError">
                             {errors.email}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -473,11 +537,19 @@ export default function Register() {
                             value={values.username}
                             onChange={handleChange}
                             isInvalid={!!errors.username}
+                            aria-invalid={errors.username ? "true" : null}
+                            aria-describedby={
+                              errors.username ? "usernameError" : "infousername"
+                            }
+                            aria-required="true"
                           />
-                          <small className="ml-2 text-muted">
+                          <small className="ml-2 text-muted" id="infousername">
                             Este nombre te identificará dentro de infoChange
                           </small>
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="usernameError"
+                          >
                             {errors.username}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -496,6 +568,13 @@ export default function Register() {
                               value={values.password}
                               onChange={handleChange}
                               isInvalid={!!errors.password}
+                              aria-invalid={errors.password ? "true" : null}
+                              aria-describedby={
+                                errors.password
+                                  ? "passwordError"
+                                  : "infopassword"
+                              }
+                              aria-required="true"
                             />
                             <div>
                               <OverlayTrigger
@@ -521,12 +600,15 @@ export default function Register() {
                               </OverlayTrigger>
                             </div>
                           </InputGroup>
-                          <small className="ml-2 text-muted">
+                          <small className="ml-2 text-muted" id="infopassword">
                             Debe tener minimo 8 caracteres, una mayúscula, una
                             minúscula, un número y un carácter especial.
                           </small>
 
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="passwordError"
+                          >
                             {errors.password}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -543,9 +625,21 @@ export default function Register() {
                             value={values.confirmPassword}
                             onChange={handleChange}
                             isInvalid={!!errors.confirmPassword}
+                            aria-invalid={
+                              errors.confirmPassword ? "true" : null
+                            }
+                            aria-describedby={
+                              errors.confirmPassword
+                                ? "confirmPasswordError"
+                                : null
+                            }
+                            aria-required="true"
                           />
 
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="confirmPasswordError"
+                          >
                             {errors.confirmPassword}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -563,6 +657,13 @@ export default function Register() {
                             value={values.secureQuestion}
                             onChange={handleChange}
                             isInvalid={!!errors.secureQuestion}
+                            aria-invalid={errors.secureQuestion ? "true" : null}
+                            aria-describedby={
+                              errors.secureQuestion
+                                ? "secureQuestionError"
+                                : null
+                            }
+                            aria-required="true"
                           >
                             <option value="">Seleccione una opción</option>
                             <option value="question1">
@@ -573,7 +674,10 @@ export default function Register() {
                               ¿Cuál fue tu mote en la escuela?
                             </option>
                           </Form.Select>
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="secureQuestionError"
+                          >
                             {errors.secureQuestion}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -589,13 +693,26 @@ export default function Register() {
                             value={values.secureQuestionText}
                             onChange={handleChange}
                             isInvalid={!!errors.secureQuestionText}
+                            aria-invalid={
+                              errors.secureQuestionText ? "true" : null
+                            }
+                            aria-describedby={
+                              errors.secureQuestionText
+                                ? "secureQuestionTextError"
+                                : null
+                            }
+                            aria-required="true"
                           />
 
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="secureQuestionTextError"
+                          >
                             {errors.secureQuestionText}
                           </Form.Control.Feedback>
                         </Form.Group>
                       </Row>
+                      <div id="liveAlertPlaceholder"></div>
                       <div className="d-flex justify-content-center">
                         <Button
                           className="mx-1"
@@ -636,7 +753,14 @@ export default function Register() {
                     <Form
                       className="mx-5  my-5"
                       noValidate
-                      onSubmit={handleSubmit}
+                      onSubmit={(values) => {
+                        handleSubmit(values);
+                        if (errors)
+                          appendAlert(
+                            "Por favor, revise los campos erroneos",
+                            "danger"
+                          );
+                      }}
                     >
                       <h1 className="fs-3 fw-bold">Datos de facturacion</h1>
                       <Row className="mb-3">
@@ -652,8 +776,16 @@ export default function Register() {
                             value={values.direccion}
                             onChange={handleChange}
                             isInvalid={!!errors.direccion}
+                            aria-invalid={errors.direccion ? "true" : null}
+                            aria-describedby={
+                              errors.direccion ? "direccionError" : null
+                            }
+                            aria-required="true"
                           />
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="direccionError"
+                          >
                             {errors.direccion}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -673,11 +805,14 @@ export default function Register() {
                               handleCountryChange(event);
                             }}
                             isInvalid={!!errors.pais}
+                            aria-invalid={errors.pais ? "true" : null}
+                            aria-describedby={errors.pais ? "paisError" : null}
+                            aria-required="true"
                           >
                             <option value="">Seleccione su país</option>
                             {countries}
                           </Form.Select>
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback type="invalid" id="paisError">
                             {errors.pais}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -689,8 +824,16 @@ export default function Register() {
                             value={values.ciudad}
                             onChange={handleChange}
                             isInvalid={!!errors.ciudad}
+                            aria-invalid={errors.ciudad ? "true" : null}
+                            aria-describedby={
+                              errors.ciudad ? "ciudadError" : null
+                            }
+                            aria-required="true"
                           />
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="ciudadError"
+                          >
                             {errors.ciudad}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -706,9 +849,17 @@ export default function Register() {
                             value={values.codigoPostal}
                             onChange={handleChange}
                             isInvalid={!!errors.codigoPostal}
+                            aria-invalid={errors.codigoPostal ? "true" : null}
+                            aria-describedby={
+                              errors.codigoPostal ? "codigoPostalError" : null
+                            }
+                            aria-required="true"
                           />
 
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback
+                            type="invalid"
+                            id="codigoPostalError"
+                          >
                             {errors.codigoPostal}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -724,8 +875,16 @@ export default function Register() {
                               value={values.telefono}
                               onChange={handleChange}
                               isInvalid={!!errors.telefono}
+                              aria-invalid={errors.telefono ? "true" : null}
+                              aria-describedby={
+                                errors.telefono ? "telefonoError" : null
+                              }
+                              aria-required="true"
                             />
-                            <Form.Control.Feedback type="invalid">
+                            <Form.Control.Feedback
+                              type="invalid"
+                              id="telefonoError"
+                            >
                               {errors.telefono}
                             </Form.Control.Feedback>
                           </InputGroup>
@@ -739,12 +898,15 @@ export default function Register() {
                             value={values.ID}
                             onChange={handleChange}
                             isInvalid={!!errors.ID}
+                            aria-invalid={errors.ID ? "true" : null}
+                            aria-describedby={errors.ID ? "IDError" : "IDInfo"}
+                            aria-required="true"
                           />
-                          <small className="ml-2 text-muted">
+                          <small className="ml-2 text-muted" id="IDInfo">
                             Por temas de seguridad, mas adelante te pediremos
                             que verifiques tu identidad.
                           </small>
-                          <Form.Control.Feedback type="invalid">
+                          <Form.Control.Feedback type="invalid" id="IDError">
                             {errors.ID}
                           </Form.Control.Feedback>
                         </Form.Group>
@@ -759,8 +921,11 @@ export default function Register() {
                           feedback={errors.terms}
                           feedbackType="invalid"
                           id="validationTerms"
+                          aria-invalid={errors.terms ? "true" : null}
+                          aria-required="true"
                         />
                       </Form.Group>
+                      <div id="liveAlertPlaceholder"></div>
                       <div className="d-flex justify-content-center">
                         <Button
                           className="mx-1"
@@ -781,11 +946,15 @@ export default function Register() {
           </div>
         </main>
       </div>
-      <Modal show={showModal}>
+      <Modal
+        show={showModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
         <Modal.Header closeButton>
-          <Modal.Title>¡Gracias por registrarte!</Modal.Title>
+          <Modal.Title id="modal-title">¡Gracias por registrarte!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body id="modal-description">
           Tu registro ha sido exitoso. ¡Bienvenido a nuestra comunidad!
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
