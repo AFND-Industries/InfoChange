@@ -255,8 +255,6 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
         >
           <Column
             body={imageBodyTemplate}
-            filter
-            filterField="name"
             header="Nombre"
             headerStyle={{ position: "sticky", left: 0 }}
             bodyStyle={{

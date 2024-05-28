@@ -307,9 +307,9 @@ export default function CoinInfo(props) {
       key={location.key}
       id="container-coin-info"
     >
-      <div className="row mx-3 text-secondary">
+      <section className="row mx-3 ">
         <div className="col-12 d-flex justify-content-between align-items-center">
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center text-secondary">
             <span
               style={{ cursor: "pointer" }}
               onClick={goBack}
@@ -326,14 +326,15 @@ export default function CoinInfo(props) {
             <span className="text-dark">{coin.name}</span>
           </div>
         </div>
-      </div>
-      <h1
-        className="text-center mt-0 mb-2"
-        style={{ fontSize: "2em", fontWeight: "700", letterSpacing: "1px" }}
-      >
-        {" "}
-        Información sobre {coin.name}
-      </h1>
+        <h1
+          className="text-center mt-0 mb-2"
+          style={{ fontSize: "2em", fontWeight: "700", letterSpacing: "1px" }}
+        >
+          {" "}
+          Información sobre {coin.name}
+        </h1>
+      </section>
+
       <div className="row mx-3 mt-4">
         <main className="col-lg-4">
           <div style={{ position: "sticky", top: "0", zIndex: "1" }}>
@@ -361,6 +362,7 @@ export default function CoinInfo(props) {
                   </span>
                   <i
                     className="bi bi-info-circle"
+                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -385,6 +387,7 @@ export default function CoinInfo(props) {
                   <span className="text-secondary">Volumen Mercado 24H </span>
                   <i
                     className="bi bi-info-circle"
+                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -404,6 +407,7 @@ export default function CoinInfo(props) {
                   </span>
                   <i
                     className="bi bi-info-circle"
+                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -422,6 +426,7 @@ export default function CoinInfo(props) {
                   <span className="text-secondary"> Precio más alto(24H) </span>
                   <i
                     className="bi bi-info-circle"
+                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -439,6 +444,7 @@ export default function CoinInfo(props) {
                   <span className="text-secondary"> Precio más bajo(24H) </span>
                   <i
                     className="bi bi-info-circle"
+                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -589,12 +595,12 @@ export default function CoinInfo(props) {
             </div>
           </div>
           <section id="one">
-            <h3 className={isSmallScreen ? "my-4" : "d-none"}>Gráfico</h3>
+            <h2 className={isSmallScreen ? "h3 my-4" : "d-none"}>Gráfico</h2>
             {symbolOverview}
           </section>
           <br></br>
           <section id="two">
-            <h3>Noticias</h3>
+            <h2>Noticias</h2>
             <div className="row my-4 mx-1">
               <Timeline
                 colorTheme="light"
