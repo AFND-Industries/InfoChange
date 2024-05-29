@@ -314,6 +314,7 @@ export default function CoinInfo(props) {
               style={{ cursor: "pointer" }}
               onClick={goBack}
               tabIndex="0"
+              aria-label="Volver a la página anterior"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   goBack();
@@ -362,7 +363,6 @@ export default function CoinInfo(props) {
                   </span>
                   <i
                     className="bi bi-info-circle"
-                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -387,10 +387,10 @@ export default function CoinInfo(props) {
                   <span className="text-secondary">Volumen Mercado 24H </span>
                   <i
                     className="bi bi-info-circle"
-                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
+                    aria-label=""
                     data-bs-content="Una medida del volumen de operaciones de criptomonedas en todas las plataformas rastreadas en las últimas 24 horas. Esto se rastrea las 24 horas del día sin horarios de apertura ni cierre."
                   ></i>
                 </div>
@@ -407,7 +407,6 @@ export default function CoinInfo(props) {
                   </span>
                   <i
                     className="bi bi-info-circle"
-                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -426,7 +425,6 @@ export default function CoinInfo(props) {
                   <span className="text-secondary"> Precio más alto(24H) </span>
                   <i
                     className="bi bi-info-circle"
-                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -444,7 +442,6 @@ export default function CoinInfo(props) {
                   <span className="text-secondary"> Precio más bajo(24H) </span>
                   <i
                     className="bi bi-info-circle"
-                    tabIndex="0"
                     data-bs-toggle="popover"
                     data-bs-placement="bottom"
                     data-bs-trigger="hover focus"
@@ -474,6 +471,7 @@ export default function CoinInfo(props) {
                     <button
                       className="btn btn-success"
                       onClick={onClickTrading}
+                      aria-label="Ir a la página de compra de la moneda seleccionada"
                     >
                       Compra aquí
                     </button>

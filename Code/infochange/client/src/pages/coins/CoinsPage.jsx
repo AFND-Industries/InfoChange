@@ -92,6 +92,7 @@ export default function CoinsPage() {
 
     setFilters1(_filters1);
     setGlobalFilterValue1(value);
+    updateTabIndex();
   };
 
   const renderHeader1 = () => {
