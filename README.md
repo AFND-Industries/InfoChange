@@ -11,4 +11,4 @@ usar nuestra aplicación!
 
 **InfoChange** estará disponible en el siguiente enlace:
 
-[`http://antBaena.github.io/InfoChange`](http://antBaena.github.io/InfoChange)
+[`http://afnd-industries.github.io/InfoChange`](http://afnd-industries.github.io/InfoChange)
