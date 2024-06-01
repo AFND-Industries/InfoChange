@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Tooltip, OverlayTrigger, Button } from "react-bootstrap";
 import { InfoCircle } from "react-bootstrap-icons";
 
 export function PaypalForm(props) {
     const { dataHandler, backHandler, data } = props;
+    const [fieldError, setError] = useState("");
 
     const email = useRef(null);
     const password = useRef(null);
@@ -39,6 +40,11 @@ export function PaypalForm(props) {
                         className="form-control"
                     />
                 </div>
+                {fieldError ? (
+                    <div className="alert alert-danger">
+                        <p>{fieldError}</p>
+                    </div>
+                ) : undefined}
                 <div className="row">
                     <div className="col mb-3">
                         <button
@@ -51,12 +57,21 @@ export function PaypalForm(props) {
                     <div className="col">
                         <button
                             className="btn btn-primary w-100"
-                            onClick={() =>
-                                dataHandler({
-                                    email: email.current.value,
-                                    password: password.current.value,
-                                })
-                            }
+                            onClick={() => {
+                                if (
+                                    email.current.value &&
+                                    password.current.value
+                                ) {
+                                    dataHandler({
+                                        email: email.current.value,
+                                        password: password.current.value,
+                                    });
+                                } else {
+                                    setError(
+                                        "Debe rellenar todos los campos del formulario para continuar con el pago"
+                                    );
+                                }
+                            }}
                         >
                             Siguiente
                         </button>
@@ -72,6 +87,8 @@ export function CreditForm(props) {
     const creditCard = useRef(null);
     const expDate = useRef(null);
     const cvv = useRef(null);
+
+    const [fieldError, setError] = useState("");
 
     return (
         <div>
@@ -139,6 +156,11 @@ export function CreditForm(props) {
                         </div>
                     </div>
                 </div>
+                {fieldError ? (
+                    <div className="alert alert-danger">
+                        <p>{fieldError}</p>
+                    </div>
+                ) : undefined}
                 <div className="row">
                     <div className="col mb-3">
                         <button
@@ -151,13 +173,23 @@ export function CreditForm(props) {
                     <div className="col">
                         <button
                             className="btn btn-primary w-100"
-                            onClick={() =>
-                                dataHandler({
-                                    cardNumber: creditCard.current.value,
-                                    expDate: expDate.current.value,
-                                    cvv: cvv.current.value,
-                                })
-                            }
+                            onClick={() => {
+                                if (
+                                    creditCard.current.value &&
+                                    expDate.current.value &&
+                                    cvv.current.value
+                                ) {
+                                    dataHandler({
+                                        cardNumber: creditCard.current.value,
+                                        expDate: expDate.current.value,
+                                        cvv: cvv.current.value,
+                                    });
+                                } else {
+                                    setError(
+                                        "Debe rellenar todos los campos del formulario para continuar con el pago"
+                                    );
+                                }
+                            }}
                         >
                             Siguiente
                         </button>

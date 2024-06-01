@@ -56,7 +56,7 @@ export default function Payment(props) {
 
     if (cart === null || step.step > 4 || step.step < 1)
         return (
-            <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
+            <div className="container d-flex flex-column justify-content-center align-items-center min-vh-100">
                 <div className="card p-2">
                     <div className="card-body text-center">
                         <h3>Ups... ha ocurrido un error con tu compra</h3>
@@ -74,13 +74,9 @@ export default function Payment(props) {
         );
 
     return (
-        <div
-            style={{
-                backgroundColor: "#52dee5",
-            }}
-        >
-            <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
-                <div className="card p-2">
+        <div className="anim-gradient">
+            <div className="container d-flex flex-column justify-content-center min-vh-100">
+                <div className="card p-2 mb-3 mt-5">
                     <div className="card-body">
                         <div className="container d-flex align-items-center">
                             <img
@@ -239,6 +235,9 @@ export default function Payment(props) {
                             : ""}
                     </div>
                 </div>
+                <p className="text-center text-light">
+                    AFND Industries 2024 &copy;
+                </p>
             </div>
         </div>
     );
