@@ -34,24 +34,52 @@ export default function CoinsPage() {
     }, 1000);
   };
 
-  useEffect(() => {
-    initFilters1();
+  const updatePaginatorNumbers = () => {
     document.querySelectorAll(".p-paginator-page").forEach((element) => {
       element.addEventListener("click", () => {
         setDataTablePage(element.textContent);
       });
     });
-  }, []);
+  };
 
-  useEffect(() => {
-    console.log(dataTablePage);
-    updateTabIndex();
-    setTimeout(() => {
-      document.querySelectorAll(".p-paginator-page").forEach((element) => {
+  const updatePaginatorElements = () => {
+    document.querySelectorAll(".p-paginator-element").forEach((element) => {
+      if (element.classList.contains("p-paginator-next")) {
+        element.addEventListener("click", () => {
+          setDataTablePage(dataTablePage + 1);
+        });
+      } else if (element.classList.contains("p-paginator-last")) {
+        element.addEventListener("click", () => {
+          setDataTablePage(300);
+        });
+      } else if (element.classList.contains("p-paginator-first")) {
+        element.addEventListener("click", () => {
+          setDataTablePage(1);
+        });
+      } else if (element.classList.contains("p-paginator-prev")) {
+        element.addEventListener("click", () => {
+          setDataTablePage(dataTablePage - 1);
+        });
+      }
+
+      document.querySelectorAll(".p-dropdown").forEach((element) => {
         element.addEventListener("click", () => {
           setDataTablePage(element.textContent);
         });
       });
+    });
+  };
+
+  useEffect(() => {
+    initFilters1();
+    updatePaginatorNumbers();
+    updatePaginatorElements();
+  }, []);
+
+  useEffect(() => {
+    updateTabIndex();
+    setTimeout(() => {
+      updatePaginatorNumbers();
     }, 500);
   }, [dataTablePage]);
 

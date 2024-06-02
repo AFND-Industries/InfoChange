@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FundamentalData } from "react-ts-tradingview-widgets";
 import { SymbolInfo } from "react-ts-tradingview-widgets";
@@ -23,6 +23,7 @@ export default function CoinInfo(props) {
   const [showModal, setShowModal] = useState(false);
   const [activeNavItem, setActiveNavItem] = useState("");
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 990);
+  const optionsRef = useRef(null);
 
   const logos = [
     "bi bi-globe2",
@@ -156,6 +157,7 @@ export default function CoinInfo(props) {
         wickDownColor="#800080"
         chartOnly="true"
         width={"100%"}
+        ref={optionsRef}
       />
     ),
     [coin.symbol]
