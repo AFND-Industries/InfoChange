@@ -1,0 +1,28 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main  # O la rama principal de tu proyecto
+
+jobs:
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync frontend folder to prod-frontend
+        run: |
+          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
+          rsync -av --delete --exclude='.git' client/ prod-frontend/
+          cd prod-frontend
+          git add .
+          git commit -m "Update frontend deployment"
+          git push origin prod-frontend
