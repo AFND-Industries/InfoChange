@@ -1,16 +1,45 @@
-const express = require("express");
-const session = require("express-session");
-const { createHash } = require("crypto");
-const cors = require("cors");
-const mysql = require("mysql");
-const Coins = require("./Coins.json");
-const Symbols = require("./Symbols.json");
+import express, { Request, Response } from "express";
+import session from "express-session";
+import { BinaryLike, createHash } from "crypto";
+import cors from "cors";
+import mysql from "mysql";
+import * as dotenv from "dotenv";
+import fetch from "node-fetch";
+import Coins from "../assets/Coins.json";
+import Symbols from "../assets/Symbols.json";
 
 const tradingComision = 0.00065;
 
-let prices = [];
-let coins = [];
-let last_update;
+interface Price{
+  symbol: string;
+  price: string;
+}
+
+interface Coin {
+  symbol: string;
+  priceChange: string;
+  priceChangePercent: string;
+  weightedAvgPrice: string;
+  prevClosePrice: string;
+  lastPrice: string;
+  lastQty: string;
+  bidPrice: string;
+  bidQty: string;
+  askPrice: string;
+  askQty: string;
+  openPrice: string;
+  highPrice: string;
+  lowPrice: string;
+  volume: string;
+  quoteVolume: string;
+  openTime: number;
+  closeTime: number;
+  firstId: number;
+}
+
+let prices: Price[] = [];
+let coins: Coin[] = [];
+let last_update: string;
 
 require("dotenv").config();
 
@@ -30,7 +59,7 @@ const getPrices = () => {
     fetch("https://api.binance.com/api/v1/ticker/price")
       .then((response) => response.json())
       .then((data) => {
-        prices = data;
+        prices = data as Price[];
 
         applog(
           "Precios actualizados: " + new Date().toLocaleString(),
@@ -51,7 +80,7 @@ const getCoins = () => {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        const filteredCoins = data.filter((symbol) => {
+        const filteredCoins = (data as Coin[]).filter((symbol) => {
           if (symbol.symbol.endsWith("USDT")) {
             const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
 
@@ -85,7 +114,7 @@ const fs = require("fs");
 
 const logFilePath = "././server_log/server.log";
 
-const applog = (msg, tag = "SERVER") => {
+const applog = (msg: unknown, tag = "SERVER") => {
   const logMessage = `[${new Date().toLocaleString()}] [${tag}] ${msg}`;
   if (tag === "ERROR") console.error(logMessage);
   else console.log(logMessage);
@@ -99,9 +128,9 @@ const applog = (msg, tag = "SERVER") => {
         */
 };
 
-const hash = (string) => createHash("sha256").update(string).digest("hex");
+const hash = (string: BinaryLike) => createHash("sha256").update(string).digest("hex");
 
-const error = (type, cause) => {
+const error = (type: string, cause: string | undefined) => {
   return {
     status: "-1",
     error: type,
@@ -129,13 +158,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/auth", (req, res) => {
-  if (!req.session.user) {
+  if (!((req.session as any) as any).user) {
     res.json({
       status: "0",
     });
   } else {
     db.query(
-      `SELECT * FROM usuario WHERE ID = ${req.session.user.ID}`,
+      `SELECT * FROM usuario WHERE ID = ${((req.session as any) as any).user.ID}`,
       (err, result) => {
         if (err) {
           res.json(error("SELECT_ERROR", err.sqlMessage));
@@ -168,7 +197,7 @@ app.post("/login", (req, res) => {
         let st = "0";
         if (result.length > 0) {
           st = "1";
-          req.session.user = result[0];
+          ((req.session as any) as any).user = result[0];
           applog(
             `Inicio de sesión realizado [${req.body.user}] ${req.ip}`,
             "AUTH"
@@ -181,7 +210,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  req.session.destroy();
+  ((req.session as any) as any).destroy();
 
   res.json({ status: "1" });
 
@@ -286,19 +315,19 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/bizum_history", (req, res) => {
-  if (!req.session.user) {
+  if (!((req.session as any) as any).user) {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   }
 
-  const query = `SELECT id, sender, receiver, quantity, date FROM bizum_history WHERE sender = ${req.session.user.ID} OR receiver = ${req.session.user.ID};`;
+  const query = `SELECT id, sender, receiver, quantity, date FROM bizum_history WHERE sender = ${(req.session as any).user.ID} OR receiver = ${(req.session as any).user.ID};`;
   db.query(query, (err, result) => {
     if (err)
       return res.json(
         error("SELECT_ERROR", "Se ha producido un error inesperado")
       );
 
-    const bizumHistory = [];
-    result.forEach((row) => {
+    const bizumHistory: { id: any; sender: any; receiver: any; quantity: any; date: any; }[] = [];
+    result.forEach((row: { id: any; sender: any; receiver: any; quantity: any; date: any; }) => {
       const bizum = {
         id: row.id,
         sender: row.sender,
@@ -317,7 +346,7 @@ app.get("/bizum_history", (req, res) => {
 });
 
 app.post("/bizum", (req, res) => {
-  if (!req.session.user) {
+  if (!(req.session as any).user) {
     res.json(error("UNAUTHORIZED", "No ha iniciado sesión"));
   } else {
     const userid = req.body.userid;
@@ -332,7 +361,7 @@ app.post("/bizum", (req, res) => {
 
     const sentAmount = parseFloat(parseFloat(amount).toFixed(8));
     db.query(
-      `SELECT quantity FROM cartera WHERE coin LIKE '${coin}' AND user = ${req.session.user.ID};`,
+      `SELECT quantity FROM cartera WHERE coin LIKE '${coin}' AND user = ${(req.session as any).user.ID};`,
       (err, result) => {
         if (err)
           return res.json(
@@ -349,10 +378,10 @@ app.post("/bizum", (req, res) => {
         const newBizumerAmount = currentDollarAmount - sentAmount;
         const bizumerQuery =
           newBizumerAmount === 0
-            ? `DELETE FROM cartera WHERE coin = '${coin}' AND user = ${req.session.user.ID};`
+            ? `DELETE FROM cartera WHERE coin = '${coin}' AND user = ${(req.session as any).user.ID};`
             : `UPDATE cartera SET quantity = ${newBizumerAmount.toFixed(
                 8
-              )} WHERE coin = '${coin}' AND user = ${req.session.user.ID};`;
+              )} WHERE coin = '${coin}' AND user = ${(req.session as any).user.ID};`;
 
         db.query(bizumerQuery, (err, result) => {
           if (err)
@@ -395,7 +424,7 @@ app.post("/bizum", (req, res) => {
                 db.query(
                   `INSERT INTO bizum_history (sender, receiver, quantity, date) VALUES 
                             (${
-                              req.session.user.ID
+                              (req.session as any).user.ID
                             }, ${userid}, ${sentAmount.toFixed(
                     2
                   )}, '${formattedDate}')`,
@@ -439,11 +468,11 @@ app.get("/bizum_users", (req, res) => {
 });
 
 app.post("/swap_mode", (req, res) => {
-  if (!req.session.user) {
+  if (!(req.session as any).user) {
     res.json(error("UNAUTHORIZED", "No ha iniciado sesión"));
   } else {
     db.query(
-      `UPDATE usuario SET mode = (mode + 1) % 2 WHERE ID = ${req.session.user.ID};`,
+      `UPDATE usuario SET mode = (mode + 1) % 2 WHERE ID = ${(req.session as any).user.ID};`,
       (err, result) => {
         if (err) {
           res.json(error(err.code, err.sqlMessage));
@@ -458,7 +487,7 @@ app.post("/swap_mode", (req, res) => {
 });
 
 app.get("/admin", (req, res) => {
-  if (!req.session.user || req.session.user.name !== "admin") {
+  if (!(req.session as any).user || (req.session as any).user.name !== "admin") {
     res.json(error("UNAUTHORIZED", "No eres administrador"));
   } else {
     let usersPromise = new Promise((resolve, reject) => {
@@ -505,7 +534,7 @@ app.get("/admin", (req, res) => {
       bizumHistoryPromise,
     ])
       .then(([users, wallets, tradeHistory, bizumHistory]) => {
-        let payment_history = []; // Aquí puedes hacer lo que necesites con payment_history
+        let payment_history: never[] = []; // Aquí puedes hacer lo que necesites con payment_history
 
         res.json({
           status: "1",
@@ -525,10 +554,10 @@ app.get("/admin", (req, res) => {
 });
 
 app.get("/wallet", (req, res) => {
-  if (!req.session.user) {
+  if (!(req.session as any).user) {
     res.json(error("UNAUTHORIZED", "No ha iniciado sesión"));
   } else {
-    const query = `SELECT coin, quantity FROM cartera WHERE user = ${req.session.user.ID}`;
+    const query = `SELECT coin, quantity FROM cartera WHERE user = ${(req.session as any).user.ID}`;
     db.query(query, (err, result) => {
       if (err) {
         res.json(error(err.code, err.sqlMessage));
@@ -543,19 +572,19 @@ app.get("/wallet", (req, res) => {
 });
 
 app.get("/trade_history", (req, res) => {
-  if (!req.session.user) {
+  if (!(req.session as any).user) {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   }
 
-  const query = `SELECT id, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${req.session.user.ID};`;
+  const query = `SELECT id, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history WHERE user = ${(req.session as any).user.ID};`;
   db.query(query, (err, result) => {
     if (err)
       return res.json(
         error("SELECT_ERROR", "Se ha producido un error inesperado")
       );
 
-    const tradeHistory = [];
-    result.forEach((row) => {
+    const tradeHistory: { id: any; symbol: any; type: any; paid_amount: any; amount_received: any; comission: any; date: any; price: any; }[] = [];
+    result.forEach((row: { id: any; symbol: any; type: any; paid_amount: any; amount_received: any; comission: any; date: any; price: any; }) => {
       const trade = {
         id: row.id,
         symbol: row.symbol,
@@ -577,7 +606,7 @@ app.get("/trade_history", (req, res) => {
 });
 
 app.post("/trade", (req, res) => {
-  if (!req.session.user) {
+  if (!(req.session as any).user) {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   }
 
@@ -621,7 +650,7 @@ app.post("/trade", (req, res) => {
     type === "BUY" ? symbol.quoteAssetName : symbol.baseAssetName;
 
   db.query(
-    `SELECT quantity FROM cartera WHERE coin LIKE '${removeAsset}' AND user = ${req.session.user.ID};`,
+    `SELECT quantity FROM cartera WHERE coin LIKE '${removeAsset}' AND user = ${(req.session as any).user.ID};`,
     (err, result) => {
       if (err)
         return res.json(
@@ -642,17 +671,17 @@ app.post("/trade", (req, res) => {
       const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
       const receivedAmount =
         type === "BUY"
-          ? (paidAmount - comission) / symbolPrice
-          : (paidAmount - comission) * symbolPrice;
+          ? (paidAmount - comission) / parseFloat(symbolPrice)
+          : (paidAmount - comission) * parseFloat(symbolPrice);
 
       const updatedAmount = currentAmount - paidAmount;
       const updateQuery =
         updatedAmount === 0
-          ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`
+          ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${(req.session as any).user.ID};`
           : `UPDATE cartera SET quantity = ${updatedAmount.toFixed(
               8
             )} WHERE coin = '${removeAsset}' AND user = ${
-              req.session.user.ID
+              (req.session as any).user.ID
             };`;
 
       db.query(updateQuery, (err, _) => {
@@ -662,7 +691,7 @@ app.post("/trade", (req, res) => {
           );
 
         db.query(
-          `SELECT quantity FROM cartera WHERE coin = '${addAsset}' AND user = ${req.session.user.ID};`,
+          `SELECT quantity FROM cartera WHERE coin = '${addAsset}' AND user = ${(req.session as any).user.ID};`,
           (err, result) => {
             if (err)
               return res.json(
@@ -678,10 +707,10 @@ app.post("/trade", (req, res) => {
                 ? `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(
                     8
                   )} WHERE coin = '${addAsset}' AND user = ${
-                    req.session.user.ID
+                    (req.session as any).user.ID
                   };`
                 : `INSERT INTO cartera (user, coin, quantity) VALUES (${
-                    req.session.user.ID
+                    (req.session as any).user.ID
                   }, '${addAsset}', ${receivedAmount.toFixed(8)});`;
 
             db.query(query, (err, _) => {
@@ -701,7 +730,7 @@ app.post("/trade", (req, res) => {
               const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
               const historyQuery = `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
-                                    (${req.session.user.ID}, '${
+                                    (${(req.session as any).user.ID}, '${
                 symbolPriceObject.symbol
               }', '${type}', ${paidAmount.toFixed(8)}, ${receivedAmount.toFixed(
                 8
@@ -734,7 +763,7 @@ app.post("/trade", (req, res) => {
 });
 
 app.post("/payment", (req, res) => {
-  if (!req.session.user) {
+  if (!(req.session as any).user) {
     res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   } else if (!req.body.cart || !req.body.cart.type || !req.body.cart.quantity) {
     res.json(
@@ -743,7 +772,7 @@ app.post("/payment", (req, res) => {
   } else {
     const cart = req.body.cart;
     db.query(
-      `SELECT coin FROM cartera where coin like '${cart.type}' and user = ${req.session.user.ID}`,
+      `SELECT coin FROM cartera where coin like '${cart.type}' and user = ${(req.session as any).user.ID}`,
       (err, result) => {
         if (err) {
           res.json(
@@ -751,7 +780,7 @@ app.post("/payment", (req, res) => {
           );
         } else if (result.length === 0) {
           db.query(
-            `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID}, '${cart.type}', ${cart.quantity})`,
+            `INSERT INTO cartera (user, coin, quantity) VALUES (${(req.session as any).user.ID}, '${cart.type}', ${cart.quantity})`,
             (err, _) => {
               if (err) {
                 res.json(
@@ -766,7 +795,7 @@ app.post("/payment", (req, res) => {
           );
         } else {
           db.query(
-            `UPDATE cartera SET quantity = quantity + ${cart.quantity} WHERE user = ${req.session.user.ID} and coin like '${cart.type}'`,
+            `UPDATE cartera SET quantity = quantity + ${cart.quantity} WHERE user = ${(req.session as any).user.ID} and coin like '${cart.type}'`,
             (err, _) => {
               if (err) {
                 res.json(

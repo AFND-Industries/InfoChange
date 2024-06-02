@@ -3,8 +3,8 @@ const session = require("express-session");
 const { createHash } = require("crypto");
 const cors = require("cors");
 const mysql = require("mysql");
-const Coins = require("./Coins.json");
-const Symbols = require("./Symbols.json");
+const Coins = require("../assets/Coins.json");
+const Symbols = require("../assets/Symbols.json");
 
 const tradingComision = 0.00065;
 
@@ -51,6 +51,7 @@ const getCoins = () => {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         const filteredCoins = data.filter((symbol) => {
           if (symbol.symbol.endsWith("USDT")) {
             const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
