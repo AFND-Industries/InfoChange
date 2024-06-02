@@ -17,18 +17,18 @@ jobs:
       - name: List files after checkout
         run: ls -R
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'  # O la versión que estés usando
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '16'  # O la versión que estés usando
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./Code/infochange/server
+      # - name: Install dependencies
+      #   run: npm install
+      #   working-directory: ./Code/infochange/server
 
-      - name: Build backend
-        run: npm run build
-        working-directory: ./Code/infochange/server
+      # - name: Build backend
+      #   run: npm run build
+      #   working-directory: ./Code/infochange/server
 
       - name: Set up Git
         run: |
