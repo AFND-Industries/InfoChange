@@ -46,7 +46,7 @@ jobs:
           echo miau2
           git commit -m "Update frontend deployment"
           echo miau3
-          git push origin prod-frontend
+          git push origin prod-frontend --force
       # - name: Sync frontend folder to prod-frontend
       #   run: |
       #     git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
