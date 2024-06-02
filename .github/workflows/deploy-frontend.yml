@@ -41,7 +41,7 @@ jobs:
           mkdir prod-frontend
           cp -r ./Code/infochange/client/dist/* prod-frontend/
           cd prod-frontend
-          echo miau
+          ls -la
           git add .
           echo miau2
           git commit -m "Update frontend deployment"
