@@ -37,7 +37,7 @@ jobs:
 
       - name: Sync backend folder to prod-backend
         run: |
-          git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
+          git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
           rsync -av --delete --exclude='.git' Code/infochange/server/ prod-backend/
           cd prod-backend
           git add .
