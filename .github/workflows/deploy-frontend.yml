@@ -41,11 +41,11 @@ jobs:
           mkdir prod-frontend
           cp -r ./Code/infochange/client/dist/* prod-frontend/
           cd prod-frontend
-          echo(miau)
+          echo miau
           git add .
-          echo(miau2)
+          echo miau2
           git commit -m "Update frontend deployment"
-          echo(miau3)
+          echo miau3
           git push origin prod-frontend
       # - name: Sync frontend folder to prod-frontend
       #   run: |
