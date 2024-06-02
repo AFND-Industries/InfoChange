@@ -31,13 +31,6 @@ jobs:
         run: npm run build
         working-directory: ./Code/infochange/client
         
-      # - name: Copy frontend
-      #   run: |
-      #     cd Code/infochange/client
-      #     rm -rf ../../prod-frontend/*
-      #     mkdir -p ../../prod-frontend
-      #     cp -r dist/* ../../prod-frontend/
-        
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
