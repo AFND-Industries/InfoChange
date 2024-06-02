@@ -31,12 +31,12 @@ jobs:
         run: npm run build
         working-directory: ./Code/infochange/client
         
-      - name: Copy frontend
-        run: |
-          cd Code/infochange/client
-          rm -rf ../../prod-frontend/*
-          mkdir -p ../../prod-frontend
-          cp -r dist/* ../../prod-frontend/
+      # - name: Copy frontend
+      #   run: |
+      #     cd Code/infochange/client
+      #     rm -rf ../../prod-frontend/*
+      #     mkdir -p ../../prod-frontend
+      #     cp -r dist/* ../../prod-frontend/
         
       - name: Set up Git
         run: |
@@ -46,7 +46,7 @@ jobs:
       - name: Sync frontend folder to prod-frontend
         run: |
           git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
-          rsync -av --delete --exclude='.git' Code/infochange/client/ prod-frontend/
+          rsync -av --delete --exclude='.git' Code/infochange/client/dist prod-frontend/
           cd prod-frontend
           git add .
           git commit -m "Update frontend deployment"
