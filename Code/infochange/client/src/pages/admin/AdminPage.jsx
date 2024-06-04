@@ -2,6 +2,7 @@ import React from "react";
 import { useAdmin } from "./context/AdminContext";
 import Banner from "../../assets/admin_banner.png";
 import BizumItem from "../dashboard/windows/bizum/components/BizumItem";
+import PaymentItem from "../dashboard/windows/history/components/PaymentItem";
 
 const altImage = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
@@ -14,7 +15,7 @@ export default function AdminPage() {
         getTotalExchangeBalance,
         getUsersSortedByBalance,
         getCoinsSortedByExchangeVolume,
-        getPaymentHistory
+        getPaymentHistorySortedByDate
     } = useAdmin();
 
     // Datos simulados para mostrar en el panel
@@ -26,7 +27,7 @@ export default function AdminPage() {
     const bizumHistoryByDate = getBizumHistorySortedByDate();
     const usersByBalance = getUsersSortedByBalance();
     const coinsSortedByVolume = getCoinsSortedByExchangeVolume();
-    const paymentHistory = getPaymentHistory();
+    const paymentHistory = getPaymentHistorySortedByDate();
 
     return (
         <main className="container mt-4 mb-4">
@@ -79,10 +80,12 @@ export default function AdminPage() {
                                     {usersByBalance.map((user, index) => (
                                         <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center justify-content-between">
                                             <div className="d-flex align-items-center">
-                                                <img onError={(event) => event.target.src = altImage}
-                                                    src={"https://github.com/" + user.username + ".png"} alt={"Logo de " + user.username} className="me-2 rounded-5"
-                                                    style={{ width: "50px", height: "50px" }} />
-                                                <span className="h5 m-0">{user.username}</span>
+                                                <img src={"https://github.com/" + user.username + ".png"} className="rounded rounded-5 me-2"
+                                                    style={{ width: '50px', height: '50px' }} onError={(e) => { e.target.src = altImage; }} alt={"Logo de " + user.name} />
+                                                <div className="d-flex flex-column">
+                                                    <span>{user.username}</span>
+                                                    <span className="text-secondary" style={{ fontSize: "0.9em" }}>{user.name} {user.lastName}</span>
+                                                </div>
                                             </div>
                                             <span className="fw-bold h5 m-0">{user.totalBalance.toFixed(2)}$</span>
                                         </li>
@@ -136,7 +139,7 @@ export default function AdminPage() {
                             <h2 className="card-title">Depósitos y retiros recientes</h2>
                             <ul className="list-group list-group-flush">
                                 {paymentHistory.map((payment, index) => (
-                                    <li key={index} className="list-group-item">{2}</li>
+                                    <PaymentItem payment={payment} user={payment.user} />
                                 ))}
                             </ul>
                         </div>

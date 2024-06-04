@@ -9,7 +9,7 @@ export const AdminProvider = ({ children }) => {
     const { getPair, getPairPrice, getTokenInfo } = useAPI();
     const [adminInfo, setAdminInfo] = useState(undefined);
 
-    const reloadTime = 30000; // 30s
+    const reloadTime = 10000; // 10s
 
     const findUserById = (id) => adminInfo !== undefined ? Object.values(adminInfo.users).filter(user => user.id == id)[0] : undefined;
 
@@ -152,7 +152,27 @@ export const AdminProvider = ({ children }) => {
         return bizumHistory;
     }
 
-    const getPaymentHistory = () => [];
+    const getPaymentHistorySortedByDate = () => {
+        let paymentHistory = [];
+
+        if (adminInfo !== undefined) {
+            paymentHistory = adminInfo.payment_history.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(payment => {
+                const user = findUserById(payment.user);
+
+                return ({
+                    id: payment.id,
+                    user: user,
+                    type: payment.type,
+                    method: payment.method,
+                    info: payment.info,
+                    quantity: payment.quantity,
+                    date: payment.date
+                });
+            })
+        }
+
+        return paymentHistory;
+    }
 
     return (
         <AdminContext.Provider
@@ -165,7 +185,7 @@ export const AdminProvider = ({ children }) => {
                 getTotalExchangeBalance,
                 getUsersSortedByBalance,
                 getCoinsSortedByExchangeVolume,
-                getPaymentHistory,
+                getPaymentHistorySortedByDate,
             }}
         >
             {children}

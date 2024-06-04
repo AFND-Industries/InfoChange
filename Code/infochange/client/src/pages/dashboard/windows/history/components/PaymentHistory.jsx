@@ -9,7 +9,7 @@ const PaymentHistory = ({ paymentHistory }) => {
         const sortedPayment = paymentHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         renderPaymentHistory = sortedPayment.map((payment, index) => {
-            return <PaymentItem key={index} payment={payment} />;
+            return <PaymentItem payment={payment} />;
         });
     }
 
