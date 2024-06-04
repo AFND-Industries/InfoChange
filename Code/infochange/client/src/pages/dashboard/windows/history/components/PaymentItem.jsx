@@ -17,13 +17,13 @@ const PaymentItem = ({ payment }) => {
 
     const textPayment =
         <>
-            <span>Has <span className="fw-bold">añadido</span> saldo a la plataforma</span>
+            <span>Has <span className="fw-bold">añadido</span> saldo </span>
             <span> {payment.method === "CREDIT" ? " con una" : "mediante"} <span className="fw-bold">{payment.method === "CREDIT" ? "tarjeta de crédito" : "PayPal"}</span></span>
         </>;
 
     const withdrawPayment =
         <>
-            <span>Has <span className="fw-bold">retirado</span> dinero de la plataforma</span>
+            <span>Has <span className="fw-bold">retirado</span> dinero </span>
             <span> a{payment.method === "CREDIT" ? " una" : ""} <span className="fw-bold">{payment.method === "CREDIT" ? "cuenta bancaria" : "PayPal"}</span></span>
         </>;
 
