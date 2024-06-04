@@ -8,7 +8,7 @@ export default function Profile(props) {
         },
         {
             label: "Nombre",
-            value: profile.name,
+            value: profile.firstName,
         },
         {
             label: "Apellidos",
@@ -27,7 +27,7 @@ export default function Profile(props) {
         },
         {
             label: "Ciudad",
-            value: profile.ciudad,
+            value: profile.city,
         },
         {
             label: "País",
@@ -57,8 +57,8 @@ export default function Profile(props) {
                         className="rounded-pill"
                         alt={`Foto de perfil de ${profile.username}`}
                         onError={(event) =>
-                        (event.target.src =
-                            "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+                            (event.target.src =
+                                "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
                         }
                         src={`https://github.com/${profile.username}.png`}
                         style={{ width: "100%" }}
