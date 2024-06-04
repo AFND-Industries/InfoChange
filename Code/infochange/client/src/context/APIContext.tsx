@@ -115,7 +115,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return response;
     }
 
-    const buyProduct = async (buy: Cart) => await post("/payment", buy);
+    const buyProduct = async (buy: Cart, method) => await post("/payment", { ...buy, method: method });
     const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
     const doPaymentHistory = async () => await doAction(async () => await get("/payment_history"));
     const doBizumHistory = async () => await doAction(async () => await get("/bizum_history"));

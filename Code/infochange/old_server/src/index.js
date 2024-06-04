@@ -479,7 +479,7 @@ app.get("/admin", (req, res) => {
 
     let paymentHistoryPromise = new Promise((resolve, reject) => {
       db.query(
-        "SELECT id, user, type, quantity, date FROM payment_history;",
+        "SELECT id, user, type, quantity, date, method, info FROM payment_history;",
         (err, result) => {
           if (err) reject(err);
           else resolve(result);
@@ -555,7 +555,7 @@ app.get("/payment_history", (req, res) => {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   }
 
-  const query = `SELECT id, type, quantity, date FROM payment_history WHERE user = ${req.session.user.ID};`;
+  const query = `SELECT id, type, quantity, date, method, info FROM payment_history WHERE user = ${req.session.user.ID};`;
   db.query(query, (err, result) => {
     if (err)
       return res.json(
@@ -569,6 +569,8 @@ app.get("/payment_history", (req, res) => {
         type: row.type,
         quantity: row.quantity,
         date: row.date,
+        method: row.method,
+        info: row.info
       };
       paymentHistory.push(payment);
     });
@@ -804,7 +806,8 @@ app.post("/payment", (req, res) => {
               const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
               db.query(
-                `INSERT INTO payment_history (user, type, quantity, date) VALUES (${req.session.user.ID}, 'PAY', ${cart.quantity}, '${formattedDate}')`,
+                `INSERT INTO payment_history (user, type, quantity, date, method, info) VALUES 
+                (${req.session.user.ID}, 'PAY', ${cart.quantity}, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${req.body.method.info}')`,
                 (err, _) => {
                   if (err) {
                     res.json(
@@ -841,7 +844,8 @@ app.post("/payment", (req, res) => {
               const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
               db.query(
-                `INSERT INTO payment_history (user, type, quantity, date) VALUES (${req.session.user.ID}, 'PAY', ${cart.quantity}, '${formattedDate}')`,
+                `INSERT INTO payment_history (user, type, quantity, date, method, info) VALUES 
+                (${req.session.user.ID}, 'PAY', ${cart.quantity}, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${req.body.method.info}')`,
                 (err, _) => {
                   if (err) {
                     res.json(
