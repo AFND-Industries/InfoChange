@@ -3,7 +3,7 @@ import { useAPI } from "../../../../../context/APIContext";
 
 const TradeItem = ({ trade }) => {
     const { getTokenInfo, getPair } = useAPI();
-    console.log(trade);
+
     const transactionDate = new Date(trade.date);
 
     const hours = ('0' + transactionDate.getHours()).slice(-2);

@@ -1,13 +1,15 @@
 import React from "react";
 
+import PaymentItem from "./PaymentItem";
+
 const PaymentHistory = ({ paymentHistory }) => {
     let renderPaymentHistory = null;
 
     if (paymentHistory) {
         const sortedPayment = paymentHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        renderPaymentHistory = sortedPayment.map((trade, index) => {
-            return <TradeItem key={index} trade={trade} />;
+        renderPaymentHistory = sortedPayment.map((payment, index) => {
+            return <PaymentItem key={index} payment={payment} />;
         });
     }
 

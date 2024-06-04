@@ -31,14 +31,19 @@
         height: 500px;
     }
 }
+
 .card-link {
-    transition: background-color 0.6s ease; /* Transición suave para el cambio de color */
-    background-color: #fff; /* Color de fondo inicial */
+    transition: background-color 0.6s ease;
+    /* Transición suave para el cambio de color */
+    background-color: #fff;
+    /* Color de fondo inicial */
 }
 
 .card-link:hover {
-    background-color: #c9c9c9; /* Cambia a azul claro cuando se coloca el cursor sobre la tarjeta */
+    background-color: #c9c9c9;
+    /* Cambia a azul claro cuando se coloca el cursor sobre la tarjeta */
 }
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -48,5 +53,4 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
-  }
-  
+}
