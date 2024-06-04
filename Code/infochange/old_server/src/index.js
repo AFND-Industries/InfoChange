@@ -639,7 +639,6 @@ app.post("/trade", (req, res) => {
       error("INVALID_QUANTITY", "La cantidad introducida no es válida.")
     );
   }
-  //TODO: prices
   const symbolPriceObject = Object.values(prices).find(
     (p) => p.symbol === symbol.symbol
   );

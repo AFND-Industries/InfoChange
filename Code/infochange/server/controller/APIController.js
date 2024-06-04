@@ -87,4 +87,8 @@ apiController.prices = (req, res) => {
   }
 };
 
-module.exports = { apiController, prices, coins };
+apiController.getPrices_var = () => {
+  return coins;
+};
+
+module.exports = apiController;

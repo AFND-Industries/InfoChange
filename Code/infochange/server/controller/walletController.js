@@ -5,7 +5,7 @@ const { Op } = require("sequelize");
 const Coins = require("../assets/Coins.json");
 const Symbols = require("../assets/Symbols.json");
 const utils = require("../utils/utils");
-
+const apiController = require("../controller/APIController");
 const walletController = {};
 
 walletController.bizum = async (req, res) => {
@@ -172,7 +172,7 @@ walletController.trade = async (req, res) => {
     );
   }
 
-  const symbolPriceObject = Object.values(prices).find(
+  const symbolPriceObject = Object.values(apiController.getPrices_var).find(
     (p) => p.symbol === symbol.symbol
   );
   if (!symbolPriceObject) {
@@ -183,7 +183,7 @@ walletController.trade = async (req, res) => {
       )
     );
   }
-
+  //TODO: AQUI DA ERROR
   const symbolPrice = symbolPriceObject.price;
   const paidAmount = parseFloat(quantity.toFixed(8));
 
