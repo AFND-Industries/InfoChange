@@ -8,7 +8,7 @@ const apiController = require("../controller/APIController");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-    res.json({ message: "Hello InfoWorld!" });
+  res.json({ message: "Hello InfoWorld!" });
 });
 
 router.get("/auth", userController.auth);
@@ -44,5 +44,7 @@ router.get("/users", userController.users);
 router.get("/coins", apiController.coins);
 
 router.get("/prices", apiController.prices);
+
+router.get("/payment_history", historyController.paymentHistory);
 
 module.exports = router;
