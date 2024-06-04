@@ -541,6 +541,17 @@ app.get("/wallet", (req, res) => {
   }
 });
 
+app.get("/payment_history", (req, res) => {
+  if (!req.session.user) {
+    return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+  }
+
+  res.json({
+    status: "1",
+    tradeHistory: [],
+  });
+});
+
 app.get("/trade_history", (req, res) => {
   if (!req.session.user) {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));

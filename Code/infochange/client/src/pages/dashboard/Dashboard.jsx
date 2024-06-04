@@ -20,10 +20,11 @@ import { useAPI } from "../../context/APIContext";
 
 function Dashboard() {
     const { getActualUser } = useAuth();
-    const { doTradeHistory, doBizumHistory, doBizumUsers, doSwap } = useAPI();
+    const { doTradeHistory, doPaymentHistory, doBizumHistory, doBizumUsers, doSwap } = useAPI();
 
     const [page, setPage] = useState(0);
     const [tradeHistory, setTradeHistory] = useState(undefined);
+    const [paymentHistory, setPaymentHistory] = useState(undefined);
     const [bizumUsers, setBizumUserList] = useState(undefined);
     const [bizumHistory, setBizumHistory] = useState(undefined);
 
@@ -33,6 +34,12 @@ function Dashboard() {
             setTradeHistory(response.data.tradeHistory);
     };
 
+    const loadPaymentHistory = async () => {
+        const paymentHistory = await doPaymentHistory();
+        if (paymentHistory !== undefined && paymentHistory.data.status === "1")
+            setBizumHistory(paymentHistory.data.paymentHistory);
+    }
+
     const loadBizumUsers = async () => {
         const responseUsers = await doBizumUsers();
         if (responseUsers !== undefined && responseUsers.data.status === "1")
@@ -40,13 +47,14 @@ function Dashboard() {
     };
 
     const loadBizumHistory = async () => {
-        const responseUsers = await doBizumHistory();
-        if (responseUsers !== undefined && responseUsers.data.status === "1")
-            setBizumHistory(responseUsers.data.bizumHistory);
+        const bizumHistory = await doBizumHistory();
+        if (bizumHistory !== undefined && bizumHistory.data.status === "1")
+            setBizumHistory(bizumHistory.data.bizumHistory);
     };
 
     useEffect(() => {
         loadTradeHistory();
+        loadPaymentHistory();
         loadBizumUsers();
         loadBizumHistory();
     }, [getActualUser()]);
@@ -62,8 +70,8 @@ function Dashboard() {
         <Wallet wallet={user.wallet ?? {}} />,
         <History
             tradeHistory={tradeHistory}
+            paymentHistory={paymentHistory}
             bizumHistory={bizumHistory}
-            paymentHistory={[]}
             bizumUsers={bizumUsers}
             user={user}
         />,
