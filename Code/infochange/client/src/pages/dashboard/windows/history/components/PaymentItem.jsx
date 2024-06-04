@@ -11,31 +11,39 @@ const PaymentItem = ({ payment }) => {
 
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
 
-    const textPayment = (
-        <span>Has <span className="fw-bold">añadido {payment.quantity}$</span></span>
-    );
+    const drawLogo = (logo, w, name) => <img src={logo} className="rounded rounded-5 me-2" style={{ width: w, height: '50px' }} alt={"Logo de " + name} />;
+    const paypal = drawLogo("paypal.png", "100px", "PayPal");
+    const mastercard = drawLogo("credit.png", "70px", "Mastercard");
 
-    const textWithdrawal = (
-        <span>Has <span className="fw-bold">retirado {payment.quantity}$</span></span>
-    );
+    const textPayment =
+        <>
+            <span>Has <span className="fw-bold">añadido</span> saldo a la plataforma</span>
+            <span> {payment.method === "CREDIT" ? " con una" : "mediante"} <span className="fw-bold">{payment.method === "CREDIT" ? "tarjeta de crédito" : "PayPal"}</span></span>
+        </>;
+
+    const withdrawPayment =
+        <>
+            <span>Has <span className="fw-bold">retirado</span> dinero de la plataforma</span>
+            <span> a{payment.method === "CREDIT" ? " una" : ""} <span className="fw-bold">{payment.method === "CREDIT" ? "cuenta bancaria" : "PayPal"}</span></span>
+        </>;
 
     return (
         <li key={payment.id} className="list-group-item px-0">
             <div className="row align-items-center">
                 <div className="d-flex col-lg-9 d-flex align-items-start mb-3 mb-lg-0 flex-column">
                     <div className="d-flex align-items-center">
-                        {payment.method === 'credit' ? "VISA" : "PAYPAL"}
+                        {payment.method === 'CREDIT' ? mastercard : paypal}
                     </div>
                     <div>
-                        {payment.type === "PAY" ? textPayment : textWithdrawal}
+                        {payment.type === "PAY" ? textPayment : withdrawPayment}
                     </div>
                     <div className="d-flex flex-row text-secondary flex-lg-row flex-column" style={{ fontSize: "0.9em" }}>
-                        <span>Información de pago: {payment.info}</span>
+                        <span>Información de la operación: {payment.info}</span>
                     </div>
                 </div>
                 <div className="col-lg-3 d-flex flex-column align-items-center align-items-lg-end">
-                    <span className={`fw-bold me-1 ${payment.type === "PAY" ? "text-success" : "text-danger"}`}>
-                        {payment.type === "PAY" ? "Pago" : "Retiro"}</span>
+                    <span className={`fw-bold ${payment.type === "PAY" ? "text-success" : "text-danger"}`}>
+                        {payment.type === "PAY" ? "+" : "-"}{payment.quantity}$</span>
                     <span className="text-secondary text-end" style={{ fontSize: "0.9em" }}>{formattedDate}</span>
                 </div>
             </div>

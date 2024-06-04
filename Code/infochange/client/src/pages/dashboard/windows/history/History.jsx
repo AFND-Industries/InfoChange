@@ -38,7 +38,7 @@ export default function History({ user, tradeHistory, bizumHistory, paymentHisto
         doc.text("Historial de Pagos y Retiros", 14, 16);
         doc.autoTable({
             startY: 20,
-            head: [['ID', 'Método', 'Tipo', 'Información de pago', 'Cantidad', 'Fecha']],
+            head: [['ID', 'Método', 'Tipo', 'Información de la operación', 'Cantidad', 'Fecha']],
             body: paymentHistory.map(payment => [
                 payment.id,
                 payment.type,
