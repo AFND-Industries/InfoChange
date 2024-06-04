@@ -92,7 +92,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             type: type,
         });
         if (response.data.status === "1") await doAuth();
-
+        
         return response;
     }
 

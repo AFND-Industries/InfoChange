@@ -44,12 +44,13 @@ function Login() {
       response !== undefined && response.data !== undefined
         ? response.data.status
         : "";
-    console.log(response.data.cause);
+    console.log(status);
     if (status === "-1") {
       appendAlert(response.data.cause, "danger");
     } else if (status === "0") {
       appendAlert("Usuario o contraseña incorrecta", "danger");
     } else if (status === "1") {
+      console.log("Login correcto");
       navigate("/dashboard");
     } else {
       appendAlert(
