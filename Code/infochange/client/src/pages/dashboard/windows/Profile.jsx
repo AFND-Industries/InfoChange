@@ -35,7 +35,7 @@ export default function Profile(props) {
         },
         {
             label: "Código postal",
-            value: profile.postalCode,
+            value: profile.zipCode,
         },
         {
             label: "Teléfono",
@@ -75,7 +75,7 @@ export default function Profile(props) {
                 <div className="col-md-9 d-flex justify-content-between">
                     <div className="d-flex align-items-start flex-column justify-content-center">
                         <h2>
-                            {profile.name} {profile.lastName}
+                            {profile.firstName} {profile.lastName}
                         </h2>
                         <h3 className="fs-4 text-body-secondary">
                             @{profile.username}

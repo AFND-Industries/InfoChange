@@ -6,7 +6,9 @@ const TradeHistory = ({ tradeHistory }) => {
     let renderTradeHistory = null;
 
     if (tradeHistory) {
-        const sortedHistory = tradeHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedHistory = tradeHistory.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+        );
 
         renderTradeHistory = sortedHistory.map((trade, index) => {
             return <TradeItem trade={trade} />;
@@ -15,7 +17,13 @@ const TradeHistory = ({ tradeHistory }) => {
 
     return (
         <ul className="list-group list-group-flush p-0 m-0">
-            {renderTradeHistory}
+            {renderTradeHistory.length === 0 ? (
+                <li className="list-group-item text-center">
+                    <b className="fs-5">No se han encontrado resultados :(</b>
+                </li>
+            ) : (
+                renderTradeHistory
+            )}
         </ul>
     );
 };

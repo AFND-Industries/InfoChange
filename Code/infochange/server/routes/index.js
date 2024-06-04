@@ -8,7 +8,7 @@ const apiController = require("../controller/APIController");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.json({ message: "Hello InfoWorld!" });
+    res.json({ message: "Hello InfoWorld!" });
 });
 
 router.get("/auth", userController.auth);
@@ -27,7 +27,7 @@ router.post("/bizum", walletController.bizum);
 
 router.get("/bizum_users", userController.bizumUsers);
 
-router.get("swap_mode", userController.swap);
+router.post("/swap_mode", userController.swap);
 
 router.get("/admin", userController.admin);
 
