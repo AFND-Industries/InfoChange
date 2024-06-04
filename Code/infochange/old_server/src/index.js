@@ -477,6 +477,16 @@ app.get("/admin", (req, res) => {
       });
     });
 
+    let paymentHistoryPromise = new Promise((resolve, reject) => {
+      db.query(
+        "SELECT id, user, type, quantity, date FROM payment_history;",
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        }
+      );
+    });
+
     let tradeHistoryPromise = new Promise((resolve, reject) => {
       db.query(
         "SELECT id, user, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history;",
@@ -501,11 +511,10 @@ app.get("/admin", (req, res) => {
       usersPromise,
       walletsPromise,
       tradeHistoryPromise,
+      paymentHistoryPromise,
       bizumHistoryPromise,
     ])
-      .then(([users, wallets, tradeHistory, bizumHistory]) => {
-        let payment_history = []; // Aquí puedes hacer lo que necesites con payment_history
-
+      .then(([users, wallets, tradeHistory, paymentHistory, bizumHistory]) => {
         res.json({
           status: "1",
           info: {
@@ -513,7 +522,7 @@ app.get("/admin", (req, res) => {
             wallets: wallets,
             trade_history: tradeHistory,
             bizum_history: bizumHistory,
-            payment_history: payment_history,
+            payment_history: paymentHistory,
           },
         });
       })
@@ -546,9 +555,29 @@ app.get("/payment_history", (req, res) => {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   }
 
-  res.json({
-    status: "1",
-    tradeHistory: [],
+  const query = `SELECT id, user, type, quantity, date FROM payment_history WHERE user = ${req.session.user.ID};`;
+  db.query(query, (err, result) => {
+    if (err)
+      return res.json(
+        error("SELECT_ERROR", "Se ha producido un error inesperado")
+      );
+
+    const paymentHistory = [];
+    result.forEach((row) => {
+      const payment = {
+        id: row.id,
+        user: row.user,
+        type: row.type,
+        quantity: row.quantity,
+        date: row.date,
+      };
+      paymentHistory.push(payment);
+    });
+
+    res.json({
+      status: "1",
+      paymentHistory: paymentHistory,
+    });
   });
 });
 
