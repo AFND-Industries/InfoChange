@@ -12,13 +12,51 @@ export default function History({ user, tradeHistory, bizumHistory, paymentHisto
 
     const HistoryComponent = historyMode === 0 ? TradeHistory : (historyMode === 1 ? PaymentHistory : BizumHistory);
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        doc.setFont("times", "normal");
+        doc.setFontSize(12);
+
+        doc.text("Reporte de Historial de Intercambios", 14, 16);
+        doc.autoTable({
+            startY: 20,
+            head: [['ID', 'Símbolo', 'Tipo', 'Monto Pagado', 'Monto Recibido', 'Comisión', 'Fecha', 'Precio']],
+            body: tradeHistory.map(trade => [
+                trade.id,
+                trade.symbol,
+                trade.type,
+                trade.paid_amount,
+                trade.amount_received,
+                trade.comission,
+                new Date(trade.date).toLocaleString(),
+                trade.price
+            ])
+        });
+
+        doc.addPage();
+        doc.text("Historial de Bizums", 14, 16);
+        doc.autoTable({
+            startY: 20,
+            head: [['ID', 'Remitente', 'Receptor', 'Cantidad', 'Fecha']],
+            body: bizumHistory.map(bizum => [
+                bizum.id,
+                bizum.sender,
+                bizum.receiver,
+                bizum.quantity,
+                new Date(bizum.date).toLocaleString()
+            ])
+        });
+
+        doc.save('informe.pdf');
+    };
 
     return (
         <>
             <div className="row px-5 pt-4">
                 <div className="row justify-content-end p-0 mb-2">
                     <div className="col d-flex justify-content-end p-0">
-                        <button className="btn btn-primary">
+                        <button className="btn btn-primary" onClick={generatePDF}>
                             Descargar informe <i class="ms-2 bi bi-download"></i>
                         </button>
                     </div>
