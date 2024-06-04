@@ -63,6 +63,7 @@ function Dashboard() {
         <History
             tradeHistory={tradeHistory}
             bizumHistory={bizumHistory}
+            paymentHistory={[]}
             bizumUsers={bizumUsers}
             user={user}
         />,
