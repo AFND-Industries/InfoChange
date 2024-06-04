@@ -87,6 +87,7 @@ historyController.paymentHistory = async (req, res) => {
   }
 
   const result = await models.payment_history.findAll({
+    attributes: ["id", "type", "quantity", "date", "method", "info"],
     where: {
       user: req.session.user.ID,
     },
@@ -99,6 +100,8 @@ historyController.paymentHistory = async (req, res) => {
       type: row.type,
       quantity: row.quantity,
       date: row.date,
+      method: row.method,
+      info: row.info,
     };
     paymentHistory.push(payment);
   });

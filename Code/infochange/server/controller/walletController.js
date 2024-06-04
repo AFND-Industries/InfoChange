@@ -351,6 +351,8 @@ walletController.payment = async (req, res) => {
         type: "PAY",
         quantity: cart.quantity,
         date: formattedDate,
+        method: req.body.method.type.toUpperCase(),
+        info: req.body.method.info,
       });
 
       res.json({
@@ -385,6 +387,8 @@ walletController.payment = async (req, res) => {
         type: "PAY",
         quantity: cart.quantity,
         date: formattedDate,
+        method: req.body.method.type.toUpperCase(),
+        info: req.body.method.info,
       });
 
       res.json({
