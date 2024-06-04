@@ -2,7 +2,8 @@ const initModels = require("../models/init-models");
 const sequelize = require("sequelize");
 const models = initModels(sequelize);
 const { Op } = require("sequelize");
-
+const Coins = require("../assets/Coins.json");
+const Symbols = require("../assets/Symbols.json");
 const utils = require("../utils/utils");
 
 const walletController = {};
@@ -320,8 +321,8 @@ walletController.payment = async (req, res) => {
     const cart = req.body.cart;
 
     const coin = await models.wallet.findAll({
+      attributes: ["coin"],
       where: {
-        attributes: ["coin"],
         coin: {
           [Op.like]: cart.type,
         },

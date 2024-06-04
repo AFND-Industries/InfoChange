@@ -12,53 +12,53 @@ let coins = [];
 let last_update;
 
 const getPrices = () => {
-    try {
-        fetch("https://api.binance.com/api/v1/ticker/price")
-            .then((response) => response.json())
-            .then((data) => {
-                prices = data;
+  try {
+    fetch("https://api.binance.com/api/v1/ticker/price")
+      .then((response) => response.json())
+      .then((data) => {
+        prices = data;
 
-                utils.applog(
-                    "Precios actualizados: " + new Date().toLocaleString(),
-                    "BINANCE"
-                );
-            });
-    } catch (e) {
-        utils.applog(e, "ERROR");
-    }
+        utils.applog(
+          "Precios actualizados: " + new Date().toLocaleString(),
+          "BINANCE"
+        );
+      });
+  } catch (e) {
+    utils.applog(e, "ERROR");
+  }
 };
 
 getPrices();
 setInterval(getPrices, 10000);
 
 const getCoins = () => {
-    try {
-        const url = "https://api.binance.com/api/v3/ticker/24hr";
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                const filteredCoins = data.filter((symbol) => {
-                    if (symbol.symbol.endsWith("USDT")) {
-                        const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
+  try {
+    const url = "https://api.binance.com/api/v3/ticker/24hr";
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const filteredCoins = data.filter((symbol) => {
+          if (symbol.symbol.endsWith("USDT")) {
+            const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
 
-                        if (Coins.allCoins.includes(symbolWithoutUsdt)) {
-                            return true;
-                        }
-                    }
+            if (Coins.allCoins.includes(symbolWithoutUsdt)) {
+              return true;
+            }
+          }
 
-                    return false;
-                });
+          return false;
+        });
 
-                coins = filteredCoins;
-                utils.applog("Datos de la API actualizados", "RESTAPI");
-                last_update = new Date().toLocaleString();
-            })
-            .catch((error) => {
-                throw error;
-            });
-    } catch (e) {
-        utils.applog(e, "ERROR");
-    }
+        coins = filteredCoins;
+        utils.applog("Datos de la API actualizados", "RESTAPI");
+        last_update = new Date().toLocaleString();
+      })
+      .catch((error) => {
+        throw error;
+      });
+  } catch (e) {
+    utils.applog(e, "ERROR");
+  }
 };
 
 // tomar los datos de la api inicial
@@ -68,23 +68,23 @@ getCoins();
 setInterval(getCoins, 120000);
 
 apiController.coins = (req, res) => {
-    res.json({ coins: coins, last_update: last_update });
-    utils.applog(`Petición "/coins" ejecutada`, "REQUEST");
+  res.json({ coins: coins, last_update: last_update });
+  utils.applog(`Petición "/coins" ejecutada`, "REQUEST");
 };
 
 apiController.prices = (req, res) => {
-    const symbol = req.query.symbol;
-    if (symbol !== undefined) {
-        const price = prices.find((price) => price.symbol === symbol);
-        res.json(price);
-        utils.applog(
-            `Petición "/prices" del simbolo ` + symbol + ` ejecutada`,
-            "REQUEST"
-        );
-    } else {
-        res.json(prices);
-        utils.applog(`Petición "/prices" ejecutada`, "REQUEST");
-    }
+  const symbol = req.query.symbol;
+  if (symbol !== undefined) {
+    const price = prices.find((price) => price.symbol === symbol);
+    res.json(price);
+    utils.applog(
+      `Petición "/prices" del simbolo ` + symbol + ` ejecutada`,
+      "REQUEST"
+    );
+  } else {
+    res.json(prices);
+    utils.applog(`Petición "/prices" ejecutada`, "REQUEST");
+  }
 };
 
-module.exports = apiController;
+module.exports = { apiController, prices, coins };

@@ -351,8 +351,8 @@ app.post("/bizum", (req, res) => {
           newBizumerAmount === 0
             ? `DELETE FROM cartera WHERE coin = '${coin}' AND user = ${req.session.user.ID};`
             : `UPDATE cartera SET quantity = ${newBizumerAmount.toFixed(
-              8
-            )} WHERE coin = '${coin}' AND user = ${req.session.user.ID};`;
+                8
+              )} WHERE coin = '${coin}' AND user = ${req.session.user.ID};`;
 
         db.query(bizumerQuery, (err, result) => {
           if (err)
@@ -371,11 +371,11 @@ app.post("/bizum", (req, res) => {
               const bizumedQuery =
                 result.length > 0
                   ? `UPDATE cartera SET quantity = quantity + ${sentAmount.toFixed(
-                    8
-                  )} WHERE coin = '${coin}' AND user = ${userid};`
+                      8
+                    )} WHERE coin = '${coin}' AND user = ${userid};`
                   : `INSERT INTO cartera (user, coin, quantity) VALUES (${userid}, '${coin}', ${sentAmount.toFixed(
-                    8
-                  )});`;
+                      8
+                    )});`;
               db.query(bizumedQuery, (err, result) => {
                 if (err)
                   return res.json(
@@ -394,8 +394,9 @@ app.post("/bizum", (req, res) => {
 
                 db.query(
                   `INSERT INTO bizum_history (sender, receiver, quantity, date) VALUES 
-                            (${req.session.user.ID
-                  }, ${userid}, ${sentAmount.toFixed(
+                            (${
+                              req.session.user.ID
+                            }, ${userid}, ${sentAmount.toFixed(
                     2
                   )}, '${formattedDate}')`,
                   (err, result) => {
@@ -570,7 +571,7 @@ app.get("/payment_history", (req, res) => {
         quantity: row.quantity,
         date: row.date,
         method: row.method,
-        info: row.info
+        info: row.info,
       };
       paymentHistory.push(payment);
     });
@@ -638,7 +639,7 @@ app.post("/trade", (req, res) => {
       error("INVALID_QUANTITY", "La cantidad introducida no es válida.")
     );
   }
-
+  //TODO: prices
   const symbolPriceObject = Object.values(prices).find(
     (p) => p.symbol === symbol.symbol
   );
@@ -690,9 +691,10 @@ app.post("/trade", (req, res) => {
         updatedAmount === 0
           ? `DELETE FROM cartera WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID};`
           : `UPDATE cartera SET quantity = ${updatedAmount.toFixed(
-            8
-          )} WHERE coin = '${removeAsset}' AND user = ${req.session.user.ID
-          };`;
+              8
+            )} WHERE coin = '${removeAsset}' AND user = ${
+              req.session.user.ID
+            };`;
 
       db.query(updateQuery, (err, _) => {
         if (err)
@@ -715,11 +717,13 @@ app.post("/trade", (req, res) => {
             const query =
               currentQuoteAmount >= 0
                 ? `UPDATE cartera SET quantity = quantity + ${receivedAmount.toFixed(
-                  8
-                )} WHERE coin = '${addAsset}' AND user = ${req.session.user.ID
-                };`
-                : `INSERT INTO cartera (user, coin, quantity) VALUES (${req.session.user.ID
-                }, '${addAsset}', ${receivedAmount.toFixed(8)});`;
+                    8
+                  )} WHERE coin = '${addAsset}' AND user = ${
+                    req.session.user.ID
+                  };`
+                : `INSERT INTO cartera (user, coin, quantity) VALUES (${
+                    req.session.user.ID
+                  }, '${addAsset}', ${receivedAmount.toFixed(8)});`;
 
             db.query(query, (err, _) => {
               if (err)
@@ -738,12 +742,13 @@ app.post("/trade", (req, res) => {
               const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
               const historyQuery = `INSERT INTO trade_history (user, symbol, type, paid_amount, amount_received, comission, date, price) VALUES 
-                                    (${req.session.user.ID}, '${symbolPriceObject.symbol
-                }', '${type}', ${paidAmount.toFixed(8)}, ${receivedAmount.toFixed(
-                  8
-                )}, ${comission.toFixed(
-                  8
-                )}, '${formattedDate}', ${symbolPrice});`;
+                                    (${req.session.user.ID}, '${
+                symbolPriceObject.symbol
+              }', '${type}', ${paidAmount.toFixed(8)}, ${receivedAmount.toFixed(
+                8
+              )}, ${comission.toFixed(
+                8
+              )}, '${formattedDate}', ${symbolPrice});`;
 
               db.query(historyQuery, (err, _) => {
                 if (err)
@@ -807,11 +812,18 @@ app.post("/payment", (req, res) => {
 
               db.query(
                 `INSERT INTO payment_history (user, type, quantity, date, method, info) VALUES 
-                (${req.session.user.ID}, 'PAY', ${cart.quantity}, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${req.body.method.info}')`,
+                (${req.session.user.ID}, 'PAY', ${
+                  cart.quantity
+                }, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${
+                  req.body.method.info
+                }')`,
                 (err, _) => {
                   if (err) {
                     res.json(
-                      error("HISTORY_ERROR", "Se ha producido un error inesperado")
+                      error(
+                        "HISTORY_ERROR",
+                        "Se ha producido un error inesperado"
+                      )
                     );
                   }
 
@@ -820,7 +832,7 @@ app.post("/payment", (req, res) => {
                     feedback: "OK",
                   });
                 }
-              )
+              );
             }
           );
         } else {
@@ -845,11 +857,18 @@ app.post("/payment", (req, res) => {
 
               db.query(
                 `INSERT INTO payment_history (user, type, quantity, date, method, info) VALUES 
-                (${req.session.user.ID}, 'PAY', ${cart.quantity}, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${req.body.method.info}')`,
+                (${req.session.user.ID}, 'PAY', ${
+                  cart.quantity
+                }, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${
+                  req.body.method.info
+                }')`,
                 (err, _) => {
                   if (err) {
                     res.json(
-                      error("HISTORY_ERROR", "Se ha producido un error inesperado")
+                      error(
+                        "HISTORY_ERROR",
+                        "Se ha producido un error inesperado"
+                      )
                     );
                   }
 
@@ -858,7 +877,7 @@ app.post("/payment", (req, res) => {
                     feedback: "OK",
                   });
                 }
-              )
+              );
             }
           );
         }
