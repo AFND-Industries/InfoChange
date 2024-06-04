@@ -68,7 +68,7 @@ const TradeItem = ({ trade }) => {
                     </div>
                 </div>
                 <div className="col-lg-3 d-flex flex-column align-items-center align-items-lg-end">
-                    <span className={`fw-bold me-1 ${trade.type === "BUY" ? "text-success" : "text-danger"}`}>
+                    <span className={`fw-bold ${trade.type === "BUY" ? "text-success" : "text-danger"}`}>
                         {trade.type === "BUY" ? "COMPRA" : "VENTA"}</span>
                     <span className="text-secondary text-end" style={{ fontSize: "0.9em" }}>{formattedDate}</span>
                 </div>

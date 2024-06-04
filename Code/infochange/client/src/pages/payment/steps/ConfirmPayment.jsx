@@ -43,7 +43,16 @@ export default function ConfirmPayment(props) {
                     <div className="col">
                         <button
                             className="btn btn-primary w-100"
-                            onClick={nextHandler}
+                            onClick={() => {
+                                const info = data.type === "paypal" ? data.info.email :
+                                    "".padStart(data.info.cardNumber.length - 4, "*") +
+                                    data.info.cardNumber.slice(data.info.cardNumber.length.length - 4)
+
+                                data.info = info;
+
+                                nextHandler(data);
+                            }
+                            }
                         >
                             Pagar
                         </button>

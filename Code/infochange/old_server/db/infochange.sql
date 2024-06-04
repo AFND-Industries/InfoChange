@@ -28,6 +28,8 @@ CREATE TABLE `payment_history` (
   `type` varchar(45) NOT NULL,
   `quantity` double NOT NULL,
   `date` datetime NOT NULL,
+  `method` varchar(45) NOT NULL,
+  `info` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_fk_idx` (`user`),
   CONSTRAINT `user_fk` FOREIGN KEY (`user`) REFERENCES `usuario` (`ID`)

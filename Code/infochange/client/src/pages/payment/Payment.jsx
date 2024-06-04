@@ -189,9 +189,9 @@ export default function Payment(props) {
                                         <ConfirmPayment
                                             cart={cart}
                                             data={step.data}
-                                            nextHandler={async () => {
+                                            nextHandler={async (method) => {
                                                 const result = await buyProduct(
-                                                    { cart: cart }
+                                                    { cart: cart }, method
                                                 );
                                                 setFeedback(
                                                     result.data.feedback
@@ -229,9 +229,8 @@ export default function Payment(props) {
                             ></div>
                         </section>
                         {cart.type !== "USDT" && step.step < 4
-                            ? `El precio se actualizará en ${
-                                  TIMEOUT - counter
-                              } segundos`
+                            ? `El precio se actualizará en ${TIMEOUT - counter
+                            } segundos`
                             : ""}
                     </div>
                 </div>
