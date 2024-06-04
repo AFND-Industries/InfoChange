@@ -24,7 +24,7 @@ export default function Configuration({ profile, swap }) {
             <span>El modo novato es ideal para usuarios <span className="fw-bold">nuevos o con poca experiencia</span> en el mundo </span>
             <span>de las criptomonedas. En este modo, el gráfico del panel de <i>Trading</i> se simplifica para mostrar la información esencial </span>
             <span>además de contar con un rango de pares de intercambio limitado a los que están relacionados con el dólar. </span>
-            <span>También, se propone un única forma simple de introducir la cantidad que quiere comprar o vender.</span>
+            <span>También, se propone un única forma simple de introducir la cantidad que quiere comprar o vender. </span>
             <span>Este modo es ideal para personas con algún tipo de <span className="fw-bold">discapacidad</span> o que pueda verse </span>
             <span>beneficiada por una página más <span className="fw-bold">accesible</span>.</span>
         </>
@@ -46,7 +46,7 @@ export default function Configuration({ profile, swap }) {
                             {profile.mode === 0 ? "profesional" : "novato"}
                         </button>
                     </div>
-                    <p>
+                    <p style={{ textAlign: "justify", textJustify: "inter-word" }}>
                         {textNewbie}
                     </p>
                     <p>
