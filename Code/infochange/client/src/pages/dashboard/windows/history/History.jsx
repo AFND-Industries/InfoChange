@@ -34,19 +34,18 @@ export default function History({ user, tradeHistory, bizumHistory, paymentHisto
             ])
         });
 
-        /*doc.addPage();
+        doc.addPage();
         doc.text("Historial de Pagos y Retiros", 14, 16);
         doc.autoTable({
             startY: 20,
-            head: [['ID', 'Remitente', 'Receptor', 'Cantidad', 'Fecha']],
-            body: bizumHistory.map(bizum => [
-                bizum.id,
-                bizum.sender,
-                bizum.receiver,
-                bizum.quantity,
-                new Date(bizum.date).toLocaleString()
+            head: [['ID', 'Tipo', 'Cantidad', 'Fecha']],
+            body: paymentHistory.map(payment => [
+                payment.id,
+                payment.type,
+                payment.quantity,
+                new Date(payment.date).toLocaleString()
             ])
-        });*/
+        });
 
         doc.addPage();
         doc.text("Historial de Bizums", 14, 16);

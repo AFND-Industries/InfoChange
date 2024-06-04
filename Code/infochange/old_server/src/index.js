@@ -555,7 +555,7 @@ app.get("/payment_history", (req, res) => {
     return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
   }
 
-  const query = `SELECT id, user, type, quantity, date FROM payment_history WHERE user = ${req.session.user.ID};`;
+  const query = `SELECT id, type, quantity, date FROM payment_history WHERE user = ${req.session.user.ID};`;
   db.query(query, (err, result) => {
     if (err)
       return res.json(
@@ -566,7 +566,6 @@ app.get("/payment_history", (req, res) => {
     result.forEach((row) => {
       const payment = {
         id: row.id,
-        user: row.user,
         type: row.type,
         quantity: row.quantity,
         date: row.date,

@@ -37,7 +37,7 @@ function Dashboard() {
     const loadPaymentHistory = async () => {
         const paymentHistory = await doPaymentHistory();
         if (paymentHistory !== undefined && paymentHistory.data.status === "1")
-            setBizumHistory(paymentHistory.data.paymentHistory);
+            setPaymentHistory(paymentHistory.data.paymentHistory);
     }
 
     const loadBizumUsers = async () => {
