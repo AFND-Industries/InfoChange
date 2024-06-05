@@ -136,11 +136,15 @@ export const AdminProvider = ({ children }) => {
     const getBizumHistorySortedByDate = () => {
         let bizumHistory = [];
 
+        let i = 0;
         if (adminInfo !== undefined) {
             bizumHistory = adminInfo.bizum_history.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(bizum => {
                 const sender = findUserById(bizum.sender);
                 const receiver = findUserById(bizum.receiver);
 
+                bizum.id = i;
+
+                i++;
                 return ({
                     sender: sender,
                     receiver: receiver,
