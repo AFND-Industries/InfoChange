@@ -76,7 +76,7 @@ export default function Wallet(props) {
                         <button
                             className="btn btn-outline-danger d-flex align-items-center w-100"
                             onClick={() =>
-                                addBalance(balance.current.value, navigate)
+                                withdrawBalance(balance.current.value, navigate)
                             }
                         >
                             <DashCircle className="me-2" /> Retirar saldo
@@ -163,6 +163,21 @@ const addBalance = (balance, navigate) => {
             state: {
                 type: "USDT",
                 quantity: balance,
+            },
+        });
+    }
+};
+
+const withdrawBalance = (balance, navigate) => {
+    balance = parseFloat(balance);
+    if (isNaN(balance) || balance <= 0)
+        alert("El saldo a añadir debe ser mayor que 0");
+    else {
+        navigate("/payment", {
+            state: {
+                type: "USDT",
+                quantity: balance,
+                action: "out",
             },
         });
     }
