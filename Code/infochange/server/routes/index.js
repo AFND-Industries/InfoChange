@@ -8,7 +8,7 @@ const { apiController } = require("../controller/APIController");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-    res.json({ message: "Hello InfoWorld!" });
+  res.json({ message: "Hello InfoWorld!" });
 });
 
 router.get("/auth", userController.auth); //checked
@@ -40,8 +40,6 @@ router.get("/trade_history", historyController.tradeHistory); //Checked
 router.post("/trade", walletController.trade); //checked
 
 router.post("/payment", walletController.payment); //checked
-
-router.post("/withdraw", walletController.withdraw);
 
 router.get("/users", userController.users); //checked
 
