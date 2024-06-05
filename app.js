@@ -23,9 +23,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "https://infochange.me", // Cambia esto al dominio de tu aplicación React
-    methods: ["GET", "POST"], // Métodos permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Cabeceras permitidas
+    origin: "http://infochange.me:5173",
+    credentials: true,
   })
 );
 
