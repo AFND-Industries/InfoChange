@@ -6,7 +6,7 @@ import Banner from "../../assets/payment_banner.png";
 import "./payment.css";
 import PaymentCompleted from "./steps/PaymentCompleted";
 import ConfirmPayment from "./steps/ConfirmPayment";
-import { CreditForm, PaypalForm } from "./steps/DataForm";
+import { CreditForm, IBANForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
 import { useCoins } from "../coins/CoinsAPI";
 import { useAPI } from "../../context/APIContext";
@@ -23,7 +23,7 @@ export default function Payment(props) {
     const _fupdate_ = useRef();
 
     const { doGetCoinPrice } = useCoins();
-    const { buyProduct } = useAPI(); // as APIContextType;
+    const { buyProduct, withdrawBalance } = useAPI(); // as APIContextType;
 
     const updateCart = async (cart) => {
         const _cart = cart;
@@ -164,6 +164,12 @@ export default function Payment(props) {
                                                     data: { type: "paypal" },
                                                 })
                                             }
+                                            ibanHandler={() =>
+                                                setStep({
+                                                    step: 2,
+                                                    data: { type: "iban" },
+                                                })
+                                            }
                                         />
                                     ) : step.step === 2 ? (
                                         dataForm(
@@ -190,9 +196,26 @@ export default function Payment(props) {
                                             cart={cart}
                                             data={step.data}
                                             nextHandler={async (method) => {
-                                                const result = await buyProduct(
-                                                    { cart: cart }, method
-                                                );
+                                                const loadingScreen =
+                                                    document.getElementById(
+                                                        "loading-screen"
+                                                    );
+
+                                                loadingScreen.style.display =
+                                                    "block";
+                                                const result =
+                                                    cart.action === "in"
+                                                        ? await buyProduct(
+                                                              { cart: cart },
+                                                              method
+                                                          )
+                                                        : await withdrawBalance(
+                                                              { cart: cart },
+                                                              method
+                                                          );
+                                                loadingScreen.style.display =
+                                                    "none";
+
                                                 setFeedback(
                                                     result.data.feedback
                                                 );
@@ -229,8 +252,9 @@ export default function Payment(props) {
                             ></div>
                         </section>
                         {cart.type !== "USDT" && step.step < 4
-                            ? `El precio se actualizará en ${TIMEOUT - counter
-                            } segundos`
+                            ? `El precio se actualizará en ${
+                                  TIMEOUT - counter
+                              } segundos`
                             : ""}
                     </div>
                 </div>
@@ -265,6 +289,14 @@ function dataForm(data, dataHandler, backHandler) {
     else if (data.type === "paypal")
         return (
             <PaypalForm
+                data={data}
+                dataHandler={dataHandler}
+                backHandler={backHandler}
+            />
+        );
+    else if (data.type === "iban")
+        return (
+            <IBANForm
                 data={data}
                 dataHandler={dataHandler}
                 backHandler={backHandler}

@@ -115,7 +115,8 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return response;
     }
 
-    const buyProduct = async (buy: Cart, method) => await post("/payment", { ...buy, method: method });
+    const buyProduct = async (buy: Cart, method: string) => await post("/payment", { ...buy, method: method });
+    const withdrawBalance = async (buy: Cart, method: string) => await post("/withdraw", { ...buy, method: method });
     const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
     const doPaymentHistory = async () => await doAction(async () => await get("/payment_history"));
     const doBizumHistory = async () => await doAction(async () => await get("/bizum_history"));
@@ -127,6 +128,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return (
         <APIContext.Provider value={{
             buyProduct,
+            withdrawBalance,
             doTradeHistory,
             doPaymentHistory,
             doBizumHistory,

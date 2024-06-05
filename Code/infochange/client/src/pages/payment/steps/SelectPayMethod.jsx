@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function SelectPayMethod(props) {
-    const { creditHandler, paypalHandler } = props;
+    const { ibanHandler, creditHandler, paypalHandler, cart } = props;
 
     return (
         <div>
@@ -10,7 +10,7 @@ export default function SelectPayMethod(props) {
                 <button
                     className="card clickableCard w-100 align-items-center py-3 mb-3"
                     role="button"
-                    onClick={creditHandler}
+                    onClick={cart.action === "in" ? creditHandler : ibanHandler}
                 >
                     <h4 className="card-title">Tarjeta de crédito</h4>
                     <i

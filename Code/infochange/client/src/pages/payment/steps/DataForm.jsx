@@ -81,6 +81,86 @@ export function PaypalForm(props) {
         </div>
     );
 }
+
+export function IBANForm(props) {
+    const { dataHandler, backHandler, data } = props;
+
+    const owner = useRef(null);
+    const iban = useRef(null);
+
+    const [fieldError, setError] = useState("");
+
+    return (
+        <div>
+            <h3 className="fs-6">Introduzca los datos de la tarjeta</h3>
+            <div className="container">
+                <div className="mb-3">
+                    <label htmlFor="ownerInput" className="form-label">
+                        Titular de la cuenta
+                    </label>
+                    <input
+                        id="ownerInput"
+                        ref={owner}
+                        type="text"
+                        defaultValue={
+                            data.info !== undefined ? data.info.cardNumber : ""
+                        }
+                        className="form-control"
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="ibanInput" className="form-label">
+                        IBAN de la cuenta
+                    </label>
+                    <input
+                        id="ibanInput"
+                        ref={iban}
+                        type="text"
+                        defaultValue={
+                            data.info !== undefined ? data.info.expDate : ""
+                        }
+                        className="form-control"
+                    />
+                </div>
+                {fieldError ? (
+                    <div className="alert alert-danger">
+                        <p>{fieldError}</p>
+                    </div>
+                ) : undefined}
+                <div className="row">
+                    <div className="col mb-3">
+                        <button
+                            className="btn btn-outline-secondary w-100"
+                            onClick={backHandler}
+                        >
+                            Volver
+                        </button>
+                    </div>
+                    <div className="col">
+                        <button
+                            className="btn btn-primary w-100"
+                            onClick={() => {
+                                if (owner.current.value && iban.current.value) {
+                                    dataHandler({
+                                        owner: owner.current.value,
+                                        iban: iban.current.value,
+                                    });
+                                } else {
+                                    setError(
+                                        "Debe rellenar todos los campos del formulario para continuar con el pago"
+                                    );
+                                }
+                            }}
+                        >
+                            Siguiente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function CreditForm(props) {
     const { dataHandler, backHandler, data } = props;
 
