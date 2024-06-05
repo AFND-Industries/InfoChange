@@ -100,20 +100,14 @@ export default function Payment(props) {
                                 <button className="btn btn-outline-danger text-center">
                                     <XLg className="me-2" />
                                     <span className="d-sm-inline d-none">
-                                        Cancelar{" "}
-                                        {cart.action === "in"
-                                            ? "pago"
-                                            : "ingreso"}
+                                        Cancelar pago
                                     </span>
                                 </button>
                             </Link>
                         </div>
                         <div className="row mb-3 g-4">
                             <aside className="col-md-4">
-                                <h2 className="fs-4">
-                                    Pasos del{" "}
-                                    {cart.action === "in" ? "pago" : "ingreso"}
-                                </h2>
+                                <h2 className="fs-4">Pasos del pago</h2>
                                 <ol className="list-group list-group-flush">
                                     <li
                                         className={
@@ -121,10 +115,7 @@ export default function Payment(props) {
                                             (step.step === 1 ? " active" : "")
                                         }
                                     >
-                                        1 - Seleccione tipo de{" "}
-                                        {cart.action === "in"
-                                            ? "pago"
-                                            : "ingreso"}
+                                        1 - Seleccione tipo de pago
                                         {doneCheck(1, step.step)}
                                     </li>
                                     <li
@@ -142,10 +133,7 @@ export default function Payment(props) {
                                             (step.step === 3 ? " active" : "")
                                         }
                                     >
-                                        3 - Resumen de
-                                        {cart.action === "in"
-                                            ? " la compra"
-                                            : "l ingreso"}
+                                        3 - Resumen de la compra
                                         {doneCheck(3, step.step)}
                                     </li>
                                     <li
@@ -154,11 +142,7 @@ export default function Payment(props) {
                                             (step.step === 4 ? " active" : "")
                                         }
                                     >
-                                        4 -{" "}
-                                        {cart.action === "in"
-                                            ? "Pago"
-                                            : "Ingreso"}{" "}
-                                        completado
+                                        4 - Pago completado
                                         {doneCheck(4, step.step)}
                                     </li>
                                 </ol>
@@ -168,7 +152,6 @@ export default function Payment(props) {
                                 <div className="mb-3">
                                     {step.step === 1 ? (
                                         <SelectPayMethod
-                                            cart={cart}
                                             creditHandler={() =>
                                                 setStep({
                                                     step: 2,
@@ -207,10 +190,14 @@ export default function Payment(props) {
                                             cart={cart}
                                             data={step.data}
                                             nextHandler={async (method) => {
+                                                const loadingScreen = document.getElementById("loading-screen");
+
+                                                loadingScreen.style.display = "block";
                                                 const result = await buyProduct(
-                                                    { cart: cart },
-                                                    method
+                                                    { cart: cart }, method
                                                 );
+                                                loadingScreen.style.display = "none";
+
                                                 setFeedback(
                                                     result.data.feedback
                                                 );
@@ -247,9 +234,8 @@ export default function Payment(props) {
                             ></div>
                         </section>
                         {cart.type !== "USDT" && step.step < 4
-                            ? `El precio se actualizará en ${
-                                  TIMEOUT - counter
-                              } segundos`
+                            ? `El precio se actualizará en ${TIMEOUT - counter
+                            } segundos`
                             : ""}
                     </div>
                 </div>

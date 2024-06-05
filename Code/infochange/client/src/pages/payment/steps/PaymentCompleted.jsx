@@ -24,13 +24,9 @@ const paymentSuccess = (cart) => (
                       } añadido correctamente ${cart.quantity} ${
                           cart.type
                       } a tu cartera por ${cart.price * cart.quantity} $.`
-                    : cart.action === "in"
-                    ? `Se ha${cart.quantity !== 1 ? "n" : ""} añadido ${
+                    : `Se ha${cart.quantity !== 1 ? "n" : ""} añadido ${
                           cart.quantity
-                      } $ a tu saldo.`
-                    : `Se ha${cart.quantity !== 1 ? "n" : ""} retirado ${
-                          cart.quantity
-                      } $ de tu saldo.`}
+                      } $ a tu saldo.`}
             </div>
             <div className="text-center">
                 <Link to="/dashboard" className="btn btn-primary">

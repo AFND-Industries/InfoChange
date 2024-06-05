@@ -11,7 +11,7 @@ const TradeHistory = ({ tradeHistory }) => {
         );
 
         renderTradeHistory = sortedHistory.map((trade, index) => {
-            return <TradeItem trade={trade} />;
+            return <TradeItem key={index} trade={trade} />;
         });
     }
 
