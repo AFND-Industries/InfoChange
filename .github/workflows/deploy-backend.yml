@@ -58,7 +58,8 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
+          rm -rf prod-backend/
+          git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
           cd prod-backend
           npm install
           cd prod-backend/bin
