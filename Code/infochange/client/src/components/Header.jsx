@@ -19,7 +19,7 @@ export default function Header() {
   // Dropdown show?
   const [show, setShow] = useState(false);
   const user = getActualUser();
-  if (user !== null && user.profile.name === "admin")
+  if (user !== null && user.profile.firstName === "admin")
     items = [...items, { link: "admin", name: "Admin" }];
 
   return (
