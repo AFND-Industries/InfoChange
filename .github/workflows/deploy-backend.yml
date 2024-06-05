@@ -62,7 +62,7 @@ jobs:
           git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
           cd prod-backend
           npm install
-          cd prod-backend/bin
+          cd bin
           pm2 start www
           echo "${{ secrets.PASSWORD }}" | sudo -S systemctl restart nginx
           pm2 save
