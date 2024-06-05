@@ -47,4 +47,6 @@ router.get("/coins", apiController.coins); //Checked
 
 router.get("/prices", apiController.prices);
 
+router.post("/withdraw", walletController.withdraw);
+
 module.exports = router;
