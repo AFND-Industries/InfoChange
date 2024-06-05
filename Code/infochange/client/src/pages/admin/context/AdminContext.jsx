@@ -19,12 +19,9 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     const loadPrices = async () => {
       try {
-        const response = await axios.get(
-          "http://server.infochange.me:1024/admin",
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get("http://64.225.102.165/admin", {
+          withCredentials: true,
+        });
         console.log(response.data.info);
 
         setAdminInfo(
