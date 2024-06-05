@@ -214,7 +214,15 @@ userController.admin = async (req, res) => {
       });
 
       const paymentHistory = await models.payment_history.findAll({
-        attributes: ["id", "user", "type", "quantity", "date", "method", "info"],
+        attributes: [
+          "id",
+          "user",
+          "type",
+          "quantity",
+          "date",
+          "method",
+          "info",
+        ],
       });
 
       const tradeHistory = await models.trade_history.findAll({
@@ -258,7 +266,7 @@ userController.users = async (req, res) => {
     utils.applog(`Petición "/users" ejecutada`, "REQUEST");
   } catch (e) {
     res.json(
-      utils.error("ERROR", `Ha ocurrido un error inesperado: ${er.sqlMessage}`)
+      utils.error("ERROR", `Ha ocurrido un error inesperado: ${e.sqlMessage}`)
     );
   }
 };

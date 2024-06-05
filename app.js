@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://infochange.me:5173",
     credentials: true,
   })
 );
