@@ -45,7 +45,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     useEffect(() => {
         const loadPrices = async () => {
             try {
-                const responsePrices = await axios.get('http://server.infochange.me:1024/prices');
+                const responsePrices = await axios.get('https://server.infochange.me:1024/prices');
                 const dataPrices = responsePrices.data;
 
                 console.log("Updating prices " + new Date().toLocaleString());

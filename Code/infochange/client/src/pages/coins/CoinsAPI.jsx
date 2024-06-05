@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import axios from "axios";
 
 const CoinsContext = createContext();
-const SERVER_URL = "https://http://64.225.102.165/:1024";
+const SERVER_URL = "https://64.225.102.165/:1024";
 
 export const CoinsAPI = ({ children }) => {
   const [coins, setCoins] = useState([]);
