@@ -1,6 +1,5 @@
 import React from "react";
 import TradeItem from "./TradeItem";
-import { useAPI } from "../../../../../context/APIContext";
 
 const TradeHistory = ({ tradeHistory }) => {
     let renderTradeHistory = null;
