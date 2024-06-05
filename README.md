@@ -10,5 +10,5 @@ operaciones en bolsa o blockchain. ¡Hasta un ciego podría
 usar nuestra aplicación!
 
 **InfoChange** estará disponible en el siguiente enlace:
-
+Pepsicola
 [`http://InfoChange.me`](http://InfoChange.me)

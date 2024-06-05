@@ -6,7 +6,7 @@ import Banner from "../../assets/payment_banner.png";
 import "./payment.css";
 import PaymentCompleted from "./steps/PaymentCompleted";
 import ConfirmPayment from "./steps/ConfirmPayment";
-import { CreditForm, PaypalForm } from "./steps/DataForm";
+import { CreditForm, IBANForm, PaypalForm } from "./steps/DataForm";
 import SelectPayMethod from "./steps/SelectPayMethod";
 import { useCoins } from "../coins/CoinsAPI";
 import { useAPI } from "../../context/APIContext";
@@ -23,7 +23,7 @@ export default function Payment(props) {
     const _fupdate_ = useRef();
 
     const { doGetCoinPrice } = useCoins();
-    const { buyProduct } = useAPI(); // as APIContextType;
+    const { buyProduct, withdrawBalance } = useAPI(); // as APIContextType;
 
     const updateCart = async (cart) => {
         const _cart = cart;
@@ -100,14 +100,20 @@ export default function Payment(props) {
                                 <button className="btn btn-outline-danger text-center">
                                     <XLg className="me-2" />
                                     <span className="d-sm-inline d-none">
-                                        Cancelar pago
+                                        Cancelar{" "}
+                                        {cart.action === "in"
+                                            ? "pago"
+                                            : "ingreso"}
                                     </span>
                                 </button>
                             </Link>
                         </div>
                         <div className="row mb-3 g-4">
                             <aside className="col-md-4">
-                                <h2 className="fs-4">Pasos del pago</h2>
+                                <h2 className="fs-4">
+                                    Pasos del{" "}
+                                    {cart.action === "in" ? "pago" : "ingreso"}
+                                </h2>{" "}
                                 <ol className="list-group list-group-flush">
                                     <li
                                         className={
@@ -115,7 +121,10 @@ export default function Payment(props) {
                                             (step.step === 1 ? " active" : "")
                                         }
                                     >
-                                        1 - Seleccione tipo de pago
+                                        1 - Seleccione tipo de{" "}
+                                        {cart.action === "in"
+                                            ? "pago"
+                                            : "ingreso"}
                                         {doneCheck(1, step.step)}
                                     </li>
                                     <li
@@ -133,7 +142,10 @@ export default function Payment(props) {
                                             (step.step === 3 ? " active" : "")
                                         }
                                     >
-                                        3 - Resumen de la compra
+                                        3 - Resumen de
+                                        {cart.action === "in"
+                                            ? " la compra"
+                                            : "l ingreso"}
                                         {doneCheck(3, step.step)}
                                     </li>
                                     <li
@@ -142,7 +154,11 @@ export default function Payment(props) {
                                             (step.step === 4 ? " active" : "")
                                         }
                                     >
-                                        4 - Pago completado
+                                        4 -{" "}
+                                        {cart.action === "in"
+                                            ? "Pago"
+                                            : "Ingreso"}{" "}
+                                        completado
                                         {doneCheck(4, step.step)}
                                     </li>
                                 </ol>
@@ -152,6 +168,7 @@ export default function Payment(props) {
                                 <div className="mb-3">
                                     {step.step === 1 ? (
                                         <SelectPayMethod
+                                            cart={cart}
                                             creditHandler={() =>
                                                 setStep({
                                                     step: 2,
@@ -162,6 +179,12 @@ export default function Payment(props) {
                                                 setStep({
                                                     step: 2,
                                                     data: { type: "paypal" },
+                                                })
+                                            }
+                                            ibanHandler={() =>
+                                                setStep({
+                                                    step: 2,
+                                                    data: { type: "iban" },
                                                 })
                                             }
                                         />
@@ -189,10 +212,27 @@ export default function Payment(props) {
                                         <ConfirmPayment
                                             cart={cart}
                                             data={step.data}
-                                            nextHandler={async () => {
-                                                const result = await buyProduct(
-                                                    { cart: cart }
-                                                );
+                                            nextHandler={async (method) => {
+                                                const loadingScreen =
+                                                    document.getElementById(
+                                                        "loading-screen"
+                                                    );
+
+                                                loadingScreen.style.display =
+                                                    "block";
+                                                const result =
+                                                    cart.action === "in"
+                                                        ? await buyProduct(
+                                                              { cart: cart },
+                                                              method
+                                                          )
+                                                        : await withdrawBalance(
+                                                              { cart: cart },
+                                                              method
+                                                          );
+                                                loadingScreen.style.display =
+                                                    "none";
+
                                                 setFeedback(
                                                     result.data.feedback
                                                 );
@@ -266,6 +306,14 @@ function dataForm(data, dataHandler, backHandler) {
     else if (data.type === "paypal")
         return (
             <PaypalForm
+                data={data}
+                dataHandler={dataHandler}
+                backHandler={backHandler}
+            />
+        );
+    else if (data.type === "iban")
+        return (
+            <IBANForm
                 data={data}
                 dataHandler={dataHandler}
                 backHandler={backHandler}

@@ -4,17 +4,24 @@ import { Link } from "react-router-dom";
 export default function PaymentCompleted(props) {
     const { cart, feedback } = props;
 
-    return feedback === "OK" ? paymentSuccess(cart) : paymentFailed(feedback);
+    return feedback === "OK"
+        ? paymentSuccess(cart)
+        : paymentFailed(feedback, cart);
 }
 
 const paymentSuccess = (cart) => (
     <>
-        <h3 className="fs-6">Pago completado</h3>
+        <h3 className="fs-6">
+            {cart.action === "in" ? "Pago" : "Ingreso"} completado
+        </h3>
         <div className="container">
             <div className="row">
                 <div className="col-12 text-center">
                     <CheckLg style={{ fontSize: "32px" }} />
-                    <h4>¡Pago completado con éxito!</h4>
+                    <h4>
+                        ¡{cart.action === "in" ? "Pago" : "Ingreso"} completado
+                        con éxito!
+                    </h4>
                 </div>
             </div>
             <div class="alert alert-success" role="alert">
@@ -24,9 +31,13 @@ const paymentSuccess = (cart) => (
                       } añadido correctamente ${cart.quantity} ${
                           cart.type
                       } a tu cartera por ${cart.price * cart.quantity} $.`
-                    : `Se ha${cart.quantity !== 1 ? "n" : ""} añadido ${
+                    : cart.action === "in"
+                    ? `Se ha${cart.quantity !== 1 ? "n" : ""} añadido ${
                           cart.quantity
-                      } $ a tu saldo.`}
+                      } $ a tu saldo.`
+                    : `Se ha${cart.quantity !== 1 ? "n" : ""} retirado ${
+                          cart.quantity
+                      } $ de tu saldo.`}
             </div>
             <div className="text-center">
                 <Link to="/dashboard" className="btn btn-primary">
@@ -37,20 +48,22 @@ const paymentSuccess = (cart) => (
     </>
 );
 
-const paymentFailed = (feedback) => (
+const paymentFailed = (feedback, cart) => (
     <>
-        <h6>No se pudo completar el pago</h6>
+        <h6>
+            No se pudo completar{" "}
+            {cart.action === "in" ? "el pago" : "la retirada"}
+        </h6>
         <div className="container">
             <div className="row">
                 <div className="col-12 text-center">
-                    <CheckLg style={{ fontSize: "32px" }} />
                     <h4>Ha ocurrido un error :(</h4>
                 </div>
             </div>
             <div class="alert alert-danger" role="alert">
                 <p>
-                    No se ha podido completar el pago por el siguiente motivo:{" "}
-                    {feedback}
+                    No se ha podido completar la transacción por el siguiente
+                    motivo: {feedback}
                 </p>
                 <p>Inténtelo de nuevo más tarde</p>
             </div>

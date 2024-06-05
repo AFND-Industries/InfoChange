@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.css";
+import { Link, useNavigate } from "react-router-dom";
+import { Parallax } from "react-parallax";
+
 import * as Icons from "react-bootstrap-icons";
 import TradingViewWidget from "../../components/TradingViewWidget";
-import { Parallax } from "react-parallax";
-import { Link, useNavigate } from "react-router-dom";
-import banner from "../../assets/banner.png";
 
 import bgcripto from "../../assets/bg-cripto.jpg";
 import "./Welcome.css";

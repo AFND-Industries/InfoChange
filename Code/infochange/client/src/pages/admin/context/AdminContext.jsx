@@ -9,9 +9,9 @@ export const AdminProvider = ({ children }) => {
     const { getPair, getPairPrice, getTokenInfo } = useAPI();
     const [adminInfo, setAdminInfo] = useState(undefined);
 
-    const reloadTime = 30000; // 30s
+    const reloadTime = 10000; // 10s
 
-    const findUserById = (id) => adminInfo !== undefined ? Object.values(adminInfo.users).filter(user => user.id == id)[0] : undefined;
+    const findUserById = (ID) => adminInfo !== undefined ? Object.values(adminInfo.users).filter(user => user.ID == ID)[0] : undefined;
 
     useEffect(() => {
         const loadPrices = async () => {
@@ -38,10 +38,10 @@ export const AdminProvider = ({ children }) => {
         return () => clearInterval(intervalId);
     }, []);
 
-    const getTotalUserBalance = (id) => {
+    const getTotalUserBalance = (ID) => {
         let totalBalance = 0;
 
-        const userCoins = adminInfo.wallets.filter(wallet => wallet.user === id);
+        const userCoins = adminInfo.wallets.filter(wallet => wallet.user === ID);
 
         userCoins.forEach(wallet => {
             const pairPrice = wallet.coin === "USDT" ? 1 : getPairPrice(wallet.coin + "USDT");
@@ -71,7 +71,7 @@ export const AdminProvider = ({ children }) => {
         let totalExchangeBalance = 0;
         if (adminInfo !== undefined) {
             adminInfo.users.forEach(user => {
-                totalExchangeBalance += getTotalUserBalance(user.id);
+                totalExchangeBalance += getTotalUserBalance(user.ID);
             });
         }
 
@@ -83,7 +83,7 @@ export const AdminProvider = ({ children }) => {
         if (adminInfo !== undefined) {
             usersByBalance = adminInfo.users.map(user => ({
                 ...user,
-                totalBalance: getTotalUserBalance(user.id)
+                totalBalance: getTotalUserBalance(user.ID)
             })).sort((a, b) => b.totalBalance - a.totalBalance).slice(0, 5);
         }
 
@@ -152,7 +152,27 @@ export const AdminProvider = ({ children }) => {
         return bizumHistory;
     }
 
-    const getPaymentHistory = () => [];
+    const getPaymentHistorySortedByDate = () => {
+        let paymentHistory = [];
+
+        if (adminInfo !== undefined) {
+            paymentHistory = adminInfo.payment_history.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(payment => {
+                const user = findUserById(payment.user);
+
+                return ({
+                    ID: payment.id,
+                    user: user,
+                    type: payment.type,
+                    method: payment.method,
+                    info: payment.info,
+                    quantity: payment.quantity,
+                    date: payment.date
+                });
+            })
+        }
+
+        return paymentHistory;
+    }
 
     return (
         <AdminContext.Provider
@@ -165,7 +185,7 @@ export const AdminProvider = ({ children }) => {
                 getTotalExchangeBalance,
                 getUsersSortedByBalance,
                 getCoinsSortedByExchangeVolume,
-                getPaymentHistory,
+                getPaymentHistorySortedByDate,
             }}
         >
             {children}

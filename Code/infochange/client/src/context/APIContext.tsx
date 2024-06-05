@@ -92,7 +92,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             type: type,
         });
         if (response.data.status === "1") await doAuth();
-
+        
         return response;
     }
 
@@ -115,8 +115,10 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return response;
     }
 
-    const buyProduct = async (buy: Cart) => await post("/payment", buy);
+    const buyProduct = async (buy: Cart, method: string) => await post("/payment", { ...buy, method: method });
+    const withdrawBalance = async (buy: Cart, method: string) => await post("/withdraw", { ...buy, method: method });
     const doTradeHistory = async () => await doAction(async () => await get("/trade_history"));
+    const doPaymentHistory = async () => await doAction(async () => await get("/payment_history"));
     const doBizumHistory = async () => await doAction(async () => await get("/bizum_history"));
     const doBizumUsers = async () => await doAction(async () => await get("/bizum_users"));
     const doTrade = async (symbol, quantity, type) => await doAction(() => trade(symbol, quantity, type));
@@ -126,7 +128,9 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return (
         <APIContext.Provider value={{
             buyProduct,
+            withdrawBalance,
             doTradeHistory,
+            doPaymentHistory,
             doBizumHistory,
             doBizumUsers,
             doTrade,

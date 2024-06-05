@@ -1,9 +1,10 @@
 import React from "react";
 import { useAdmin } from "./context/AdminContext";
 import Banner from "../../assets/admin_banner.png";
-import BizumItem from "../dashboard/windows/bizum/components/BizumItem";
-
-const altImage = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+import BizumAdminItem from "./components/BizumAdminItem";
+import PaymentAdminItem from "./components/PaymentAdminItem";
+import CoinVolumeItem from "./components/CoinVolumeItem";
+import UserBalanceItem from "./components/UserBalanceItem";
 
 export default function AdminPage() {
     const {
@@ -14,7 +15,7 @@ export default function AdminPage() {
         getTotalExchangeBalance,
         getUsersSortedByBalance,
         getCoinsSortedByExchangeVolume,
-        getPaymentHistory
+        getPaymentHistorySortedByDate
     } = useAdmin();
 
     // Datos simulados para mostrar en el panel
@@ -26,7 +27,7 @@ export default function AdminPage() {
     const bizumHistoryByDate = getBizumHistorySortedByDate();
     const usersByBalance = getUsersSortedByBalance();
     const coinsSortedByVolume = getCoinsSortedByExchangeVolume();
-    const paymentHistory = getPaymentHistory();
+    const paymentHistory = getPaymentHistorySortedByDate();
 
     return (
         <main className="container mt-4 mb-4">
@@ -77,15 +78,7 @@ export default function AdminPage() {
                             <div className="card-text">
                                 <ul className="list-group list-group-flush">
                                     {usersByBalance.map((user, index) => (
-                                        <li key={index} className="list-group-item ps-0 pe-0 d-flex align-items-center justify-content-between">
-                                            <div className="d-flex align-items-center">
-                                                <img onError={(event) => event.target.src = altImage}
-                                                    src={"https://github.com/" + user.username + ".png"} alt={"Logo de " + user.username} className="me-2 rounded-5"
-                                                    style={{ width: "50px", height: "50px" }} />
-                                                <span className="h5 m-0">{user.username}</span>
-                                            </div>
-                                            <span className="fw-bold h5 m-0">{user.totalBalance.toFixed(2)}$</span>
-                                        </li>
+                                        <UserBalanceItem key={index} user={user} />
                                     ))}
                                 </ul>
                             </div>
@@ -98,19 +91,7 @@ export default function AdminPage() {
                             <h2 className="card-title">Monedas con Mayor Volumen</h2>
                             <ul className="list-group list-group-flush">
                                 {coinsSortedByVolume.map((coin, index) => (
-                                    <li key={index} className="list-group-item ps-0 pe-0 py-2 m-0">
-                                        <div className="row d-flex align-items-center justify-content-between">
-                                            <div className="col-lg-5 d-flex align-items-center h5 mb-0">
-                                                <img src={coin.logo} alt={"Logo de " + coin.name} className="me-2 rounded-4"
-                                                    style={{ width: "50px", height: "50px" }} />
-                                                <div className="fw-bold m-0 me-2">{coin.name}: </div>
-                                            </div>
-                                            <div className="col-lg-7 d-flex align-items-center justify-content-lg-end justify-content-start">
-                                                <span className="h5 m-0">{coin.volume.toFixed(8)} {coin.symbol}</span>
-                                                <span className="h6 text-secondary m-0"> ~{coin.dolar_volume.toFixed(2)}$</span>
-                                            </div>
-                                        </div>
-                                    </li>
+                                    <CoinVolumeItem key={index} coin={coin} />
                                 ))}
                             </ul>
                         </div>
@@ -124,7 +105,7 @@ export default function AdminPage() {
                             <h2 className="card-title">Bizums recientes</h2>
                             <ul className="list-group list-group-flush">
                                 {bizumHistoryByDate.map((item, index) => (
-                                    <BizumItem sender={item.sender} receiver={item.receiver} bizum={item.bizum} admin={true} />
+                                    <BizumAdminItem key={index} item={item} />
                                 ))}
                             </ul>
                         </div>
@@ -136,7 +117,7 @@ export default function AdminPage() {
                             <h2 className="card-title">Depósitos y retiros recientes</h2>
                             <ul className="list-group list-group-flush">
                                 {paymentHistory.map((payment, index) => (
-                                    <li key={index} className="list-group-item">{2}</li>
+                                    <PaymentAdminItem key={index} payment={payment} />
                                 ))}
                             </ul>
                         </div>

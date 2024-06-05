@@ -22,6 +22,18 @@ CREATE TABLE `usuario` (
   PRIMARY KEY (`ID`)
 );
 
+CREATE TABLE `payment_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user` int NOT NULL,
+  `type` varchar(45) NOT NULL,
+  `quantity` double NOT NULL,
+  `date` datetime NOT NULL,
+  `method` varchar(45) NOT NULL,
+  `info` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_fk_idx` (`user`),
+  CONSTRAINT `user_fk` FOREIGN KEY (`user`) REFERENCES `usuario` (`ID`)
+);
 
 CREATE TABLE IF NOT EXISTS cartera (
     ID int auto_increment primary key,

@@ -61,7 +61,7 @@ function App() {
   );
   const needAdmin = (v) => (
     <>
-      {getActualUser() !== null && getActualUser().profile.name === "admin" ? (
+      {getActualUser() !== null && getActualUser().profile.firstName === "admin" ? (
         v
       ) : (
         <Unknown />

@@ -51,7 +51,6 @@ const getCoins = () => {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const filteredCoins = data.filter((symbol) => {
           if (symbol.symbol.endsWith("USDT")) {
             const symbolWithoutUsdt = symbol.symbol.slice(0, -4);
@@ -479,6 +478,16 @@ app.get("/admin", (req, res) => {
       });
     });
 
+    let paymentHistoryPromise = new Promise((resolve, reject) => {
+      db.query(
+        "SELECT id, user, type, quantity, date, method, info FROM payment_history;",
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        }
+      );
+    });
+
     let tradeHistoryPromise = new Promise((resolve, reject) => {
       db.query(
         "SELECT id, user, symbol, type, paid_amount, amount_received, comission, date, price FROM trade_history;",
@@ -503,11 +512,10 @@ app.get("/admin", (req, res) => {
       usersPromise,
       walletsPromise,
       tradeHistoryPromise,
+      paymentHistoryPromise,
       bizumHistoryPromise,
     ])
-      .then(([users, wallets, tradeHistory, bizumHistory]) => {
-        let payment_history = []; // Aquí puedes hacer lo que necesites con payment_history
-
+      .then(([users, wallets, tradeHistory, paymentHistory, bizumHistory]) => {
         res.json({
           status: "1",
           info: {
@@ -515,7 +523,7 @@ app.get("/admin", (req, res) => {
             wallets: wallets,
             trade_history: tradeHistory,
             bizum_history: bizumHistory,
-            payment_history: payment_history,
+            payment_history: paymentHistory,
           },
         });
       })
@@ -541,6 +549,38 @@ app.get("/wallet", (req, res) => {
       }
     });
   }
+});
+
+app.get("/payment_history", (req, res) => {
+  if (!req.session.user) {
+    return res.json(error("NOT_LOGGED", "No existe una sesión del usuario."));
+  }
+
+  const query = `SELECT id, type, quantity, date, method, info FROM payment_history WHERE user = ${req.session.user.ID};`;
+  db.query(query, (err, result) => {
+    if (err)
+      return res.json(
+        error("SELECT_ERROR", "Se ha producido un error inesperado")
+      );
+
+    const paymentHistory = [];
+    result.forEach((row) => {
+      const payment = {
+        id: row.id,
+        type: row.type,
+        quantity: row.quantity,
+        date: row.date,
+        method: row.method,
+        info: row.info,
+      };
+      paymentHistory.push(payment);
+    });
+
+    res.json({
+      status: "1",
+      paymentHistory: paymentHistory,
+    });
+  });
 });
 
 app.get("/trade_history", (req, res) => {
@@ -599,7 +639,6 @@ app.post("/trade", (req, res) => {
       error("INVALID_QUANTITY", "La cantidad introducida no es válida.")
     );
   }
-
   const symbolPriceObject = Object.values(prices).find(
     (p) => p.symbol === symbol.symbol
   );
@@ -759,10 +798,40 @@ app.post("/payment", (req, res) => {
                   error("INSERT_ERROR", "Se ha producido un error inesperado")
                 );
               }
-              res.json({
-                status: 1,
-                feedback: "OK",
-              });
+
+              const currentDate = new Date();
+              const year = currentDate.getFullYear();
+              const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+              const day = ("0" + currentDate.getDate()).slice(-2);
+              const hours = ("0" + currentDate.getHours()).slice(-2);
+              const minutes = ("0" + currentDate.getMinutes()).slice(-2);
+              const seconds = ("0" + currentDate.getSeconds()).slice(-2);
+
+              const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+              db.query(
+                `INSERT INTO payment_history (user, type, quantity, date, method, info) VALUES 
+                (${req.session.user.ID}, 'PAY', ${
+                  cart.quantity
+                }, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${
+                  req.body.method.info
+                }')`,
+                (err, _) => {
+                  if (err) {
+                    res.json(
+                      error(
+                        "HISTORY_ERROR",
+                        "Se ha producido un error inesperado"
+                      )
+                    );
+                  }
+
+                  res.json({
+                    status: 1,
+                    feedback: "OK",
+                  });
+                }
+              );
             }
           );
         } else {
@@ -774,10 +843,40 @@ app.post("/payment", (req, res) => {
                   error("UPDATE_ERROR", "Se ha producido un error inesperado")
                 );
               }
-              res.json({
-                status: 1,
-                feedback: "OK",
-              });
+
+              const currentDate = new Date();
+              const year = currentDate.getFullYear();
+              const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+              const day = ("0" + currentDate.getDate()).slice(-2);
+              const hours = ("0" + currentDate.getHours()).slice(-2);
+              const minutes = ("0" + currentDate.getMinutes()).slice(-2);
+              const seconds = ("0" + currentDate.getSeconds()).slice(-2);
+
+              const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+              db.query(
+                `INSERT INTO payment_history (user, type, quantity, date, method, info) VALUES 
+                (${req.session.user.ID}, 'PAY', ${
+                  cart.quantity
+                }, '${formattedDate}', '${req.body.method.type.toUpperCase()}', '${
+                  req.body.method.info
+                }')`,
+                (err, _) => {
+                  if (err) {
+                    res.json(
+                      error(
+                        "HISTORY_ERROR",
+                        "Se ha producido un error inesperado"
+                      )
+                    );
+                  }
+
+                  res.json({
+                    status: 1,
+                    feedback: "OK",
+                  });
+                }
+              );
             }
           );
         }
