@@ -37,7 +37,7 @@ jobs:
 
       - name: Sync backend folder to prod-backend
         run: |
-          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
+          git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
           rm -r prod-backend/*
           cp -r ./Code/infochange/server/* prod-backend/
           cd prod-backend
