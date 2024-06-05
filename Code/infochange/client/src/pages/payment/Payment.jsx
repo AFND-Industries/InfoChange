@@ -190,9 +190,14 @@ export default function Payment(props) {
                                             cart={cart}
                                             data={step.data}
                                             nextHandler={async (method) => {
+                                                const loadingScreen = document.getElementById("loading-screen");
+
+                                                loadingScreen.style.display = "block";
                                                 const result = await buyProduct(
                                                     { cart: cart }, method
                                                 );
+                                                loadingScreen.style.display = "none";
+
                                                 setFeedback(
                                                     result.data.feedback
                                                 );
