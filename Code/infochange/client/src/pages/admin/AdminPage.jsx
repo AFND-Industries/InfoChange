@@ -127,7 +127,7 @@ export default function AdminPage() {
                             <h2 className="card-title">Bizums recientes</h2>
                             <ul className="list-group list-group-flush">
                                 {bizumHistoryByDate.map((item, index) => (
-                                    <BizumItem sender={item.sender} receiver={item.receiver} bizum={item.bizum} admin={true} />
+                                    <BizumItem key={index} sender={item.sender} receiver={item.receiver} bizum={item.bizum} admin={true} />
                                 ))}
                             </ul>
                         </div>
@@ -139,7 +139,7 @@ export default function AdminPage() {
                             <h2 className="card-title">Depósitos y retiros recientes</h2>
                             <ul className="list-group list-group-flush">
                                 {paymentHistory.map((payment, index) => (
-                                    <PaymentItem payment={payment} user={payment.user} />
+                                    <PaymentItem key={index} payment={payment} user={payment.user} />
                                 ))}
                             </ul>
                         </div>

@@ -214,7 +214,7 @@ userController.admin = async (req, res) => {
       });
 
       const paymentHistory = await models.payment_history.findAll({
-        attributes: ["id", "user", "quantity", "date", "method", "info"],
+        attributes: ["id", "user", "type", "quantity", "date", "method", "info"],
       });
 
       const tradeHistory = await models.trade_history.findAll({

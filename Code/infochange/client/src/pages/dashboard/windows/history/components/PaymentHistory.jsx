@@ -11,7 +11,7 @@ const PaymentHistory = ({ paymentHistory }) => {
         );
 
         renderPaymentHistory = sortedPayment.map((payment, index) => {
-            return <PaymentItem payment={payment} />;
+            return <PaymentItem key={index} payment={payment} />;
         });
     }
 

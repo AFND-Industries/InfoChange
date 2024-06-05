@@ -72,7 +72,7 @@ export default function History({ user, tradeHistory, bizumHistory, paymentHisto
                 <div className="row p-0 mb-2 ps-3">
                     <div className="col d-flex justify-content-center justify-content-sm-end p-0">
                         <button className="btn btn-primary" onClick={generatePDF}>
-                            Descargar informe <i class="ms-2 bi bi-download"></i>
+                            Descargar informe <i className="ms-2 bi bi-download"></i>
                         </button>
                     </div>
                 </div>

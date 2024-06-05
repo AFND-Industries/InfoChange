@@ -4,7 +4,6 @@ import BizumItem from "../../bizum/components/BizumItem";
 const BizumHistory = ({ bizumHistory, bizumUsers, user }) => {
     const findUserById = (id) =>
         bizumUsers.find((user) => {
-            console.log(user);
             return user.ID === id;
         });
 

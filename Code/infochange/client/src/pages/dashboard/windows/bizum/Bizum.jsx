@@ -109,8 +109,9 @@ export default function Bizum({ user, bizumUsers, reload }) {
   const usersObject =
     bizumUsers === undefined
       ? []
-      : userRegexList.map((user) => (
+      : userRegexList.map((user, index) => (
         <UserItem
+          key={index}
           user={user}
           onClick={() => handleUserInput(user.username)}
         />
@@ -137,7 +138,7 @@ export default function Bizum({ user, bizumUsers, reload }) {
                 Buscar usuario
               </label>
               <input
-                autocomplete="off"
+                autoComplete="off"
                 data-bs-toggle="dropdown"
                 id="searchUser"
                 className="form-control dropdown-toggle"
