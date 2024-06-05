@@ -11,9 +11,9 @@ export const AdminProvider = ({ children }) => {
 
     const reloadTime = 10000; // 10s
 
-    const findUserById = (id) =>
+    const findUserById = (ID) =>
         adminInfo !== undefined
-            ? Object.values(adminInfo.users).filter((user) => user.ID === id)[0]
+            ? Object.values(adminInfo.users).filter((user) => user.ID == ID)[0]
             : undefined;
 
     useEffect(() => {
@@ -48,11 +48,11 @@ export const AdminProvider = ({ children }) => {
         return () => clearInterval(intervalId);
     }, []);
 
-    const getTotalUserBalance = (id) => {
+    const getTotalUserBalance = (ID) => {
         let totalBalance = 0;
 
         const userCoins = adminInfo.wallets.filter(
-            (wallet) => wallet.user === id
+            (wallet) => wallet.user === ID
         );
 
         userCoins.forEach((wallet) => {
