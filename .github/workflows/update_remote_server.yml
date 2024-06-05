@@ -22,5 +22,5 @@ jobs:
           npm install
           cd prod-backend/bin
           pm2 start www
-          sudo systemctl restart nginx
+          echo "${{ secrets.PASSWORD }}" | sudo -S systemctl restart nginx
           pm2 save
