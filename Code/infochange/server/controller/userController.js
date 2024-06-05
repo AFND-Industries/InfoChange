@@ -202,7 +202,7 @@ userController.swap = async (req, res) => {
 
 userController.admin = async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.name !== "admin") {
+    if (!req.session.user || req.session.user.firstname !== "admin") {
       res.json(utils.error("UNAUTHORIZED", "No eres administrador"));
     } else {
       const users = await models.user.findAll({

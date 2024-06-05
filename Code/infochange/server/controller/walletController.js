@@ -15,6 +15,9 @@ walletController.bizum = async (req, res) => {
     const userid = req.body.userid;
     const amount = req.body.amount;
     const coin = "USDT";
+    utils.applog("miauu00", "DEBUG");
+    utils.applog(userid, "DEBUG");
+    utils.applog(amount, "DEBUG");
 
     if (!userid || !amount)
       return res.json(utils.error("MISSING_PARAMETERS", "Faltan parámetros."));
@@ -23,7 +26,7 @@ walletController.bizum = async (req, res) => {
       return res.json(utils.error("INVALID_AMOUNT", "Cantidad inválida."));
 
     const sentAmount = parseFloat(parseFloat(amount).toFixed(8));
-
+    utils.applog("miauu0", "DEBUG");
     try {
       const senderWallet = await models.wallet.findOne({
         attributes: ["quantity"],
@@ -34,7 +37,7 @@ walletController.bizum = async (req, res) => {
           user: req.session.user.ID,
         },
       });
-
+      utils.applog("miauu1", "DEBUG");
       const currentDollarAmount = !senderWallet
         ? -1
         : parseFloat(parseFloat(senderWallet.quantity).toFixed(8));
@@ -49,10 +52,12 @@ walletController.bizum = async (req, res) => {
       if (newBizumerAmount === 0) {
         await senderWallet.destroy();
       } else {
+        utils.applog(senderWallet, "DEBUG");
+        const fixed = newBizumerAmount.toFixed(8);
         await senderWallet.update({
-          quantity: newBizumerAmount.toFixed(8),
+          quantity: 1,
         });
-
+        utils.applog("miauu2", "DEBUG");
         const receiverWallet = await models.wallet.findOne({
           attributes: ["quantity"],
           where: {
@@ -63,20 +68,17 @@ walletController.bizum = async (req, res) => {
           },
         });
 
-        // utils.applog(JSON.stringify(receiverWallet), "SUPERDEBUG RECEIVER");
-        // utils.applog(JSON.stringify(senderWallet), "SUPERDEBUG SENDER");
+        utils.applog(JSON.stringify(receiverWallet), "SUPERDEBUG RECEIVER");
+        utils.applog(JSON.stringify(senderWallet), "SUPERDEBUG SENDER");
         if (receiverWallet) {
           const newAmount =
             parseFloat(receiverWallet.quantity) +
             parseFloat(sentAmount.toFixed(8));
-          //   utils.applog(newAmount, "debug");
+          utils.applog(newAmount, "debug");
           await receiverWallet.update({
             quantity: newAmount,
           });
         } else {
-          // `INSERT INTO wallet (user, coin, quantity) VALUES (${userid}, '${coin}', ${sentAmount.toFixed(
-          //     8
-          //   )});`
           await models.wallet.create({
             user: userid,
             coin: coin,
@@ -99,19 +101,6 @@ walletController.bizum = async (req, res) => {
           quantity: parseFloat(sentAmount.toFixed(2)),
           date: formattedDate,
         });
-
-        // utils.applog(`Expected: ${newBizumerAmount}`, "TEST");
-        // utils.applog(`Result: ${senderWallet.quantity}`, "TEST");
-        // if (receiverWallet) {
-        //   utils.applog(
-        //     `Expected: ${
-        //       parseFloat(receiverWallet.quantity) -
-        //       parseFloat(sentAmount.toFixed(8))
-        //     }`,
-        //     "TEST"
-        //   );
-        //   utils.applog(`Result: ${receiverWallet.quantity}`, "TEST");
-        // }
 
         res.json({
           status: "1",
@@ -154,6 +143,7 @@ walletController.trade = async (req, res) => {
   const symbol = Object.values(Symbols.symbols).find(
     (s) => s.symbol === req.body.symbol
   );
+
   const quantity = parseFloat(req.body.quantity);
   const type = req.body.type;
 
@@ -190,7 +180,9 @@ walletController.trade = async (req, res) => {
 
   const removeAsset = type === "BUY" ? symbol.quoteAsset : symbol.baseAsset;
   const addAsset = type === "BUY" ? symbol.baseAsset : symbol.quoteAsset;
-
+  console.log(addAsset);
+  utils.applog(addAsset, "DEBUG SYMBOL");
+  utils.applog("asaaaaaaaaaaaaaaa", "DEBUG SYMBOL");
   const paidAssetName =
     type === "BUY" ? symbol.quoteAssetName : symbol.baseAssetName;
   try {
@@ -205,7 +197,7 @@ walletController.trade = async (req, res) => {
     });
 
     const currentAmount =
-      cantidad.length === 0 ? -1 : parseFloat(cantidad.quantity.toFixed(8));
+      cantidad === null ? -1 : parseFloat(cantidad.quantity.toFixed(8));
     if (currentAmount < paidAmount) {
       return res.json(
         utils.error(
@@ -243,25 +235,28 @@ walletController.trade = async (req, res) => {
       await result.update({
         quantity: updatedAmount.toFixed(8),
       });
-      utils.applog("AQUI", "DEBUG");
+      utils.applog(addAsset, "DEBUG");
       const cantidad = await models.wallet.findOne({
         attributes: ["quantity"],
         where: {
-          coin: {
-            [Op.like]: addAsset,
-          },
+          coin: addAsset,
           user: req.session.user.ID,
         },
       });
+      utils.applog(cantidad, "DEBUG");
       const currentQuoteAmount =
-        cantidad.length === 0 ? -1 : parseFloat(cantidad.quantity.toFixed(8));
+        cantidad === null ? -1 : parseFloat(cantidad.quantity.toFixed(8));
+      utils.applog(currentQuoteAmount, "DEBUG");
       if (currentQuoteAmount >= 0) {
         const result = await models.wallet.findOne({
           where: {
-            coin: addAsset,
+            coin: {
+              [Op.like]: addAsset,
+            },
             user: req.session.user.ID,
           },
         });
+        utils.applog(result.quantity, "DEBUG");
         await result.update({
           quantity: result.quantity + receivedAmount.toFixed(8),
         });
@@ -272,6 +267,7 @@ walletController.trade = async (req, res) => {
           quantity: receivedAmount.toFixed(8),
         });
       }
+      utils.applog("ant1", "DEBUG");
       const currentDate = new Date();
       const year = currentDate.getFullYear();
       const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Agrega un cero inicial si es necesario
@@ -330,7 +326,7 @@ walletController.payment = async (req, res) => {
       },
     });
 
-    if (coin.length === 0) {
+    if (coin === null) {
       await models.wallet.create({
         user: req.session.user.ID,
         coin: cart.type,
