@@ -11,19 +11,29 @@ export const AdminProvider = ({ children }) => {
 
     const reloadTime = 10000; // 10s
 
-    const findUserById = (id) => adminInfo !== undefined ? Object.values(adminInfo.users).filter(user => user.id == id)[0] : undefined;
+    const findUserById = (id) =>
+        adminInfo !== undefined
+            ? Object.values(adminInfo.users).filter((user) => user.ID === id)[0]
+            : undefined;
 
     useEffect(() => {
         const loadPrices = async () => {
             try {
-                const response = await axios.get('http://localhost:1024/admin', {
-                    withCredentials: true,
-                });
+                const response = await axios.get(
+                    "http://localhost:1024/admin",
+                    {
+                        withCredentials: true,
+                    }
+                );
                 console.log(response.data.info);
 
-                setAdminInfo(response.data.status === "1" ? response.data.info : undefined);
+                setAdminInfo(
+                    response.data.status === "1"
+                        ? response.data.info
+                        : undefined
+                );
             } catch (error) {
-                console.error('Error fetching admin info:', error);
+                console.error("Error fetching admin info:", error);
 
                 setAdminInfo(undefined);
             }
@@ -41,60 +51,71 @@ export const AdminProvider = ({ children }) => {
     const getTotalUserBalance = (id) => {
         let totalBalance = 0;
 
-        const userCoins = adminInfo.wallets.filter(wallet => wallet.user === id);
+        const userCoins = adminInfo.wallets.filter(
+            (wallet) => wallet.user === id
+        );
 
-        userCoins.forEach(wallet => {
-            const pairPrice = wallet.coin === "USDT" ? 1 : getPairPrice(wallet.coin + "USDT");
+        userCoins.forEach((wallet) => {
+            const pairPrice =
+                wallet.coin === "USDT" ? 1 : getPairPrice(wallet.coin + "USDT");
             totalBalance += wallet.quantity * pairPrice;
         });
 
         return totalBalance;
-    }
+    };
 
-
-    const getTotalUsers = () => adminInfo === undefined ? -1 : adminInfo.users.length;
-    const getTotalTransactions = () => adminInfo === undefined ? -1 : adminInfo.trade_history.length;
+    const getTotalUsers = () =>
+        adminInfo === undefined ? -1 : adminInfo.users.length;
+    const getTotalTransactions = () =>
+        adminInfo === undefined ? -1 : adminInfo.trade_history.length;
     const getTotalComission = () => {
         let totalComission = 0;
         if (adminInfo !== undefined) {
-            adminInfo.trade_history.forEach(trade => {
+            adminInfo.trade_history.forEach((trade) => {
                 const symbol = getPair(trade.symbol);
-                totalComission += trade.comission *
-                    (trade.type === "SELL" ? getPairPrice(symbol.baseAsset + "USDT") :
-                        (symbol.quoteAsset === "USDT" ? 1 : getPairPrice(symbol.quoteAsset + "USDT")));
+                totalComission +=
+                    trade.comission *
+                    (trade.type === "SELL"
+                        ? getPairPrice(symbol.baseAsset + "USDT")
+                        : symbol.quoteAsset === "USDT"
+                        ? 1
+                        : getPairPrice(symbol.quoteAsset + "USDT"));
             });
         }
 
         return totalComission;
-    }
+    };
     const getTotalExchangeBalance = () => {
         let totalExchangeBalance = 0;
         if (adminInfo !== undefined) {
-            adminInfo.users.forEach(user => {
-                totalExchangeBalance += getTotalUserBalance(user.id);
+            adminInfo.users.forEach((user) => {
+                totalExchangeBalance += getTotalUserBalance(user.ID);
             });
         }
 
         return totalExchangeBalance;
-    }
+    };
 
     const getUsersSortedByBalance = () => {
         let usersByBalance = [];
         if (adminInfo !== undefined) {
-            usersByBalance = adminInfo.users.map(user => ({
-                ...user,
-                totalBalance: getTotalUserBalance(user.id)
-            })).sort((a, b) => b.totalBalance - a.totalBalance).slice(0, 5);
+            usersByBalance = adminInfo.users
+                .map((user) => ({
+                    ...user,
+                    totalBalance: getTotalUserBalance(user.ID),
+                }))
+                .sort((a, b) => b.totalBalance - a.totalBalance)
+                .slice(0, 5);
         }
 
         return usersByBalance;
-    }
+    };
 
     const getCoinsSortedByExchangeVolume = () => {
         const volumeMap = {};
 
         if (adminInfo !== undefined) {
-            adminInfo.trade_history.forEach(trade => {
+            adminInfo.trade_history.forEach((trade) => {
                 const symbol = getPair(trade.symbol);
 
                 if (!volumeMap[symbol.baseAsset]) {
@@ -117,11 +138,25 @@ export const AdminProvider = ({ children }) => {
                     };
                 }
 
-                volumeMap[symbol.baseAsset].volume += trade.type === "BUY" ? trade.amount_received : trade.paid_amount;
-                volumeMap[symbol.baseAsset].dolar_volume = volumeMap[symbol.baseAsset].volume * (symbol.baseAsset === "USDT" ? 1 : getPairPrice(symbol.baseAsset + "USDT"));
+                volumeMap[symbol.baseAsset].volume +=
+                    trade.type === "BUY"
+                        ? trade.amount_received
+                        : trade.paid_amount;
+                volumeMap[symbol.baseAsset].dolar_volume =
+                    volumeMap[symbol.baseAsset].volume *
+                    (symbol.baseAsset === "USDT"
+                        ? 1
+                        : getPairPrice(symbol.baseAsset + "USDT"));
 
-                volumeMap[symbol.quoteAsset].volume += trade.type === "BUY" ? trade.paid_amount : trade.amount_received;
-                volumeMap[symbol.quoteAsset].dolar_volume = volumeMap[symbol.quoteAsset].volume * (symbol.quoteAsset === "USDT" ? 1 : getPairPrice(symbol.quoteAsset + "USDT"));
+                volumeMap[symbol.quoteAsset].volume +=
+                    trade.type === "BUY"
+                        ? trade.paid_amount
+                        : trade.amount_received;
+                volumeMap[symbol.quoteAsset].dolar_volume =
+                    volumeMap[symbol.quoteAsset].volume *
+                    (symbol.quoteAsset === "USDT"
+                        ? 1
+                        : getPairPrice(symbol.quoteAsset + "USDT"));
             });
         }
 
@@ -132,47 +167,52 @@ export const AdminProvider = ({ children }) => {
         return volumeList;
     };
 
-
     const getBizumHistorySortedByDate = () => {
         let bizumHistory = [];
 
         if (adminInfo !== undefined) {
-            bizumHistory = adminInfo.bizum_history.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(bizum => {
-                const sender = findUserById(bizum.sender);
-                const receiver = findUserById(bizum.receiver);
+            bizumHistory = adminInfo.bizum_history
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5)
+                .map((bizum) => {
+                    const sender = findUserById(bizum.sender);
+                    const receiver = findUserById(bizum.receiver);
 
-                return ({
-                    sender: sender,
-                    receiver: receiver,
-                    bizum: bizum
+                    return {
+                        sender: sender,
+                        receiver: receiver,
+                        bizum: bizum,
+                    };
                 });
-            })
         }
 
         return bizumHistory;
-    }
+    };
 
     const getPaymentHistorySortedByDate = () => {
         let paymentHistory = [];
 
         if (adminInfo !== undefined) {
-            paymentHistory = adminInfo.payment_history.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(payment => {
-                const user = findUserById(payment.user);
+            paymentHistory = adminInfo.payment_history
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5)
+                .map((payment) => {
+                    const user = findUserById(payment.user);
 
-                return ({
-                    id: payment.id,
-                    user: user,
-                    type: payment.type,
-                    method: payment.method,
-                    info: payment.info,
-                    quantity: payment.quantity,
-                    date: payment.date
+                    return {
+                        id: payment.id,
+                        user: user,
+                        type: payment.type,
+                        method: payment.method,
+                        info: payment.info,
+                        quantity: payment.quantity,
+                        date: payment.date,
+                    };
                 });
-            })
         }
 
         return paymentHistory;
-    }
+    };
 
     return (
         <AdminContext.Provider
@@ -191,6 +231,6 @@ export const AdminProvider = ({ children }) => {
             {children}
         </AdminContext.Provider>
     );
-}
+};
 
 export const useAdmin = () => useContext(AdminContext);
