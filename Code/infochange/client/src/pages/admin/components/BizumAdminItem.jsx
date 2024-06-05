@@ -1,9 +1,9 @@
 import React from "react";
 
-const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
+const BizumAdminItem = ({ item }) => {
     const altPhoto = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 
-    const transactionDate = new Date(bizum.date);
+    const transactionDate = new Date(item.bizum.date);
 
     const hours = ('0' + transactionDate.getHours()).slice(-2);
     const minutes = ('0' + transactionDate.getMinutes()).slice(-2);
@@ -29,23 +29,17 @@ const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
         </div>
     );
 
-    let formattedQuantity = bizum.quantity + "$";
-    if (!admin) {
-        if (user.profile.ID === sender.id)
-            formattedQuantity = <span className="text-danger">-{formattedQuantity}</span>;
-        else
-            formattedQuantity = <span className="text-success">+{formattedQuantity}</span>;
-    }
+    let formattedQuantity = item.bizum.quantity + "$";
 
     return (
-        <li key={bizum.id} className="list-group-item px-0">
+        <li className="list-group-item px-0">
             <div className="row align-items-center">
                 <div className="col-lg-5 d-flex align-items-center mb-3 mb-lg-0 justify-content-lg-between">
-                    {userDraw(sender)}
+                    {userDraw(item.sender)}
                     <i className="bi bi-arrow-right" style={{ fontSize: '1.5em' }}></i>
                 </div>
                 <div className="col-lg-4 d-flex align-items-center mb-3 mb-lg-0">
-                    {userDraw(receiver)}
+                    {userDraw(item.receiver)}
                 </div>
                 <div className="col-lg-3 d-flex flex-column align-items-center align-items-lg-end">
                     <span className="fw-bold">{formattedQuantity}</span>
@@ -56,4 +50,4 @@ const BizumItem = ({ user, sender, receiver, bizum, admin = false }) => {
     );
 }
 
-export default BizumItem;
+export default BizumAdminItem;

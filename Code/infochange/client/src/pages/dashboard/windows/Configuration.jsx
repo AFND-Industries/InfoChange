@@ -32,7 +32,12 @@ export default function Configuration({ profile, swap }) {
             </span>
             <span>
                 barra deslizante que le permitirá introducir un porcentaje de su
-                capital disponible.
+                capital disponible.{" "}
+            </span>
+            <span>
+                Por último, con el modo profesional, para agilizar los trades,
+                <span className="fw-bold"> NO</span> se le pedirá una confirmación
+                cada vez que quiera realizar uno.
             </span>
         </>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import BizumItem from "../../bizum/components/BizumItem";
+import BizumItem from "./BizumItem";
 
 const BizumHistory = ({ bizumHistory, bizumUsers, user }) => {
     const findUserById = (id) =>
