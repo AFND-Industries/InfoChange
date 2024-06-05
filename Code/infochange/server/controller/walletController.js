@@ -29,7 +29,6 @@ walletController.bizum = async (req, res) => {
     utils.applog("miauu0", "DEBUG");
     try {
       const senderWallet = await models.wallet.findOne({
-        attributes: ["quantity"],
         where: {
           coin: {
             [Op.like]: coin,
@@ -37,7 +36,6 @@ walletController.bizum = async (req, res) => {
           user: req.session.user.ID,
         },
       });
-      utils.applog("miauu1", "DEBUG");
       const currentDollarAmount = !senderWallet
         ? -1
         : parseFloat(parseFloat(senderWallet.quantity).toFixed(8));
@@ -52,14 +50,12 @@ walletController.bizum = async (req, res) => {
       if (newBizumerAmount === 0) {
         await senderWallet.destroy();
       } else {
-        utils.applog(senderWallet, "DEBUG");
         const fixed = newBizumerAmount.toFixed(8);
         await senderWallet.update({
           quantity: 1,
         });
-        utils.applog("miauu2", "DEBUG");
+
         const receiverWallet = await models.wallet.findOne({
-          attributes: ["quantity"],
           where: {
             coin: {
               [Op.like]: coin,
@@ -108,6 +104,7 @@ walletController.bizum = async (req, res) => {
       }
     } catch (e) {
       res.json(utils.error("ERROR", `Ha ocurrido un error inesperado: ${e}`));
+      utils.applog(e, "ERROR");
     }
   }
 };
@@ -174,7 +171,6 @@ walletController.trade = async (req, res) => {
       )
     );
   }
-  //TODO: AQUI DA ERROR
   const symbolPrice = symbolPriceObject.price;
   const paidAmount = parseFloat(quantity.toFixed(8));
 
