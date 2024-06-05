@@ -20,7 +20,7 @@ export const AdminProvider = ({ children }) => {
     const loadPrices = async () => {
       try {
         const response = await axios.get(
-          "https://server.infochange.me:1024/admin",
+          "http://server.infochange.me:1024/admin",
           {
             withCredentials: true,
           }
