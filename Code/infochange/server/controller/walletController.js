@@ -144,7 +144,7 @@ walletController.trade = async (req, res) => {
   const quantity = parseFloat(req.body.quantity);
   const type = req.body.type;
 
-  if (!symbol) {
+  if (symbol.length === 0) {
     return res.json(
       utils.error(
         "INVALID_SYMBOL",
@@ -162,7 +162,6 @@ walletController.trade = async (req, res) => {
   const symbolPriceObject = Object.values(getPrices()).find(
     (p) => p.symbol === symbol.symbol
   );
-  utils.applog(symbolPriceObject, "DEBUG SYMBOL");
   if (!symbolPriceObject) {
     return res.json(
       utils.error(
@@ -176,9 +175,6 @@ walletController.trade = async (req, res) => {
 
   const removeAsset = type === "BUY" ? symbol.quoteAsset : symbol.baseAsset;
   const addAsset = type === "BUY" ? symbol.baseAsset : symbol.quoteAsset;
-  console.log(addAsset);
-  utils.applog(addAsset, "DEBUG SYMBOL");
-  utils.applog("asaaaaaaaaaaaaaaa", "DEBUG SYMBOL");
   const paidAssetName =
     type === "BUY" ? symbol.quoteAssetName : symbol.baseAssetName;
   try {
@@ -193,7 +189,7 @@ walletController.trade = async (req, res) => {
     });
 
     const currentAmount =
-      cantidad === null ? -1 : parseFloat(cantidad.quantity.toFixed(8));
+      cantidad.length === null ? -1 : parseFloat(cantidad.quantity.toFixed(8));
     if (currentAmount < paidAmount) {
       return res.json(
         utils.error(
@@ -202,16 +198,16 @@ walletController.trade = async (req, res) => {
         )
       );
     }
-    utils.applog(currentAmount, "DEBUG");
+
     const comission = parseFloat((paidAmount * tradingComision).toFixed(8));
-    utils.applog("mauuu", "DEBUG");
+
     const receivedAmount =
       type === "BUY"
         ? (paidAmount - comission) / symbolPrice
         : (paidAmount - comission) * symbolPrice;
 
     const updatedAmount = currentAmount - paidAmount;
-    utils.applog(updatedAmount, "DEBUG");
+
     if (updatedAmount === 0) {
       const result = await models.wallet.findOne({
         where: {
@@ -227,22 +223,17 @@ walletController.trade = async (req, res) => {
           user: req.session.user.ID,
         },
       });
-      utils.applog("AQUI1", "DEBUG");
       await result.update({
         quantity: updatedAmount.toFixed(8),
       });
-      utils.applog(addAsset, "DEBUG");
       const cantidad = await models.wallet.findOne({
-        attributes: ["quantity"],
         where: {
           coin: addAsset,
           user: req.session.user.ID,
         },
       });
-      utils.applog(cantidad, "DEBUG");
       const currentQuoteAmount =
-        cantidad === null ? -1 : parseFloat(cantidad.quantity.toFixed(8));
-      utils.applog(currentQuoteAmount, "DEBUG");
+        cantidad.length === 0 ? -1 : parseFloat(cantidad.quantity.toFixed(8));
       if (currentQuoteAmount >= 0) {
         const result = await models.wallet.findOne({
           where: {
@@ -252,7 +243,6 @@ walletController.trade = async (req, res) => {
             user: req.session.user.ID,
           },
         });
-        utils.applog(result.quantity, "DEBUG");
         await result.update({
           quantity: result.quantity + receivedAmount.toFixed(8),
         });
@@ -263,7 +253,6 @@ walletController.trade = async (req, res) => {
           quantity: receivedAmount.toFixed(8),
         });
       }
-      utils.applog("ant1", "DEBUG");
       const currentDate = new Date();
       const year = currentDate.getFullYear();
       const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Agrega un cero inicial si es necesario
@@ -273,7 +262,6 @@ walletController.trade = async (req, res) => {
       const seconds = ("0" + currentDate.getSeconds()).slice(-2); // Agrega un cero inicial si es necesario
 
       const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-      utils.applog("ant", "DEBUG");
       await models.trade_history.create({
         user: req.session.user.ID,
         symbol: symbolPriceObject.symbol,
@@ -322,7 +310,7 @@ walletController.payment = async (req, res) => {
       },
     });
 
-    if (coin === null) {
+    if (coin.length === 0) {
       await models.wallet.create({
         user: req.session.user.ID,
         coin: cart.type,
