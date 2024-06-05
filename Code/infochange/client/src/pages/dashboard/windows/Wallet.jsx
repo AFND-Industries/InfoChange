@@ -163,6 +163,7 @@ const addBalance = (balance, navigate) => {
             state: {
                 type: "USDT",
                 quantity: balance,
+                action: "in",
             },
         });
     }
