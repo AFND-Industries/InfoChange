@@ -26,12 +26,12 @@ export default function Bizum({ user, bizumUsers, reload }) {
     setUserRegexList(
       bizumUsers !== undefined && regex.length > 0
         ? Object.values(bizumUsers)
-            .filter(
-              (u) =>
-                u.id != user.profile.ID &&
-                u.username.toLowerCase().startsWith(regex.toLowerCase())
-            )
-            .slice(0, 5)
+          .filter(
+            (u) =>
+              u.ID != user.profile.ID &&
+              u.username.toLowerCase().startsWith(regex.toLowerCase())
+          )
+          .slice(0, 5)
         : []
     );
   };
@@ -66,10 +66,10 @@ export default function Bizum({ user, bizumUsers, reload }) {
         showBizumDoneToast(
           "Bizum realizado correctamente",
           "Has enviado un bizum de <b>" +
-            sentAmount +
-            "$</b> a <b>" +
-            user.username +
-            "</b> correctamente."
+          sentAmount +
+          "$</b> a <b>" +
+          user.username +
+          "</b> correctamente."
         );
         reload();
       }
@@ -104,17 +104,17 @@ export default function Bizum({ user, bizumUsers, reload }) {
     parseFloat(amountInput) > 0 &&
     userRegexList[0] !== undefined &&
     userRegexList[0].username === userInput &&
-    userRegexList[0].id != user.profile.ID;
+    userRegexList[0].ID != user.profile.ID;
 
   const usersObject =
     bizumUsers === undefined
       ? []
       : userRegexList.map((user) => (
-          <UserItem
-            user={user}
-            onClick={() => handleUserInput(user.username)}
-          />
-        ));
+        <UserItem
+          user={user}
+          onClick={() => handleUserInput(user.username)}
+        />
+      ));
 
   return (
     <>
