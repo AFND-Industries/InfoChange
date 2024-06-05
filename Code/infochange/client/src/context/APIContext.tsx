@@ -11,7 +11,7 @@ import CoinMarketCapData from "../data/CoinMarketCapData.json";
 
 const APIContext = React.createContext<APIContextType | null>(null);
 
-const SERVER_URL = "http://64.225.102.165:1024"
+const SERVER_URL = "https://64.225.102.165:1024"
 
 export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { doAction, doAuth } = useAuth();
