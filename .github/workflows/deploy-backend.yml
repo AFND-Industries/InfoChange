@@ -45,3 +45,24 @@ jobs:
           git add .
           git commit -m "Update backend deployment"
           git push origin prod-backend --force
+          
+  push_remote:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
+          cd prod-backend
+          npm install
+          cd prod-backend/bin
+          pm2 start www
+          echo "${{ secrets.PASSWORD }}" | sudo -S systemctl restart nginx
+          pm2 save
+    
