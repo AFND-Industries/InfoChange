@@ -29,8 +29,8 @@ export default function History({ user, tradeHistory, bizumHistory, paymentHisto
                 trade.paid_amount,
                 trade.amount_received,
                 trade.comission,
-                new Date(trade.date).toLocaleString(),
-                trade.price
+                trade.price,
+                new Date(trade.date).toLocaleString()
             ])
         });
 
