@@ -5,7 +5,7 @@ import { toUser } from "../../@types/user";
 import axios from "axios";
 
 const AuthContext = createContext();
-const SERVER_URL = "http://server.infochange.me:1024";
+const SERVER_URL = "https://server.infochange.me:1024";
 
 export const AuthProvider = ({ children }) => {
   const [authStatus, setAuthStatus] = useState("-2"); // -2: Loading. -1: Server not available. 0 Not logged. 1 Logged
