@@ -4,7 +4,7 @@ const altPhoto = "https://static.vecteezy.com/system/resources/thumbnails/009/29
 
 const PaymentItem = ({ payment, user = undefined }) => {
     const transactionDate = new Date(payment.date);
-
+    console.log(payment);
     const hours = ('0' + transactionDate.getHours()).slice(-2);
     const minutes = ('0' + transactionDate.getMinutes()).slice(-2);
     const day = ('0' + transactionDate.getDate()).slice(-2);
