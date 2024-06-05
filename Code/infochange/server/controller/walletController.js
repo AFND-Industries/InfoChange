@@ -233,7 +233,7 @@ walletController.trade = async (req, res) => {
         },
       });
       const currentQuoteAmount =
-        cantidad.length === 0 ? -1 : parseFloat(cantidad.quantity.toFixed(8));
+        cantidad === null ? -1 : parseFloat(cantidad.quantity.toFixed(8));
       if (currentQuoteAmount >= 0) {
         const result = await models.wallet.findOne({
           where: {
@@ -246,7 +246,9 @@ walletController.trade = async (req, res) => {
         await result.update({
           quantity: result.quantity + receivedAmount.toFixed(8),
         });
+        utils.applog("miau1", "DEBUG");
       } else {
+        utils.applog("miau2", "DEBUG");
         await models.wallet.create({
           user: req.session.user.ID,
           coin: addAsset,
