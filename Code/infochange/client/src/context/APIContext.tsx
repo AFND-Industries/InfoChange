@@ -11,7 +11,7 @@ import CoinMarketCapData from "../data/CoinMarketCapData.json";
 
 const APIContext = React.createContext<APIContextType | null>(null);
 
-const SERVER_URL = "http://localhost:1024"
+const SERVER_URL = "http://server.infochange.me:1024"
 
 export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { doAction, doAuth } = useAuth();
@@ -45,7 +45,7 @@ export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     useEffect(() => {
         const loadPrices = async () => {
             try {
-                const responsePrices = await axios.get('http://localhost:1024/prices');
+                const responsePrices = await axios.get('http://server.infochange.me:1024/prices');
                 const dataPrices = responsePrices.data;
 
                 console.log("Updating prices " + new Date().toLocaleString());
