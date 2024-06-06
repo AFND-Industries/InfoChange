@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "set-env": "node set-env.js",
+    "set-env": "node set-env.cjs",
     "dev": "vite",
     "dev-host": "vite --host",
     "predeploy": "npm run build",
