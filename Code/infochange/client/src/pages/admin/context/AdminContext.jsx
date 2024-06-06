@@ -5,6 +5,8 @@ import { useAPI } from "../../../context/APIContext";
 
 const AdminContext = createContext();
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 export const AdminProvider = ({ children }) => {
   const { getPair, getPairPrice, getTokenInfo } = useAPI();
   const [adminInfo, setAdminInfo] = useState(undefined);
@@ -19,7 +21,9 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     const loadPrices = async () => {
       try {
-        const response = await axios.get("https://server.infochange.me/admin", {
+
+        const response = await axios.get(SERVER_URL + "/admin", {
+
           withCredentials: true,
         });
         console.log(response.data.info);

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { useAPI } from "../../../context/APIContext";
 import { useAuth } from "../../authenticator/AuthContext";
 
@@ -31,37 +31,44 @@ const LOSIGUIENTE = 1;
 // hints en trading, minimo y maximo
 
 export const TradingProvider = ({ children }) => {
-    const { getPair, getPairPrice } = useAPI();
-    const { getActualUser } = useAuth();
+  const { getPair, getPairPrice } = useAPI();
+  const { getActualUser } = useAuth();
 
-    const params = useParams();
-    const pairPath = params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
-    const getPairPath = () => pairPath;
+  const params = useParams();
+  const pairPath =
+    params.pair === undefined ? "BTCUSDT" : params.pair.toUpperCase();
+  const getPairPath = () => pairPath;
 
-    const [actualPair, setActualPair] = useState(getPair(pairPath));
-    const getActualPair = () => actualPair;
-    const getActualPairPrice = () => getActualPair() === undefined ? -1 : getPairPrice(actualPair.symbol);
+  const [actualPair, setActualPair] = useState(getPair(pairPath));
+  const getActualPair = () => actualPair;
+  const getActualPairPrice = () =>
+    getActualPair() === undefined ? -1 : getPairPrice(actualPair.symbol);
 
-    const getTradingMode = () => getActualUser() !== null ? getActualUser().profile.mode : 0;
+  const getTradingMode = () =>
+    getActualUser() !== null ? getActualUser().profile.mode : 0;
 
-    useEffect(() => {
-        if (getActualPair() !== undefined)
-            window.history.replaceState(null, null, "/trading/" + getActualPair().symbol);
-    }, [getActualPair()]);
+  useEffect(() => {
+    if (getActualPair() !== undefined)
+      window.history.replaceState(
+        null,
+        null,
+        "/trading/" + getActualPair().symbol
+      );
+  }, [getActualPair()]);
 
-    return (
-        <TradingContext.Provider
-            value={{
-                getActualPair,
-                setActualPair,
-                getActualPairPrice,
-                getTradingMode,
-                getPairPath
-            }}
-        >
-            {children}
-        </TradingContext.Provider>
-    );
-}
+  return (
+    <TradingContext.Provider
+      value={{
+        getActualPair,
+        setActualPair,
+        getActualPairPrice,
+        getTradingMode,
+        getPairPath,
+      }}
+    >
+      {children}
+    </TradingContext.Provider>
+  );
+};
 
 export const useTrading = () => useContext(TradingContext);

@@ -9,9 +9,11 @@ import { useAuth } from "../pages/authenticator/AuthContext";
 import Symbols from "../data/Symbols.json";
 import CoinMarketCapData from "../data/CoinMarketCapData.json";
 
+
+
 const APIContext = React.createContext<APIContextType | null>(null);
 
-const SERVER_URL = "https://server.infochange.me"
+const SERVER_URL = import.meta.env.VITE_SERVER_URL as string;
 
 export const APIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { doAction, doAuth } = useAuth();
