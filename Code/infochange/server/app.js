@@ -11,7 +11,8 @@ var app = express();
 
 require("dotenv").config();
 
-const url = proccess.env.SERVER_URL;
+const url = process.env.SERVER_URL;
+console.log(url);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
