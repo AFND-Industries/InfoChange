@@ -120,6 +120,7 @@ userController.register = async (req, res) => {
       !user.email ||
       !user.password ||
       !user.secureQuestionText ||
+      !user.secureQuestion ||
       !user.direccion ||
       !user.ciudad ||
       !user.codigoPostal ||
@@ -141,7 +142,7 @@ userController.register = async (req, res) => {
         email: user.email,
         password: utils.hash(user.password),
         secureQuestionText: user.secureQuestionText,
-        // secureQuestion: user.secureQuestion,
+        secureQuestion: user.secureQuestion,
         address: user.direccion,
         city: user.ciudad,
         zipCode: user.codigoPostal,
