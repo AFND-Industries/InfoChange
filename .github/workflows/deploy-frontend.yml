@@ -23,8 +23,10 @@ jobs:
         with:
           node-version: '20'  # O la versión que estés usando
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies nad set env file
+        run: |
+          npm install
+          npm run set-env
         working-directory: ./Code/infochange/client
 
       - name: Build frontend
