@@ -5,14 +5,34 @@ on:
     branches:
       - main  # O la rama principal de tu proyecto
 
+
 jobs:
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: List files after checkout
+        run: ls -R
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'  # O la versión que estés usando
+
+      - name: Install dependencies nad set env file
+        run: |
+          npm install
+          npm run set-env
+        working-directory: ./Code/infochange/client
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./Code/infochange/client
+        
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
@@ -20,9 +40,21 @@ jobs:
 
       - name: Sync frontend folder to prod-frontend
         run: |
-          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
-          rsync -av --delete --exclude='.git' client/ prod-frontend/
+          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
+          rm -r prod-frontend/*
+          cp -r ./Code/infochange/client/dist/* prod-frontend/
           cd prod-frontend
+          ls -la
           git add .
+          echo miau2
           git commit -m "Update frontend deployment"
-          git push origin prod-frontend
+          echo miau3
+          git push origin prod-frontend --force
+      # - name: Sync frontend folder to prod-frontend
+      #   run: |
+      #     git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
+      #     rsync -av --delete --exclude='.git' Code/infochange/client/dist prod-frontend/
+      #     cd prod-frontend
+      #     git add .
+      #     git commit -m "Update frontend deployment"
+      #     git push origin prod-frontend
