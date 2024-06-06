@@ -1,0 +1,2 @@
+SERVER_URL=https://infochange.me
+DB_ROUTE=/home/production/database/infochange.db
