@@ -21,7 +21,9 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     const loadPrices = async () => {
       try {
+
         const response = await axios.get(SERVER_URL + "/admin", {
+
           withCredentials: true,
         });
         console.log(response.data.info);
