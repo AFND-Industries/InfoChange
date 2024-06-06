@@ -196,7 +196,7 @@ export function CreditForm(props) {
                         <input
                             id="dateInput"
                             ref={expDate}
-                            type="date"
+                            type="month"
                             defaultValue={
                                 data.info !== undefined ? data.info.expDate : ""
                             }
