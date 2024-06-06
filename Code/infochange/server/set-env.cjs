@@ -5,7 +5,7 @@ const { execSync } = require("child_process");
 const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
 
 let envFile;
-if (branch === "main") {
+if (branch === "prod-backend") {
   envFile = ".env.main";
 } else if (branch === "develop") {
   envFile = ".env.develop";
