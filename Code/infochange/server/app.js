@@ -9,6 +9,10 @@ var indexRouter = require("./routes/index");
 
 var app = express();
 
+require("dotenv").config();
+
+const url = proccess.env.SERVER_URL;
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
@@ -22,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "https://infochange.me",
+    origin: url,
     credentials: true,
   })
 );
