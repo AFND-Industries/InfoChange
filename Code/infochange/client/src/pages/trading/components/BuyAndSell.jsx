@@ -373,7 +373,7 @@ function BuyAndSell({ style = 1 }) {
     <button
       className="btn w-100 mb-2"
       style={{
-        backgroundColor: "rgb(108, 117, 125)",
+        backgroundColor: "#4F4F4F",
         fontWeight: "bold",
         cursor: "default",
       }}

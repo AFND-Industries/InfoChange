@@ -6,13 +6,14 @@ var logger = require("morgan");
 const session = require("express-session");
 const cors = require("cors");
 var indexRouter = require("./routes/index");
+const utils = require("./utils/utils");
 
 var app = express();
 
 require("dotenv").config();
 
 const url = process.env.SERVER_URL;
-console.log(url);
+utils.applog(`Server URL: ${url}`, "SERVER");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
