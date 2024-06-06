@@ -67,6 +67,11 @@ export default function CoinsPage() {
           setDataTablePage(element.textContent);
         });
       });
+
+      const selectElement = document.querySelector(
+        'select[data-pc-section="select"]'
+      );
+      selectElement.ariaLabel = "Seleccionar página";
     });
   };
 
@@ -281,6 +286,7 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
           aria-label="Tabla de datos de monedas"
           pageLinkSize={3}
           tabIndex="0"
+          emptyMessage="No se encontraron resultados"
         >
           <Column
             body={imageBodyTemplate}

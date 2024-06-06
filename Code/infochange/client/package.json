@@ -22,6 +22,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "bs-stepper": "^1.7.0",
+    "dotenv": "^16.4.5",
     "formik": "^2.4.6",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
