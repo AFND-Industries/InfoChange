@@ -181,6 +181,7 @@ export function CreditForm(props) {
                     <input
                         id="cardInput"
                         ref={creditCard}
+                        maxLength={16}
                         type="text"
                         defaultValue={
                             data.info !== undefined ? data.info.cardNumber : ""
