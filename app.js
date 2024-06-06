@@ -5,7 +5,6 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const session = require("express-session");
 const cors = require("cors");
-const utils = require("./utils/utils");
 var indexRouter = require("./routes/index");
 
 var app = express();
@@ -23,7 +22,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "https://infochange.netlify.app",
+    origin: "https://infochange.me",
+    credentials: true,
+  })
+);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
