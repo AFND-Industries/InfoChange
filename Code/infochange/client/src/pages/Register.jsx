@@ -35,7 +35,7 @@ export default function Register() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { doRegister } = useAuth();
+  const { doRegister, getAuthStatus } = useAuth();
   const { doCheckEmail } = useAuth();
 
   const [prefix, setPrefix] = useState("");
@@ -70,6 +70,11 @@ export default function Register() {
     }
   };
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (getAuthStatus() !== "0")
+      navigate("/");
+  }, [getAuthStatus()]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -241,7 +246,7 @@ export default function Register() {
       {showPassword ? "Ocultar Contraseña" : "Ver Contraseña"}
     </Tooltip>
   );
-  return (
+  const registerPanel = (
     <>
       <div className="anim_gradient container-fluid min-vh-100 ">
         <header>
@@ -385,7 +390,7 @@ export default function Register() {
                         <Form.Group
                           as={Col}
                           md="12"
-                          // controlId="validationGender"
+                        // controlId="validationGender"
                         >
                           <fieldset>
                             <legend
@@ -975,4 +980,6 @@ export default function Register() {
       </Modal>
     </>
   );
+
+  return getAuthStatus() === "0" ? registerPanel : <></>;
 }
