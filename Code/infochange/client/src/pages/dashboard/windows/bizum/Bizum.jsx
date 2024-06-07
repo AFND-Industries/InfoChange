@@ -52,7 +52,6 @@ export default function Bizum({ user, bizumUsers, reload }) {
   };
 
   const handleBizum = async (user, amount) => {
-    console.log(user);
     const sentAmount = parseFloat(amount);
 
     if (bizumUsers !== undefined && user !== undefined) {

@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   const [actualUser, setActualUser] = useState(null);
   const [lastBizum, setLastBizum] = useState(undefined);
 
-  const getLastBizum = () => lastBizum;
   const getAuthStatus = () => authStatus;
   const getActualUser = () => actualUser;
   const getActualUserWallet = () =>
@@ -43,14 +42,20 @@ export const AuthProvider = ({ children }) => {
       const bizumHistory = response.data.bizumHistory;
       const bizum = bizumHistory[bizumHistory.length - 1]
 
-      if (bizum !== undefined && bizum.receiver === user.ID && lastBizum != bizum) {
+      if (bizum !== undefined && bizum.receiver === user.ID) {
         const response_users = await get("/bizum_users");
         const users = response_users.data.users;
 
         const user = Object.values(users).filter(user => user.ID === bizum.sender)[0].username;
         bizum.sender = user;
 
-        setLastBizum(bizum);
+        setLastBizum(oldBizum => {
+          console.log(oldBizum, bizum);
+          if (oldBizum !== undefined && oldBizum.id !== bizum.id)
+            showBizumReceived("Bizum recibido", bizum);
+
+          return bizum;
+        });
       }
     }
 
@@ -76,6 +81,20 @@ export const AuthProvider = ({ children }) => {
 
     return response;
   }
+
+  const showBizumReceived = (title, lastBizum) => {
+    const toast = new bootstrap.Toast(document.getElementById("received-bizum-toast"), {
+      autohide: true,
+    });
+    const toastTitle = document.getElementById("received-bizum-toast-title");
+    const toastBody = document.getElementById("received-bizum-toast-body");
+
+    toastTitle.innerHTML = title;
+    toastBody.innerHTML = "<span>Has <b>recibido</b> un bizum de <b>" +
+      lastBizum.quantity + "$</b> de <b>" + lastBizum.sender + "</b></span>";
+
+    toast.show();
+  };
 
   async function login(user, pass) {
     const response = await post("/login", { user: user, pass: pass });
@@ -136,7 +155,6 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        getLastBizum,
         getActualUser,
         getAuthStatus,
         getActualUserWallet,
