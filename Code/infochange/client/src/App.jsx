@@ -24,8 +24,7 @@ import { useAuth } from "./pages/authenticator/AuthContext";
 import ReceivedBizumToast from "./components/ReceivedBizumToast";
 
 function App() {
-  const { getAuthStatus, getActualUser, getLastBizum } = useAuth();
-  const [load, setLoaded] = useState(false);
+  const { getAuthStatus, getActualUser } = useAuth();
 
   useEffect(() => {
     const toast = new bootstrap.Toast(document.getElementById("liveToast"), {
@@ -35,28 +34,6 @@ function App() {
     if (getAuthStatus() == "-1") toast.show();
     else toast.hide();
   }, [getAuthStatus()]);
-
-  useEffect(() => {
-    const lastBizum = getLastBizum();
-    if (lastBizum !== undefined) {
-      if (load) showBizumReceived("Bizum recibido", lastBizum);
-      else setLoaded(true);
-    }
-  }, [getLastBizum()]);
-
-  const showBizumReceived = (title, lastBizum) => {
-    const toast = new bootstrap.Toast(document.getElementById("received-bizum-toast"), {
-      autohide: true,
-    });
-    const toastTitle = document.getElementById("received-bizum-toast-title");
-    const toastBody = document.getElementById("received-bizum-toast-body");
-
-    toastTitle.innerHTML = title;
-    toastBody.innerHTML = "<span>Has <b>recibido</b> un bizum de <b>" +
-      lastBizum.quantity + "$</b> de <b>" + lastBizum.sender + "</b></span>";
-
-    toast.show();
-  };
 
   const statusPages = {
     "-2": <Loading />,
@@ -86,7 +63,7 @@ function App() {
   const needAdmin = (v) => (
     <>
       {getActualUser() !== null &&
-      getActualUser().profile.firstName === "admin" ? (
+        getActualUser().profile.firstName === "admin" ? (
         v
       ) : (
         <Unknown />
