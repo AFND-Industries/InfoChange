@@ -40,23 +40,31 @@ function Dashboard() {
             setPaymentHistory(paymentHistory.data.paymentHistory);
     }
 
-    const loadBizumUsers = async () => {
+    const loadBizumUsersAndHistory = async () => {
         const responseUsers = await doBizumUsers();
-        if (responseUsers !== undefined && responseUsers.data.status === "1")
-            setBizumUserList(responseUsers.data.users);
-    };
+        if (responseUsers !== undefined && responseUsers.data.status === "1") {
+            const users = responseUsers.data.users;
+            setBizumUserList(users);
 
-    const loadBizumHistory = async () => {
-        const bizumHistory = await doBizumHistory();
-        if (bizumHistory !== undefined && bizumHistory.data.status === "1")
-            setBizumHistory(bizumHistory.data.bizumHistory);
-    };
+            const bizumHistory = await doBizumHistory();
+            if (bizumHistory !== undefined && bizumHistory.data.status === "1") {
+                const modifiedHistory = bizumHistory.data.bizumHistory.map(item => {
+                    return {
+                        ...item,
+                        sender: Object.values(users).filter(u => u.ID === item.sender)[0].username,
+                        receiver: Object.values(users).filter(u => u.ID === item.receiver)[0].username
+                    };
+                });
+
+                setBizumHistory(modifiedHistory);
+            }
+        }
+    }
 
     useEffect(() => {
         loadTradeHistory();
         loadPaymentHistory();
-        loadBizumUsers();
-        loadBizumHistory();
+        loadBizumUsersAndHistory();
     }, [getActualUser()]);
 
     const user = getActualUser();
@@ -75,7 +83,7 @@ function Dashboard() {
             bizumUsers={bizumUsers}
             user={user}
         />,
-        <Bizum user={user} bizumUsers={bizumUsers} reload={loadBizumHistory} />,
+        <Bizum user={user} bizumUsers={bizumUsers} reload={loadBizumUsersAndHistory} />,
         <Configuration profile={user.profile} swap={doSwap} />
     ];
 

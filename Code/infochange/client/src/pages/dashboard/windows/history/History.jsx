@@ -28,23 +28,19 @@ export default function History({
   const generatePDF = () => {
     const doc = new jsPDF();
 
-    doc.setFont("times", "normal");
-    doc.setFontSize(12);
+    const titleStyle = {
+      fontSize: 18,
+      fontStyle: 'bold',
+      textColor: [34, 34, 34]
+    };
 
-    doc.text("Reporte de Historial de Intercambios", 14, 16);
+    doc.text("Reporte de Historial de Intercambios", 105, 10, { align: 'center', ...titleStyle });
     doc.autoTable({
       startY: 20,
+      headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+      bodyStyles: { textColor: [34, 34, 34], halign: 'center' },
       head: [
-        [
-          "ID",
-          "Símbolo",
-          "Tipo",
-          "Monto Pagado",
-          "Monto Recibido",
-          "Comisión",
-          "Fecha",
-          "Precio",
-        ],
+        ["ID", "Símbolo", "Tipo", "Monto Pagado", "Monto Recibido", "Comisión", "Fecha", "Precio"],
       ],
       body: tradeHistory.map((trade) => [
         trade.id,
@@ -53,24 +49,21 @@ export default function History({
         trade.paid_amount,
         trade.amount_received,
         trade.comission,
-        trade.price,
         new Date(trade.date).toLocaleString(),
+        trade.price,
       ]),
     });
 
+
     doc.addPage();
-    doc.text("Historial de Pagos y Retiros", 14, 16);
+
+    doc.text("Historial de Pagos y Retiros", 105, 10, { align: 'center', ...titleStyle });
     doc.autoTable({
       startY: 20,
+      headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+      bodyStyles: { textColor: [34, 34, 34], halign: 'center' },
       head: [
-        [
-          "ID",
-          "Tipo",
-          "Método",
-          "Información de la operación",
-          "Cantidad",
-          "Fecha",
-        ],
+        ["ID", "Tipo", "Método", "Información de la operación", "Cantidad", "Fecha"],
       ],
       body: paymentHistory.map((payment) => [
         payment.id,
@@ -83,9 +76,12 @@ export default function History({
     });
 
     doc.addPage();
-    doc.text("Historial de Bizums", 14, 16);
+
+    doc.text("Historial de Bizums", 105, 10, { align: 'center', ...titleStyle });
     doc.autoTable({
       startY: 20,
+      headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+      bodyStyles: { textColor: [34, 34, 34], halign: 'center' },
       head: [["ID", "Remitente", "Receptor", "Cantidad", "Fecha"]],
       body: bizumHistory.map((bizum) => [
         bizum.id,
