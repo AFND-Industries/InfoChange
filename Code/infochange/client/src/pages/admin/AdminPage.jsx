@@ -11,6 +11,7 @@ import PaymentList from "./components/PaymentList";
 
 export default function AdminPage() {
     const {
+        getAdminInfo,
         getTotalUsers,
         getTotalTransactions,
         getBizumHistorySortedByDate,
@@ -21,7 +22,8 @@ export default function AdminPage() {
         getPaymentHistorySortedByDate
     } = useAdmin();
 
-    // Datos simulados para mostrar en el panel
+    const infoLoaded = getAdminInfo() !== undefined;
+
     const totalUsers = getTotalUsers();
     const totalTransactions = getTotalTransactions();
     const totalCommission = getTotalComission();
@@ -32,7 +34,19 @@ export default function AdminPage() {
     const coinsSortedByVolume = getCoinsSortedByExchangeVolume();
     const paymentHistory = getPaymentHistorySortedByDate();
 
-    return (
+    const loadingPanel = (
+        <div className="container my-4">
+            <header className="text-center mb-4">
+                <img src={Banner} className="img-fluid col-lg-6 col-md-8 col-sm-11 col-10" alt="Logo del panel de admin" />
+            </header>
+            <div className="d-flex justify-content-center align-items-center">
+                <div className="spinner-border" style={{ width: "70px", height: "70px" }} role="status"></div>
+                <span className="ms-4 h1">Cargando información...</span>
+            </div>
+        </div>
+    );
+
+    const adminPanel = (
         <main className="container my-4">
             <header className="text-center mb-4">
                 <img src={Banner} className="img-fluid col-lg-6 col-md-8 col-sm-11 col-10" alt="Logo del panel de admin" />
@@ -54,4 +68,6 @@ export default function AdminPage() {
             </div>
         </main>
     );
+
+    return infoLoaded ? adminPanel : loadingPanel;
 }
