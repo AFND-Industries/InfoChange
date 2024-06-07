@@ -31,14 +31,9 @@ export default function Wallet(props) {
                 }
 
                 if (coin.coin !== "USDT") {
-                    const price = coinsInfo.find(
-                        (v) => v.symbol === `${coin.coin}USDT`
-                    );
-
+                    const pair = getPair(coin.coin + "USDT");
                     data.quantity = coin.quantity.toFixed(8);
-                    data.price = price
-                        ? coin.quantity * price.lastPrice
-                        : "?";
+                    data.price = pair.price * data.quantity;
                 } else {
                     data.quantity = coin.quantity.toFixed(8);
                     data.price = coin.quantity;
@@ -48,8 +43,7 @@ export default function Wallet(props) {
             })
             : [];
 
-    const totalMoney = coins ? coins.reduce(
-        (t, v) => t + (v.price === "?" ? 0 : v.price), 0).toFixed(2) : 0;
+    const totalMoney = coins ? coins.reduce((t, v) => t + (v.price === "?" ? 0 : parseFloat(v.price)), 0) : 0;
     const btcusdt = getPair("BTCUSDT");
 
     return (
@@ -65,7 +59,7 @@ export default function Wallet(props) {
                     </div>
                     <div className="d-flex flex-column">
                         <h4 className="text-secondary mb-0">Valor estimado:</h4>
-                        <h1 className="mb-0">{totalMoney}$</h1>
+                        <h1 className="mb-0">{totalMoney.toFixed(2)}$</h1>
                     </div>
                 </div>
                 <div className="row g-2">
@@ -182,7 +176,7 @@ export default function Wallet(props) {
                                             {coin.quantity} {coin.symbol}
                                         </h3>
                                         <h4 className="fs-6 text-secondary">
-                                            ~{coin.price.toFixed(2)} $
+                                            ~{parseFloat(coin.price).toFixed(2)} $
                                         </h4>
                                     </div>
                                 </div>

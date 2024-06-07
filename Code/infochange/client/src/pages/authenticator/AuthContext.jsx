@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       const bizumHistory = response.data.bizumHistory;
       const bizum = bizumHistory[bizumHistory.length - 1]
 
-      if (bizum !== undefined && bizum.receiver === user.ID && lastBizum != bizum) {
+      if (bizum !== undefined && bizum.receiver === user.ID && (lastBizum === undefined || lastBizum.id != bizum.id)) {
         const response_users = await get("/bizum_users");
         const users = response_users.data.users;
 
