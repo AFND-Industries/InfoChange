@@ -95,7 +95,12 @@ export default function Register() {
     let user = Object.assign({}, values1, values2, values3);
     console.log(user);
 
+    const loadingScreen = document.getElementById("loading-screen");
+
+    loadingScreen.style.display = "block";
     const response = await doRegister(user);
+    loadingScreen.style.display = "none";
+
     const status =
       response !== undefined && response.data !== undefined
         ? response.data.status
