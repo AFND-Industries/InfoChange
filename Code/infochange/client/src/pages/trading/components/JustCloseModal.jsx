@@ -2,7 +2,7 @@ import React from "react";
 
 function JustCloseModal() {
     return (
-        <div className="modal fade" id="just-close-modal">
+        <div className="modal fade" id="just-close-modal" aria-labelledby="just-close-modal-title" tabIndex="-1">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">

@@ -26,18 +26,18 @@ function BuyAndSell({ style = 1 }) {
     actualUserWallet === null
       ? 0
       : actualUserWallet
-          .map((c) => {
-            // esto va a dashboard
-            let dollarAmount;
-            if (c.coin === "USDT") dollarAmount = c.quantity;
-            else {
-              const usdPair = getPair(c.coin + "USDT");
-              dollarAmount = c.quantity * (usdPair.price ?? 0);
-            }
+        .map((c) => {
+          // esto va a dashboard
+          let dollarAmount;
+          if (c.coin === "USDT") dollarAmount = c.quantity;
+          else {
+            const usdPair = getPair(c.coin + "USDT");
+            dollarAmount = c.quantity * (usdPair.price ?? 0);
+          }
 
-            return dollarAmount;
-          })
-          .reduce((total, currentValue) => total + currentValue, 0);
+          return dollarAmount;
+        })
+        .reduce((total, currentValue) => total + currentValue, 0);
 
   const getWalletAmount = (symbol) => {
     let balance = 0;
@@ -268,8 +268,7 @@ function BuyAndSell({ style = 1 }) {
     if (getWalletAmount(symbol) < parseFloat(paidAmount.toFixed(8))) {
       showJustCloseModal(
         "Error",
-        `No tienes suficientes ${
-          action === "BUY" ? showQuoteAsset : showBaseAsset
+        `No tienes suficientes ${action === "BUY" ? showQuoteAsset : showBaseAsset
         } `
       );
       return;
@@ -319,20 +318,19 @@ function BuyAndSell({ style = 1 }) {
             showQuoteDecimals
           )}${showQuoteAsset}
                     </b> y has pagado <b> ${response.data.comission.toFixed(
-                      showQuoteDecimals
-                    )}${showQuoteAsset}</b> de comisión.`
+            showQuoteDecimals
+          )}${showQuoteAsset}</b> de comisión.`
         );
       } else {
         showTradeDoneToast(
           `Venta realizada con éxito`,
-          `Has vendido <b>${
-            response.data.paidAmount
+          `Has vendido <b>${response.data.paidAmount
           } ${showBaseAsset}</b> por <b>${response.data.receivedAmount.toFixed(
             showQuoteDecimals
           )}${showQuoteAsset}
                     </b> y has pagado <b>${response.data.comission.toFixed(
-                      8
-                    )} ${showBaseAsset}</b> de comisión.`
+            8
+          )} ${showBaseAsset}</b> de comisión.`
         );
       }
     } else {
@@ -406,9 +404,8 @@ function BuyAndSell({ style = 1 }) {
   return (
     <>
       <div
-        className={`col-md border border-4 rounded me-1 ${
-          action === 0 ? "d-md-block d-none" : ""
-        }`}
+        className={`col-md border border-4 rounded me-1 ${action === 0 ? "d-md-block d-none" : ""
+          }`}
       >
         <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
           <div className="d-flex justify-content-start flex-sm-row flex-column">
@@ -503,9 +500,8 @@ function BuyAndSell({ style = 1 }) {
         )}
       </div>
       <div
-        className={`col-md border border-4 rounded ms-md-2 ${
-          action === 1 ? "d-md-block d-none" : ""
-        }`}
+        className={`col-md border border-4 rounded ms-md-2 ${action === 1 ? "d-md-block d-none" : ""
+          }`}
       >
         <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
           <div className="d-flex justify-content-start flex-sm-row flex-column">
