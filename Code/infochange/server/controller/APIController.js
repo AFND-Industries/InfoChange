@@ -87,4 +87,6 @@ apiController.prices = (req, res) => {
   }
 };
 
+apiController.terms = (req, res) => res.redirect("/terms.pdf");
+
 module.exports = { apiController, getPrices: () => prices };
