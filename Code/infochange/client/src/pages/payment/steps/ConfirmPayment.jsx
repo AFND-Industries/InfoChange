@@ -67,15 +67,15 @@ export default function ConfirmPayment(props) {
                                     data.type === "paypal"
                                         ? data.info.email
                                         : cart.action === "in"
-                                        ? "".padStart(
-                                              data.info.cardNumber.length - 4,
-                                              "*"
-                                          ) +
-                                          data.info.cardNumber.slice(
-                                              data.info.cardNumber.length
-                                                  .length - 4
-                                          )
-                                        : data.info.iban;
+                                            ? ("".padStart(
+                                                data.info.cardNumber.length - 4,
+                                                "*"
+                                            ) +
+                                                data.info.cardNumber.slice(
+                                                    data.info.cardNumber.length
+                                                        .length - 4
+                                                ))
+                                            : data.info.iban;
 
                                 data.info = info;
 
