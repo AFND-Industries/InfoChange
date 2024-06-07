@@ -126,7 +126,10 @@ export default function History({
                 role="tab"
                 aria-controls="myTab"
                 aria-selected={historyMode === 0}
-                onClick={() => setHistoryMode(0)}
+                onClick={() => {
+                  setHistoryMode(0);
+                  setShowItems(5);
+                }}
               >
                 Intercambios
               </button>
@@ -142,7 +145,10 @@ export default function History({
                 role="tab"
                 aria-controls="myTab"
                 aria-selected={historyMode === 1}
-                onClick={() => setHistoryMode(1)}
+                onClick={() => {
+                  setHistoryMode(1);
+                  setShowItems(5);
+                }}
               >
                 Pagos y Retiros
               </button>
@@ -158,7 +164,10 @@ export default function History({
                 role="tab"
                 aria-controls="myTab"
                 aria-selected={historyMode === 2}
-                onClick={() => setHistoryMode(2)}
+                onClick={() => {
+                  setHistoryMode(2);
+                  setShowItems(5);
+                }}
               >
                 Bizums
               </button>
