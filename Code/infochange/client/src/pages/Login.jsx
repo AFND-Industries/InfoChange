@@ -44,7 +44,12 @@ function Login() {
   };
 
   const onLogin = async () => {
+    const loadingScreen = document.getElementById("loading-screen");
+
+    loadingScreen.style.display = "block";
     const response = await doLogin(user.current.value, pass.current.value);
+    loadingScreen.style.display = "none";
+
     const status =
       response !== undefined && response.data !== undefined
         ? response.data.status
