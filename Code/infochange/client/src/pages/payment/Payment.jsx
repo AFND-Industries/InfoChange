@@ -220,16 +220,20 @@ export default function Payment(props) {
 
                                                 loadingScreen.style.display =
                                                     "block";
+
+                                                if (method.type === "iban")
+                                                    method.type = "credit";
+
                                                 const result =
                                                     cart.action === "in"
                                                         ? await buyProduct(
-                                                              { cart: cart },
-                                                              method
-                                                          )
+                                                            { cart: cart },
+                                                            method
+                                                        )
                                                         : await withdrawBalance(
-                                                              { cart: cart },
-                                                              method
-                                                          );
+                                                            { cart: cart },
+                                                            method
+                                                        );
                                                 loadingScreen.style.display =
                                                     "none";
 
@@ -269,9 +273,8 @@ export default function Payment(props) {
                             ></div>
                         </section>
                         {cart.type !== "USDT" && step.step < 4
-                            ? `El precio se actualizará en ${
-                                  TIMEOUT - counter
-                              } segundos`
+                            ? `El precio se actualizará en ${TIMEOUT - counter
+                            } segundos`
                             : ""}
                     </div>
                 </div>
