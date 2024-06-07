@@ -7,6 +7,7 @@ import CoinsDataset from "../../../data/CoinMarketCapData.json";
 export default function Wallet(props) {
     const { wallet } = props;
     const navigate = useNavigate();
+    const [error, setError] = useState(undefined);
     const balance = useRef(null);
 
     const { getCoins } = useCoins();
@@ -20,22 +21,22 @@ export default function Wallet(props) {
     const coins =
         wallet !== undefined
             ? wallet.map((coin) => {
-                const data = CoinsDataset.data[coin.coin][0];
-                if (coin.coin !== "USDT") {
-                    const price = coinsInfo.find(
-                        (v) => v.symbol === `${coin.coin}USDT`
-                    );
-                    data.quantity = coin.quantity.toFixed(8);
-                    data.price = price
-                        ? coin.quantity * price.lastPrice
-                        : "?";
-                } else {
-                    data.quantity = coin.quantity.toFixed(8);
-                    data.price = coin.quantity;
-                }
+                  const data = CoinsDataset.data[coin.coin][0];
+                  if (coin.coin !== "USDT") {
+                      const price = coinsInfo.find(
+                          (v) => v.symbol === `${coin.coin}USDT`
+                      );
+                      data.quantity = coin.quantity.toFixed(8);
+                      data.price = price
+                          ? coin.quantity * price.lastPrice
+                          : "?";
+                  } else {
+                      data.quantity = coin.quantity.toFixed(8);
+                      data.price = coin.quantity;
+                  }
 
-                return data;
-            })
+                  return data;
+              })
             : [];
 
     return (
@@ -49,12 +50,12 @@ export default function Wallet(props) {
                     <h1>
                         {coins
                             ? coins
-                                .reduce(
-                                    (t, v) =>
-                                        t + (v.price === "?" ? 0 : v.price),
-                                    0
-                                )
-                                .toFixed(2)
+                                  .reduce(
+                                      (t, v) =>
+                                          t + (v.price === "?" ? 0 : v.price),
+                                      0
+                                  )
+                                  .toFixed(2)
                             : 0}{" "}
                         $
                     </h1>
@@ -75,9 +76,26 @@ export default function Wallet(props) {
                     <div className="col-sm-6">
                         <button
                             className="btn btn-outline-danger d-flex align-items-center w-100"
-                            onClick={() =>
-                                withdrawBalance(balance.current.value, navigate)
-                            }
+                            onClick={() => {
+                                if (
+                                    parseFloat(balance.current.value) >
+                                    parseFloat(
+                                        wallet.find((w) => w.coin === "USDT")
+                                            .quantity
+                                    )
+                                ) {
+                                    setError(
+                                        "No tienes suficiente saldo en la cuenta"
+                                    );
+                                    balance.current.value = "";
+                                } else {
+                                    withdrawBalance(
+                                        balance.current.value,
+                                        navigate,
+                                        setError
+                                    );
+                                }
+                            }}
                         >
                             <DashCircle className="me-2" /> Retirar saldo
                         </button>
@@ -87,9 +105,15 @@ export default function Wallet(props) {
                             className="btn btn-success d-flex align-items-center w-100"
                             onClick={() => {
                                 if (balance.current.value < 1000000)
-                                    addBalance(balance.current.value, navigate);
+                                    addBalance(
+                                        balance.current.value,
+                                        navigate,
+                                        setError
+                                    );
                                 else
-                                    alert("No puedes añadir tanto dinero. Prueba una cantidad menor a 1 millón de dólares");
+                                    setError(
+                                        "No puedes añadir tanto dinero. Prueba una cantidad menor a 1 millón de dólares"
+                                    );
 
                                 balance.current.value = "";
                             }}
@@ -98,7 +122,11 @@ export default function Wallet(props) {
                         </button>
                     </div>
                 </div>
-                <div className="row"></div>
+                {error ? (
+                    <div className="alert alert-danger mt-3 mb-0 w-100 text-center">
+                        {error}
+                    </div>
+                ) : undefined}
             </div>
             <hr className="mx-4 my-2" />
             <div className="mx-4">
@@ -159,10 +187,10 @@ export default function Wallet(props) {
     );
 }
 
-const addBalance = (balance, navigate) => {
+const addBalance = (balance, navigate, setError) => {
     balance = parseFloat(balance);
     if (isNaN(balance) || balance <= 0)
-        alert("El saldo a añadir debe ser mayor que 0");
+        setError("El saldo a añadir debe ser mayor que 0");
     else {
         navigate("/payment", {
             state: {
@@ -174,10 +202,10 @@ const addBalance = (balance, navigate) => {
     }
 };
 
-const withdrawBalance = (balance, navigate) => {
+const withdrawBalance = (balance, navigate, setError) => {
     balance = parseFloat(balance);
     if (isNaN(balance) || balance <= 0)
-        alert("El saldo a añadir debe ser mayor que 0");
+        setError("El saldo a retirar debe ser mayor que 0");
     else {
         navigate("/payment", {
             state: {
