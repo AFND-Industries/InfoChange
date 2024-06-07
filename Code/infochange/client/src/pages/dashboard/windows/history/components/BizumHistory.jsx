@@ -1,7 +1,8 @@
 import React from "react";
+
 import BizumItem from "./BizumItem";
 
-const BizumHistory = ({ bizumHistory, bizumUsers, user }) => {
+const BizumHistory = ({ bizumHistory, bizumUsers, user, showItems }) => {
     const findUserById = (id) =>
         bizumUsers.find((user) => {
             return user.ID === id;
@@ -10,11 +11,10 @@ const BizumHistory = ({ bizumHistory, bizumUsers, user }) => {
     const renderBizumHistory = bizumHistory ? (
         bizumHistory
             .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, showItems)
             .map((transaction, index) => {
                 const sender = findUserById(transaction.sender);
                 const receiver = findUserById(transaction.receiver);
-
-                console.log(sender);
 
                 return (
                     <BizumItem

@@ -14,14 +14,16 @@ export default function History({
   paymentHistory,
   bizumUsers,
 }) {
+  const [showItems, setShowItems] = useState(5);
   const [historyMode, setHistoryMode] = useState(0);
+  const addFiveItems = () => setShowItems(oldItems => oldItems + 5);
 
   const HistoryComponent =
     historyMode === 0
       ? TradeHistory
       : historyMode === 1
-      ? PaymentHistory
-      : BizumHistory;
+        ? PaymentHistory
+        : BizumHistory;
 
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -115,11 +117,10 @@ export default function History({
           >
             <li className="nav-item" role="presentation">
               <button
-                className={`nav-link ${
-                  historyMode === 0
-                    ? "active bg-primary text-white"
-                    : "text-dark"
-                }`}
+                className={`nav-link ${historyMode === 0
+                  ? "active bg-primary text-white"
+                  : "text-dark"
+                  }`}
                 id="intercambios-tab"
                 type="button"
                 role="tab"
@@ -132,11 +133,10 @@ export default function History({
             </li>
             <li className="nav-item" role="presentation">
               <button
-                className={`nav-link ${
-                  historyMode === 1
-                    ? "active bg-primary text-white"
-                    : "text-dark"
-                }`}
+                className={`nav-link ${historyMode === 1
+                  ? "active bg-primary text-white"
+                  : "text-dark"
+                  }`}
                 id="pagos-retiros-tab"
                 type="button"
                 role="tab"
@@ -149,11 +149,10 @@ export default function History({
             </li>
             <li className="nav-item" role="presentation">
               <button
-                className={`nav-link ${
-                  historyMode === 2
-                    ? "active bg-primary text-white"
-                    : "text-dark"
-                }`}
+                className={`nav-link ${historyMode === 2
+                  ? "active bg-primary text-white"
+                  : "text-dark"
+                  }`}
                 id="bizums-tab"
                 type="button"
                 role="tab"
@@ -167,7 +166,7 @@ export default function History({
           </ul>
         </div>
       </div>
-      <div className="row px-5 py-4">
+      <div className="row px-5 py-4 d-flex flex-column">
         <div className="col">
           <HistoryComponent
             tradeHistory={tradeHistory}
@@ -175,7 +174,11 @@ export default function History({
             paymentHistory={paymentHistory}
             bizumUsers={bizumUsers}
             user={user}
+            showItems={showItems}
           />
+        </div>
+        <div className="col d-flex justify-content-center mt-3">
+          <button className="btn btn-primary w-50" onClick={addFiveItems}>Mostrar más</button>
         </div>
       </div>
     </>

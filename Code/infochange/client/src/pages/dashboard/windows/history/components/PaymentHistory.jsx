@@ -2,13 +2,13 @@ import React from "react";
 
 import PaymentItem from "./PaymentItem";
 
-const PaymentHistory = ({ paymentHistory }) => {
+const PaymentHistory = ({ paymentHistory, showItems }) => {
     let renderPaymentHistory = null;
 
     if (paymentHistory) {
         const sortedPayment = paymentHistory.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
-        );
+        ).slice(0, showItems);
 
         renderPaymentHistory = sortedPayment.map((payment, index) => {
             return <PaymentItem key={index} payment={payment} />;
