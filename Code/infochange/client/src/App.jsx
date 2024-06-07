@@ -5,8 +5,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Payment from "./pages/payment/Payment";
 import Coins from "./pages/coins/Coins";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/Login_Register/Login";
+import Register from "./pages/Login_Register/Register";
 import Trading from "./pages/trading/Trading";
 import Unknown from "./pages/Unknown";
 import Welcome from "./pages/welcome/Welcome";
@@ -85,7 +85,8 @@ function App() {
   );
   const needAdmin = (v) => (
     <>
-      {getActualUser() !== null && getActualUser().profile.firstName === "admin" ? (
+      {getActualUser() !== null &&
+      getActualUser().profile.firstName === "admin" ? (
         v
       ) : (
         <Unknown />
