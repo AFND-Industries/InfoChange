@@ -93,7 +93,6 @@ export default function Register() {
 
   const registerUser = async (values1, values2, values3) => {
     let user = Object.assign({}, values1, values2, values3);
-    console.log(user);
 
     const loadingScreen = document.getElementById("loading-screen");
 
