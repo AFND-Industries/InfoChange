@@ -15,7 +15,7 @@ historyController.bizumHistory = async (req, res) => {
   }
   try {
     const result = await models.bizum_history.findAll({
-      attributes: ["id", "sender", "receiver", "quantity", "date"],
+      attributes: ["ID", "sender", "receiver", "quantity", "date"],
       where: {
         [Op.or]: [
           { sender: req.session.user.ID },
@@ -54,7 +54,7 @@ historyController.tradeHistory = async (req, res) => {
 
   const trade_history = await models.trade_history.findAll({
     attributes: [
-      "id",
+      "ID",
       "symbol",
       "type",
       "paid_amount",
@@ -71,7 +71,7 @@ historyController.tradeHistory = async (req, res) => {
   const tradeHistory = [];
   trade_history.forEach((row) => {
     const trade = {
-      id: row.id,
+      id: row.ID,
       symbol: row.symbol,
       type: row.type,
       paid_amount: row.paid_amount,

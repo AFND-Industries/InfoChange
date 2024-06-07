@@ -1,26 +1,25 @@
 {
-  "name": "server",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www",
-    "set-env": "node set-env.cjs"
-  },
-  "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "cors": "^2.8.5",
-    "crypto": "^1.0.1",
-    "debug": "~2.6.9",
-    "dotenv": "^16.4.5",
-    "express": "~4.19.2",
-    "express-session": "^1.18.0",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1",
-    "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7"
-  },
-  "devDependencies": {
-    "sequelize-auto": "^0.8.8"
-  }
+    "name": "server",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www",
+        "set-env": "node set-env.cjs"
+    },
+    "dependencies": {
+        "cookie-parser": "~1.4.4",
+        "cors": "^2.8.5",
+        "crypto": "^1.0.1",
+        "debug": "~2.6.9",
+        "dotenv": "^16.4.5",
+        "express": "~4.19.2",
+        "express-session": "^1.18.0",
+        "http-errors": "~1.6.3",
+        "morgan": "~1.9.1",
+        "sequelize": "^6.37.3",
+        "sqlite3": "^5.1.7"
+    },
+    "devDependencies": {
+        "sequelize-auto": "^0.8.8"
+    }
 }

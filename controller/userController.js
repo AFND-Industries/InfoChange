@@ -260,15 +260,4 @@ userController.admin = async (req, res) => {
   }
 };
 
-userController.users = async (req, res) => {
-  try {
-    const users = await models.user.findAll();
-    res.json(users);
-    utils.applog(`Petición "/users" ejecutada`, "REQUEST");
-  } catch (e) {
-    res.json(
-      utils.error("ERROR", `Ha ocurrido un error inesperado: ${e.sqlMessage}`)
-    );
-  }
-};
 module.exports = userController;
