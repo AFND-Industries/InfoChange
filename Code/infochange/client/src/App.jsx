@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -21,9 +21,11 @@ import ServerErrorToast from "./components/ServerErrorToast";
 import LoadingScreen from "./components/LoadingScreen";
 
 import { useAuth } from "./pages/authenticator/AuthContext";
+import ReceivedBizumToast from "./components/ReceivedBizumToast";
 
 function App() {
-  const { getAuthStatus, getActualUser } = useAuth();
+  const { getAuthStatus, getActualUser, getLastBizum } = useAuth();
+  const [load, setLoaded] = useState(false);
 
   useEffect(() => {
     const toast = new bootstrap.Toast(document.getElementById("liveToast"), {
@@ -33,6 +35,28 @@ function App() {
     if (getAuthStatus() == "-1") toast.show();
     else toast.hide();
   }, [getAuthStatus()]);
+
+  useEffect(() => {
+    const lastBizum = getLastBizum();
+    if (lastBizum !== undefined) {
+      if (load) showBizumReceived("Bizum recibido", lastBizum);
+      else setLoaded(true);
+    }
+  }, [getLastBizum()]);
+
+  const showBizumReceived = (title, lastBizum) => {
+    const toast = new bootstrap.Toast(document.getElementById("received-bizum-toast"), {
+      autohide: true,
+    });
+    const toastTitle = document.getElementById("received-bizum-toast-title");
+    const toastBody = document.getElementById("received-bizum-toast-body");
+
+    toastTitle.innerHTML = title;
+    toastBody.innerHTML = "<span>Has <b>recibido</b> un bizum de <b>" +
+      lastBizum.quantity + "$</b> de <b>" + lastBizum.sender + "</b></span>";
+
+    toast.show();
+  };
 
   const statusPages = {
     "-2": <Loading />,
@@ -109,6 +133,7 @@ function App() {
       </div>
 
       <ServerErrorToast />
+      <ReceivedBizumToast />
     </>
   );
 }
