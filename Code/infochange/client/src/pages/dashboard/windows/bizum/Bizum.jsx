@@ -120,18 +120,23 @@ export default function Bizum({ user, bizumUsers, reload }) {
   return (
     <>
       <div className="row px-5 py-4">
-        <div className="col-12 mb-4 text-center">
-          <img
-            src={Banner}
-            style={{ width: "50%", minWidth: "200px" }}
-            alt="Logo de InfoBizum"
-          />
+        <div className="col-12 mb-lg-4 text-center">
+          <img src={Banner} className="img-fluid col-lg-6 col-md-8 col-sm-11 col-10" alt="Logo de InfoBizum" />
         </div>
       </div>
 
       <div className="row mx-5 d-flex align-items-center">
-        <div className="col-md-7 mb-4">
+        <div className="col-lg-7">
           <div style={{ height: "1.5em" }}></div>
+        </div>
+        <div className="col-lg-5">
+          <span>
+            Disponible: {(Math.trunc(userDolarBalance * 100) / 100).toFixed(2)}$
+          </span>
+        </div>
+      </div>
+      <div className="row mx-5 d-flex align-items-center">
+        <div className="col-lg-7 mb-4">
           <div className="d-flex">
             <div className="dropdown w-100 me-2">
               <label htmlFor="searchUser" className="visually-hidden">
@@ -157,10 +162,7 @@ export default function Bizum({ user, bizumUsers, reload }) {
             </div>
           </div>
         </div>
-        <div className="col-md-3 mb-4">
-          <span>
-            Disponible: {(Math.trunc(userDolarBalance * 100) / 100).toFixed(2)}$
-          </span>
+        <div className="col-lg-3 mb-4">
           <div className="input-group">
             <label htmlFor="cantidad" className="visually-hidden">
               Cantidad
@@ -176,8 +178,7 @@ export default function Bizum({ user, bizumUsers, reload }) {
             <span className="input-group-text">$</span>
           </div>
         </div>
-        <div className="col-md-2 mb-4">
-          <div style={{ height: "1.5em" }}></div>
+        <div className="col-lg-2 mb-4">
           <button
             className={`btn`}
             disabled={!activeButton}
