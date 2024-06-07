@@ -20,7 +20,8 @@ const TradeItem = ({ trade }) => {
 
     const drawCoin = (coin, symbol) => (
         <div>
-            <img style={{ width: "35px", height: "35px" }} src={coin.logo} alt={"Logo de " + symbol} />
+            <img style={{ width: "35px", height: "35px" }} src={coin !== undefined ? coin.logo : "./favicon.ico"}
+                alt={"Logo de " + symbol} />
         </div>
     );
 
