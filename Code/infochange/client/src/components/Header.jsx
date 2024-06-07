@@ -78,9 +78,15 @@ export default function Header() {
                 </div>
                 <button
                   className="btn btn-primary"
-                  onClick={() => {
-                    navigate("/");
-                    doLogout();
+                  onClick={async () => {
+                    const loadingScreen = document.getElementById("loading-screen");
+
+                    loadingScreen.style.display = "block";
+                    const response = await doLogout(user);
+                    loadingScreen.style.display = "none";
+
+                    if (response.data.status === "1")
+                      navigate("/");
                   }}
                 >
                   Cerrar Sesión
