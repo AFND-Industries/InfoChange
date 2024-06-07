@@ -1,26 +1,28 @@
-.clickableCard{
-    cursor: pointer;
-    transition: 0.3s;
+.clickableCard {
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.clickableCard:hover{
-    transform: scale(1.05);
+.clickableCard:hover {
+  transform: scale(1.05);
 }
 
 .anim-gradient {
-    background: linear-gradient(45deg, #383D3B 0%, #EEE5E9 50%, #7C7C7C 100%);
-    background-size: 400% 400%;
-    animation: gradient 30s ease infinite;
+  background: linear-gradient(45deg, #383D3B 0%, #EEE5E9 50%, #7C7C7C 100%);
+  background-size: 400% 400%;
+  animation: gradient 30s ease infinite;
 }
-      
+
 @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
   }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
