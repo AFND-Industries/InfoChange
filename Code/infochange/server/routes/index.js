@@ -8,7 +8,7 @@ const { apiController } = require("../controller/APIController");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.json({ message: "Hello InfoWorld!" });
+    res.json({ message: "Hello InfoWorld!" });
 });
 
 router.get("/auth", userController.auth); //checked
@@ -48,5 +48,7 @@ router.get("/coins", apiController.coins); //Checked
 router.get("/prices", apiController.prices);
 
 router.post("/withdraw", walletController.withdraw);
+
+router.get("/terms", apiController.terms);
 
 module.exports = router;
