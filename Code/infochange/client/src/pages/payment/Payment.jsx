@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 
 import Banner from "../../assets/payment_banner.png";
 
-import "./payment.css";
+import "./Payment.css";
 import PaymentCompleted from "./steps/PaymentCompleted";
 import ConfirmPayment from "./steps/ConfirmPayment";
 import { CreditForm, IBANForm, PaypalForm } from "./steps/DataForm";
