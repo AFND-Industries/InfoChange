@@ -26,7 +26,7 @@ export default function Header() {
     <header>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" style={{ cursor: "pointer" }} onClick={() => { navigate("/") }}>
             <img src={banner} alt="InfoChange logo" width="200" height="50" />
           </a>
           <button

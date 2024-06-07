@@ -53,10 +53,10 @@ export default function AdminPage() {
             </header>
 
             <div className="row mb-4">
-                <SummaryCard title="Usuarios Registrados" value={totalUsers} />
+                <SummaryCard title="Usuarios registrados" value={totalUsers} />
                 <SummaryCard title="Balance total de InfoChange" value={`${totalExchangeBalance.toFixed(2)}$`} />
-                <SummaryCard title="Trades Realizados" value={totalTransactions} />
-                <SummaryCard title="Ganancias por Comisiones" value={`${totalCommission.toFixed(2)}$`} />
+                <SummaryCard title="Trades realizados" value={totalTransactions} />
+                <SummaryCard title="Ganancias por comisiones" value={`${totalCommission.toFixed(2)}$`} />
             </div>
             <div className="row mb-4">
                 <UserBalanceList users={usersByBalance} />

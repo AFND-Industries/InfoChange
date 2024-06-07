@@ -5,7 +5,7 @@ const SummaryCard = ({ title, value }) => (
         <div className="card shadow-sm h-100" role="region" aria-labelledby={`summary-${title.replace(/\s+/g, '-').toLowerCase()}`} tabIndex="0">
             <div className="card-body text-center">
                 <h2 id={`summary-${title.replace(/\s+/g, '-').toLowerCase()}`} className="card-title h5">{title}</h2>
-                <p className="card-text display-6">{value}</p>
+                <p className="card-text display-6 fit-text">{value}</p>
             </div>
         </div>
     </div>
