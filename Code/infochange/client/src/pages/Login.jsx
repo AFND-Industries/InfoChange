@@ -9,8 +9,13 @@ import "./login.css";
 
 function Login() {
   const location = useLocation();
-  const { doLogin } = useAuth();
+  const { doLogin, getAuthStatus } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (getAuthStatus() !== "0")
+      navigate("/");
+  }, [getAuthStatus()]);
 
   onkeydown = (e) => {
     if (e.code === "Enter") onLogin();
@@ -73,12 +78,12 @@ function Login() {
 
     alertPlaceholder.append(wrapper);
   };
-  return (
+  const loginPanel = (
     <main
       className="anim_gradient"
-      // style={{
-      //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
-      // }}
+    // style={{
+    //   background: "linear-gradient(to top right,#EEE5E9,#383D3B)",
+    // }}
     >
       <div className="container-fluid vh-100 ">
         <div className="row align-items-center justify-content-center vh-100">
@@ -162,6 +167,8 @@ function Login() {
       </div>
     </main>
   );
+
+  return getAuthStatus() === "0" ? loginPanel : <></>;
 }
 
 export default Login;
