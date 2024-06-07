@@ -23,11 +23,18 @@ export default function Wallet(props) {
     const coins =
         wallet !== undefined
             ? wallet.map((coin) => {
-                const data = CoinsDataset.data[coin.coin][0];
+                let data = CoinsDataset.data[coin.coin][0];
+                if (data === undefined) {
+                    data = {};
+                    data.name = coin.coin;
+                    data.logo = "/favicon.ico";
+                }
+
                 if (coin.coin !== "USDT") {
                     const price = coinsInfo.find(
                         (v) => v.symbol === `${coin.coin}USDT`
                     );
+
                     data.quantity = coin.quantity.toFixed(8);
                     data.price = price
                         ? coin.quantity * price.lastPrice
