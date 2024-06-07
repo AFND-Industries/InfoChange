@@ -31,7 +31,7 @@ export default function Welcome() {
 
   return (
     <main className={`container-fluid px-0 App ${loaded ? "loaded" : ""}`}>
-      <section style={{ height: "100vh", width: "100%" }}>
+      <section className="seccionInicial">
         <div
           className="container d-flex justify-content-center align-items-center"
           style={{ height: "70%" }}

@@ -323,7 +323,7 @@ export default function CoinInfo(props) {
                 }
               }}
             >
-              Monedas &ensp;
+              <u> Monedas </u> &ensp;
             </span>
             <i class="bi bi-chevron-right"></i> &ensp;
             <span className="text-dark">{coin.name}</span>

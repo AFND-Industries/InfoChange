@@ -208,7 +208,11 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
     };
 
     return (
-      <div className="d-flex align-items-center" style={{ width: "25%" }}>
+      <div
+        className="d-flex align-items-center"
+        style={{ width: "25%" }}
+        role="celda"
+      >
         <img
           name="charge"
           src="/favicon.ico"
@@ -235,13 +239,17 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
 
   const changePorcentTemplate = (rowData) => {
     return rowData.change_porcent < 0 ? (
-      <span className="red-text" style={{ fontWeight: "bold" }}>
-        {rowData.change_porcent} %
-      </span>
+      <div role="celda">
+        <span className="red-text" style={{ fontWeight: "bold" }}>
+          {rowData.change_porcent} %
+        </span>
+      </div>
     ) : (
-      <span className="green-text" style={{ fontWeight: "bold" }}>
-        {rowData.change_porcent} %
-      </span>
+      <div role="celda">
+        <span className="green-text" style={{ fontWeight: "bold" }}>
+          {rowData.change_porcent} %
+        </span>
+      </div>
     );
   };
 
@@ -291,7 +299,8 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
           <Column
             body={imageBodyTemplate}
             header="Nombre"
-            headerStyle={{ position: "sticky", left: 0 }}
+            sortable
+            headerStyle={{ position: "sticky", left: 0, role: "columna" }}
             bodyStyle={{
               position: "sticky",
               left: 0,
@@ -301,28 +310,32 @@ function getCoinDataTable(data, filters1, header1, onRowClick, lastDate, rows) {
             className="hover-column sticky-column"
             style={{ width: "25%" }}
             aria-label="Nombre"
+            role="columna"
           ></Column>
           <Column
             body={changePorcentTemplate}
             sortable
             sortField="change_porcent"
             header="Porcentaje de cambio"
-            style={{ width: "25%" }}
+            style={{ width: "25%", role: "columna" }}
             aria-label="Porcentaje de cambio"
+            role="columna"
           ></Column>
           <Column
-            field="volume"
+            body={(rowData) => <div role="celda">{rowData.volume}</div>}
             sortable
             header="Volumen"
-            style={{ width: "25%" }}
+            style={{ width: "25%", role: "columna" }}
             aria-label="Volumen"
+            role="columna"
           ></Column>
           <Column
-            field="price"
+            body={(rowData) => <div role="celda">{rowData.price}</div>}
             sortable
             header="Precio"
-            style={{ width: "25%" }}
+            style={{ width: "25%", role: "columna" }}
             aria-label="Precio"
+            role="columna"
           ></Column>
         </DataTable>
       </div>
