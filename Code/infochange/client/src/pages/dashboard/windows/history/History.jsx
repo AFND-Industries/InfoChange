@@ -186,9 +186,12 @@ export default function History({
             showItems={showItems}
           />
         </div>
-        <div className="col d-flex justify-content-center mt-3">
-          <button className="btn btn-primary w-50" onClick={addFiveItems}>Mostrar más</button>
-        </div>
+        {((historyMode === 0 && showItems < tradeHistory.length) ||
+          (historyMode === 1 && showItems < paymentHistory.length) ||
+          (historyMode === 2 && showItems < bizumHistory.length)) &&
+          <div className="col d-flex justify-content-center mt-3">
+            <button className="btn btn-primary w-50" onClick={addFiveItems}>Mostrar más</button>
+          </div>}
       </div>
     </>
   );
