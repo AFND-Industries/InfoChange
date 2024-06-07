@@ -15,10 +15,6 @@ function SymbolSearch({ style = 0 }) {
     const [searchInput, setSearchInput] = useState("");
     const [searchPairs, setSearchPairs] = useState([]);
 
-    const searchHandler = () => {
-        console.log(searchInput);
-    }
-
     const handleInputChange = (event) => {
         if (event.target.value.length === 0) setSearchPairs([]);
         else setSearchPairs(filterPairs(event.target.value, style === 0 ? "USDT" : ""));
@@ -26,9 +22,6 @@ function SymbolSearch({ style = 0 }) {
         setSearchInput(event.target.value);
     }
 
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') searchHandler();
-    }
 
     return (
         <>
@@ -39,10 +32,10 @@ function SymbolSearch({ style = 0 }) {
                     type="search"
                     placeholder="Buscar par..."
                     id="searchPair"
+                    autoComplete="off"
                     style={{ backgroundColor: "#ffffff", color: "#000000" }}
                     value={searchInput}
                     onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
                     tabIndex={0}
                 />
             </div>

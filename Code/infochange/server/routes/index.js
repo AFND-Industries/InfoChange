@@ -41,7 +41,7 @@ router.post("/trade", walletController.trade); //checked
 
 router.post("/payment", walletController.payment); //checked
 
-router.get("/users", userController.users); //checked
+//router.get("/users", userController.users); //checked
 
 router.get("/coins", apiController.coins); //Checked
 

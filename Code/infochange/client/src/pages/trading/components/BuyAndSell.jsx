@@ -15,29 +15,13 @@ function BuyAndSell({ style = 1 }) {
 
   const { getActualPair, getActualPairPrice } = useTrading();
   const { getAuthStatus, getActualUserWallet } = useAuth();
-  const { doTrade, getPair } = useAPI();
+  const { doTrade } = useAPI();
 
   useEffect(() => {
     if (getAuthStatus() !== "-2" && getAuthStatus() !== "1") style = 0;
   }, [getAuthStatus()]);
 
   const actualUserWallet = getActualUserWallet();
-  const totalMoney =
-    actualUserWallet === null
-      ? 0
-      : actualUserWallet
-        .map((c) => {
-          // esto va a dashboard
-          let dollarAmount;
-          if (c.coin === "USDT") dollarAmount = c.quantity;
-          else {
-            const usdPair = getPair(c.coin + "USDT");
-            dollarAmount = c.quantity * (usdPair.price ?? 0);
-          }
-
-          return dollarAmount;
-        })
-        .reduce((total, currentValue) => total + currentValue, 0);
 
   const getWalletAmount = (symbol) => {
     let balance = 0;

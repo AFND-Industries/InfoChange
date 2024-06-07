@@ -1,20 +1,17 @@
 import { Link, redirect, useNavigate } from "react-router-dom";
-import Countries from "./../assets/countries.json";
+import Countries from "../../assets/countries.json";
 import { useContext, useRef, useState, useEffect } from "react";
-import classNames from "classnames";
 import "./login.css";
-import Users from "./../data/users.json";
-import { useAuth } from "./authenticator/AuthContext";
+import { useAuth } from "../authenticator/AuthContext";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import countriesList from "../assets/countries.json"; // Supongamos que tienes una lista de países en un archivo separado
+import countriesList from "../../assets/countries.json";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import Tooltip from "react-bootstrap/Tooltip";
 import * as formik from "formik";
-import { ErrorMessage, Field } from "formik";
 import * as yup from "yup";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -22,7 +19,6 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import * as Icons from "react-bootstrap-icons";
-import Typography from "@mui/material/Typography";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 const steps = [
   "Informacion Personal",
@@ -51,21 +47,17 @@ export default function Register() {
     handleChange(event); // Para que Formik también actualice el valor del campo 'pais'
   };
   const checkEmailExists = async (email) => {
-    console.log(email);
     const response = await doCheckEmail(email);
     const status =
       response !== undefined && response.data !== undefined
         ? response.data.status
         : "";
-    console.log(response);
+
     if (status === "0") {
-      console.log(response.data.message);
       return false;
     } else if (status === "1") {
-      console.log(response.data.message);
       return true;
     } else if (status === "-1") {
-      console.log(response.data.message);
       return true;
     }
   };
@@ -86,7 +78,6 @@ export default function Register() {
 
   useEffect(() => {
     if (values1 !== null && values2 !== null && values3 !== null) {
-      // Todas las variables están listas, puedes llamar a registerUser con los valores actualizados
       registerUser(values1, values2, values3);
     }
   }, [values1, values2, values3]);
@@ -104,17 +95,6 @@ export default function Register() {
       response !== undefined && response.data !== undefined
         ? response.data.status
         : "";
-    console.log(response);
-    // if (status === "-1") {
-    //   setError(response.data.cause);
-    // } else if (status === "0") {
-    //   setError("Usuario o contraseña incorrecta");
-    // } else if (status === "1") {
-    //   navigate("/dashboard");
-    // } else {
-    //
-    //   setError("Error desconocido (por ahora)");
-    // }
   };
   const { Formik } = formik;
   let emailRegex =
@@ -208,8 +188,6 @@ export default function Register() {
   const handleShow = () => setShow(true);
 
   const handleNext = (values) => {
-    console.log(values);
-    console.log(activeStep);
     if (activeStep == 0) {
       setValues1({ ...values });
     }
@@ -931,7 +909,18 @@ export default function Register() {
                         <Form.Check
                           required
                           name="terms"
-                          label="Acepto los terminos y condiciones"
+                          label={
+                            <>
+                              Acepto los{" "}
+                              <a
+                                href="https://server.infochange.com/terms"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                términos y condiciones
+                              </a>
+                            </>
+                          }
                           onChange={handleChange}
                           isInvalid={!!errors.terms}
                           feedback={errors.terms}

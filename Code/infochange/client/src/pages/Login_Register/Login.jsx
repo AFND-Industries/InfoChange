@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import * as Icons from "react-bootstrap-icons";
 
-import { useAuth } from "./authenticator/AuthContext";
+import { useAuth } from "../authenticator/AuthContext";
 
 import "./login.css";
 
@@ -42,7 +43,11 @@ function Login() {
     setShowPassword(!showPassword);
     setInputType(showPassword ? "password" : "text");
   };
-
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+    </Tooltip>
+  );
   const onLogin = async () => {
     const loadingScreen = document.getElementById("loading-screen");
 
@@ -54,13 +59,12 @@ function Login() {
       response !== undefined && response.data !== undefined
         ? response.data.status
         : "";
-    console.log(status);
+
     if (status === "-1") {
       appendAlert(response.data.cause, "danger");
     } else if (status === "0") {
       appendAlert("Usuario o contraseña incorrecta", "danger");
     } else if (status === "1") {
-      console.log("Login correcto");
       navigate("/dashboard");
     } else {
       appendAlert(
@@ -116,6 +120,7 @@ function Login() {
                   <label htmlFor="passInput" className="form-label">
                     Contraseña
                   </label>
+
                   <div className="input-group">
                     <input
                       type={inputType}
@@ -124,28 +129,31 @@ function Login() {
                       id="passInput"
                       aria-required="true"
                     />
-                    <button
-                      type="button"
-                      className="btn btn-dark"
-                      name="showPassword"
-                      aria-label="Mostrar contraseña"
-                      onClick={togglePasswordVisibility}
+                    <OverlayTrigger
+                      placement="top"
+                      delay={{
+                        show: 250,
+                        hide: 400,
+                      }}
+                      overlay={renderTooltip}
                     >
-                      {showPassword ? <Icons.Eye /> : <Icons.EyeSlash />}
-                    </button>
+                      <button
+                        type="button"
+                        className="btn btn-dark"
+                        name="showPassword"
+                        aria-label={
+                          showPassword
+                            ? "Ocultar contraseña"
+                            : "Mostrar contraseña"
+                        }
+                        onClick={togglePasswordVisibility}
+                      >
+                        {showPassword ? <Icons.Eye /> : <Icons.EyeSlash />}
+                      </button>
+                    </OverlayTrigger>
                   </div>
                 </div>
 
-                {/* <div className="mb-3 form-check d-flex justify-content-center">
-                  <input
-                    type="checkbox"
-                    className="form-check-input me-2"
-                    id="exampleCheck1"
-                  />
-                  <label className="form-check-label" htmlFor="exampleCheck1">
-                    Mantener la sesión iniciada
-                  </label>
-                </div> */}
                 <div id="liveAlertPlaceholder"></div>
                 <div className="d-flex justify-content-center my-3">
                   <Link to={"/"}>
