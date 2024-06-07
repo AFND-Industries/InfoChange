@@ -77,13 +77,21 @@ export default function History({
 
     doc.addPage();
 
+    const modifiedHistory = bizumHistory.map(item => {
+      return {
+        ...item,
+        sender: Object.values(bizumUsers).filter(u => u.ID === item.sender)[0].username,
+        receiver: Object.values(bizumUsers).filter(u => u.ID === item.receiver)[0].username
+      };
+    });
+
     doc.text("Historial de Bizums", 105, 10, { align: 'center', ...titleStyle });
     doc.autoTable({
       startY: 20,
       headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
       bodyStyles: { textColor: [34, 34, 34], halign: 'center' },
       head: [["ID", "Remitente", "Receptor", "Cantidad", "Fecha"]],
-      body: bizumHistory.map((bizum) => [
+      body: modifiedHistory.map((bizum) => [
         bizum.id,
         bizum.sender,
         bizum.receiver,

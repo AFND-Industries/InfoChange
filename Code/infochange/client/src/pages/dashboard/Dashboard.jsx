@@ -47,17 +47,8 @@ function Dashboard() {
             setBizumUserList(users);
 
             const bizumHistory = await doBizumHistory();
-            if (bizumHistory !== undefined && bizumHistory.data.status === "1") {
-                const modifiedHistory = bizumHistory.data.bizumHistory.map(item => {
-                    return {
-                        ...item,
-                        sender: Object.values(users).filter(u => u.ID === item.sender)[0].username,
-                        receiver: Object.values(users).filter(u => u.ID === item.receiver)[0].username
-                    };
-                });
-
-                setBizumHistory(modifiedHistory);
-            }
+            if (bizumHistory !== undefined && bizumHistory.data.status === "1")
+                setBizumHistory(bizumHistory.data.bizumHistory);
         }
     }
 
