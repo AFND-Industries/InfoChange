@@ -10,6 +10,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 export const AdminProvider = ({ children }) => {
   const { getPair, getPairPrice, getTokenInfo } = useAPI();
   const [adminInfo, setAdminInfo] = useState(undefined);
+  const getAdminInfo = () => adminInfo;
 
   const reloadTime = 10000; // 10s
 
@@ -75,8 +76,8 @@ export const AdminProvider = ({ children }) => {
           (trade.type === "SELL"
             ? getPairPrice(symbol.baseAsset + "USDT")
             : symbol.quoteAsset === "USDT"
-            ? 1
-            : getPairPrice(symbol.quoteAsset + "USDT"));
+              ? 1
+              : getPairPrice(symbol.quoteAsset + "USDT"));
       });
     }
 
@@ -210,6 +211,7 @@ export const AdminProvider = ({ children }) => {
   return (
     <AdminContext.Provider
       value={{
+        getAdminInfo,
         getTotalUserBalance,
         getTotalUsers,
         getBizumHistorySortedByDate,

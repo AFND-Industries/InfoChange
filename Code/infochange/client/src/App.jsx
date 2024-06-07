@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Payment from "./pages/payment/Payment";
 import Coins from "./pages/coins/Coins";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/Login_Register/Login";
+import Register from "./pages/Login_Register/Register";
 import Trading from "./pages/trading/Trading";
 import Unknown from "./pages/Unknown";
 import Welcome from "./pages/welcome/Welcome";
@@ -21,9 +21,11 @@ import ServerErrorToast from "./components/ServerErrorToast";
 import LoadingScreen from "./components/LoadingScreen";
 
 import { useAuth } from "./pages/authenticator/AuthContext";
+import ReceivedBizumToast from "./components/ReceivedBizumToast";
 
 function App() {
-  const { getAuthStatus, getActualUser } = useAuth();
+  const { getAuthStatus, getActualUser, getLastBizum } = useAuth();
+  const [load, setLoaded] = useState(false);
 
   useEffect(() => {
     const toast = new bootstrap.Toast(document.getElementById("liveToast"), {
@@ -33,6 +35,28 @@ function App() {
     if (getAuthStatus() == "-1") toast.show();
     else toast.hide();
   }, [getAuthStatus()]);
+
+  useEffect(() => {
+    const lastBizum = getLastBizum();
+    if (lastBizum !== undefined) {
+      if (load) showBizumReceived("Bizum recibido", lastBizum);
+      else setLoaded(true);
+    }
+  }, [getLastBizum()]);
+
+  const showBizumReceived = (title, lastBizum) => {
+    const toast = new bootstrap.Toast(document.getElementById("received-bizum-toast"), {
+      autohide: true,
+    });
+    const toastTitle = document.getElementById("received-bizum-toast-title");
+    const toastBody = document.getElementById("received-bizum-toast-body");
+
+    toastTitle.innerHTML = title;
+    toastBody.innerHTML = "<span>Has <b>recibido</b> un bizum de <b>" +
+      lastBizum.quantity + "$</b> de <b>" + lastBizum.sender + "</b></span>";
+
+    toast.show();
+  };
 
   const statusPages = {
     "-2": <Loading />,
@@ -61,7 +85,8 @@ function App() {
   );
   const needAdmin = (v) => (
     <>
-      {getActualUser() !== null && getActualUser().profile.firstName === "admin" ? (
+      {getActualUser() !== null &&
+      getActualUser().profile.firstName === "admin" ? (
         v
       ) : (
         <Unknown />
@@ -109,6 +134,7 @@ function App() {
       </div>
 
       <ServerErrorToast />
+      <ReceivedBizumToast />
     </>
   );
 }

@@ -10,7 +10,9 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 export const AuthProvider = ({ children }) => {
   const [authStatus, setAuthStatus] = useState("-2"); // -2: Loading. -1: Server not available. 0 Not logged. 1 Logged
   const [actualUser, setActualUser] = useState(null);
+  const [lastBizum, setLastBizum] = useState(undefined);
 
+  const getLastBizum = () => lastBizum;
   const getAuthStatus = () => authStatus;
   const getActualUser = () => actualUser;
   const getActualUserWallet = () =>
@@ -33,6 +35,25 @@ export const AuthProvider = ({ children }) => {
 
     setAuthStatus(response.data.status);
 
+    const updateLastBizum = async (user) => {
+      if (user === undefined)
+        return;
+
+      const response = await get("/bizum_history");
+      const bizumHistory = response.data.bizumHistory;
+      const bizum = bizumHistory[bizumHistory.length - 1]
+
+      if (bizum !== undefined && bizum.receiver === user.ID && lastBizum != bizum) {
+        const response_users = await get("/bizum_users");
+        const users = response_users.data.users;
+
+        const user = Object.values(users).filter(user => user.ID === bizum.sender)[0].username;
+        bizum.sender = user;
+
+        setLastBizum(bizum);
+      }
+    }
+
     if (response.data.status === "1") {
       const user = response.data.user;
       const wallet = walletRes.data.wallet;
@@ -43,9 +64,11 @@ export const AuthProvider = ({ children }) => {
           prevActualUser === undefined ||
           JSON.stringify(user) != JSON.stringify(prevActualUser.profile) ||
           JSON.stringify(wallet) != JSON.stringify(prevActualUser.wallet)
-        )
+        ) {
+          updateLastBizum(user);
+
           return toUser(user, wallet);
-        else return prevActualUser;
+        } else return prevActualUser;
       });
     } else {
       setActualUser(null);
@@ -113,6 +136,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        getLastBizum,
         getActualUser,
         getAuthStatus,
         getActualUserWallet,

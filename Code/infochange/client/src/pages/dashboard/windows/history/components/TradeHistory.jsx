@@ -1,13 +1,13 @@
 import React from "react";
 import TradeItem from "./TradeItem";
 
-const TradeHistory = ({ tradeHistory }) => {
+const TradeHistory = ({ tradeHistory, showItems }) => {
     let renderTradeHistory = null;
 
     if (tradeHistory) {
         const sortedHistory = tradeHistory.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
-        );
+        ).slice(0, showItems);
 
         renderTradeHistory = sortedHistory.map((trade, index) => {
             return <TradeItem key={index} trade={trade} />;

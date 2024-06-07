@@ -2,7 +2,7 @@ import React from "react";
 
 function TradeConfirmationModal() {
     return (
-        <div className="modal fade" id="trade-confirmation-modal">
+        <div className="modal fade" id="trade-confirmation-modal" aria-labelledby="trade-confirmation-modal-title" tabIndex="-1">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">

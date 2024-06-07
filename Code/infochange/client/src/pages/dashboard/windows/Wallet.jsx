@@ -3,12 +3,15 @@ import { DashCircle, DashCircleFill, PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { useCoins } from "../../coins/CoinsAPI";
 import CoinsDataset from "../../../data/CoinMarketCapData.json";
+import { useAPI } from "../../../context/APIContext";
 
 export default function Wallet(props) {
     const { wallet } = props;
     const navigate = useNavigate();
+    const [error, setError] = useState(undefined);
     const balance = useRef(null);
 
+    const { getPair } = useAPI();
     const { getCoins } = useCoins();
 
     onkeydown = (event) => {
@@ -20,44 +23,43 @@ export default function Wallet(props) {
     const coins =
         wallet !== undefined
             ? wallet.map((coin) => {
-                  const data = CoinsDataset.data[coin.coin][0];
-                  if (coin.coin !== "USDT") {
-                      const price = coinsInfo.find(
-                          (v) => v.symbol === `${coin.coin}USDT`
-                      );
-                      data.quantity = coin.quantity.toFixed(8);
-                      data.price = price
-                          ? coin.quantity * price.lastPrice
-                          : "?";
-                  } else {
-                      data.quantity = coin.quantity.toFixed(8);
-                      data.price = coin.quantity;
-                  }
+                const data = CoinsDataset.data[coin.coin][0];
+                if (coin.coin !== "USDT") {
+                    const price = coinsInfo.find(
+                        (v) => v.symbol === `${coin.coin}USDT`
+                    );
+                    data.quantity = coin.quantity.toFixed(8);
+                    data.price = price
+                        ? coin.quantity * price.lastPrice
+                        : "?";
+                } else {
+                    data.quantity = coin.quantity.toFixed(8);
+                    data.price = coin.quantity;
+                }
 
-                  return data;
-              })
+                return data;
+            })
             : [];
+
+    const totalMoney = coins ? coins.reduce(
+        (t, v) => t + (v.price === "?" ? 0 : v.price), 0).toFixed(2) : 0;
+    const btcusdt = getPair("BTCUSDT");
 
     return (
         <>
             <div className="container d-flex flex-column align-items-center py-3">
-                <h2>Balance</h2>
-                <div
-                    className="rounded-pill p-4 text-white mb-4 bg-success"
-                    style={{ width: "fit-content" }}
-                >
-                    <h1>
-                        {coins
-                            ? coins
-                                  .reduce(
-                                      (t, v) =>
-                                          t + (v.price === "?" ? 0 : v.price),
-                                      0
-                                  )
-                                  .toFixed(2)
-                            : 0}{" "}
-                        $
-                    </h1>
+                <div className="d-flex align-items-center mb-3">
+                    <div className="d-flex flex-column me-5">
+                        <h4 className="text-secondary mb-0">Balance de la cuenta:</h4>
+                        <div className="d-flex align-items-end">
+                            <h1 className="mb-0">{(btcusdt === undefined || btcusdt.price === undefined ? 0 :
+                                (totalMoney / btcusdt.price)).toFixed(8)}</h1><h5 className="ms-1 mb-1"> BTC</h5>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <h4 className="text-secondary mb-0">Valor estimado:</h4>
+                        <h1 className="mb-0">{totalMoney}$</h1>
+                    </div>
                 </div>
                 <div className="row g-2">
                     <div className="col-12">
@@ -75,9 +77,26 @@ export default function Wallet(props) {
                     <div className="col-sm-6">
                         <button
                             className="btn btn-outline-danger d-flex align-items-center w-100"
-                            onClick={() =>
-                                withdrawBalance(balance.current.value, navigate)
-                            }
+                            onClick={() => {
+                                if (
+                                    parseFloat(balance.current.value) >
+                                    parseFloat(
+                                        wallet.find((w) => w.coin === "USDT")
+                                            .quantity
+                                    )
+                                ) {
+                                    setError(
+                                        "No tienes suficiente saldo en la cuenta"
+                                    );
+                                    balance.current.value = "";
+                                } else {
+                                    withdrawBalance(
+                                        balance.current.value,
+                                        navigate,
+                                        setError
+                                    );
+                                }
+                            }}
                         >
                             <DashCircle className="me-2" /> Retirar saldo
                         </button>
@@ -85,15 +104,30 @@ export default function Wallet(props) {
                     <div className="col-sm-6">
                         <button
                             className="btn btn-success d-flex align-items-center w-100"
-                            onClick={() =>
-                                addBalance(balance.current.value, navigate)
-                            }
+                            onClick={() => {
+                                if (balance.current.value < 1000000)
+                                    addBalance(
+                                        balance.current.value,
+                                        navigate,
+                                        setError
+                                    );
+                                else
+                                    setError(
+                                        "No puedes añadir tanto dinero. Prueba una cantidad menor a 1 millón de dólares"
+                                    );
+
+                                balance.current.value = "";
+                            }}
                         >
                             <PlusCircle className="me-2" /> Añadir saldo
                         </button>
                     </div>
                 </div>
-                <div className="row"></div>
+                {error ? (
+                    <div className="alert alert-danger mt-3 mb-0 w-100 text-center">
+                        {error}
+                    </div>
+                ) : undefined}
             </div>
             <hr className="mx-4 my-2" />
             <div className="mx-4">
@@ -154,10 +188,10 @@ export default function Wallet(props) {
     );
 }
 
-const addBalance = (balance, navigate) => {
+const addBalance = (balance, navigate, setError) => {
     balance = parseFloat(balance);
     if (isNaN(balance) || balance <= 0)
-        alert("El saldo a añadir debe ser mayor que 0");
+        setError("El saldo a añadir debe ser mayor que 0");
     else {
         navigate("/payment", {
             state: {
@@ -169,10 +203,10 @@ const addBalance = (balance, navigate) => {
     }
 };
 
-const withdrawBalance = (balance, navigate) => {
+const withdrawBalance = (balance, navigate, setError) => {
     balance = parseFloat(balance);
     if (isNaN(balance) || balance <= 0)
-        alert("El saldo a añadir debe ser mayor que 0");
+        setError("El saldo a retirar debe ser mayor que 0");
     else {
         navigate("/payment", {
             state: {

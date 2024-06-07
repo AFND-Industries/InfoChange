@@ -26,7 +26,7 @@ export default function Header() {
     <header>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" style={{ cursor: "pointer" }} onClick={() => { navigate("/") }}>
             <img src={banner} alt="InfoChange logo" width="200" height="50" />
           </a>
           <button
@@ -78,9 +78,15 @@ export default function Header() {
                 </div>
                 <button
                   className="btn btn-primary"
-                  onClick={() => {
-                    navigate("/");
-                    doLogout();
+                  onClick={async () => {
+                    const loadingScreen = document.getElementById("loading-screen");
+
+                    loadingScreen.style.display = "block";
+                    const response = await doLogout(user);
+                    loadingScreen.style.display = "none";
+
+                    if (response.data.status === "1")
+                      navigate("/");
                   }}
                 >
                   Cerrar Sesión

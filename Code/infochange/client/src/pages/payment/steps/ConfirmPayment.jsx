@@ -72,8 +72,7 @@ export default function ConfirmPayment(props) {
                                               "*"
                                           ) +
                                           data.info.cardNumber.slice(
-                                              data.info.cardNumber.length
-                                                  .length - 4
+                                              data.info.cardNumber.length - 4
                                           )
                                         : data.info.iban;
 

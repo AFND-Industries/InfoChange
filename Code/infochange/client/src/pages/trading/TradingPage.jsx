@@ -17,7 +17,7 @@ function TradingPage() {
 
   let tradingMode = getTradingMode();
 
-  if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT") // Por si entra a un par de modo pro
+  if (tradingMode === 0 && getActualPair().quoteAsset !== "USDT") // Por si entra a un par de modo pro en modo novato
     tradingMode = 1;
 
   const actualPair = getActualPair();

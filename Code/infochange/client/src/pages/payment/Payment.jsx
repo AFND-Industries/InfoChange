@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 
 import Banner from "../../assets/payment_banner.png";
 
-import "./payment.css";
+import "./Payment.css";
 import PaymentCompleted from "./steps/PaymentCompleted";
 import ConfirmPayment from "./steps/ConfirmPayment";
 import { CreditForm, IBANForm, PaypalForm } from "./steps/DataForm";
@@ -220,16 +220,20 @@ export default function Payment(props) {
 
                                                 loadingScreen.style.display =
                                                     "block";
+
+                                                if (method.type === "iban")
+                                                    method.type = "credit";
+
                                                 const result =
                                                     cart.action === "in"
                                                         ? await buyProduct(
-                                                              { cart: cart },
-                                                              method
-                                                          )
+                                                            { cart: cart },
+                                                            method
+                                                        )
                                                         : await withdrawBalance(
-                                                              { cart: cart },
-                                                              method
-                                                          );
+                                                            { cart: cart },
+                                                            method
+                                                        );
                                                 loadingScreen.style.display =
                                                     "none";
 
@@ -269,9 +273,8 @@ export default function Payment(props) {
                             ></div>
                         </section>
                         {cart.type !== "USDT" && step.step < 4
-                            ? `El precio se actualizará en ${
-                                  TIMEOUT - counter
-                              } segundos`
+                            ? `El precio se actualizará en ${TIMEOUT - counter
+                            } segundos`
                             : ""}
                     </div>
                 </div>

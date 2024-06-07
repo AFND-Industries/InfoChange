@@ -20,11 +20,11 @@ const BizumItem = ({ user, sender, receiver, bizum }) => {
                 className="rounded-circle me-2"
                 style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                 onError={(e) => { e.target.src = altPhoto; }}
-                alt={"Logo de " + user.name}
+                alt={"Logo de " + user.firstName}
             />
             <div className="d-flex flex-column">
                 <span>{user.username}</span>
-                <span className="text-secondary" style={{ fontSize: "0.9em" }}>{user.name} {user.lastName}</span>
+                <span className="text-secondary" style={{ fontSize: "0.9em" }}>{user.firstName} {user.lastName}</span>
             </div>
         </div>
     );

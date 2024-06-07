@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useTrading } from "../context/TradingContext";
 import { useAuth } from "../../authenticator/AuthContext";
 import { useAPI } from "../../../context/APIContext";
+import { BorderBottom } from "react-bootstrap-icons";
 
 function BuyAndSell({ style = 1 }) {
   const [action, setAction] = useState(1);
-  const swapAction = () => setAction((action) => (action + 1) % 2);
 
   const navigate = useNavigate();
 
@@ -15,29 +15,13 @@ function BuyAndSell({ style = 1 }) {
 
   const { getActualPair, getActualPairPrice } = useTrading();
   const { getAuthStatus, getActualUserWallet } = useAuth();
-  const { doTrade, getPair } = useAPI();
+  const { doTrade } = useAPI();
 
   useEffect(() => {
     if (getAuthStatus() !== "-2" && getAuthStatus() !== "1") style = 0;
   }, [getAuthStatus()]);
 
   const actualUserWallet = getActualUserWallet();
-  const totalMoney =
-    actualUserWallet === null
-      ? 0
-      : actualUserWallet
-          .map((c) => {
-            // esto va a dashboard
-            let dollarAmount;
-            if (c.coin === "USDT") dollarAmount = c.quantity;
-            else {
-              const usdPair = getPair(c.coin + "USDT");
-              dollarAmount = c.quantity * (usdPair.price ?? 0);
-            }
-
-            return dollarAmount;
-          })
-          .reduce((total, currentValue) => total + currentValue, 0);
 
   const getWalletAmount = (symbol) => {
     let balance = 0;
@@ -268,8 +252,7 @@ function BuyAndSell({ style = 1 }) {
     if (getWalletAmount(symbol) < parseFloat(paidAmount.toFixed(8))) {
       showJustCloseModal(
         "Error",
-        `No tienes suficientes ${
-          action === "BUY" ? showQuoteAsset : showBaseAsset
+        `No tienes suficientes ${action === "BUY" ? showQuoteAsset : showBaseAsset
         } `
       );
       return;
@@ -319,20 +302,19 @@ function BuyAndSell({ style = 1 }) {
             showQuoteDecimals
           )}${showQuoteAsset}
                     </b> y has pagado <b> ${response.data.comission.toFixed(
-                      showQuoteDecimals
-                    )}${showQuoteAsset}</b> de comisión.`
+            showQuoteDecimals
+          )}${showQuoteAsset}</b> de comisión.`
         );
       } else {
         showTradeDoneToast(
           `Venta realizada con éxito`,
-          `Has vendido <b>${
-            response.data.paidAmount
+          `Has vendido <b>${response.data.paidAmount
           } ${showBaseAsset}</b> por <b>${response.data.receivedAmount.toFixed(
             showQuoteDecimals
           )}${showQuoteAsset}
                     </b> y has pagado <b>${response.data.comission.toFixed(
-                      8
-                    )} ${showBaseAsset}</b> de comisión.`
+            8
+          )} ${showBaseAsset}</b> de comisión.`
         );
       }
     } else {
@@ -398,19 +380,58 @@ function BuyAndSell({ style = 1 }) {
     Math.trunc(number * Math.pow(10, n)) / Math.pow(10, n);
 
   const swapButton = (
-    <div className="btn btn-primary d-md-none" onClick={swapAction}>
-      Cambiar
+    <div className="col d-md-none d-flex justify-content-center align-items-center flex-md-row flex-column mb-3">
+      <ul
+        className="nav nav-tabs nav-justified w-100"
+        id="myTab"
+        role="tablist"
+      >
+        <li className="nav-item" role="presentation">
+          <button
+            className={`nav-link ${action === 1
+              ? "active bg-primary text-white"
+              : "text-dark"
+              }`}
+            type="button"
+            role="tab"
+            aria-controls="myTab"
+            aria-selected={action === 1}
+            onClick={() => {
+              setAction(1);
+            }}
+          >
+            Comprar
+          </button>
+        </li>
+        <li className="nav-item" role="presentation">
+          <button
+            className={`nav-link ${action === 0
+              ? "active bg-primary text-white"
+              : "text-dark"
+              }`}
+            type="button"
+            role="tab"
+            aria-controls="myTab"
+            aria-selected={action === 0}
+            onClick={() => {
+              setAction(0);
+            }}
+          >
+            Vender
+          </button>
+        </li>
+      </ul>
     </div>
   );
 
   return (
     <>
       <div
-        className={`col-md border border-4 rounded me-1 ${
-          action === 0 ? "d-md-block d-none" : ""
-        }`}
+        className={`col-md border border-4 rounded me-1 ${action === 0 ? "d-md-block d-none" : ""
+          }`}
       >
-        <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
+        <div className="mt-1 mb-1 d-flex flex-column row align-items-center justify-content-between">
+          {swapButton}
           <div className="d-flex justify-content-start flex-sm-row flex-column">
             <div className="me-1">Disponible:</div>
             <div>
@@ -421,7 +442,6 @@ function BuyAndSell({ style = 1 }) {
               {showQuoteAsset}
             </div>
           </div>
-          {swapButton}
         </div>
         <div className="input-group input-group-sm">
           <label htmlFor="buyAmount" className="visually-hidden">
@@ -503,11 +523,11 @@ function BuyAndSell({ style = 1 }) {
         )}
       </div>
       <div
-        className={`col-md border border-4 rounded ms-md-2 ${
-          action === 1 ? "d-md-block d-none" : ""
-        }`}
+        className={`col-md border border-4 rounded ms-md-2 ${action === 1 ? "d-md-block d-none" : ""
+          }`}
       >
-        <div className="mt-1 mb-1 d-flex align-items-center justify-content-between">
+        <div className="mt-1 mb-1 d-flex flex-column row align-items-center justify-content-between">
+          {swapButton}
           <div className="d-flex justify-content-start flex-sm-row flex-column">
             <div className="me-1">Disponible:</div>
             <div>
@@ -515,7 +535,6 @@ function BuyAndSell({ style = 1 }) {
               {showBaseAsset}
             </div>
           </div>
-          {swapButton}
         </div>
         <div>
           <div className="input-group input-group-sm">
