@@ -102,12 +102,7 @@ export default function Configuration({ profile, swap }) {
               </label>
             </div>
           </div>
-          <p
-            style={{
-              textAlign: "justify",
-              textJustify: "inter-word",
-            }}
-          >
+          <p>
             {textNewbie}
           </p>
           <p>{textPro}</p>
