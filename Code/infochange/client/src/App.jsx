@@ -95,13 +95,7 @@ function App() {
             <Route
               path="/payment"
               element={needAuth(
-                <Payment
-                  cart={{
-                    type: "BTC",
-                    quantity: "0.0345",
-                    price: "0",
-                  }}
-                />
+                <Payment />
               )}
             />
             <Route path="/admin" element={needAdmin(wrap(<Admin />))} />
