@@ -116,11 +116,12 @@ export const AdminProvider = ({ children }) => {
       adminInfo.trade_history.forEach((trade) => {
         const symbol = getPair(trade.symbol);
 
+        const tokenInfo = getTokenInfo(symbol.baseAsset);
         if (!volumeMap[symbol.baseAsset]) {
           volumeMap[symbol.baseAsset] = {
             symbol: symbol.baseAsset,
             name: symbol.baseAssetName,
-            logo: getTokenInfo(symbol.baseAsset).logo,
+            logo: tokenInfo !== undefined ? getTokenInfo(symbol.baseAsset).logo : "",
             volume: 0,
             dolar_volume: 0,
           };
