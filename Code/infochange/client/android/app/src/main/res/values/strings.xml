@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">InfoChange</string>
+    <string name="title_activity_main">InfoChange</string>
+    <string name="package_name">infochange.me</string>
+    <string name="custom_url_scheme">infochange.me</string>
+</resources>
