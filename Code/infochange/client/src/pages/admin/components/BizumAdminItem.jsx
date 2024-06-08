@@ -23,7 +23,7 @@ const BizumAdminItem = ({ item }) => {
                 onError={(e) => {
                     e.target.src = altPhoto;
                 }}
-                alt={"Logo de " + user.name}
+                alt={"Logo de " + user.firstName}
             />
             <div className="d-flex flex-column">
                 <span>{user.username}</span>

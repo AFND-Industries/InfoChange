@@ -49,17 +49,17 @@ export default function Wallet(props) {
     return (
         <>
             <div className="container d-flex flex-column align-items-center py-3">
-                <div className="d-flex align-items-center mb-3">
-                    <div className="d-flex flex-column me-5">
-                        <h4 className="text-secondary mb-0">Balance de la cuenta:</h4>
+                <div className="d-md-flex d-block align-items-center mb-3">
+                    <div className="d-flex flex-column me-md-5">
+                        <span className="text-secondary mb-0 h4">Balance de la cuenta:</span>
                         <div className="d-flex align-items-end">
-                            <h1 className="mb-0">{(btcusdt === undefined || btcusdt.price === undefined ? 0 :
-                                (totalMoney / btcusdt.price)).toFixed(8)}</h1><h5 className="ms-1 mb-1"> BTC</h5>
+                            <div className="mb-0 h1">{(btcusdt === undefined || btcusdt.price === undefined ? 0 :
+                                (isNaN(totalMoney) ? 0 : (totalMoney / btcusdt.price))).toFixed(8)}</div><div className="ms-1 mb-1 h5"> BTC</div>
                         </div>
                     </div>
                     <div className="d-flex flex-column">
-                        <h4 className="text-secondary mb-0">Valor estimado:</h4>
-                        <h1 className="mb-0">{totalMoney.toFixed(2)}$</h1>
+                        <div className="text-secondary mb-0 h4">Valor estimado:</div>
+                        <div className="mb-0 h1">{(isNaN(totalMoney) ? 0 : totalMoney).toFixed(2)}$</div>
                     </div>
                 </div>
                 <div className="row g-2">

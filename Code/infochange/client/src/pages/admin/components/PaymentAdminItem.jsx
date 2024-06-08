@@ -13,8 +13,8 @@ const PaymentAdminItem = ({ payment }) => {
 
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
 
-    const drawUser = (user) => <img src={"https://github.com/" + payment.user.username + ".png"} className="rounded rounded-5 me-2"
-        style={{ width: '50px', height: '50px' }} onError={(e) => { e.target.src = altPhoto; }} alt={"Logo de " + payment.user.name} />
+    const drawUser = (user) => <img src={"https://github.com/" + user.username + ".png"} className="rounded rounded-5 me-2"
+        style={{ width: '50px', height: '50px' }} onError={(e) => { e.target.src = altPhoto; }} alt={"Logo de " + user.firstName} />
 
     const drawLogo = (logo, w, name) => <img src={logo} className="rounded rounded-5 me-2"
         style={{ width: w, height: '25px' }} alt={"Logo de " + name} />;
