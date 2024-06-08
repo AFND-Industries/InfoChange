@@ -1,8 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FundamentalData } from "react-ts-tradingview-widgets";
-import { SymbolInfo } from "react-ts-tradingview-widgets";
-import { MiniChart } from "react-ts-tradingview-widgets";
 import { Timeline } from "react-ts-tradingview-widgets";
 import { SymbolOverview } from "react-ts-tradingview-widgets";
 import { SingleTicker } from "react-ts-tradingview-widgets";
@@ -10,7 +7,6 @@ import { useCoins } from "./CoinsAPI";
 import Modal from "react-bootstrap/Modal";
 
 import "./UrlsCards.css";
-import { Button } from "primereact/button";
 
 export default function CoinInfo(props) {
   const { coin, key } = props;
