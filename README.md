@@ -2,7 +2,7 @@
 
 > by AFND Industries 🏢
 
-![InfoChange Logo](./]/Design/banner/banner.png) <!-- Coloca aquí una imagen de tu logo -->
+![InfoChange Logo](./Design/banner/banner.png) <!-- Coloca aquí una imagen de tu logo -->
 
 ---
 
@@ -47,7 +47,7 @@
 ## Enlaces Útiles 🔗
 
 - **Sitio Web**: [InfoChange.me](https://infochange.me)
-- **Documentación**: [Documentación Oficial](https://infochange.me/terms)
+- **Documentación**: [Documentación Oficial](https://server.infochange.me/terms)
 - **Soporte**: [Centro de Ayuda](https://infochange.me/support)
 
 ---
@@ -67,4 +67,4 @@ InfoChange está bajo la licencia [CC BY-NC-SA](https://creativecommons.org/lice
 ¡Gracias por elegir **InfoChange**! 🙏
 
 ![image](https://github.com/AFND-Industries/InfoChange/assets/70489950/dd9776ef-4b82-4662-aa08-0c004b27eb4a)
-) <!-- Coloca aquí una imagen de agradecimiento -->
+ <!-- Coloca aquí una imagen de agradecimiento -->
