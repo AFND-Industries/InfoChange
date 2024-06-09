@@ -17,19 +17,6 @@ jobs:
       - name: List files after checkout
         run: ls -R
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '16'  # O la versión que estés usando
-
-      # - name: Install dependencies
-      #   run: npm install
-      #   working-directory: ./Code/infochange/server
-
-      # - name: Build backend
-      #   run: npm run build
-      #   working-directory: ./Code/infochange/server
-
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
@@ -42,9 +29,7 @@ jobs:
           cp -r ./Code/infochange/server/* prod-backend/
           cd prod-backend
           ls -la
-          git add .
-          git commit -m "Update backend deployment"
-          git push origin prod-backend --force
+          git diff-index --quiet HEAD || git commit -m "Update backend deployment" || git push origin prod-backend
           
   push_remote:
     name: Build
@@ -62,8 +47,10 @@ jobs:
           git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
           cd prod-backend
           npm install
+          npm run set-env
           cd bin
           pm2 start www
           echo "${{ secrets.PASSWORD }}" | sudo -S systemctl restart nginx
           pm2 save
+
     
