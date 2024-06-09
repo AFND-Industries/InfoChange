@@ -141,7 +141,10 @@ export default function Register() {
       .matches(/[a-z]/, "Debe tener al menos una letra minúscula")
       .matches(/[A-Z]/, "Debe tener al menos una letra mayúscula")
       .matches(/[0-9]/, "Debe tener al menos un número")
-      .matches(/[@$!%*?&]/, "Debe tener al menos un carácter especial")
+      .matches(
+        /[@$!%*?&]/,
+        "Debe tener al menos un carácter especial de @$!%*?&"
+      )
       .required("Por favor, ingrese su contraseña"),
     confirmPassword: yup
       .string()
@@ -592,18 +595,18 @@ export default function Register() {
                                 </Button>
                               </OverlayTrigger>
                             </div>
+                            <Form.Control.Feedback
+                              type="invalid"
+                              id="passwordError"
+                            >
+                              {errors.password}
+                            </Form.Control.Feedback>
                           </InputGroup>
                           <small className="ml-2 text-muted" id="infopassword">
                             Debe tener minimo 8 caracteres, una mayúscula, una
-                            minúscula, un número y un carácter especial.
+                            minúscula, un número y un carácter especial
+                            (@$!%*?&).
                           </small>
-
-                          <Form.Control.Feedback
-                            type="invalid"
-                            id="passwordError"
-                          >
-                            {errors.password}
-                          </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group
                           as={Col}
