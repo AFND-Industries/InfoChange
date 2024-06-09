@@ -28,10 +28,9 @@ export default function ConfirmPayment(props) {
                 <p>
                     Al pulsar{" "}
                     <i>{cart.action === "in" ? "Pagar" : "Retirar"}</i> aceptas
-                    los{" "}
-                    <span className="text-primary">Términos de Servicio</span> y
-                    las <span className="text-primary">Condiciones de Uso</span>{" "}
-                    de InfoPay.
+                    las{" "}
+                    <a href="https://server.infochange.me/terms" target="_blank" style={{ textDecoration: "none" }}>Condiciones y Términos de Servicio</a>
+                    {" "}de InfoPay.
                 </p>
 
                 <div className="alert alert-warning">
@@ -67,14 +66,14 @@ export default function ConfirmPayment(props) {
                                     data.type === "paypal"
                                         ? data.info.email
                                         : cart.action === "in"
-                                        ? "".padStart(
-                                              data.info.cardNumber.length - 4,
-                                              "*"
-                                          ) +
-                                          data.info.cardNumber.slice(
-                                              data.info.cardNumber.length - 4
-                                          )
-                                        : data.info.iban;
+                                            ? "".padStart(
+                                                data.info.cardNumber.length - 4,
+                                                "*"
+                                            ) +
+                                            data.info.cardNumber.slice(
+                                                data.info.cardNumber.length - 4
+                                            )
+                                            : data.info.iban;
 
                                 data.info = info;
 
