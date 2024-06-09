@@ -50,7 +50,6 @@ export const AuthProvider = ({ children }) => {
         bizum.sender = user;
 
         setLastBizum(oldBizum => {
-          console.log(oldBizum, bizum);
           if (oldBizum !== undefined && oldBizum.id !== bizum.id)
             showBizumReceived("Bizum recibido", bizum);
 
