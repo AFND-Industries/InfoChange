@@ -29,9 +29,11 @@ jobs:
           cp -r ./Code/infochange/server/* prod-backend/
           cd prod-backend
           ls -la
-          git add -A
-          git diff-index --quiet HEAD || git commit -m "Update backend deployment" || git push origin prod-backend --force
-          
+          git add -A  # Agrega todos los cambios al índice
+          git status  # Opcional: Muestra el estado de Git para depuración
+          git commit -m "Update backend deployment" || echo "No changes to commit"
+          git push origin prod-backend
+
   push_remote:
     name: Build
     runs-on: ubuntu-latest
