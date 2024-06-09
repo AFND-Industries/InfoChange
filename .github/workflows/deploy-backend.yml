@@ -29,7 +29,7 @@ jobs:
           cp -r ./Code/infochange/server/* prod-backend/
           cd prod-backend
           ls -la
-          git diff-index --quiet HEAD || git commit -m "Update backend deployment" || git push origin prod-backend
+          git diff-index --quiet HEAD || git commit -m "Update backend deployment" || git push origin prod-backend --force
           
   push_remote:
     name: Build
