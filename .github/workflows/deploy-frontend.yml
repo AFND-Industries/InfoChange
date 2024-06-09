@@ -45,5 +45,6 @@ jobs:
           cp -r ./Code/infochange/client/dist/* prod-frontend/
           cd prod-frontend
           ls -la
+          git add -A
           git diff-index --quiet HEAD || git commit -m  "Update frontend deployment" || git push origin prod-frontend --force
 
