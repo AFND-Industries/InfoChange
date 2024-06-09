@@ -44,6 +44,12 @@
 
 ---
 
+## Advertencia ⚠️
+
+**InfoChange** es un simulador. No utilizamos datos personales o financieros en ningún momento. Todas las operaciones y datos presentados son ficticios y tienen fines exclusivamente educativos y de entretenimiento.
+
+---
+
 ## Enlaces Útiles 🔗
 
 - **Sitio Web**: [InfoChange.me](https://infochange.me)
