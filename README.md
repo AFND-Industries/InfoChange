@@ -58,6 +58,80 @@
 
 ---
 
+## Instalación 🖥️
+
+### Requisitos
+
+Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
+
+- Node.js (versión 12 o superior)
+- npm (Node Package Manager) o yarn
+
+### Pasos para la Instalación
+
+1. **Clonar el Repositorio**:
+    ```bash
+    git clone https://github.com/tu_usuario/infochange.git
+    ```
+
+2. **Navegar al Directorio del Proyecto**:
+    ```bash
+    cd infochange
+    ```
+
+### Instalación del Frontend
+
+1. **Navegar a la Carpeta del Cliente**:
+    ```bash
+    cd client
+    ```
+
+2. **Instalar las Dependencias**:
+    - Usando **npm**:
+      ```bash
+      npm install
+      ```
+    - Usando **yarn**:
+      ```bash
+      yarn install
+      ```
+
+3. **Iniciar la Aplicación Vite del Cliente**:
+    ```bash
+    npm run dev
+    ```
+
+### Instalación del Backend
+
+1. **Navegar a la Carpeta del Servidor**:
+    ```bash
+    cd ../server
+    ```
+
+2. **Instalar las Dependencias**:
+    - Usando **npm**:
+      ```bash
+      npm install
+      ```
+    - Usando **yarn**:
+      ```bash
+      yarn install
+      ```
+
+3. **Iniciar el Servidor**:
+    ```bash
+    npm start
+    ```
+
+### Acceder a la Aplicación
+
+- **Frontend**: Abre tu navegador web y navega a `http://localhost:5173` (o el puerto configurado).
+- **Backend**: El servidor se ejecutará en `http://localhost:3003` (o el puerto configurado).
+
+---
+
+
+
 ## Contribuir 🤝
 
 Estamos abiertos a contribuciones. Si tienes ideas o mejoras, no dudes en hacer un fork del repositorio y enviar un pull request.
