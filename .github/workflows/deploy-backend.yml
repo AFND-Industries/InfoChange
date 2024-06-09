@@ -3,7 +3,7 @@ name: Deploy Backend
 on:
   push:
     branches:
-      - main  
+      - main
 
 jobs:
   deploy-backend:
@@ -19,16 +19,20 @@ jobs:
 
       - name: Check for changes
         id: check_changes
-        run: git diff --quiet || echo "Changes detected"
+        run: |
+          if git diff --quiet; then
+            echo "No changes detected. Exiting successfully."
+            exit 0
+          fi
 
       - name: Set up Git
-        if: steps.check_changes.outputs.result != 'Changes detected'
+        if: steps.check_changes.outputs.result != 'No changes detected'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Sync backend folder to prod-backend
-        if: steps.check_changes.outputs.result != 'Changes detected'
+        if: steps.check_changes.outputs.result != 'No changes detected'
         run: |
           git clone --single-branch --branch prod-backend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-backend
           rm -r prod-backend/*
@@ -38,7 +42,7 @@ jobs:
           git add .
           git commit -m "Update backend deployment"
           git push origin prod-backend --force
-          
+
   push_remote:
     name: Build
     runs-on: ubuntu-latest
