@@ -19,7 +19,7 @@ export default function Payment(props) {
   const [counter, setCounter] = useState(0);
   const [feedback, setFeedback] = useState(undefined);
   const state = useLocation()?.state;
-  const [cart, setCart] = useState(state === null ? props.cart : state);
+  const [cart, setCart] = useState(state);
   const _fupdate_ = useRef();
 
   const { doGetCoinPrice } = useCoins();
