@@ -2,7 +2,7 @@
 
 > by AFND Industries 🏢
 
-![InfoChange Logo](./Design/banner/banner.png) <!-- Coloca aquí una imagen de tu logo -->
+![InfoChange Logo](./Design/banner/banner.png) 
 
 ---
 
@@ -19,7 +19,7 @@
 - **Soporte de Criptomonedas**: Compra y vende una amplia variedad de criptomonedas.
 - **Actualizaciones en Tiempo Real**: Información actualizada para tomar las mejores decisiones.
 
-<!-- ![App Screenshot](path/to/screenshot1.png) --><!-- Coloca aquí una captura de pantalla de la app -->
+<!-- ![App Screenshot](path/to/screenshot1.png) -->
 
 ---
 
@@ -30,7 +30,7 @@
 3. **Seguridad Garantizada**: Protégete con nuestras avanzadas medidas de seguridad.
 4. **Soporte 24/7**: Siempre estamos aquí para ayudarte.
 
-<!--![Features Image](path/to/features.png)--> <!-- Coloca aquí una imagen que destaque las características -->
+<!--![Features Image](path/to/features.png)--> 
 
 ---
 
@@ -73,4 +73,3 @@ InfoChange está bajo la licencia [CC BY-NC-SA](https://creativecommons.org/lice
 ¡Gracias por elegir **InfoChange**! 🙏
 
 ![image](https://github.com/AFND-Industries/InfoChange/assets/70489950/dd9776ef-4b82-4662-aa08-0c004b27eb4a)
- <!-- Coloca aquí una imagen de agradecimiento -->
