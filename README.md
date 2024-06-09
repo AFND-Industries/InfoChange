@@ -76,7 +76,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
 
 2. **Navegar al Directorio del Proyecto**:
     ```bash
-    cd infochange
+    cd infochange/Code
     ```
 
 ### Instalación del Frontend
