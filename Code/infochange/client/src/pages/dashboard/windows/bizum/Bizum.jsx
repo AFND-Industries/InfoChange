@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import BizumConfirmationModal from "./components/BizumConfirmationModal";
 import BizumToast from "./components/BizumToast";
 import Banner from "../../../../assets/bizum_banner.png";
 
@@ -49,6 +50,30 @@ export default function Bizum({ user, bizumUsers, reload }) {
         parsedValue < MAXVALUE)
     )
       setAmountInput(event.target.value.trim());
+  };
+
+  const showBizumConfirmationModal = (title, message, onConfirm) => {
+    const modal = new bootstrap.Modal(
+      document.getElementById("bizum-confirmation-modal")
+    );
+
+    const modalTitle = document.getElementById(
+      "bizum-confirmation-modal-title"
+    );
+    const modalBody = document.getElementById("bizum-confirmation-modal-body");
+    const bizumConfirmationButton = document.getElementById(
+      "bizum-confirmation-button"
+    );
+
+    bizumConfirmationButton.onclick = () => {
+      modal.hide();
+      onConfirm();
+    };
+    modalTitle.innerHTML = title;
+    modalBody.innerHTML = message;
+
+    modal.show();
+    bizumConfirmationButton.focus();
   };
 
   const handleBizum = async (user, amount) => {
@@ -118,6 +143,8 @@ export default function Bizum({ user, bizumUsers, reload }) {
 
   return (
     <>
+      <BizumConfirmationModal />
+
       <div className="row px-5 py-4">
         <div className="col-12 mb-lg-4 text-center">
           <img src={Banner} className="img-fluid col-lg-6 col-md-8 col-sm-11 col-10" alt="Logo de InfoBizum" />
@@ -182,7 +209,10 @@ export default function Bizum({ user, bizumUsers, reload }) {
             className={`btn`}
             disabled={!activeButton}
             style={{ backgroundColor: "#2c6b48", color: "white" }}
-            onClick={() => handleBizum(userRegexList[0], amountInput)}
+            onClick={() => showBizumConfirmationModal(
+              "¿Estás seguro de que quieres hacer un Bizum?",
+              "Estás a punto de a hacer un <b>bizum</b> de <b>" + amountInput + "$</b> a <b>" + userRegexList[0].username + "</b>",
+              () => handleBizum(userRegexList[0], amountInput))}
           >
             Confirmar
           </button>

@@ -291,7 +291,7 @@ function BuyAndSell({ style = 1 }) {
     loadingScreen.style.display = "block";
     const response = await doTrade(getActualPair().symbol, paidAmount, action);
     loadingScreen.style.display = "none";
-    console.log(response);
+
     if (response !== undefined && response.data.status === "1") {
       if (action === "BUY") {
         showTradeDoneToast(
