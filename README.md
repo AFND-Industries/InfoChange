@@ -9,6 +9,5 @@ Nunca había sido tan fácil realizar
 operaciones en bolsa o blockchain. ¡Hasta un ciego podría
 usar nuestra aplicación!
 
-**InfoChange** estará disponible en el siguiente enlace:
-Pepsicola
-[`http://InfoChange.me`](http://InfoChange.me)
+**InfoChange** está disponible en el siguiente enlace:
+[`https://InfoChange.me`](https://infochange.me)
