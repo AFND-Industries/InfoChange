@@ -39,7 +39,8 @@ export default function App() {
           </form>
         </section>
         <div className="w-100" aria-label="Derechos de autor">
-          © 2024 InfoChange.com
+          © 2024 InfoChange.com -
+          <a href="https://github.com/AFND-Industries"> AFND Industries</a>
         </div>
       </div>
     </footer>
