@@ -29,7 +29,7 @@ export default function ConfirmPayment(props) {
                     Al pulsar{" "}
                     <i>{cart.action === "in" ? "Pagar" : "Retirar"}</i> aceptas
                     las{" "}
-                    <a href="https://server.infochange.me/terms" target="_blank" style={{ textDecoration: "none" }}>Términos y Condiciones de Uso</a>
+                    <a href="https://icb.afndindustries.es/terms" target="_blank" style={{ textDecoration: "none" }}>Términos y Condiciones de Uso</a>
                     {" "}de InfoPay.
                 </p>
 

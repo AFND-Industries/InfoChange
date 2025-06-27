@@ -915,7 +915,7 @@ export default function Register() {
                             <>
                               Acepto los{" "}
                               <a
-                                href="https://server.infochange.me/terms"
+                                href="https://icb.afndindustries.es/terms"
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

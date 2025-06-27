@@ -53,7 +53,7 @@
 ## Enlaces Útiles 🔗
 
 - **Sitio Web**: [InfoChange.me](https://infochange.me)
-- **Documentación**: [Documentación Oficial](https://server.infochange.me/terms)
+- **Documentación**: [Documentación Oficial](https://icb.afndindustries.es/terms)
 - **Soporte**: [Centro de Ayuda](https://infochange.me/support)
 
 ---
