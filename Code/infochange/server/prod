@@ -1,2 +1,2 @@
-SERVER_URL=https://infochange.me
+SERVER_URL=https://infochange.afndindustries.es
 DB_ROUTE=/home/production/database/infochange.db

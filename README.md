@@ -36,7 +36,7 @@
 
 ## Cómo Empezar 🛠️
 
-1. **Accede la web**: Disponible en [InfoChange.me](https://infochange.me).
+1. **Accede la web**: Disponible en [InfoChange.me](https://infochange.afndindustries.es).
 2. **Regístrate**: Crea una cuenta en pocos pasos.
 3. **Explora**: Navega y descubre las múltiples opciones de inversión.
 4. **Invierte**: Comienza a comprar y vender acciones y criptomonedas.
@@ -52,9 +52,9 @@
 
 ## Enlaces Útiles 🔗
 
-- **Sitio Web**: [InfoChange.me](https://infochange.me)
+- **Sitio Web**: [InfoChange.me](https://infochange.afndindustries.es)
 - **Documentación**: [Documentación Oficial](https://icb.afndindustries.es/terms)
-- **Soporte**: [Centro de Ayuda](https://infochange.me/support)
+- **Soporte**: [Centro de Ayuda](https://infochange.afndindustries.es/support)
 
 ---
 
