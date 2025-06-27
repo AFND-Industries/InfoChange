@@ -40,7 +40,8 @@ jobs:
 
       - name: Sync frontend folder to prod-frontend
         run: |
-          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend          rm -r prod-frontend/*
+          git clone --single-branch --branch prod-frontend https://x-access-token:${{ secrets.ANT_GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-frontend
+          rm -r prod-frontend/*
           cp -r ./Code/infochange/client/dist/* prod-frontend/
           cd prod-frontend
           ls -la
