@@ -2,7 +2,7 @@ import type { Context } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { jwtVerify, SignJWT } from "jose";
 
-import { env, isProduction } from "../env";
+import { env, isProduction } from "../env.js";
 
 export const SESSION_COOKIE = "infochange_session";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7;

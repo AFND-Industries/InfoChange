@@ -6,7 +6,7 @@
   "description": "Simulador de exchange de criptomonedas: React + Hono + Postgres, desplegado como un unico proyecto en Vercel.",
   "license": "CC-BY-NC-SA-4.0",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "workspaces": [
     "web",

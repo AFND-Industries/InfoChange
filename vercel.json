@@ -6,7 +6,6 @@
   "framework": null,
   "functions": {
     "api/index.ts": {
-      "memory": 1024,
       "maxDuration": 15
     }
   },

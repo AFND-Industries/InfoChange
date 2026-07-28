@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 import type { MiddlewareHandler } from "hono";
 
-import { users } from "../db/schema";
-import { forbidden, unauthorized } from "../lib/errors";
-import { readSession } from "../lib/session";
-import type { AppEnv } from "../types";
+import { users } from "../db/schema.js";
+import { forbidden, unauthorized } from "../lib/errors.js";
+import { readSession } from "../lib/session.js";
+import type { AppEnv } from "../types.js";
 
 /** Lee la sesion si existe, sin exigirla. */
 export const withSession: MiddlewareHandler<AppEnv> = async (c, next) => {

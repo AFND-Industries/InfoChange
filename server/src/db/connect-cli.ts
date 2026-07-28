@@ -3,9 +3,9 @@ import { Pool } from "pg";
 
 // Antes que nada, para que `env()` vea lo que hay en el fichero .env.
 import "../load-env";
-import { env } from "../env";
-import type { Database } from "./client";
-import * as schema from "./schema";
+import { env } from "../env.js";
+import type { Database } from "./client.js";
+import * as schema from "./schema.js";
 
 /**
  * Conexion para los scripts de linea de comandos (migraciones y datos

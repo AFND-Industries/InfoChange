@@ -1,5 +1,5 @@
-import { tokenCatalog, type TokenInfo } from "../data/tokens";
-import { badGateway, notFound } from "./errors";
+import { tokenCatalog, type TokenInfo } from "../data/tokens.js";
+import { badGateway, notFound } from "./errors.js";
 
 const BINANCE = "https://api.binance.com/api/v3";
 /**

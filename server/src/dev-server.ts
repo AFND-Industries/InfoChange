@@ -2,8 +2,8 @@ import { serve } from "@hono/node-server";
 
 // Antes de importar la aplicacion: al arrancar lee la configuracion.
 import "./load-env";
-import app from "./app";
-import { setDatabase } from "./db/client";
+import app from "./app.js";
+import { setDatabase } from "./db/client.js";
 
 /**
  * Servidor local. En produccion no se usa: Vercel invoca la misma aplicacion a
@@ -36,8 +36,8 @@ if (!process.env.DATABASE_URL) {
       import("@electric-sql/pglite"),
       import("drizzle-orm/pglite"),
       import("drizzle-orm/pglite/migrator"),
-      import("./db/schema"),
-      import("./db/seed-core"),
+      import("./db/schema.js"),
+      import("./db/seed-core.js"),
     ]);
 
   const db = drizzle(new PGlite(), { schema });

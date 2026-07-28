@@ -40,3 +40,6 @@ web/android/app/src/main/assets/public/
 
 # Cobertura de tests
 coverage/
+
+# Salida temporal de scripts/check-vercel-bundle.mjs
+.vercel-check/

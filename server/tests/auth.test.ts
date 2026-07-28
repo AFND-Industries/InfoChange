@@ -1,13 +1,13 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import app from "../src/app";
+import app from "../src/app.js";
 import {
   createTestDatabase,
   registrationFor,
   resetTestState,
   TestClient,
   VALID_REGISTRATION,
-} from "./helpers";
+} from "./helpers.js";
 
 let close: () => Promise<void>;
 

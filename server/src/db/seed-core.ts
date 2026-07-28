@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
 
-import { hashPassword } from "../lib/password";
-import type { Database } from "./client";
-import * as schema from "./schema";
-import { SECURITY_QUESTIONS } from "./seed-data";
+import { hashPassword } from "../lib/password.js";
+import type { Database } from "./client.js";
+import * as schema from "./schema.js";
+import { SECURITY_QUESTIONS } from "./seed-data.js";
 
 export interface AdminSeed {
   username: string;

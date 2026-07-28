@@ -1,5 +1,5 @@
-import { withCliDatabase } from "./connect-cli";
-import { seedDatabase } from "./seed-core";
+import { withCliDatabase } from "./connect-cli.js";
+import { seedDatabase } from "./seed-core.js";
 
 /**
  * Deja la base de datos utilizable: preguntas de seguridad y, si se pasan las

@@ -1,6 +1,6 @@
-import type { Database } from "./db/client";
-import type { User } from "./db/schema";
-import type { SessionClaims } from "./lib/session";
+import type { Database } from "./db/client.js";
+import type { User } from "./db/schema.js";
+import type { SessionClaims } from "./lib/session.js";
 
 export interface AppEnv {
   Variables: {

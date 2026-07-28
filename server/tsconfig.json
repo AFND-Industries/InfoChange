@@ -1,6 +1,17 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    /**
+     * Vercel compila la funcion con resolucion Node16/NodeNext y deja que Node
+     * resuelva los modulos, sin empaquetarlos. En ESM eso obliga a escribir la
+     * extension `.js` en los imports relativos.
+     *
+     * Se usa aqui la misma resolucion que en el despliegue justamente para que
+     * `tsc --noEmit` lo verifique: con `bundler` no se exige, y el error solo
+     * aparecia ya desplegado como FUNCTION_INVOCATION_FAILED.
+     */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "types": ["node"]
   },
   "include": ["src/**/*.ts", "tests/**/*.ts", "drizzle.config.ts"]

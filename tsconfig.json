@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    // La misma resolucion que usa Vercel al compilar la funcion, para que los
+    // imports sin extension se detecten aqui y no en produccion.
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "types": ["node"]
   },
   "include": ["api/**/*.ts"]

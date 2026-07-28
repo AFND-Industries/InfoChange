@@ -1,9 +1,9 @@
 import { desc, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
 
-import { payments, trades, transfers } from "../db/schema";
-import { toPayment, toTrade, toTransfer } from "../lib/serializers";
-import { requireAuth, type AppEnv } from "./shared";
+import { payments, trades, transfers } from "../db/schema.js";
+import { toPayment, toTrade, toTransfer } from "../lib/serializers.js";
+import { requireAuth, type AppEnv } from "./shared.js";
 
 const MAX_ROWS = 200;
 

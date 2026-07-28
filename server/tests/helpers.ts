@@ -3,13 +3,13 @@ import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { vi } from "vitest";
 
-import app from "../src/app";
-import type { Database } from "../src/db/client";
-import { setDatabase } from "../src/db/client";
-import * as schema from "../src/db/schema";
-import { SECURITY_QUESTIONS } from "../src/db/seed-data";
-import { clearMarketCache } from "../src/lib/market";
-import { resetRateLimits } from "../src/lib/rate-limit";
+import app from "../src/app.js";
+import type { Database } from "../src/db/client.js";
+import { setDatabase } from "../src/db/client.js";
+import * as schema from "../src/db/schema.js";
+import { SECURITY_QUESTIONS } from "../src/db/seed-data.js";
+import { clearMarketCache } from "../src/lib/market.js";
+import { resetRateLimits } from "../src/lib/rate-limit.js";
 
 /**
  * Base de datos efimera con el esquema aplicado desde las migraciones reales,

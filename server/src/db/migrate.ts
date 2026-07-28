@@ -1,7 +1,7 @@
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { withCliDatabase } from "./connect-cli";
+import { withCliDatabase } from "./connect-cli.js";
 
 // El migrador es especifico del driver, asi que aqui si hace falta concretar.
 

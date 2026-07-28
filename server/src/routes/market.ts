@@ -6,8 +6,8 @@ import {
   getPrices,
   getTokenCatalog,
   getTradingPairs,
-} from "../lib/market";
-import type { AppEnv } from "./shared";
+} from "../lib/market.js";
+import type { AppEnv } from "./shared.js";
 
 export const marketRoutes = new Hono<AppEnv>();
 

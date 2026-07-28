@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import type { Database } from "../src/db/client";
-import { securityQuestions, users, wallets } from "../src/db/schema";
-import { seedDatabase } from "../src/db/seed-core";
-import { SECURITY_QUESTIONS } from "../src/db/seed-data";
-import { createTestDatabase, registrationFor, resetTestState, TestClient } from "./helpers";
+import type { Database } from "../src/db/client.js";
+import { securityQuestions, users, wallets } from "../src/db/schema.js";
+import { seedDatabase } from "../src/db/seed-core.js";
+import { SECURITY_QUESTIONS } from "../src/db/seed-data.js";
+import { createTestDatabase, registrationFor, resetTestState, TestClient } from "./helpers.js";
 
 let db: Database;
 let close: () => Promise<void>;

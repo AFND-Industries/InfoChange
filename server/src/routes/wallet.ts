@@ -2,21 +2,21 @@ import { Decimal } from "decimal.js";
 import { and, eq, gt, ne, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
-import { payments, trades, transfers, users, wallets } from "../db/schema";
-import { credit, debit } from "../lib/balances";
-import { badRequest, notFound } from "../lib/errors";
-import { getPrice, getTradingPair } from "../lib/market";
-import { money, toStorage } from "../lib/money";
-import { rateLimit } from "../lib/rate-limit";
+import { payments, trades, transfers, users, wallets } from "../db/schema.js";
+import { credit, debit } from "../lib/balances.js";
+import { badRequest, notFound } from "../lib/errors.js";
+import { getPrice, getTradingPair } from "../lib/market.js";
+import { money, toStorage } from "../lib/money.js";
+import { rateLimit } from "../lib/rate-limit.js";
 import {
   toBalance,
   toPayment,
   toTrade,
   toTransfer,
   toUserSummary,
-} from "../lib/serializers";
-import { maskPaymentMethod, paymentSchema, tradeSchema, transferSchema } from "../schemas";
-import { requireAuth, type AppEnv } from "./shared";
+} from "../lib/serializers.js";
+import { maskPaymentMethod, paymentSchema, tradeSchema, transferSchema } from "../schemas.js";
+import { requireAuth, type AppEnv } from "./shared.js";
 
 /** Comision del exchange, 0,065 %. Se mantiene la de la version original. */
 const TRADING_FEE = new Decimal("0.00065");

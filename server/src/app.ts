@@ -2,15 +2,15 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { secureHeaders } from "hono/secure-headers";
 
-import { getDatabase } from "./db/client";
-import { onError, onNotFound } from "./middleware/error-handler";
-import { adminRoutes } from "./routes/admin";
-import { authRoutes } from "./routes/auth";
-import { historyRoutes } from "./routes/history";
-import { marketRoutes } from "./routes/market";
-import { walletRoutes } from "./routes/wallet";
-import { withSession } from "./routes/shared";
-import type { AppEnv } from "./types";
+import { getDatabase } from "./db/client.js";
+import { onError, onNotFound } from "./middleware/error-handler.js";
+import { adminRoutes } from "./routes/admin.js";
+import { authRoutes } from "./routes/auth.js";
+import { historyRoutes } from "./routes/history.js";
+import { marketRoutes } from "./routes/market.js";
+import { walletRoutes } from "./routes/wallet.js";
+import { withSession } from "./routes/shared.js";
+import type { AppEnv } from "./types.js";
 
 /**
  * Toda la API es una unica funcion en Vercel y Hono resuelve el enrutado por

@@ -2,10 +2,10 @@ import { Decimal } from "decimal.js";
 import { count, desc, eq, gt, sql, sum } from "drizzle-orm";
 import { Hono } from "hono";
 
-import { payments, trades, transfers, users, wallets } from "../db/schema";
-import { getPrices, getToken } from "../lib/market";
-import { toApi } from "../lib/money";
-import { requireAdmin, requireAuth, type AppEnv } from "./shared";
+import { payments, trades, transfers, users, wallets } from "../db/schema.js";
+import { getPrices, getToken } from "../lib/market.js";
+import { toApi } from "../lib/money.js";
+import { requireAdmin, requireAuth, type AppEnv } from "./shared.js";
 
 export const adminRoutes = new Hono<AppEnv>();
 

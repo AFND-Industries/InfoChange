@@ -1,10 +1,10 @@
 import { Decimal } from "decimal.js";
 import { and, eq, sql } from "drizzle-orm";
 
-import type { Database } from "../db/client";
-import { wallets } from "../db/schema";
-import { badRequest } from "./errors";
-import { toStorage } from "./money";
+import type { Database } from "../db/client.js";
+import { wallets } from "../db/schema.js";
+import { badRequest } from "./errors.js";
+import { toStorage } from "./money.js";
 
 type Executor = Database | Parameters<Parameters<Database["transaction"]>[0]>[0];
 

@@ -1,15 +1,15 @@
 import { eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import type { Database } from "../src/db/client";
-import { users } from "../src/db/schema";
+import type { Database } from "../src/db/client.js";
+import { users } from "../src/db/schema.js";
 import {
   createTestDatabase,
   registrationFor,
   resetTestState,
   stubBinance,
   TestClient,
-} from "./helpers";
+} from "./helpers.js";
 
 let db: Database;
 let close: () => Promise<void>;

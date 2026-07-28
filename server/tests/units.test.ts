@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { money, parseAmount, toStorage } from "../src/lib/money";
-import { hashPassword, verifyPassword } from "../src/lib/password";
+import { money, parseAmount, toStorage } from "../src/lib/money.js";
+import { hashPassword, verifyPassword } from "../src/lib/password.js";
 import {
   createSessionToken,
   readSessionToken,
-} from "../src/lib/session";
-import { maskPaymentMethod } from "../src/schemas";
+} from "../src/lib/session.js";
+import { maskPaymentMethod } from "../src/schemas.js";
 
 describe("contrasenas", () => {
   it("genera un hash distinto para la misma contrasena", async () => {

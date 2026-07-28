@@ -1,5 +1,5 @@
-import type { Payment, Trade, Transfer, User, Wallet } from "../db/schema";
-import { toApi } from "./money";
+import type { Payment, Trade, Transfer, User, Wallet } from "../db/schema.js";
+import { toApi } from "./money.js";
 
 /**
  * Forma publica del usuario. Existe para que anadir una columna sensible al

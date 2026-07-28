@@ -1,6 +1,6 @@
 import type { Context, MiddlewareHandler } from "hono";
 
-import { tooManyRequests } from "./errors";
+import { tooManyRequests } from "./errors.js";
 
 interface Window {
   count: number;

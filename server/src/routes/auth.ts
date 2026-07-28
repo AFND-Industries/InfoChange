@@ -1,18 +1,18 @@
 import { eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
-import { securityQuestions, users, wallets } from "../db/schema";
-import { conflict, unauthorized } from "../lib/errors";
-import { burnPasswordComparison, hashPassword, verifyPassword } from "../lib/password";
-import { rateLimit } from "../lib/rate-limit";
-import { toBalance, toPublicUser } from "../lib/serializers";
+import { securityQuestions, users, wallets } from "../db/schema.js";
+import { conflict, unauthorized } from "../lib/errors.js";
+import { burnPasswordComparison, hashPassword, verifyPassword } from "../lib/password.js";
+import { rateLimit } from "../lib/rate-limit.js";
+import { toBalance, toPublicUser } from "../lib/serializers.js";
 import {
   clearSessionCookie,
   createSessionToken,
   setSessionCookie,
-} from "../lib/session";
-import { checkEmailSchema, loginSchema, registerSchema } from "../schemas";
-import { requireAuth, type AppEnv } from "./shared";
+} from "../lib/session.js";
+import { checkEmailSchema, loginSchema, registerSchema } from "../schemas.js";
+import { requireAuth, type AppEnv } from "./shared.js";
 
 /** Saldo de bienvenida para que la cuenta sea utilizable desde el primer minuto. */
 const WELCOME_BALANCE = "10000";
