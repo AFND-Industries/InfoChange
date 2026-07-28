@@ -109,7 +109,9 @@ Lo más relevante que cambió:
 | Tests | ninguno | 52 |
 
 El detalle completo, hallazgo por hallazgo, está en
-**[docs/auditoria.md](./docs/auditoria.md)**.
+**[docs/auditoria.md](./docs/auditoria.md)**. El estado de las dependencias —de
+314 vulnerabilidades a ninguna que afecte a lo desplegado— en
+**[docs/dependencias.md](./docs/dependencias.md)**.
 
 ## Autoría
 

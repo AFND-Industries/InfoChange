@@ -37,12 +37,18 @@ function describeError(error) {
 
 /**
  * Devuelve a donde ir despues de entrar. `RequireAuth` guarda en el estado de
- * navegacion la ruta que el usuario intentaba abrir. Se acepta unicamente una
- * ruta interna: un destino con protocolo (o que empiece por "//") permitiria
- * enviar al usuario fuera de la aplicacion desde un enlace preparado.
+ * navegacion la ruta que el usuario intentaba abrir.
+ *
+ * Solo se admite una ruta interna. Ademas de "//", se rechaza la barra
+ * invertida: los navegadores la tratan como separador, de modo que "/\ejemplo"
+ * acaba navegando a otro dominio. Es el mismo agujero que arrastraba React
+ * Router (CVE-2025-68470), y conviene no depender de que la libreria lo filtre.
  */
 function safeRedirect(from) {
-  return typeof from === "string" && /^\/(?!\/)/.test(from) ? from : "/dashboard";
+  if (typeof from !== "string") return "/dashboard";
+
+  const interna = /^\/[^/\\]/.test(from) || from === "/";
+  return interna && !from.includes("\\") ? from : "/dashboard";
 }
 
 function Login() {

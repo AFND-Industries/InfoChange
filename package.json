@@ -30,11 +30,16 @@
     "verify": "npm-run-all typecheck lint test build"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.7",
+    "@hono/node-server": "^1.19.17",
     "hono": "^4.6.14"
   },
+  "overrides": {
+    "jspdf": "^4.2.1",
+    "tar": "^7.4.3",
+    "brace-expansion": "^2.0.2"
+  },
   "devDependencies": {
-    "npm-run-all2": "^7.0.2",
+    "npm-run-all2": "^8.0.4",
     "typescript": "^5.7.2"
   }
 }

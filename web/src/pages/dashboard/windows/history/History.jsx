@@ -72,7 +72,9 @@ export default function History() {
     setBuildingReport(true);
 
     try {
-      const [{ jsPDF }] = await Promise.all([
+      // Desde la version 5, jspdf-autotable ya no anade `autoTable` al
+      // prototipo de jsPDF: hay que llamar a la funcion pasandole el documento.
+      const [{ jsPDF }, { default: autoTable }] = await Promise.all([
         import("jspdf"),
         import("jspdf-autotable"),
       ]);
@@ -100,7 +102,7 @@ export default function History() {
         align: "center",
         ...titleStyle,
       });
-      doc.autoTable({
+      autoTable(doc, {
         ...tableStyle,
         head: [
           [
@@ -132,7 +134,7 @@ export default function History() {
         align: "center",
         ...titleStyle,
       });
-      doc.autoTable({
+      autoTable(doc, {
         ...tableStyle,
         head: [
           [
@@ -160,7 +162,7 @@ export default function History() {
         align: "center",
         ...titleStyle,
       });
-      doc.autoTable({
+      autoTable(doc, {
         ...tableStyle,
         head: [["ID", "Remitente", "Receptor", "Cantidad", "Fecha"]],
         body: (transfers.data ?? []).map((bizum) => [
