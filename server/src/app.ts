@@ -1,4 +1,4 @@
-import { scryptSync } from "node:crypto";
+import { scrypt, scryptSync } from "node:crypto";
 
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -46,22 +46,39 @@ app.use("*", async (c, next) => {
  * falte configuracion: es lo primero que se mira cuando un despliegue no
  * levanta.
  */
-app.get("/health", (c) => {
+app.get("/health", async (c) => {
   /**
-   * Ademas del estado, se mide el coste de un scrypt pequeno. El hash de
-   * contrasenas es lo unico que consume CPU de forma apreciable, y en
-   * serverless la CPU asignada varia: tener el dato aqui permite ver si el
-   * entorno esta capado sin adivinar. El coste es minimo (N=1024, unas decimas
-   * de milisegundo) para que la ruta no sirva como palanca de abuso.
+   * Ademas del estado, se mide el coste de un scrypt pequeno por las dos vias.
+   * El hash de contrasenas es lo unico que consume CPU de forma apreciable, y
+   * en esta plataforma la version asincrona resulto ser ordenes de magnitud mas
+   * lenta: al delegar en el threadpool, el hilo principal queda esperando, la
+   * funcion parece ociosa y se le recorta la CPU. Tener las dos medidas juntas
+   * permite verlo de un vistazo en lugar de deducirlo.
+   *
+   * El coste es minimo (N=1024, unas decimas de milisegundo) para que la ruta
+   * no sirva como palanca de abuso.
    */
-  const inicio = performance.now();
-  scryptSync("medida", "medida", 32, { N: 1024, r: 8, p: 1 });
-  const cpuMs = Number((performance.now() - inicio).toFixed(1));
+  const medir = async (ejecutar: () => Promise<unknown> | unknown) => {
+    const inicio = performance.now();
+    await ejecutar();
+    return Number((performance.now() - inicio).toFixed(1));
+  };
+
+  const opciones = { N: 1024, r: 8, p: 1 };
+  const sincrono = await medir(() => scryptSync("medida", "medida", 32, opciones));
+  const asincrono = await medir(
+    () =>
+      new Promise((resolver, rechazar) =>
+        scrypt("medida", "medida", 32, opciones, (error) =>
+          error ? rechazar(error) : resolver(undefined),
+        ),
+      ),
+  );
 
   return c.json({
     status: "ok",
     runtime: process.version,
-    cpuMs,
+    scryptMs: { sincrono, asincrono },
     timestamp: new Date().toISOString(),
   });
 });

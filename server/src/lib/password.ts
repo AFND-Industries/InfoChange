@@ -1,20 +1,43 @@
-import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
-import { promisify } from "node:util";
-
-const scrypt = promisify(scryptCallback) as (
-  password: string | Buffer,
-  salt: string | Buffer,
-  keylen: number,
-  options: { N: number; r: number; p: number; maxmem: number },
-) => Promise<Buffer>;
+import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
 /**
  * Parametros de scrypt. N=2^15 con r=8 consume ~32 MB por hash, holgado dentro
  * del limite de memoria de una funcion de Vercel y suficientemente caro como
  * para que no compense atacar el hash por fuerza bruta.
  */
-const PARAMS = { N: 32768, r: 8, p: 1, keyLength: 64 } as const;
+interface ScryptParams {
+  N: number;
+  r: number;
+  p: number;
+  keyLength: number;
+}
+
+const PARAMS: ScryptParams = { N: 32768, r: 8, p: 1, keyLength: 64 };
 const MAXMEM = 128 * PARAMS.N * PARAMS.r * 2;
+
+/**
+ * Se usa la variante **sincrona** de scrypt a proposito.
+ *
+ * La asincrona delega el calculo en el threadpool de libuv y deja el hilo
+ * principal esperando. Vercel entiende entonces que la funcion esta ociosa y le
+ * recorta la CPU, asi que el hash de fondo se arrastra: en produccion un login
+ * agotaba los 15 s de la invocacion mientras la misma cuenta sincrona tardaba
+ * milisegundos. Bloquear el hilo unos 100 ms por login es un precio menor a
+ * cambio de que la operacion termine.
+ */
+function derive(
+  password: string,
+  salt: Buffer,
+  keyLength: number,
+  params: ScryptParams = PARAMS,
+): Buffer {
+  return scryptSync(password.normalize("NFKC"), salt, keyLength, {
+    N: params.N,
+    r: params.r,
+    p: params.p,
+    maxmem: Math.max(MAXMEM, 128 * params.N * params.r * 2),
+  });
+}
 
 /**
  * Se elige scrypt de `node:crypto` en vez de bcrypt o argon2 porque no arrastra
@@ -26,12 +49,7 @@ const MAXMEM = 128 * PARAMS.N * PARAMS.r * 2;
  */
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16);
-  const derived = await scrypt(password.normalize("NFKC"), salt, PARAMS.keyLength, {
-    N: PARAMS.N,
-    r: PARAMS.r,
-    p: PARAMS.p,
-    maxmem: MAXMEM,
-  });
+  const derived = derive(password, salt, PARAMS.keyLength);
 
   return [
     "scrypt",
@@ -63,11 +81,11 @@ export async function verifyPassword(
   const expected = Buffer.from(rawHash, "base64");
   if (expected.length === 0) return false;
 
-  const derived = await scrypt(password.normalize("NFKC"), salt, expected.length, {
+  const derived = derive(password, salt, expected.length, {
     N,
     r,
     p,
-    maxmem: Math.max(MAXMEM, 128 * N * r * 2),
+    keyLength: expected.length,
   });
 
   // La comparacion es en tiempo constante para no filtrar cuantos bytes coinciden.
