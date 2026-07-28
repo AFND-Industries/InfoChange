@@ -1,10 +1,12 @@
 import { scrypt, scryptSync } from "node:crypto";
+import { eq } from "drizzle-orm";
 
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { secureHeaders } from "hono/secure-headers";
 
 import { getDatabase } from "./db/client.js";
+import { securityQuestions, users } from "./db/schema.js";
 import { onError, onNotFound } from "./middleware/error-handler.js";
 import { adminRoutes } from "./routes/admin.js";
 import { authRoutes } from "./routes/auth.js";
@@ -75,12 +77,55 @@ app.get("/health", async (c) => {
       ),
   );
 
-  return c.json({
+  const respuesta: Record<string, unknown> = {
     status: "ok",
     runtime: process.version,
     scryptMs: { sincrono, asincrono },
     timestamp: new Date().toISOString(),
-  });
+  };
+
+  /**
+   * Con `?db=1` se cronometra ademas cada estilo de consulta por separado. Es
+   * temporal, para localizar por que unas rutas responden en milisegundos y
+   * otras agotan la invocacion. Cada medida lleva su propio limite para que un
+   * cuelgue no se lleve por delante toda la respuesta.
+   */
+  if (c.req.query("db") === "1") {
+    const db = getDatabase();
+    const conLimite = async (nombre: string, consulta: () => Promise<unknown>) => {
+      const inicio = performance.now();
+      try {
+        await Promise.race([
+          consulta(),
+          new Promise((_, rechazar) =>
+            setTimeout(() => rechazar(new Error("limite de 4 s")), 4000),
+          ),
+        ]);
+        return { [nombre]: Number((performance.now() - inicio).toFixed(0)) };
+      } catch (error) {
+        return {
+          [nombre]: `fallo tras ${(performance.now() - inicio).toFixed(0)} ms: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        };
+      }
+    };
+
+    respuesta.db = Object.assign(
+      {},
+      await conLimite("select_simple", () =>
+        db.select().from(securityQuestions).limit(1),
+      ),
+      await conLimite("select_con_parametro", () =>
+        db.select().from(users).where(eq(users.id, -1)).limit(1),
+      ),
+      await conLimite("api_relacional", () =>
+        db.query.users.findFirst({ where: eq(users.id, -1), columns: { id: true } }),
+      ),
+    );
+  }
+
+  return c.json(respuesta);
 });
 
 /** Indice de la API, para que `/api` a secas no devuelva un 404 desconcertante. */
