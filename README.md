@@ -106,7 +106,7 @@ Lo más relevante que cambió:
 | Datos de pago | tarjeta, CVV y contraseña de PayPal en claro | solo una referencia enmascarada |
 | Bundle | ~3,7 MB (6,7 MB de JSON estáticos) | carga diferida por pantalla |
 | Peticiones | 2-3 por segundo y usuario | al enfocar la pestaña y tras cada operación |
-| Tests | ninguno | 47 |
+| Tests | ninguno | 52 |
 
 El detalle completo, hallazgo por hallazgo, está en
 **[docs/auditoria.md](./docs/auditoria.md)**.

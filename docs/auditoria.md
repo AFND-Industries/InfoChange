@@ -319,7 +319,7 @@ paquete de npm); queda solo el de npm.
 - **Tres dominios distintos** conviviendo en el repositorio
   (`infochange.afndindustries.es`, `icb.afndindustries.es`, `infochange.me`).
   Ahora la API es siempre `/api`, del mismo origen.
-- **Sin tests.** Ahora hay 47, incluidos los de concurrencia, corriendo sobre un
+- **Sin tests.** Ahora hay 52, incluidos los de concurrencia, corriendo sobre un
   Postgres real (PGlite) con las migraciones de verdad.
 - **Sin CI.** Los dos flujos existentes solo desplegaban, y el de backend estaba
   roto desde junio de 2024 por un salto de línea perdido que dejaba
