@@ -43,3 +43,7 @@ coverage/
 
 # Salida temporal de scripts/check-vercel-bundle.mjs
 .vercel-check/
+
+# Artefactos de pruebas manuales
+*cookies.txt
+.prod-test-*
