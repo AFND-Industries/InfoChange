@@ -23,6 +23,8 @@
  * que la ruta se resuelve y ejecuta.
  */
 import { execFileSync } from "node:child_process";
+import { IncomingMessage, ServerResponse } from "node:http";
+import { Socket } from "node:net";
 import { existsSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -158,38 +160,60 @@ try {
   console.log("Respuesta de la funcion:");
   for (const caso of CASOS) {
     const metodo = caso.metodo ?? "GET";
-    const peticion = new Request(`https://localhost${caso.url}`, {
-      method: metodo,
-      headers:
-        caso.cuerpo === undefined ? {} : { "content-type": "application/json" },
-      body: caso.cuerpo === undefined ? undefined : JSON.stringify(caso.cuerpo),
-    });
 
-    const respuesta = await Promise.race([
-      Promise.resolve(handler(peticion)),
+    /**
+     * Se invoca con `IncomingMessage` y `ServerResponse`, que es como llama
+     * Vercel a las funciones del runtime de Node. Usar objetos `Request` Web
+     * aqui daria verde sobre algo que en produccion recibe otra cosa.
+     */
+    const socket = new Socket();
+    const req = new IncomingMessage(socket);
+    req.method = metodo;
+    req.url = caso.url;
+    req.headers = { host: "localhost", "x-forwarded-proto": "https" };
+
+    if (caso.cuerpo !== undefined) {
+      const datos = JSON.stringify(caso.cuerpo);
+      req.headers["content-type"] = "application/json";
+      req.headers["content-length"] = String(Buffer.byteLength(datos));
+      req.push(datos);
+    }
+    req.push(null);
+
+    const res = new ServerResponse(req);
+    let cuerpo = "";
+    res.write = (trozo) => {
+      cuerpo += trozo;
+      return true;
+    };
+
+    await Promise.race([
+      new Promise((terminar, fallar) => {
+        const finOriginal = res.end.bind(res);
+        res.end = (trozo) => {
+          if (trozo) cuerpo += trozo;
+          terminar();
+          return finOriginal();
+        };
+        Promise.resolve(handler(req, res)).catch(fallar);
+      }),
       new Promise((_, fallar) =>
         setTimeout(() => fallar(new Error(`Sin respuesta en 20 s: ${caso.url}`)), 20_000),
       ),
     ]);
 
-    if (!(respuesta instanceof Response)) {
-      throw new Error(`${caso.nombre}: la funcion no devolvio una Response.`);
-    }
-
-    const cuerpo = await respuesta.text();
-
     if (caso.contiene && !cuerpo.includes(caso.contiene)) {
       throw new Error(
-        `${caso.nombre}: se esperaba ${caso.contiene} y llego ${respuesta.status} ${cuerpo.slice(0, 200)}`,
+        `${caso.nombre}: se esperaba ${caso.contiene} y llego ${res.statusCode} ${cuerpo.slice(0, 200)}`,
       );
     }
     if (caso.noContiene && cuerpo.includes(caso.noContiene)) {
       throw new Error(
-        `${caso.nombre}: no deberia contener ${caso.noContiene}; llego ${respuesta.status} ${cuerpo.slice(0, 200)}`,
+        `${caso.nombre}: no deberia contener ${caso.noContiene}; llego ${res.statusCode} ${cuerpo.slice(0, 200)}`,
       );
     }
 
-    console.log(`  ok  ${metodo.padEnd(4)} ${caso.nombre} (${respuesta.status})`);
+    console.log(`  ok  ${metodo.padEnd(4)} ${caso.nombre} (${res.statusCode})`);
   }
 
   console.log("La funcion compila, arranca y responde a GET y POST.");
