@@ -82,7 +82,7 @@ describe("datos iniciales", () => {
       email: "aspirante@example.com",
       password: "otra-contrasena-larga",
     });
-    expect(result.admin).toBe("actualizado");
+    expect(result.admin).toBe("rol-concedido");
 
     // Entra con su contrasena original, no con la que se paso al seeding.
     const login = await client.post("/api/auth/login", {
@@ -94,9 +94,40 @@ describe("datos iniciales", () => {
     expect((await client.get("/api/admin/overview")).status).toBe(200);
   });
 
+  it("cambia la contrasena de una cuenta existente solo si se pide", async () => {
+    const client = new TestClient();
+    await client.post("/api/auth/register", registrationFor("olvidadiza"));
+    client.clearCookie();
+
+    const nueva = "contrasena-nueva-2026";
+    const result = await seedDatabase(db, {
+      username: "olvidadiza",
+      email: "olvidadiza@example.com",
+      password: nueva,
+      resetPassword: true,
+    });
+    expect(result.admin).toBe("contrasena-actualizada");
+
+    // La nueva sirve y la antigua ya no.
+    expect(
+      (await client.post("/api/auth/login", { username: "olvidadiza", password: nueva }))
+        .status,
+    ).toBe(200);
+
+    client.clearCookie();
+    expect(
+      (
+        await client.post("/api/auth/login", {
+          username: "olvidadiza",
+          password: registrationFor("olvidadiza").password,
+        })
+      ).status,
+    ).toBe(401);
+  });
+
   it("rechaza una contrasena de administrador demasiado corta", async () => {
     await expect(
       seedDatabase(db, { ...ADMIN, username: "corta", password: "1234" }),
-    ).rejects.toThrow(/12 caracteres/);
+    ).rejects.toThrow(/al menos 12/);
   });
 });

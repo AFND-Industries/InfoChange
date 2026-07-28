@@ -9,11 +9,18 @@ export interface AdminSeed {
   username: string;
   email: string;
   password: string;
+  /**
+   * Cambia tambien la contrasena si la cuenta ya existe. Por defecto no se
+   * toca: el uso habitual de este script sobre una cuenta existente es
+   * ascender a administrador a alguien que se registro por la web, y ahi
+   * pisarle la contrasena seria justo lo contrario de lo que se quiere.
+   */
+  resetPassword?: boolean;
 }
 
 export interface SeedResult {
   questions: number;
-  admin: "creado" | "actualizado" | "omitido";
+  admin: "creado" | "rol-concedido" | "contrasena-actualizada" | "omitido";
 }
 
 /**
@@ -35,7 +42,10 @@ export async function seedDatabase(
   }
 
   if (admin.password.length < 12) {
-    throw new Error("La contrasena del administrador debe tener 12 caracteres o mas.");
+    throw new Error(
+      `ADMIN_PASSWORD tiene ${admin.password.length} caracteres y necesita al menos 12. ` +
+        "Se pide mas que a una cuenta normal (10) porque esta lee las metricas de todo el exchange.",
+    );
   }
 
   const [question] = await db.select().from(schema.securityQuestions).limit(1);
@@ -72,12 +82,20 @@ export async function seedDatabase(
     return { questions: SECURITY_QUESTIONS.length, admin: "creado" };
   }
 
-  // La cuenta ya existia: se le asegura el rol sin tocar su contrasena, para
-  // poder promover a administrador a alguien que se registro por la web.
+  // La cuenta ya existia: se le concede el rol y, solo si se pide de forma
+  // explicita, se le cambia la contrasena.
   await db
     .update(schema.users)
-    .set({ role: "admin" })
+    .set({
+      role: "admin",
+      ...(admin.resetPassword
+        ? { passwordHash: await hashPassword(admin.password) }
+        : {}),
+    })
     .where(sql`lower(${schema.users.username}) = ${admin.username.toLowerCase()}`);
 
-  return { questions: SECURITY_QUESTIONS.length, admin: "actualizado" };
+  return {
+    questions: SECURITY_QUESTIONS.length,
+    admin: admin.resetPassword ? "contrasena-actualizada" : "rol-concedido",
+  };
 }
