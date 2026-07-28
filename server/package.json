@@ -1,0 +1,44 @@
+{
+  "name": "@infochange/server",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API de InfoChange: Hono sobre Vercel Functions con Postgres (Neon) y Drizzle ORM.",
+  "main": "src/app.ts",
+  "exports": {
+    ".": "./src/app.ts",
+    "./app": "./src/app.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/dev-server.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src tests",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "decimal.js": "^10.4.3",
+    "drizzle-orm": "^0.38.2",
+    "hono": "^4.6.14",
+    "jose": "^5.9.6",
+    "ws": "^8.18.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.2.15",
+    "@eslint/js": "^9.17.0",
+    "@hono/node-server": "^1.13.7",
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "drizzle-kit": "^0.30.1",
+    "eslint": "^9.17.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1",
+    "vitest": "^2.1.8"
+  }
+}

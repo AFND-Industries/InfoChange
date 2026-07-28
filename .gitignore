@@ -1,2 +1,42 @@
+# Dependencias
+node_modules/
 
-Code/infochange/server/infochange.db
+# Artefactos de compilacion
+dist/
+build/
+*.tsbuildinfo
+.vercel/
+
+# Variables de entorno. Solo se versiona .env.example.
+# La version anterior tenia cinco ficheros .env versionados, uno de ellos con
+# las credenciales de MySQL del servidor de la universidad.
+.env
+.env.*
+!.env.example
+
+# Registros y bases de datos locales
+*.log
+npm-debug.log*
+logs/
+*.db
+*.sqlite
+*.sqlite3
+
+# Herramientas y editores
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# Android (Capacitor)
+web/android/app/build/
+web/android/build/
+web/android/.gradle/
+web/android/local.properties
+web/android/app/src/main/assets/public/
+*.keystore
+!debug.keystore
+
+# Cobertura de tests
+coverage/

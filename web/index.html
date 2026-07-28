@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d6efd" />
+
+    <title>InfoChange - Simulador de trading de criptomonedas</title>
+    <meta
+      name="description"
+      content="InfoChange es un simulador de exchange de criptomonedas: opera con precios reales de mercado y dinero ficticio, sin riesgo y sin datos financieros reales."
+    />
+    <meta name="author" content="InfoChange" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="InfoChange - Simulador de trading de criptomonedas"
+    />
+    <meta
+      property="og:description"
+      content="Aprende a operar con criptomonedas usando precios reales de mercado y dinero ficticio."
+    />
+    <meta property="og:image" content="/banner.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="InfoChange - Simulador de trading de criptomonedas"
+    />
+    <meta
+      name="twitter:description"
+      content="Aprende a operar con criptomonedas usando precios reales de mercado y dinero ficticio."
+    />
+    <meta name="twitter:image" content="/banner.png" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+
+    <!--
+      Bootstrap se importa desde npm en main.jsx. Cargarlo por CDN dejaba la
+      aplicacion a merced de que jsdelivr respondiese, y el codigo daba por hecho
+      que existia un `window.bootstrap` global.
+    -->
+    <link rel="preconnect" href="https://s2.coinmarketcap.com" crossorigin />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <noscript>
+      InfoChange necesita JavaScript para funcionar. Activalo en tu navegador
+      para continuar.
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

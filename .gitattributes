@@ -1,0 +1,17 @@
+# Normaliza los finales de linea: el repositorio guarda LF y cada sistema usa el
+# suyo al extraer. Sin esto, trabajar desde Windows y desde Linux genera diffs
+# completos de ficheros que nadie ha tocado.
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+gradlew text eol=lf
+*.jar binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.pdf binary

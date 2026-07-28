@@ -1,0 +1,56 @@
+/* Estilos globales. Los especificos de cada pantalla siguen junto a su componente. */
+
+:root {
+  --ic-brand: #0d6efd;
+  --ic-positive: #198754;
+  --ic-negative: #dc3545;
+}
+
+body {
+  min-height: 100vh;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Variacion diaria de un activo. */
+.ic-change-positive {
+  color: var(--ic-positive);
+}
+
+.ic-change-negative {
+  color: var(--ic-negative);
+}
+
+/* Cifras monetarias: ancho de digito fijo para que no bailen al actualizarse. */
+.ic-numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.ic-coin-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Respeta la preferencia del sistema de reducir animaciones. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

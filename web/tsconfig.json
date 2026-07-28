@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    /**
+     * La aplicacion sigue siendo JSX. Se comprueban los ficheros .ts (cliente de
+     * API, hooks y utilidades), que son los que definen los contratos, y se
+     * permite importarlos desde los componentes sin obligar a migrarlo todo.
+     */
+    "allowJs": true,
+    "checkJs": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.js"]
+}

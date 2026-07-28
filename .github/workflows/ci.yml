@@ -1,0 +1,57 @@
+name: CI
+
+# El despliegue lo hace la integracion de Vercel con GitHub: cada push a main va
+# a produccion y cada pull request genera su propia vista previa. Aqui solo se
+# comprueba que el codigo esta sano.
+#
+# Sustituye a los dos flujos anteriores, que copiaban el codigo a ramas
+# `prod-frontend`/`prod-backend` y entraban por SSH en un VPS para reiniciar pm2
+# y nginx. El de backend llevaba roto desde junio de 2024: un salto de linea
+# perdido dejaba `cd prod-backend` como argumento del `git clone` anterior.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Tipos, estilo, tests y build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar tipos
+        run: npm run typecheck
+
+      - name: Estilo de codigo
+        run: npm run lint
+
+      - name: Tests
+        # Corren contra PGlite (Postgres en WebAssembly), asi que no hace falta
+        # levantar ningun servicio ni tener credenciales.
+        run: npm test
+
+      - name: Build del frontend
+        run: npm run build
+
+      - name: Comprobar que no se cuelan secretos
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|(^|/)\.env\.(local|development|production)$'; then
+            echo "Hay ficheros .env versionados."
+            exit 1
+          fi

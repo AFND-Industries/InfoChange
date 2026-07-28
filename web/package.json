@@ -1,0 +1,50 @@
+{
+  "name": "@infochange/web",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Frontend de InfoChange: React 18 + Vite + React Query.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "cap:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.62.7",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "formik": "^2.4.6",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.0",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.6",
+    "react-bootstrap-icons": "^1.11.4",
+    "react-dom": "^18.3.1",
+    "react-parallax": "^3.5.1",
+    "react-router-dom": "^6.28.0",
+    "react-ts-tradingview-widgets": "^1.2.8",
+    "yup": "^1.5.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.13.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1",
+    "vite": "^6.0.3"
+  }
+}

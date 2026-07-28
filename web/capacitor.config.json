@@ -1,0 +1,11 @@
+{
+  "appId": "es.infochange.app",
+  "appName": "InfoChange",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

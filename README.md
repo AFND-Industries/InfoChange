@@ -1,149 +1,112 @@
-# InfoChange 🚀
+# InfoChange
 
-> by AFND Industries 🏢
+![InfoChange](./docs/design/banner/banner.png)
 
-![InfoChange Logo](./Design/banner/banner.png) 
+Simulador de exchange de criptomonedas. Precios reales de Binance, dinero
+ficticio: se puede operar, transferir saldo a otros usuarios e ingresar o retirar
+fondos sin ningún riesgo ni ningún dato financiero real.
 
----
-
-## Introducción 📚
-
-**InfoChange** es una innovadora aplicación diseñada para facilitar la compra y venta de acciones y criptomonedas. Con una interfaz intuitiva y funciones avanzadas, nunca ha sido tan sencillo realizar operaciones en bolsa o en blockchain.
-
----
-
-## Características Destacadas 🌟
-
-- **Interfaz Intuitiva**: Diseñada para ofrecer la mejor experiencia de usuario.
-- **Operaciones Seguras**: Implementamos las últimas tecnologías en seguridad para proteger tus inversiones.
-- **Soporte de Criptomonedas**: Compra y vende una amplia variedad de criptomonedas.
-- **Actualizaciones en Tiempo Real**: Información actualizada para tomar las mejores decisiones.
-
-<!-- ![App Screenshot](path/to/screenshot1.png) -->
+Nació como proyecto de la asignatura de **Tecnologías Avanzadas de la Web**
+(Universidad de Málaga) y se ha reescrito para que funcione entero sobre
+servicios gratuitos, sin servidor que mantener.
 
 ---
 
-## ¿Por Qué Elegir InfoChange? 🤔
+## Qué hace
 
-1. **Fácil de Usar**: Nuestra aplicación está diseñada pensando en la simplicidad y eficiencia.
-2. **Transacciones Rápidas**: Realiza transacciones en cuestión de segundos.
-3. **Seguridad Garantizada**: Protégete con nuestras avanzadas medidas de seguridad.
-4. **Soporte 24/7**: Siempre estamos aquí para ayudarte.
+- **Trading al contado** sobre pares reales de Binance, con comisión del 0,065 %.
+- **Cartera multiactivo** valorada al precio de mercado.
+- **Transferencias entre usuarios**, al estilo Bizum.
+- **Ingresos y retiradas** simulados por tarjeta, IBAN o PayPal.
+- **Historial** de operaciones, pagos y transferencias, exportable a PDF.
+- **Panel de administración** con las métricas del exchange.
+- **Contenedor Android** con Capacitor.
 
-<!--![Features Image](path/to/features.png)--> 
+> Es un simulador. No se procesa ningún pago real y no se almacenan datos
+> financieros: del medio de pago solo se guarda una referencia enmascarada.
 
----
+## Cómo está construido
 
-## Cómo Empezar 🛠️
+| Capa | Tecnología |
+| --- | --- |
+| Web | React 18, Vite 6, React Query, React Bootstrap |
+| API | Hono sobre Vercel Functions (Node 22) |
+| Base de datos | Postgres en Neon, con Drizzle ORM |
+| Sesión | JWT firmado, en cookie `httpOnly` |
+| Datos de mercado | API pública de Binance, cacheada en la CDN |
+| Tests | Vitest sobre PGlite (Postgres en WebAssembly) |
 
-1. **Accede la web**: Disponible en [InfoChange.me](https://infochange.afndindustries.es).
-2. **Regístrate**: Crea una cuenta en pocos pasos.
-3. **Explora**: Navega y descubre las múltiples opciones de inversión.
-4. **Invierte**: Comienza a comprar y vender acciones y criptomonedas.
+Todo se despliega como **un solo proyecto de Vercel**: el frontend estático y la
+API comparten origen, de modo que no hay CORS que configurar ni dominios que
+coordinar.
 
+```
+InfoChange/
+├── api/[...route].ts     punto de entrada de Vercel
+├── server/               API: rutas, esquema, migraciones y tests
+├── web/                  frontend y contenedor Android
+├── scripts/              utilidades de datos
+└── docs/                 documentación, diseño y prototipos
+```
 
----
+## Empezar
 
-## Advertencia ⚠️
+Requisitos: Node 20 o superior y una base de datos Postgres (sirve el plan
+gratuito de [Neon](https://neon.com)).
 
-**InfoChange** es un simulador. No utilizamos datos personales o financieros en ningún momento. Todas las operaciones y datos presentados son ficticios y tienen fines exclusivamente educativos y de entretenimiento.
+```bash
+npm install
+cp .env.example .env      # rellenar DATABASE_URL y SESSION_SECRET
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
 
----
+- Web: <http://localhost:5173>
+- API: <http://localhost:3003/api/health>
 
-## Enlaces Útiles 🔗
+### Comandos
 
-- **Sitio Web**: [InfoChange.me](https://infochange.afndindustries.es)
-- **Documentación**: [Documentación Oficial](https://icb.afndindustries.es/terms)
-- **Soporte**: [Centro de Ayuda](https://infochange.afndindustries.es/support)
+| Comando | Qué hace |
+| --- | --- |
+| `npm run dev` | Levanta API y web a la vez |
+| `npm test` | Tests del backend (no necesita base de datos) |
+| `npm run verify` | Tipos, estilo, tests y build |
+| `npm run db:generate` | Genera una migración a partir del esquema |
+| `npm run db:migrate` | Aplica las migraciones pendientes |
 
----
+## Despliegue
 
-## Instalación 🖥️
+Ver **[docs/despliegue.md](./docs/despliegue.md)**. En resumen: importar el
+repositorio en Vercel, definir `DATABASE_URL` y `SESSION_SECRET`, y desplegar.
 
-### Requisitos
+## De la v1 a la v2
 
-Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
+Esta versión es una reescritura. La v1 era un frontend de React contra un Express
+con SQLite que vivía en un VPS con pm2 y nginx, y cuyo despliegue automático
+llevaba roto desde junio de 2024.
 
-- Node.js (versión 12 o superior)
-- npm (Node Package Manager) o yarn
+Lo más relevante que cambió:
 
-### Pasos para la Instalación
+| | v1 | v2 |
+| --- | --- | --- |
+| Contraseñas | SHA-256 sin sal | scrypt con sal y factor de coste |
+| Administrador | llamarse «admin» | columna `role`, verificada en el servidor |
+| Saldos | `REAL` sin transacciones | `numeric` con transacciones y `CHECK` |
+| Datos de pago | tarjeta, CVV y contraseña de PayPal en claro | solo una referencia enmascarada |
+| Bundle | ~3,7 MB (6,7 MB de JSON estáticos) | carga diferida por pantalla |
+| Peticiones | 2-3 por segundo y usuario | al enfocar la pestaña y tras cada operación |
+| Tests | ninguno | 47 |
 
-1. **Clonar el Repositorio**:
-    ```bash
-    git clone https://github.com/tu_usuario/infochange.git
-    ```
+El detalle completo, hallazgo por hallazgo, está en
+**[docs/auditoria.md](./docs/auditoria.md)**.
 
-2. **Navegar al Directorio del Proyecto**:
-    ```bash
-    cd infochange/Code
-    ```
+## Autoría
 
-### Instalación del Frontend
+Proyecto de **AFND Industries**: Antonio Cañete Baena, Eulogio Quemada, Alejandro
+Román Sánchez y Antonio Blas Moral Sánchez.
 
-1. **Navegar a la Carpeta del Cliente**:
-    ```bash
-    cd client
-    ```
+## Licencia
 
-2. **Instalar las Dependencias**:
-    - Usando **npm**:
-      ```bash
-      npm install
-      ```
-    - Usando **yarn**:
-      ```bash
-      yarn install
-      ```
-
-3. **Iniciar la Aplicación Vite del Cliente**:
-    ```bash
-    npm run dev
-    ```
-
-### Instalación del Backend
-
-1. **Navegar a la Carpeta del Servidor**:
-    ```bash
-    cd ../server
-    ```
-
-2. **Instalar las Dependencias**:
-    - Usando **npm**:
-      ```bash
-      npm install
-      ```
-    - Usando **yarn**:
-      ```bash
-      yarn install
-      ```
-
-3. **Iniciar el Servidor**:
-    ```bash
-    npm start
-    ```
-
-### Acceder a la Aplicación
-
-- **Frontend**: Abre tu navegador web y navega a `http://localhost:5173` (o el puerto configurado).
-- **Backend**: El servidor se ejecutará en `http://localhost:3003` (o el puerto configurado).
-
----
-
-
-
-## Contribuir 🤝
-
-Estamos abiertos a contribuciones. Si tienes ideas o mejoras, no dudes en hacer un fork del repositorio y enviar un pull request.
-
----
-
-## Licencia 📜
-
-InfoChange está bajo la licencia [CC BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/).
-
----
-
-¡Gracias por elegir **InfoChange**! 🙏
-
-![image](https://github.com/AFND-Industries/InfoChange/assets/70489950/dd9776ef-4b82-4662-aa08-0c004b27eb4a)
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — ver
+[Licence.md](./Licence.md).
