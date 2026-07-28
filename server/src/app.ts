@@ -1,3 +1,5 @@
+import { scryptSync } from "node:crypto";
+
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { secureHeaders } from "hono/secure-headers";
@@ -44,9 +46,25 @@ app.use("*", async (c, next) => {
  * falte configuracion: es lo primero que se mira cuando un despliegue no
  * levanta.
  */
-app.get("/health", (c) =>
-  c.json({ status: "ok", timestamp: new Date().toISOString() }),
-);
+app.get("/health", (c) => {
+  /**
+   * Ademas del estado, se mide el coste de un scrypt pequeno. El hash de
+   * contrasenas es lo unico que consume CPU de forma apreciable, y en
+   * serverless la CPU asignada varia: tener el dato aqui permite ver si el
+   * entorno esta capado sin adivinar. El coste es minimo (N=1024, unas decimas
+   * de milisegundo) para que la ruta no sirva como palanca de abuso.
+   */
+  const inicio = performance.now();
+  scryptSync("medida", "medida", 32, { N: 1024, r: 8, p: 1 });
+  const cpuMs = Number((performance.now() - inicio).toFixed(1));
+
+  return c.json({
+    status: "ok",
+    runtime: process.version,
+    cpuMs,
+    timestamp: new Date().toISOString(),
+  });
+});
 
 /** Indice de la API, para que `/api` a secas no devuelva un 404 desconcertante. */
 app.get("/", (c) =>
