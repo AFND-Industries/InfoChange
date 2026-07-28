@@ -54,6 +54,12 @@ para que en desarrollo también sea un único origen):
 npm run dev
 ```
 
+> Los pasos 1 y 2 se pueden saltar para una primera prueba: sin `DATABASE_URL`,
+> `npm run dev` levanta un Postgres en memoria (PGlite) con el esquema aplicado.
+> Los scripts `db:migrate` y `db:seed` usan el driver estándar de Postgres por
+> TCP, así que funcionan igual contra Neon, contra un Postgres en Docker o
+> contra el de cualquier otro proveedor.
+
 ### 3. Vercel
 
 1. **Add New → Project** e importar el repositorio. La configuración la toma de

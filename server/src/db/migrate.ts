@@ -1,17 +1,16 @@
-import { neonConfig, Pool } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { migrate } from "drizzle-orm/neon-serverless/migrator";
-import ws from "ws";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { env } from "../env";
+import { withCliDatabase } from "./connect-cli";
 
-neonConfig.webSocketConstructor = globalThis.WebSocket ?? ws;
+// El migrador es especifico del driver, asi que aqui si hace falta concretar.
 
-const pool = new Pool({ connectionString: env().DATABASE_URL });
-
-try {
-  await migrate(drizzle(pool), { migrationsFolder: "./drizzle" });
+/**
+ * Aplica las migraciones pendientes. Es idempotente: Drizzle lleva la cuenta de
+ * las ya aplicadas en su propia tabla, asi que se puede ejecutar tantas veces
+ * como haga falta.
+ */
+await withCliDatabase(async (db) => {
+  await migrate(db as unknown as NodePgDatabase, { migrationsFolder: "./drizzle" });
   console.log("Migraciones aplicadas.");
-} finally {
-  await pool.end();
-}
+});

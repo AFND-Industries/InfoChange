@@ -1,11 +1,24 @@
 import { neonConfig, Pool } from "@neondatabase/serverless";
-import { drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
+import type { ExtractTablesWithRelations } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import ws from "ws";
 
 import { env } from "../env";
 import * as schema from "./schema";
 
-export type Database = NeonDatabase<typeof schema>;
+/**
+ * Tipo independiente del driver. El proyecto usa tres:
+ * el serverless de Neon en produccion, `pg` por TCP en los scripts de linea de
+ * comandos y PGlite en los tests. La API de consulta es identica en los tres, y
+ * escribirlo asi evita tener que forzar conversiones de tipo al pasar de uno a
+ * otro.
+ */
+export type Database = PgDatabase<
+  PgQueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
 
 /**
  * El driver serverless de Neon habla por WebSocket, que es lo que permite

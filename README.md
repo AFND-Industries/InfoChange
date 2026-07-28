@@ -51,11 +51,21 @@ InfoChange/
 
 ## Empezar
 
-Requisitos: Node 20 o superior y una base de datos Postgres (sirve el plan
-gratuito de [Neon](https://neon.com)).
+Requisito: Node 20 o superior.
 
 ```bash
 npm install
+npm run dev
+```
+
+Sin configurar nada, la API arranca sobre un Postgres en memoria (PGlite) con el
+esquema ya aplicado. Es suficiente para desarrollar; los datos se pierden al
+parar el servidor.
+
+Para trabajar contra una base de datos de verdad —local, de Neon o de cualquier
+otro proveedor— basta con definir `DATABASE_URL`:
+
+```bash
 cp .env.example .env      # rellenar DATABASE_URL y SESSION_SECRET
 npm run db:migrate
 npm run db:seed

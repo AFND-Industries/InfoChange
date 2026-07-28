@@ -1,5 +1,5 @@
 {
-  "id": "2e7cd1e2-9c1b-422a-8d1a-683f58813413",
+  "id": "d3b0193b-88f3-4e4b-b632-b288827f23e8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -129,7 +129,23 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "security_questions_prompt_unique": {
+          "name": "security_questions_prompt_unique",
+          "columns": [
+            {
+              "expression": "prompt",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

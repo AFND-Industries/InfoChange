@@ -81,6 +81,7 @@ ALTER TABLE "transfers" ADD CONSTRAINT "transfers_recipient_id_users_id_fk" FORE
 ALTER TABLE "users" ADD CONSTRAINT "users_security_question_id_security_questions_id_fk" FOREIGN KEY ("security_question_id") REFERENCES "public"."security_questions"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "wallets" ADD CONSTRAINT "wallets_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "payments_user_idx" ON "payments" USING btree ("user_id","created_at");--> statement-breakpoint
+CREATE UNIQUE INDEX "security_questions_prompt_unique" ON "security_questions" USING btree ("prompt");--> statement-breakpoint
 CREATE INDEX "trades_user_idx" ON "trades" USING btree ("user_id","executed_at");--> statement-breakpoint
 CREATE INDEX "transfers_sender_idx" ON "transfers" USING btree ("sender_id","created_at");--> statement-breakpoint
 CREATE INDEX "transfers_recipient_idx" ON "transfers" USING btree ("recipient_id","created_at");--> statement-breakpoint

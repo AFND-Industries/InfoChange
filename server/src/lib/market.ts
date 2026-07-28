@@ -2,7 +2,12 @@ import { tokenCatalog, type TokenInfo } from "../data/tokens";
 import { badGateway, notFound } from "./errors";
 
 const BINANCE = "https://api.binance.com/api/v3";
-const REQUEST_TIMEOUT_MS = 8000;
+/**
+ * Por debajo de los 10 s que dura por defecto una funcion en el plan gratuito,
+ * para que un Binance lento devuelva un error controlado en vez de agotar la
+ * invocacion entera.
+ */
+const REQUEST_TIMEOUT_MS = 6000;
 
 export interface Price {
   symbol: string;

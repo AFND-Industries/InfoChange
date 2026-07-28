@@ -21,10 +21,17 @@ import {
  */
 const amount = (name: string) => numeric(name, { precision: 38, scale: 18 });
 
-export const securityQuestions = pgTable("security_questions", {
-  id: serial("id").primaryKey(),
-  prompt: text("prompt").notNull(),
-});
+export const securityQuestions = pgTable(
+  "security_questions",
+  {
+    id: serial("id").primaryKey(),
+    prompt: text("prompt").notNull(),
+  },
+  // Sin esta restriccion, el `onConflictDoNothing` del seeding no tiene nada
+  // con lo que detectar el duplicado y cada ejecucion volvia a insertar las
+  // mismas preguntas.
+  (table) => [uniqueIndex("security_questions_prompt_unique").on(table.prompt)],
+);
 
 export const users = pgTable(
   "users",

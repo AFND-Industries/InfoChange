@@ -5,7 +5,7 @@
   "installCommand": "npm install",
   "framework": null,
   "functions": {
-    "api/[...route].ts": {
+    "api/**": {
       "memory": 1024,
       "maxDuration": 15
     }

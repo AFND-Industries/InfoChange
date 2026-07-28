@@ -27,12 +27,10 @@ export async function createTestDatabase(): Promise<{
     .insert(schema.securityQuestions)
     .values(SECURITY_QUESTIONS.map((prompt) => ({ prompt })));
 
-  // La API de consulta es la misma en todos los drivers de Postgres de Drizzle.
-  const database = db as unknown as Database;
-  setDatabase(database);
+  setDatabase(db);
 
   return {
-    db: database,
+    db,
     close: async () => {
       setDatabase(undefined);
       await client.close();
