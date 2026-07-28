@@ -1,5 +1,7 @@
 import { serve } from "@hono/node-server";
 
+// Antes de importar la aplicacion: al arrancar lee la configuracion.
+import "./load-env";
 import app from "./app";
 import { setDatabase } from "./db/client";
 

@@ -24,8 +24,17 @@ de milisegundos con la primera consulta. Sin intervención manual nunca.
 ### 1. Base de datos
 
 1. Crear una cuenta en [neon.com](https://neon.com) y un proyecto.
-2. Copiar la cadena de conexión **con pooler** (`Connection string` →
-   `Pooled connection`).
+2. Copiar la cadena de conexión.
+
+Neon ofrece dos endpoints y conviene usar cada uno donde toca:
+
+| Dónde | Endpoint | Por qué |
+| --- | --- | --- |
+| Vercel (`DATABASE_URL` de producción) | el que lleva **`-pooler`** en el host | Cada invocación de una función abre su propia conexión; el pooler las multiplexa y evita agotar el límite. |
+| Migraciones y seeding en local | cualquiera de los dos | Es un proceso único y de corta duración. |
+
+Es el mismo host con `-pooler` añadido antes del primer punto:
+`ep-algo-123` → `ep-algo-123-pooler`.
 
 ### 2. Local
 

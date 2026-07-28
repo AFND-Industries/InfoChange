@@ -1,5 +1,7 @@
 import { defineConfig } from "drizzle-kit";
 
+import "./src/load-env";
+
 /**
  * El esquema vivia solo dentro de los modelos de Sequelize y no habia ni un
  * fichero de migracion: la base de datos de produccion habia que crearla a

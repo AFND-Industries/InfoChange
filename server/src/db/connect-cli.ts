@@ -1,6 +1,8 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
+// Antes que nada, para que `env()` vea lo que hay en el fichero .env.
+import "../load-env";
 import { env } from "../env";
 import type { Database } from "./client";
 import * as schema from "./schema";
@@ -19,13 +21,18 @@ export async function withCliDatabase<T>(
   run: (db: Database) => Promise<T>,
 ): Promise<T> {
   const connectionString = env().DATABASE_URL;
+  const isLocal = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(connectionString);
+
   const pool = new Pool({
     connectionString,
-    // Neon y la mayoria de proveedores gestionados exigen TLS; un Postgres
-    // local normalmente no lo ofrece.
-    ssl: /localhost|127\.0\.0\.1/.test(connectionString)
-      ? false
-      : { rejectUnauthorized: false },
+    /**
+     * Con TLS y verificando el certificado. Neon, y cualquier proveedor
+     * gestionado serio, presenta un certificado emitido por una CA publica, asi
+     * que no hace falta relajar la comprobacion: hacerlo dejaria la conexion
+     * expuesta a un intermediario justo cuando viaja la contrasena de la base de
+     * datos. Un Postgres local normalmente no ofrece TLS.
+     */
+    ssl: isLocal ? false : true,
   });
 
   try {
