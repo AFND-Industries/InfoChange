@@ -44,6 +44,19 @@ export const onError: ErrorHandler<AppEnv> = (error, c) => {
     );
   }
 
+  // Cuerpo ausente o mal formado: es culpa de quien llama, no del servidor.
+  if (error instanceof SyntaxError) {
+    return c.json<ErrorBody>(
+      {
+        error: {
+          code: "INVALID_JSON",
+          message: "El cuerpo de la peticion no es JSON valido.",
+        },
+      },
+      400,
+    );
+  }
+
   if (error instanceof HTTPException) {
     return c.json<ErrorBody>(
       { error: { code: "HTTP_ERROR", message: error.message } },

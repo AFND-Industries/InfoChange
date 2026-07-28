@@ -31,7 +31,6 @@
     "check:bundle": "node scripts/check-vercel-bundle.mjs"
   },
   "dependencies": {
-    "@hono/node-server": "^1.19.17",
     "hono": "^4.6.14"
   },
   "overrides": {
