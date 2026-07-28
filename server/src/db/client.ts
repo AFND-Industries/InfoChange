@@ -2,7 +2,6 @@ import { neonConfig, Pool } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
-import ws from "ws";
 
 import { env } from "../env";
 import * as schema from "./schema";
@@ -21,12 +20,23 @@ export type Database = PgDatabase<
 >;
 
 /**
- * El driver serverless de Neon habla por WebSocket, que es lo que permite
- * abrir transacciones reales desde una funcion sin estado. Node 22 ya trae
- * `WebSocket` global, pero fijarlo explicitamente evita depender de la version
- * concreta del runtime.
+ * El driver serverless de Neon habla por WebSocket, que es lo que permite abrir
+ * transacciones reales desde una funcion sin estado.
+ *
+ * Se usa el `WebSocket` nativo de Node y no el paquete `ws` a proposito: `ws` es
+ * CommonJS y hace `require()` por dentro, asi que al empaquetar la funcion como
+ * ESM reventaba nada mas cargar el modulo con "Dynamic require of events is not
+ * supported", antes incluso de atender la peticion.
+ *
+ * `WebSocket` es global desde Node 22, que es lo que exige `engines`.
  */
-neonConfig.webSocketConstructor = globalThis.WebSocket ?? ws;
+if (typeof globalThis.WebSocket !== "function") {
+  throw new Error(
+    "Se necesita Node 22 o superior: el driver de Neon usa el WebSocket nativo.",
+  );
+}
+
+neonConfig.webSocketConstructor = globalThis.WebSocket;
 
 let cached: Database | undefined;
 

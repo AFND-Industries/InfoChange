@@ -25,7 +25,6 @@
     "drizzle-orm": "^0.45.2",
     "hono": "^4.6.14",
     "jose": "^5.9.6",
-    "ws": "^8.18.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -33,7 +32,6 @@
     "@eslint/js": "^9.17.0",
     "@hono/node-server": "^1.19.17",
     "@types/node": "^22.10.2",
-    "@types/ws": "^8.5.13",
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.31.5",
     "eslint": "^9.17.0",

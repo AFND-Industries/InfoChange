@@ -6,7 +6,7 @@
   "description": "Simulador de exchange de criptomonedas: React + Hono + Postgres, desplegado como un unico proyecto en Vercel.",
   "license": "CC-BY-NC-SA-4.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "workspaces": [
     "web",
@@ -27,7 +27,8 @@
     "db:generate": "npm run db:generate --workspace server",
     "db:migrate": "npm run db:migrate --workspace server",
     "db:seed": "npm run db:seed --workspace server",
-    "verify": "npm-run-all typecheck lint test build"
+    "verify": "npm-run-all typecheck lint test build check:bundle",
+    "check:bundle": "node scripts/check-vercel-bundle.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.17",
@@ -39,6 +40,7 @@
     "brace-expansion": "^2.0.2"
   },
   "devDependencies": {
+    "esbuild": "^0.25.0",
     "npm-run-all2": "^8.0.4",
     "typescript": "^5.7.2"
   }

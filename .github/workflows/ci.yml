@@ -49,6 +49,12 @@ jobs:
       - name: Build del frontend
         run: npm run build
 
+      - name: Comprobar que la funcion de Vercel arranca
+        # Empaqueta y ejecuta el artefacto que se despliega. El resto de pasos
+        # comprueban el codigo fuente, pero ninguno llega a cargar la funcion:
+        # un fallo de empaquetado solo se veria ya en produccion.
+        run: npm run check:bundle
+
       - name: Comprobar que no se cuelan secretos
         run: |
           if git ls-files | grep -E '(^|/)\.env$|(^|/)\.env\.(local|development|production)$'; then
