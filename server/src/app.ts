@@ -1,12 +1,9 @@
-import { scrypt, scryptSync } from "node:crypto";
-import { eq } from "drizzle-orm";
 
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { secureHeaders } from "hono/secure-headers";
 
 import { getDatabase } from "./db/client.js";
-import { securityQuestions, users } from "./db/schema.js";
 import { onError, onNotFound } from "./middleware/error-handler.js";
 import { adminRoutes } from "./routes/admin.js";
 import { authRoutes } from "./routes/auth.js";
@@ -48,85 +45,13 @@ app.use("*", async (c, next) => {
  * falte configuracion: es lo primero que se mira cuando un despliegue no
  * levanta.
  */
-app.get("/health", async (c) => {
-  /**
-   * Ademas del estado, se mide el coste de un scrypt pequeno por las dos vias.
-   * El hash de contrasenas es lo unico que consume CPU de forma apreciable, y
-   * en esta plataforma la version asincrona resulto ser ordenes de magnitud mas
-   * lenta: al delegar en el threadpool, el hilo principal queda esperando, la
-   * funcion parece ociosa y se le recorta la CPU. Tener las dos medidas juntas
-   * permite verlo de un vistazo en lugar de deducirlo.
-   *
-   * El coste es minimo (N=1024, unas decimas de milisegundo) para que la ruta
-   * no sirva como palanca de abuso.
-   */
-  const medir = async (ejecutar: () => Promise<unknown> | unknown) => {
-    const inicio = performance.now();
-    await ejecutar();
-    return Number((performance.now() - inicio).toFixed(1));
-  };
-
-  const opciones = { N: 1024, r: 8, p: 1 };
-  const sincrono = await medir(() => scryptSync("medida", "medida", 32, opciones));
-  const asincrono = await medir(
-    () =>
-      new Promise((resolver, rechazar) =>
-        scrypt("medida", "medida", 32, opciones, (error) =>
-          error ? rechazar(error) : resolver(undefined),
-        ),
-      ),
-  );
-
-  const respuesta: Record<string, unknown> = {
+app.get("/health", (c) =>
+  c.json({
     status: "ok",
     runtime: process.version,
-    scryptMs: { sincrono, asincrono },
     timestamp: new Date().toISOString(),
-  };
-
-  /**
-   * Con `?db=1` se cronometra ademas cada estilo de consulta por separado. Es
-   * temporal, para localizar por que unas rutas responden en milisegundos y
-   * otras agotan la invocacion. Cada medida lleva su propio limite para que un
-   * cuelgue no se lleve por delante toda la respuesta.
-   */
-  if (c.req.query("db") === "1") {
-    const db = getDatabase();
-    const conLimite = async (nombre: string, consulta: () => Promise<unknown>) => {
-      const inicio = performance.now();
-      try {
-        await Promise.race([
-          consulta(),
-          new Promise((_, rechazar) =>
-            setTimeout(() => rechazar(new Error("limite de 4 s")), 4000),
-          ),
-        ]);
-        return { [nombre]: Number((performance.now() - inicio).toFixed(0)) };
-      } catch (error) {
-        return {
-          [nombre]: `fallo tras ${(performance.now() - inicio).toFixed(0)} ms: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        };
-      }
-    };
-
-    respuesta.db = Object.assign(
-      {},
-      await conLimite("select_simple", () =>
-        db.select().from(securityQuestions).limit(1),
-      ),
-      await conLimite("select_con_parametro", () =>
-        db.select().from(users).where(eq(users.id, -1)).limit(1),
-      ),
-      await conLimite("api_relacional", () =>
-        db.query.users.findFirst({ where: eq(users.id, -1), columns: { id: true } }),
-      ),
-    );
-  }
-
-  return c.json(respuesta);
-});
+  }),
+);
 
 /** Indice de la API, para que `/api` a secas no devuelva un 404 desconcertante. */
 app.get("/", (c) =>

@@ -1,4 +1,4 @@
-import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 
 /**
  * Parametros de scrypt. N=2^15 con r=8 consume ~32 MB por hash, holgado dentro
@@ -16,26 +16,34 @@ const PARAMS: ScryptParams = { N: 32768, r: 8, p: 1, keyLength: 64 };
 const MAXMEM = 128 * PARAMS.N * PARAMS.r * 2;
 
 /**
- * Se usa la variante **sincrona** de scrypt a proposito.
+ * Se usa la variante asincrona: delega el calculo en el threadpool y deja el
+ * hilo principal libre para atender otras peticiones, que es lo que interesa en
+ * una funcion que sirve varias a la vez.
  *
- * La asincrona delega el calculo en el threadpool de libuv y deja el hilo
- * principal esperando. Vercel entiende entonces que la funcion esta ociosa y le
- * recorta la CPU, asi que el hash de fondo se arrastra: en produccion un login
- * agotaba los 15 s de la invocacion mientras la misma cuenta sincrona tardaba
- * milisegundos. Bloquear el hilo unos 100 ms por login es un precio menor a
- * cambio de que la operacion termine.
+ * (Durante la puesta en produccion se llego a sospechar que la plataforma
+ * estrangulaba ese threadpool, porque los login agotaban la invocacion. Medido,
+ * resulto que no: sincrono y asincrono tardan lo mismo. La causa era el
+ * adaptador de peticiones, no el hash.)
  */
 function derive(
   password: string,
   salt: Buffer,
   keyLength: number,
   params: ScryptParams = PARAMS,
-): Buffer {
-  return scryptSync(password.normalize("NFKC"), salt, keyLength, {
-    N: params.N,
-    r: params.r,
-    p: params.p,
-    maxmem: Math.max(MAXMEM, 128 * params.N * params.r * 2),
+): Promise<Buffer> {
+  return new Promise((resolver, rechazar) => {
+    scrypt(
+      password.normalize("NFKC"),
+      salt,
+      keyLength,
+      {
+        N: params.N,
+        r: params.r,
+        p: params.p,
+        maxmem: Math.max(MAXMEM, 128 * params.N * params.r * 2),
+      },
+      (error, derivada) => (error ? rechazar(error) : resolver(derivada)),
+    );
   });
 }
 
@@ -49,7 +57,7 @@ function derive(
  */
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16);
-  const derived = derive(password, salt, PARAMS.keyLength);
+  const derived = await derive(password, salt, PARAMS.keyLength);
 
   return [
     "scrypt",
@@ -81,7 +89,7 @@ export async function verifyPassword(
   const expected = Buffer.from(rawHash, "base64");
   if (expected.length === 0) return false;
 
-  const derived = derive(password, salt, expected.length, {
+  const derived = await derive(password, salt, expected.length, {
     N,
     r,
     p,

@@ -51,7 +51,7 @@ InfoChange/
 
 ## Empezar
 
-Requisito: Node 20 o superior.
+Requisito: Node 22 o superior.
 
 ```bash
 npm install
@@ -87,7 +87,9 @@ npm run dev
 
 ## Despliegue
 
-Ver **[docs/despliegue.md](./docs/despliegue.md)**. En resumen: importar el
+Ver **[docs/despliegue.md](./docs/despliegue.md)** para la puesta en marcha y
+**[docs/despliegue-notas.md](./docs/despliegue-notas.md)** para las decisiones que
+exigió Vercel y por qué. En resumen: importar el
 repositorio en Vercel, definir `DATABASE_URL` y `SESSION_SECRET`, y desplegar.
 
 ## De la v1 a la v2
