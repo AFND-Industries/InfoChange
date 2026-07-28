@@ -4,6 +4,7 @@
   "outputDirectory": "web/dist",
   "installCommand": "npm install",
   "framework": null,
+  "regions": ["cdg1"],
   "functions": {
     "api/index.ts": {
       "maxDuration": 15

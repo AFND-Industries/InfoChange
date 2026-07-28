@@ -85,7 +85,28 @@ async function binance<T>(path: string): Promise<T> {
   }
 
   if (!response.ok) {
-    throw badGateway("MARKET_UNAVAILABLE", "El mercado devolvio una respuesta invalida.");
+    console.error("[infochange] binance respondio con error", {
+      path,
+      status: response.status,
+    });
+
+    /**
+     * Binance responde 451 a las peticiones que llegan desde Estados Unidos.
+     * Como una funcion serverless se ejecuta donde diga la plataforma, es un
+     * fallo que solo aparece ya desplegado y que no se parece en nada a una
+     * caida del mercado: conviene distinguirlo.
+     */
+    if (response.status === 451) {
+      throw badGateway(
+        "MARKET_REGION_BLOCKED",
+        "El mercado no atiende peticiones desde la region en la que se ejecuta el servidor.",
+      );
+    }
+
+    throw badGateway(
+      "MARKET_UNAVAILABLE",
+      `El mercado devolvio una respuesta invalida (${response.status}).`,
+    );
   }
 
   return (await response.json()) as T;
