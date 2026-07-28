@@ -48,6 +48,15 @@ app.get("/health", (c) =>
   c.json({ status: "ok", timestamp: new Date().toISOString() }),
 );
 
+/** Indice de la API, para que `/api` a secas no devuelva un 404 desconcertante. */
+app.get("/", (c) =>
+  c.json({
+    name: "InfoChange API",
+    docs: "https://github.com/AFND-Industries/InfoChange/blob/main/docs/api.md",
+    endpoints: ["/api/health", "/api/auth", "/api/market", "/api/wallet", "/api/history"],
+  }),
+);
+
 app.use("*", async (c, next) => {
   // Se puede haber inyectado una base de datos (tests); si no, se abre la real.
   if (!c.get("db")) c.set("db", getDatabase());

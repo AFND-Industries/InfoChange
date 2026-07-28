@@ -42,7 +42,7 @@ coordinar.
 
 ```
 InfoChange/
-├── api/[...route].ts     punto de entrada de Vercel
+├── api/index.ts          punto de entrada de Vercel (una sola función)
 ├── server/               API: rutas, esquema, migraciones y tests
 ├── web/                  frontend y contenedor Android
 ├── scripts/              utilidades de datos
